@@ -1,6 +1,6 @@
 'use client';
 import { Navbar } from 'flowbite-react';
-
+import Image from 'next/image';
 import { usePathname } from 'next/navigation'
 export default function DefaultNavbar() {
     const pathname = usePathname()
@@ -16,7 +16,7 @@ export default function DefaultNavbar() {
                     href="#"
                 >
 
-                    <img className="h-32 max-w-full rounded-lg" src="/ayur-arogyam-logo.png" alt="image description" />
+                    <Image height={500} width={130} className="h-32 max-w-full rounded-lg" src="/ayur-arogyam-logo.png" alt="image description" />
 
                     {/* <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
                         Ayurarogyam

@@ -1,5 +1,6 @@
 import DefaultNavbar from "../components/DefaultNavbar";
 import DefaultFooter from "../components/footer";
+import Image from "next/image";
 
 export default function page(){
     return (
@@ -14,7 +15,7 @@ export default function page(){
           <header className="mb-4 lg:mb-6 not-format">
               <address className="flex items-center mb-6 not-italic">
                   <div className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white">
-                      <img className="mr-4 w-16 h-16 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-2.jpg" alt="Jese Leos"></img>
+                      <Image height={500} width={500} className="mr-4 w-16 h-16 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-2.jpg" alt="Jese Leos"/>
                       <div>
                           <a href="#" rel="author" className="text-xl font-bold text-gray-900 dark:text-white">Jese Leos</a>
                           <p className="text-base font-light text-gray-500 dark:text-gray-400">Graphic Designer, educator & CEO Flowbite</p>
@@ -33,7 +34,7 @@ export default function page(){
                   Flowbite</a>. It comes with the most commonly used UI components, such as buttons, navigation
               bars, cards, form elements, and more which are conveniently built with the utility classes from
               Tailwind CSS.</p>
-          <figure><img src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-1.png" alt=""/>
+          <figure><Image height={500} width={500} src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-1.png" alt=""/>
               <figcaption>Digital art by Anonymous</figcaption>
           </figure>
           <h2>Getting started with Flowbite</h2>
@@ -90,7 +91,7 @@ export default function page(){
               <li>Low contrast between thick and thin strokes</li>
               <li>Diagonal stress in the strokes</li>
               <li>Slanted serifs on lower-case ascenders</li>
-          </ul><img src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-2.png" alt=""/>
+          </ul><Image height={500} width={500} src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-2.png" alt=""/>
           <ol>
               <li>Low contrast between thick and thin strokes</li>
               <li>Diagonal stress in the strokes</li>
@@ -130,61 +131,7 @@ export default function page(){
   </div>
 </main>
 
-{/* <aside aria-label="Related articles" className="py-8 lg:py-24 bg-gray-50 dark:bg-gray-800">
-  <div className="px-4 mx-auto max-w-screen-xl">
-      <h2 className="mb-8 text-2xl font-bold text-gray-900 dark:text-white">Related articles</h2>
-      <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-          <article className="max-w-xs">
-              <a href="#">
-                  <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/article/blog-1.png" className="mb-5 rounded-lg" alt="Image 1"/>
-              </a>
-              <h2 className="mb-2 text-xl font-bold leading-tight text-gray-900 dark:text-white">
-                  <a href="#">Our first office</a>
-              </h2>
-              <p className="mb-4 font-light text-gray-500 dark:text-gray-400">Over the past year, Volosoft has undergone many changes! After months of preparation.</p>
-              <a href="#" className="inline-flex items-center font-medium underline underline-offset-4 text-primary-600 dark:text-primary-500 hover:no-underline">
-                  Read in 2 minutes
-              </a>
-          </article>
-          <article className="max-w-xs">
-              <a href="#">
-                  <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/article/blog-2.png" className="mb-5 rounded-lg" alt="Image 2"/>
-              </a>
-              <h2 className="mb-2 text-xl font-bold leading-tight text-gray-900 dark:text-white">
-                  <a href="#">Enterprise design tips</a>
-              </h2>
-              <p className="mb-4 font-light text-gray-500 dark:text-gray-400">Over the past year, Volosoft has undergone many changes! After months of preparation.</p>
-              <a href="#" className="inline-flex items-center font-medium underline underline-offset-4 text-primary-600 dark:text-primary-500 hover:no-underline">
-                  Read in 12 minutes
-              </a>
-          </article>
-          <article className="max-w-xs">
-              <a href="#">
-                  <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/article/blog-3.png" className="mb-5 rounded-lg" alt="Image 3"/>
-              </a>
-              <h2 className="mb-2 text-xl font-bold leading-tight text-gray-900 dark:text-white">
-                  <a href="#">We partnered with Google</a>
-              </h2>
-              <p className="mb-4 font-light text-gray-500 dark:text-gray-400">Over the past year, Volosoft has undergone many changes! After months of preparation.</p>
-              <a href="#" className="inline-flex items-center font-medium underline underline-offset-4 text-primary-600 dark:text-primary-500 hover:no-underline">
-                  Read in 8 minutes
-              </a>
-          </article>
-          <article className="max-w-xs">
-              <a href="#">
-                  <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/article/blog-4.png" className="mb-5 rounded-lg" alt="Image 4"/>
-              </a>
-              <h2 className="mb-2 text-xl font-bold leading-tight text-gray-900 dark:text-white">
-                  <a href="#">Our first project with React</a>
-              </h2>
-              <p className="mb-4 font-light text-gray-500 dark:text-gray-400">Over the past year, Volosoft has undergone many changes! After months of preparation.</p>
-              <a href="#" className="inline-flex items-center font-medium underline underline-offset-4 text-primary-600 dark:text-primary-500 hover:no-underline">
-                  Read in 4 minutes
-              </a>
-          </article>
-      </div>
-  </div>
-</aside> */}
+
 
 
 
