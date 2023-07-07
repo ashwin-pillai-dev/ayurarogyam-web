@@ -11,7 +11,7 @@ export default function DefaultFooter() {
         year={2022}
       />
       <Footer.LinkGroup>
-        <Footer.Link href="#">
+        <Footer.Link href="/About">
           About
         </Footer.Link>
         <Footer.Link href="#">
@@ -20,7 +20,7 @@ export default function DefaultFooter() {
         <Footer.Link href="#">
           Licensing
         </Footer.Link>
-        <Footer.Link href="#">
+        <Footer.Link href="/Contact">
           Contact
         </Footer.Link>
       </Footer.LinkGroup>
