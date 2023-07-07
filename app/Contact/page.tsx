@@ -17,7 +17,7 @@ export default function page() {
                     <div className='text-center mt-10 flex  flex-wrap justify-center'>
                         <div className="mb-5 mx-4 ">
                             <h2 className="text-primary-700 font-bold mb-2">Suppport</h2>
-                            <p className="text-primary">Email: anil.pillai@haridebformulations.com</p>
+                            <p className="text-primary">Email: anil.pillai@haridevformulations.com</p>
                         </div>
 
                         <div className="mb-5 mx-4  md:w-auto ">
@@ -30,7 +30,7 @@ export default function page() {
                         <div className="mx-4 ">
                             <h2 className="text-primary-700 font-bold mb-2">Phone</h2>
                             <p className="text-primary">Anil Pillai</p>
-                            <p className="text-primary">Phone: +91 9834820988</p>
+                            <p className="text-primary">Phone: +91 8087979983</p>
                         </div>
                     </div>
                 </section>
