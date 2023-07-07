@@ -55,8 +55,8 @@ export default function page(){
               will come in handy:</p>
           <ol>
               <li><strong>Usability testing</strong>. Does your user know how to exit out of screens? Can they
-                  follow your intended user journey and buy something from the site you’ve designed? By running a
-                  usability test, you’ll be able to see how users will interact with your design once it’s live;
+                  follow your intended user journey and buy something from the site youu2019ve designed? By running a
+                  usability test, youu2019ll be able to see how users will interact with your design once itu2019s live;
               </li>
               <li><strong>Involving stakeholders</strong>. Need to check if your GDPR consent boxes are displaying
                   properly? Pass your prototype to your data protection team and they can test it for real;</li>
@@ -110,18 +110,18 @@ export default function page(){
 
           <h3>Best practices for setting up your prototype</h3>
           <p><strong>Low fidelity or high fidelity?</strong> Fidelity refers to how close a prototype will be to
-              the real deal. If you’re simply preparing a quick visual aid for a presentation, a low-fidelity
+              the real deal. If youu2019re simply preparing a quick visual aid for a presentation, a low-fidelity
               prototype — like a wireframe with placeholder images and some basic text — would be more than
-              enough. But if you’re going for more intricate usability testing, a high-fidelity prototype — with
+              enough. But if youu2019re going for more intricate usability testing, a high-fidelity prototype — with
               on-brand colors, fonts and imagery — could help get more pointed results.</p>
           <p><strong>Consider your user</strong>. To create an intuitive user flow, try to think as your user
               would when interacting with your product. While you can fine-tune this during beta testing,
-              considering your user’s needs and habits early on will save you time by setting you on the right
+              considering your useru2019s needs and habits early on will save you time by setting you on the right
               path.</p>
           <p><strong>Start from the inside out</strong>. A nice way to both organize your tasks and create more
-              user-friendly prototypes is by building your prototypes ‘inside out’. Start by focusing on what will
+              user-friendly prototypes is by building your prototypes inside outu2019. Start by focusing on what will
               be important to your user, like a Buy now button or an image gallery, and list each element by order
-              of priority. This way, you’ll be able to create a prototype that puts your users’ needs at the heart
+              of priority. This way, youu2019ll be able to create a prototype that puts your usersu2019 needs at the heart
               of your design.</p>
           <p>And there you have it! Everything you need to design and share prototypes — right in Flowbite Figma.
           </p>
