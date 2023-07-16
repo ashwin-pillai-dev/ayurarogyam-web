@@ -13,7 +13,7 @@ export default function DefaultNavbar() {
             <Navbar fluid={true} rounded={true} >
                 <Navbar.Brand
 
-                    href="#"
+                    href="/"
                 >
 
                     <Image height={500} width={130} className="h-32 max-w-full rounded-lg" src="/ayur-arogyam-logo.png" alt="image description" />
