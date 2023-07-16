@@ -1,0 +1,8 @@
+{
+  "/page": "/",
+  "/About/page": "/About",
+  "/Products/page": "/Products",
+  "/Blog/page": "/Blog",
+  "/Contact/page": "/Contact",
+  "/favicon.ico/route": "/favicon.ico"
+}
