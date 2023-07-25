@@ -1,6 +1,7 @@
 import DefaultNavbar from "../components/DefaultNavbar"
 import DefaultFooter from "../components/footer"
 import Image from "next/image"
+import CardLayout from "./CardLayout"
 
 export default function page() {
     return (
@@ -23,7 +24,6 @@ export default function page() {
 
 
 
-                            {/* <Image height={500} width={500} src="/ojuset new.JPG" className='w-full' alt="mockup" /> */}
                         </div>
 
                     </div>
@@ -32,7 +32,7 @@ export default function page() {
                 </section>
                 <section className="bg-white dark:bg-gray-900">
 
-                    <div className="py-8  flex justify-center    mx-auto  lg:py-16">
+                    <div className="py-8  flex justify-center  lg:py-16">
                         <div className="max-w-screen-lg text-gray-500 sm:text-lg dark:text-gray-400 ">
                             <h2 className="mb-4 text-2xl tracking-tight font-bold text-primary-700 dark:text-white text-center">Our Commitment to Ayurveda</h2>
                             <p className="mb-4 font-medium text-center">
@@ -41,43 +41,27 @@ export default function page() {
                                 well-being. At Ayur Arogyam, we deeply respect and honour the principles of
                                 Ayurveda, and our products are carefully crafted to embody its essence.
                             </p>
-                            <h2 className="mb-4 text-2xl tracking-tight font-bold text-primary-700 dark:text-white">Quality and Authenticity</h2>
-                            <p className="mb-4 font-medium">
-                                We understand the importance of quality when it comes to Ayurveda products. That&#39;s
-                                why we have partnered with a renowned Kerala based Ayurveda company
-                                “HARIDEV FORMULATIONS” to bring you the highest quality products. All our
-                                offerings are meticulously formulated using traditional herbs, natural ingredients, and
-                                time-tested techniques, ensuring their authenticity and effectiveness.
-                            </p>
 
-                            <h2 className="mb-4 text-2xl tracking-tight font-bold text-primary-700 dark:text-white">Expertise and Guidance</h2>
-                            <p className="mb-4 font-medium">
-                                Our team in Kerala consists of Ayurvedic experts and professionals who are
-                                passionate about Ayurveda and its transformative potential. We are dedicated to
-                                providing you with accurate information, expert guidance, and personalized
-                                recommendations. We believe that education is essential, and we strive to empower
-                                our customers with the knowledge to make informed decisions about their health and
-                                well-being.
-                            </p>
+                            <div className="grid md:grid-cols-2 gap-4 items-center mt-5">
+                                <div>
+                                    <Image height={50} width={500} className="w-full rounded-lg mb-5 px-5" src="/quality-and-authenticity.avif" alt="Ayurveda doctors" />
 
-                            <h2 className="mb-4 text-2xl tracking-tight font-bold text-primary-700 dark:text-white">Wide Range of Ayurvedic Products</h2>
-                            <p className="mb-4 font-medium">
-                                We offer a diverse range of Ayurvedic products to address various health concerns.
-                                From wellness supplements and herbal remedies to skincare and beauty products,
-                                our inventory is carefully curated to cater to your specific needs. Each product is
-                                chosen with utmost care to ensure its quality, efficacy, and adherence to Ayurvedic
-                                principles. Out of these wide range of products Ayur Arogyam is promoting
-                                OJUSET : A wellness product and KUROL : A remedy for piles in Thane and
-                                Mumbai region.
-                            </p>
+                                </div>
+                                <div className="px-5 ">
+                                    <h2 className="mb-4 text-2xl tracking-tight font-bold text-center text-primary-700 dark:text-white">Quality and Authenticity</h2>
+                                    <p className="mb-4  font-medium">
+                                        We understand the importance of quality when it comes to Ayurveda products. That&#39;s
+                                        why we have partnered with a renowned Kerala based Ayurveda company
+                                        “HARIDEV FORMULATIONS” to bring you the highest quality products. All our
+                                        offerings are meticulously formulated using traditional herbs, natural ingredients, and
+                                        time-tested techniques, ensuring their authenticity and effectiveness.
+                                    </p>
+                                </div>
+                            </div>
 
-                            <h2 className="mb-4 text-2xl tracking-tight font-bold text-primary-700 dark:text-white">Customer Satisfaction</h2>
-                            <p className="mb-4 font-medium">
-                                Your satisfaction is our top priority. We are committed to providing exceptional
-                                customer service and ensuring that your experience with us is seamless andenjoyable. We value your feedback and are always striving to improve and exceed
-                                your expectations.
-                            </p>
-
+                            <div className="w-full">
+                                <CardLayout />
+                            </div>
                             <h2 className="mb-4 text-2xl tracking-tight font-bold text-primary-700 dark:text-white">Join Us on the Ayurvedic Journey</h2>
                             <p className="mb-4 font-medium">
                                 Embark on a journey towards holistic well-being with Ayur Arogyam. Explore the
