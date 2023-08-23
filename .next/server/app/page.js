@@ -241,24 +241,13 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 1617:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
-
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 125, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 6249, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 7844, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 8782, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 1522, 23))
-
-/***/ }),
-
-/***/ 6700:
+/***/ 4011:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3912, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 3046));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218))
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218));
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157))
 
 /***/ }),
 
@@ -307,8 +296,10 @@ const Slider = ({ slides })=>{
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_image__WEBPACK_IMPORTED_MODULE_4___default()), {
                             src: slide.image,
                             alt: "Slide Image",
-                            layout: "fill",
-                            objectFit: "cover",
+                            fill: true,
+                            style: {
+                                objectFit: "cover"
+                            },
                             className: "rounded-lg"
                         })
                     ]
@@ -725,7 +716,7 @@ function Home() {
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [763,544,993,960,671], () => (__webpack_exec__(480)));
+var __webpack_exports__ = __webpack_require__.X(0, [763,544,993,960,803], () => (__webpack_exec__(480)));
 module.exports = __webpack_exports__;
 
 })();

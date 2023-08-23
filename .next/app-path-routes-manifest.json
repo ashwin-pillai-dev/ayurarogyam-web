@@ -1,8 +1,8 @@
 {
   "/favicon.ico/route": "/favicon.ico",
   "/page": "/",
-  "/About/page": "/About",
   "/Blog/page": "/Blog",
+  "/About/page": "/About",
   "/Contact/page": "/Contact",
   "/Products/page": "/Products"
 }

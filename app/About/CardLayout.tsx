@@ -11,8 +11,8 @@ const CardLayout = () => {
                         <Image
                             src="/expertise.jpg"
                             alt="Image"
-                            layout="fill"
-                            objectFit="cover"
+                            fill={true}
+                            style={{objectFit:"cover"}}
                         />
                     </div>
                     <h3 className="text-primary-700 text-xl font-bold">Expertise and Guidance</h3>
@@ -33,8 +33,8 @@ const CardLayout = () => {
                         <Image
                             src="/wide-range.jpg"
                             alt="Image"
-                            layout="fill"
-                            objectFit="cover"
+                            fill={true}
+                            style={{objectFit:"cover"}}
                         />
                     </div>
                     <h3 className="text-primary-700 text-xl text-center font-bold">Wide Range of Ayurvedic Products</h3>
@@ -54,8 +54,8 @@ const CardLayout = () => {
                         <Image
                             src="/customer-satisfaction.jpg"
                             alt="Image"
-                            layout="fill"
-                            objectFit="cover"
+                            fill={true}
+                            style={{objectFit:"cover"}}
                         />
                     </div>
                     <h3 className="text-primary-700  text-center text-xl font-bold">Customer Satisfaction</h3>

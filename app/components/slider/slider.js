@@ -22,8 +22,8 @@ const Slider = ({slides}) => {
                         <Image
                             src={slide.image}
                             alt="Slide Image"
-                            layout="fill"
-                            objectFit="cover"
+                            fill={true}
+                            style={{objectFit: "cover"}}
                             className="rounded-lg" 
                         />
                     </div>
