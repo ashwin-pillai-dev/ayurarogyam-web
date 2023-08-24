@@ -409,7 +409,7 @@ function Home() {
         {
             title: "Serving Mankind With Quality Medicines",
             desc: "Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.",
-            src: "/6-outdoors.JPG"
+            src: "/6-outdoors.jpg"
         },
         {
             title: "A Herbo Mineral Preparatory Supplement",
@@ -419,7 +419,7 @@ function Home() {
         {
             title: "Nature’s Science",
             desc: "Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.",
-            src: "/1-Fresh-Mint.JPG"
+            src: "/1-Fresh-Mint.jpg"
         },
         {
             title: "100% Pure Ayurvedic Products",
