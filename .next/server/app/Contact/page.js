@@ -250,12 +250,12 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 1781:
+/***/ 6617:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 7207));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157))
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157));
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218))
 
 /***/ }),
 
@@ -380,7 +380,7 @@ function page() {
                                         }),
                                         /*#__PURE__*/ jsx_runtime_.jsx("p", {
                                             className: "text-primary",
-                                            children: "Email: anil.pillai@haridevformulations.com"
+                                            children: "ayuarogyam2023@gmail.com"
                                         })
                                     ]
                                 }),
@@ -393,7 +393,7 @@ function page() {
                                         }),
                                         /*#__PURE__*/ jsx_runtime_.jsx("p", {
                                             className: "text-primary md:w-82 break-words",
-                                            children: "Address: Unit No. 33, Second floor, GNP Galaxy Industrial Estate, Ambernath -421505"
+                                            children: "Unit No. 33, Second floor, GNP Galaxy Industrial Estate, Ambernath -421505"
                                         })
                                     ]
                                 }),
@@ -406,11 +406,7 @@ function page() {
                                         }),
                                         /*#__PURE__*/ jsx_runtime_.jsx("p", {
                                             className: "text-primary",
-                                            children: "Anil Pillai"
-                                        }),
-                                        /*#__PURE__*/ jsx_runtime_.jsx("p", {
-                                            className: "text-primary",
-                                            children: "Phone: +91 8087979983"
+                                            children: "+91 9819421170"
                                         })
                                     ]
                                 })

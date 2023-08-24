@@ -44,7 +44,7 @@ function DefaultNavbar() {
     const pathname = (0,next_navigation__WEBPACK_IMPORTED_MODULE_3__.usePathname)();
     console.log(pathname);
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-        className: "container mx-auto",
+        className: "container mx-auto my-0",
         children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(flowbite_react__WEBPACK_IMPORTED_MODULE_1__.Navbar, {
             fluid: true,
             rounded: true,
@@ -76,7 +76,7 @@ function DefaultNavbar() {
                             active: pathname == "/About",
                             children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("p", {
                                 className: `text-primary-700 hover:text-primary-500 text-base ${pathname == "/About" ? " font-bold" : ""}`,
-                                children: "About"
+                                children: "About us"
                             })
                         }),
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(flowbite_react__WEBPACK_IMPORTED_MODULE_1__.Navbar.Link, {

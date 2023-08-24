@@ -205,7 +205,7 @@ __webpack_require__.r(__webpack_exports__);
         '',
         {
         children: ['__PAGE__', {}, {
-          page: [() => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 493)), "D:\\projects\\ayurarogyam-web\\app\\page.tsx"],
+          page: [() => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 520)), "D:\\projects\\ayurarogyam-web\\app\\page.tsx"],
           metadata: {
     icon: [(async (props) => (await Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 3174))).default(props))],
     apple: [],
@@ -241,17 +241,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 4011:
+/***/ 519:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3912, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 3046));
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157));
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157))
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2741))
 
 /***/ }),
 
-/***/ 3046:
+/***/ 2741:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -263,56 +263,97 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8038);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_slideshow_image__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2052);
-/* harmony import */ var react_slideshow_image_dist_styles_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5470);
-/* harmony import */ var react_slideshow_image_dist_styles_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_slideshow_image_dist_styles_css__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var next_image__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8421);
-/* harmony import */ var next_image__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(next_image__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var embla_carousel_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9124);
+/* harmony import */ var embla_carousel_react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(embla_carousel_react__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7886);
+/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var next_image__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8421);
+/* harmony import */ var next_image__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_image__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _EmblaCarousel_module_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9215);
+/* harmony import */ var _EmblaCarousel_module_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_EmblaCarousel_module_css__WEBPACK_IMPORTED_MODULE_5__);
 /* __next_internal_client_entry_do_not_use__ default auto */ 
 
 
 
 
-const Slider = ({ slides })=>{
+
+const EmblaCarousel = (props)=>{
+    const autoplayOptions = {
+        delay: 3000,
+        stopOnInteraction: false
+    };
+    const { slides, options } = props;
+    const [emblaRef] = embla_carousel_react__WEBPACK_IMPORTED_MODULE_3___default()(options, [
+        embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4___default()(autoplayOptions)
+    ]);
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_slideshow_image__WEBPACK_IMPORTED_MODULE_2__.Slide, {
-            easing: "ease",
-            children: slides.map((slide, index)=>/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                    className: "each-slide rounded-md mx-10 md:mx-20 justify-self-center h-96 relative",
-                    children: [
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                            className: "flex h-full max-w-screen-xl px-4 py-8 mx-auto justify-center items-center",
+        className: (_EmblaCarousel_module_css__WEBPACK_IMPORTED_MODULE_5___default().embla),
+        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+            className: (_EmblaCarousel_module_css__WEBPACK_IMPORTED_MODULE_5___default().embla__viewport),
+            ref: emblaRef,
+            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                className: (_EmblaCarousel_module_css__WEBPACK_IMPORTED_MODULE_5___default().embla__container),
+                children: slides.map((slide, index)=>/*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                        className: `${(_EmblaCarousel_module_css__WEBPACK_IMPORTED_MODULE_5___default().embla__slide)}`,
+                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("section", {
+                            className: "bg-white dark:bg-gray-900 max-w-screen-xl",
                             children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                className: "max-w-screen-xl text-center relative z-10",
+                                className: "grid max-w-screen-xl px-8  mx-auto lg:gap-20 xl:gap-0 lg:py-2 lg:grid-cols-12",
                                 children: [
-                                    " ",
-                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h1", {
-                                        className: "text-white mb-4 text-4xl font-extrabold tracking-tight md:text-5xl xl:text-6xl dark:text-white",
-                                        children: slide.title
+                                    /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                        className: "mr-auto place-self-center bg-red lg:col-span-7",
+                                        children: [
+                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h1", {
+                                                className: "max-w-2xl text-primary-700 mb-2 text-4xl font-extrabold tracking-tight leading-none md:text-4xl xl:text-5xl dark:text-white",
+                                                children: slide.title
+                                            }),
+                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("p", {
+                                                className: "max-w-2xl mb-6 font-light text-gray-500 lg:mb-4 md:text-md lg:text-xl dark:text-gray-400",
+                                                children: slide.desc
+                                            })
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                        className: `hidden lg:mt-0 lg:col-span-5 lg:flex lg:items-end lg:justify-center  h-96 }`,
+                                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_image__WEBPACK_IMPORTED_MODULE_2___default()), {
+                                            src: slide.src,
+                                            alt: "banner",
+                                            height: 500,
+                                            width: 500
+                                        })
                                     })
                                 ]
                             })
-                        }),
-                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_image__WEBPACK_IMPORTED_MODULE_4___default()), {
-                            src: slide.image,
-                            alt: "Slide Image",
-                            fill: true,
-                            style: {
-                                objectFit: "cover"
-                            },
-                            className: "rounded-lg"
                         })
-                    ]
-                }, index))
+                    }, index))
+            })
         })
     });
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Slider);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EmblaCarousel);
 
 
 /***/ }),
 
-/***/ 493:
+/***/ 9215:
+/***/ ((module) => {
+
+// Exports
+module.exports = {
+	"embla": "EmblaCarousel_embla__uw_yp",
+	"embla__viewport": "EmblaCarousel_embla__viewport__PXiSW",
+	"embla__container": "EmblaCarousel_embla__container__P5Bax",
+	"embla__slide": "EmblaCarousel_embla__slide__JJ5Qv",
+	"embla__slide__img": "EmblaCarousel_embla__slide__img__BhKWc",
+	"embla__slide__number": "EmblaCarousel_embla__slide__number__MQAHy"
+};
+
+module.exports.__checksum = "0f61f67af068"
+
+
+/***/ }),
+
+/***/ 520:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -335,9 +376,9 @@ var DefaultNavbar = __webpack_require__(6547);
 var footer = __webpack_require__(9915);
 // EXTERNAL MODULE: ./node_modules/next/dist/build/webpack/loaders/next-flight-loader/module-proxy.js
 var module_proxy = __webpack_require__(1313);
-;// CONCATENATED MODULE: ./app/components/slider/slider.js
+;// CONCATENATED MODULE: ./app/components/carousel/EmblaCarousel.tsx
 
-const proxy = (0,module_proxy.createProxy)(String.raw`D:\projects\ayurarogyam-web\app\components\slider\slider.js`)
+const proxy = (0,module_proxy.createProxy)(String.raw`D:\projects\ayurarogyam-web\app\components\carousel\EmblaCarousel.tsx`)
 
 // Accessing the __esModule property and exporting $$typeof are required here.
 // The __esModule getter forces the proxy target to create the default export
@@ -347,7 +388,7 @@ const { __esModule, $$typeof } = proxy;
 const __default__ = proxy.default;
 
 
-/* harmony default export */ const slider = (__default__);
+/* harmony default export */ const EmblaCarousel = (__default__);
 ;// CONCATENATED MODULE: ./app/page.tsx
 
 
@@ -356,34 +397,52 @@ const __default__ = proxy.default;
 
 function Home() {
     const slides = [
-        {
-            title: "Nature’s Science",
-            desc: "Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.",
-            image: "/1 Fresh Mint.JPG"
-        },
-        {
-            title: "Tested, Result Giving, Age Old Kayakalpa Rasayana Formulation",
-            desc: "Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.",
-            image: "/2 fresh-herb.JPG"
-        },
+        // { title: 'Nature’s Science', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/1-Fresh-Mint.JPG' },
+        // { title: 'Tested, Result Giving, Age Old Kayakalpa Rasayana Formulation', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/2-fresh-herb.JPG' },
         {
             title: "100% Pure Ayurvedic Products",
             desc: "Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.",
-            image: "/3 spices-herbs.JPG"
-        },
+            image: "/100-ayurveidc.jpg"
+        }
+    ];
+    const SLIDES = [
         {
             title: "Serving Mankind With Quality Medicines",
             desc: "Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.",
-            image: "/6 side-view-man-woman-meditating-outdoors.JPG"
+            src: "/6-outdoors.JPG"
+        },
+        {
+            title: "A Herbo Mineral Preparatory Supplement",
+            desc: "Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.",
+            src: "/PUNARJITH- OJUSET Capsules.jpg"
+        },
+        {
+            title: "Nature’s Science",
+            desc: "Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.",
+            src: "/1-Fresh-Mint.JPG"
+        },
+        {
+            title: "100% Pure Ayurvedic Products",
+            src: "/100-ayurveidc.jpg",
+            desc: "Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being."
+        },
+        {
+            title: "The Herbal way of Healing Piles",
+            src: "/kurol-banner-1.jpg",
+            desc: "Complete relief from piles."
         }
     ];
+    const OPTIONS = {
+        loop: true
+    };
     return /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
         children: [
             /*#__PURE__*/ jsx_runtime_.jsx(DefaultNavbar/* default */.ZP, {}),
             /*#__PURE__*/ jsx_runtime_.jsx("section", {
                 className: "bg-white dark:bg-gray-900",
-                children: /*#__PURE__*/ jsx_runtime_.jsx(slider, {
-                    slides: slides
+                children: /*#__PURE__*/ jsx_runtime_.jsx(EmblaCarousel, {
+                    slides: SLIDES,
+                    options: OPTIONS
                 })
             }),
             /*#__PURE__*/ jsx_runtime_.jsx("section", {
@@ -716,7 +775,7 @@ function Home() {
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [763,544,993,960,803], () => (__webpack_exec__(480)));
+var __webpack_exports__ = __webpack_require__.X(0, [763,544,993,73,803], () => (__webpack_exec__(480)));
 module.exports = __webpack_exports__;
 
 })();

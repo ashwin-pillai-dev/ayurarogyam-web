@@ -2,24 +2,37 @@ import Image from 'next/image'
 import DefaultNavbar from './components/DefaultNavbar'
 import DefaultFooter from './components/footer'
 import Slider from './components/slider/slider'
+import EmblaCarousel from './components/carousel/EmblaCarousel';
+import { EmblaOptionsType } from 'embla-carousel-react';
 
 export default function Home() {
   const slides = [
-    { title: 'Nature’s Science', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/1 Fresh Mint.JPG' },
-    { title: 'Tested, Result Giving, Age Old Kayakalpa Rasayana Formulation', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/2 fresh-herb.JPG' },
-    { title: '100% Pure Ayurvedic Products', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/3 spices-herbs.JPG' },
-    { title: 'Serving Mankind With Quality Medicines', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/6 side-view-man-woman-meditating-outdoors.JPG' },
-    // { title: 'A Herbo Mineral Preparatory Supplement', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/7 PUNARJITH- OJUSET Capsules.JPG' },
+    // { title: 'Nature’s Science', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/1-Fresh-Mint.JPG' },
+    // { title: 'Tested, Result Giving, Age Old Kayakalpa Rasayana Formulation', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/2-fresh-herb.JPG' },
+    { title: '100% Pure Ayurvedic Products', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/100-ayurveidc.jpg' },
+    // { title: 'Serving Mankind With Quality Medicines', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/6-outdoors.JPG' },
+    // { title: 'A Herbo Mineral Preparatory Supplement', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/ojuset-product.JPG' },
     // { title: 'Energy Stimulant ', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/4 cute-couple-walking.JPG' },   
 
 ];
+
+const SLIDES:any= [
+    { title: 'Serving Mankind With Quality Medicines', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', src: '/6-outdoors.JPG' },
+    { title: 'A Herbo Mineral Preparatory Supplement', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', src: '/PUNARJITH- OJUSET Capsules.jpg' },
+    { title: 'Nature’s Science', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', src: '/1-Fresh-Mint.JPG' },
+    { title: '100% Pure Ayurvedic Products', src: '/100-ayurveidc.jpg', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.' },
+    { title: 'The Herbal way of Healing Piles', src: '/kurol-banner-1.jpg', desc: 'Complete relief from piles.' },
+]
+const OPTIONS: EmblaOptionsType = { loop: true }
   return (
     <div>
       <DefaultNavbar />
 
       {/* Banner */}
       <section className="bg-white dark:bg-gray-900">
-        <Slider slides={slides}/>
+        {/* <Slider slides={slides}/> */}
+        <EmblaCarousel slides={SLIDES} options={OPTIONS} />
+
       </section>
 
       {/* Content */}

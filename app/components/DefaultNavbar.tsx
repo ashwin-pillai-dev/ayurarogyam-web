@@ -9,7 +9,7 @@ export default function DefaultNavbar() {
     
 
     return (
-        <div className='container mx-auto'>
+        <div className='container mx-auto my-0'>
             <Navbar fluid={true} rounded={true} >
                 <Navbar.Brand
 
@@ -39,7 +39,7 @@ export default function DefaultNavbar() {
                         active ={pathname == "/About"}
                     >
                         <p className={`text-primary-700 hover:text-primary-500 text-base ${pathname == "/About"?' font-bold':''}`}>
-                            About
+                            About us
                         </p>
                     </Navbar.Link>
                     <Navbar.Link href="/Products" active ={pathname == "/Products"} className="text-primary-700 hover:text-primary-400">

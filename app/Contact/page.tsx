@@ -17,20 +17,19 @@ export default function page() {
                     <div className='text-center mt-10 flex  flex-wrap justify-center'>
                         <div className="mb-5 mx-4 ">
                             <h2 className="text-primary-700 font-bold mb-2">Suppport</h2>
-                            <p className="text-primary">Email: anil.pillai@haridevformulations.com</p>
+                            <p className="text-primary">ayuarogyam2023@gmail.com</p>
                         </div>
 
                         <div className="mb-5 mx-4  md:w-auto ">
                             <h2 className="text-primary-700 font-bold mb-2">Sales</h2>
                             <p className="text-primary md:w-82 break-words">
-                                Address: Unit No. 33, Second floor, GNP Galaxy Industrial Estate, Ambernath -421505
+                                Unit No. 33, Second floor, GNP Galaxy Industrial Estate, Ambernath -421505
                             </p>
                         </div>
 
                         <div className="mx-4 ">
                             <h2 className="text-primary-700 font-bold mb-2">Phone</h2>
-                            <p className="text-primary">Anil Pillai</p>
-                            <p className="text-primary">Phone: +91 8087979983</p>
+                            <p className="text-primary">+91 9819421170</p>
                         </div>
                     </div>
                 </section>
