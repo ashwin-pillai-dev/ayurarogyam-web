@@ -250,12 +250,12 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 1058:
+/***/ 1146:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3912, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218))
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218));
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157))
 
 /***/ }),
 
@@ -298,7 +298,7 @@ const CardLayout = ()=>{
                         /*#__PURE__*/ jsx_runtime_.jsx("div", {
                             className: "relative w-full h-52 mb-4 rounded-lg overflow-hidden",
                             children: /*#__PURE__*/ jsx_runtime_.jsx((image_default()), {
-                                src: "/expertise.jpg",
+                                src: "/approach.jpg",
                                 alt: "Image",
                                 fill: true,
                                 style: {
@@ -308,11 +308,11 @@ const CardLayout = ()=>{
                         }),
                         /*#__PURE__*/ jsx_runtime_.jsx("h3", {
                             className: "text-primary-700 text-xl font-bold",
-                            children: "Expertise and Guidance"
+                            children: "Our Approach"
                         }),
                         /*#__PURE__*/ jsx_runtime_.jsx("p", {
                             className: "text-gray-600 text-center text-base px-2 pb-3",
-                            children: "Our team in Kerala consists of Ayurvedic experts and professionals who are passionate about Ayurveda and its transformative potential. We are dedicated to providing you with accurate information, expert guidance, and personalized recommendations. We believe that education is essential, and we strive to empower our customers with the knowledge to make informed decisions about their health and well-being."
+                            children: 'At Ayur Arogyam, we believe that every journey begins with a single step, and our journey is no different. Our partnership with "Haridev Formulations," a reputable company based in Kerala, has been a cornerstone of our success. Their dedication to formulating result-oriented products has resonated with our mission to promote genuine well-being.'
                         })
                     ]
                 })
@@ -325,7 +325,7 @@ const CardLayout = ()=>{
                         /*#__PURE__*/ jsx_runtime_.jsx("div", {
                             className: "relative w-full h-52 mb-4 rounded-lg overflow-hidden",
                             children: /*#__PURE__*/ jsx_runtime_.jsx((image_default()), {
-                                src: "/wide-range.jpg",
+                                src: "/vision.jpg",
                                 alt: "Image",
                                 fill: true,
                                 style: {
@@ -335,11 +335,11 @@ const CardLayout = ()=>{
                         }),
                         /*#__PURE__*/ jsx_runtime_.jsx("h3", {
                             className: "text-primary-700 text-xl text-center font-bold",
-                            children: "Wide Range of Ayurvedic Products"
+                            children: "Our Vision"
                         }),
                         /*#__PURE__*/ jsx_runtime_.jsx("p", {
                             className: "text-gray-600  text-center text-base px-2 pb-3",
-                            children: "We offer a diverse range of Ayurvedic products to address various health concerns. From wellness supplements and herbal remedies to skincare and beauty products, our inventory is carefully curated to cater to your specific needs. Each product is chosen with utmost care to ensure its quality, efficacy, and adherence to Ayurvedic principles. Out of these wide range of products Ayur Arogyam is promoting OJUSET : A wellness product and KUROL : A remedy for piles in Thane and Mumbai region."
+                            children: "Our vision is driven by the desire to source and deliver authentic Ayurvedic products from all corners of India. We are dedicated to identifying quality products that are not only efficacious but also aligned with the principles of Ayurveda. We take pride in our unwavering commitment to focusing solely on quality and results-driven offerings."
                         })
                     ]
                 })
@@ -352,7 +352,7 @@ const CardLayout = ()=>{
                         /*#__PURE__*/ jsx_runtime_.jsx("div", {
                             className: "relative w-full h-52 mb-4 rounded-lg overflow-hidden",
                             children: /*#__PURE__*/ jsx_runtime_.jsx((image_default()), {
-                                src: "/customer-satisfaction.jpg",
+                                src: "/philosphy.jpg",
                                 alt: "Image",
                                 fill: true,
                                 style: {
@@ -362,11 +362,11 @@ const CardLayout = ()=>{
                         }),
                         /*#__PURE__*/ jsx_runtime_.jsx("h3", {
                             className: "text-primary-700  text-center text-xl font-bold",
-                            children: "Customer Satisfaction"
+                            children: "Our Philosophy"
                         }),
                         /*#__PURE__*/ jsx_runtime_.jsx("p", {
                             className: "text-gray-600  text-center pb-3",
-                            children: "Your satisfaction is our top priority. We are committed to providing exceptional customer service and ensuring that your experience with us is seamless andenjoyable. We value your feedback and are always striving to improve and exceed your expectations."
+                            children: "We firmly believe that the true measure of success is the positive impact we make on people's lives. Witnessing individuals benefit from our carefully curated products fills us with a sense of gratification that transcends monetary gains. Our passion lies in facilitating wellness and seeing individuals thrive with the help of Ayurveda."
                         })
                     ]
                 })
@@ -411,7 +411,7 @@ function page() {
                                             }),
                                             /*#__PURE__*/ jsx_runtime_.jsx("p", {
                                                 className: "max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400",
-                                                children: "At Ayur Arogyam, we are dedicated to promoting holistic well-being through the power of Ayurveda. We believe that nature has provided us with everything we need to achieve optimal health and vitality, and our mission is to harness the wisdom of Ayurveda to help individuals lead healthier and happier lives."
+                                                children: 'Welcome to Ayur Arogyam, where the essence of life and overall well-being converge to bring you the wisdom of Ayurveda. As our name suggests, "Ayur" signifies life, "Arogyam" signifies overall well-being, and "Ayurveda" stands for the knowledge of life. At Ayur Arogyam, we are committed to embracing the profound wisdom of Ayurveda and delivering it to your doorstep.'
                                             })
                                         ]
                                     })
@@ -435,38 +435,11 @@ function page() {
                                 children: [
                                     /*#__PURE__*/ jsx_runtime_.jsx("h2", {
                                         className: "mb-4 text-2xl tracking-tight font-bold text-primary-700 dark:text-white text-center",
-                                        children: "Our Commitment to Ayurveda"
+                                        children: "Our Journey"
                                     }),
                                     /*#__PURE__*/ jsx_runtime_.jsx("p", {
                                         className: "mb-4 font-medium text-center",
-                                        children: "Ayurveda, the ancient Indian system of medicine, offers a holistic approach to health and wellness. It emphasizes the balance of mind, body, and spirit to achieve overall well-being. At Ayur Arogyam, we deeply respect and honour the principles of Ayurveda, and our products are carefully crafted to embody its essence."
-                                    }),
-                                    /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
-                                        className: "grid md:grid-cols-2 gap-4 items-center mt-5",
-                                        children: [
-                                            /*#__PURE__*/ jsx_runtime_.jsx("div", {
-                                                children: /*#__PURE__*/ jsx_runtime_.jsx((image_default()), {
-                                                    height: 50,
-                                                    width: 500,
-                                                    className: "w-full rounded-lg mb-5 px-5",
-                                                    src: "/quality-and-authenticity.avif",
-                                                    alt: "Ayurveda doctors"
-                                                })
-                                            }),
-                                            /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
-                                                className: "px-5 ",
-                                                children: [
-                                                    /*#__PURE__*/ jsx_runtime_.jsx("h2", {
-                                                        className: "mb-4 text-2xl tracking-tight font-bold text-center text-primary-700 dark:text-white",
-                                                        children: "Quality and Authenticity"
-                                                    }),
-                                                    /*#__PURE__*/ jsx_runtime_.jsx("p", {
-                                                        className: "mb-4  font-medium",
-                                                        children: "We understand the importance of quality when it comes to Ayurveda products. That's why we have partnered with a renowned Kerala based Ayurveda company “HARIDEV FORMULATIONS” to bring you the highest quality products. All our offerings are meticulously formulated using traditional herbs, natural ingredients, and time-tested techniques, ensuring their authenticity and effectiveness."
-                                                    })
-                                                ]
-                                            })
-                                        ]
+                                        children: "Our journey began in the heart of 2023 with a simple vision - to bring the ancient science of Ayurveda closer to modern lives. Starting with a handful of quality products, we embarked on a mission to share the therapeutic benefits of Ayurveda with the community. In just under two months, we have made significant strides, reaching out to numerous doctors and pharmacies across Thane, Mumbai, and Navi Mumbai regions."
                                     }),
                                     /*#__PURE__*/ jsx_runtime_.jsx("div", {
                                         className: "w-full",
@@ -478,7 +451,7 @@ function page() {
                                     }),
                                     /*#__PURE__*/ jsx_runtime_.jsx("p", {
                                         className: "mb-4 font-medium",
-                                        children: "Embark on a journey towards holistic well-being with Ayur Arogyam. Explore the wonders of Ayurveda and experience the transformative power of nature. Rediscover balance, vitality, and harmony in your life."
+                                        children: "At Ayur Arogyam, we are not just distributing Ayurvedic medicine; we are sharing a centuries-old legacy of well-being. Our dedication to providing quality, trusted, and effective products is an embodiment of our commitment to your health and happiness. As we continue to grow and expand our reach, we invite you to join us on this journey of embracing Ayurveda and nurturing a holistic sense of vitality."
                                     })
                                 ]
                             })

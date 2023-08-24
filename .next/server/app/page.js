@@ -241,12 +241,12 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 519:
+/***/ 18:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3912, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157));
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218));
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157));
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2741))
 
 /***/ }),
@@ -279,8 +279,9 @@ __webpack_require__.r(__webpack_exports__);
 
 const EmblaCarousel = (props)=>{
     const autoplayOptions = {
-        delay: 3000,
-        stopOnInteraction: false
+        delay: 4000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true
     };
     const { slides, options } = props;
     const [emblaRef] = embla_carousel_react__WEBPACK_IMPORTED_MODULE_3___default()(options, [
