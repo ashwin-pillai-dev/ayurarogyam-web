@@ -42,8 +42,8 @@ export default function DefaultNavbar() {
                             About us
                         </p>
                     </Navbar.Link>
-                    <Navbar.Link href="/Products" active ={pathname == "/Products"} className="text-primary-700 hover:text-primary-400">
-                        <p className={`text-primary-700 hover:text-primary-500 text-base ${pathname == "/Products"?' font-bold':''}`}>
+                    <Navbar.Link href="/Categories" active ={pathname == "/Categories"} className="text-primary-700 hover:text-primary-400">
+                        <p className={`text-primary-700 hover:text-primary-500 text-base ${pathname == "/Categories"?' font-bold':''}`}>
                             Products
                         </p>
                     </Navbar.Link>

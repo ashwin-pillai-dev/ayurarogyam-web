@@ -80,11 +80,11 @@ function DefaultNavbar() {
                             })
                         }),
                         /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(flowbite_react__WEBPACK_IMPORTED_MODULE_1__.Navbar.Link, {
-                            href: "/Products",
-                            active: pathname == "/Products",
+                            href: "/Categories",
+                            active: pathname == "/Categories",
                             className: "text-primary-700 hover:text-primary-400",
                             children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("p", {
-                                className: `text-primary-700 hover:text-primary-500 text-base ${pathname == "/Products" ? " font-bold" : ""}`,
+                                className: `text-primary-700 hover:text-primary-500 text-base ${pathname == "/Categories" ? " font-bold" : ""}`,
                                 children: "Products"
                             })
                         }),
