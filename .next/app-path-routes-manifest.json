@@ -1,12 +1,12 @@
 {
-  "/favicon.ico/route": "/favicon.ico",
   "/page": "/",
-  "/Blog/page": "/Blog",
+  "/favicon.ico/route": "/favicon.ico",
   "/Coming-soon/page": "/Coming-soon",
-  "/About/page": "/About",
-  "/Categories/page": "/Categories",
-  "/Contact/page": "/Contact",
   "/Products/page": "/Products",
+  "/Categories/page": "/Categories",
+  "/About/page": "/About",
+  "/Blog/page": "/Blog",
+  "/Products/Ojuset/page": "/Products/Ojuset",
   "/Products/Kurol/page": "/Products/Kurol",
-  "/Products/Ojuset/page": "/Products/Ojuset"
+  "/Contact/page": "/Contact"
 }
