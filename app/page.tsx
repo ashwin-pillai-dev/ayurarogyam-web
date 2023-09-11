@@ -14,16 +14,16 @@ export default function Home() {
     // { title: 'A Herbo Mineral Preparatory Supplement', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/ojuset-product.JPG' },
     // { title: 'Energy Stimulant ', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', image: '/4 cute-couple-walking.JPG' },   
 
-];
+  ];
 
-const SLIDES:any= [
+  const SLIDES: any = [
     { title: 'Serving Mankind With Quality Medicines', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', src: '/6-outdoors.jpg' },
     { title: 'A Herbo Mineral Preparatory Supplement', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', src: '/PUNARJITH- OJUSET Capsules.jpg' },
     { title: 'Nature’s Science', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', src: '/1-Fresh-Mint.jpg' },
     { title: '100% Pure Ayurvedic Products', src: '/100-ayurveidc.jpg', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.' },
     { title: 'The Herbal way of Healing Piles', src: '/kurol-banner-1.jpg', desc: 'Complete relief from piles.' },
-]
-const OPTIONS: EmblaOptionsType = { loop: true }
+  ]
+  const OPTIONS: EmblaOptionsType = { loop: true }
   return (
     <div>
       <DefaultNavbar />

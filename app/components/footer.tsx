@@ -4,7 +4,7 @@ import { Footer } from 'flowbite-react';
 
 export default function DefaultFooter() {
   return (
-    <Footer container className='mx-auto' >
+    <Footer container className='mx-auto my-0' >
       <Footer.Copyright
         by="Ayurarogyam"
         href="#"
