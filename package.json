@@ -12,6 +12,7 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJs\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.0-alpha.15",
     "@apollo/experimental-nextjs-app-support": "^0.4.2",
     "@apollo/server": "^4.9.3",
     "@as-integrations/next": "^2.0.2",
