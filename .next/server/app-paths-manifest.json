@@ -1,12 +1,4 @@
 {
   "/page": "app/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/Coming-soon/page": "app/Coming-soon/page.js",
-  "/Products/page": "app/Products/page.js",
-  "/Categories/page": "app/Categories/page.js",
-  "/About/page": "app/About/page.js",
-  "/Blog/page": "app/Blog/page.js",
-  "/Products/Ojuset/page": "app/Products/Ojuset/page.js",
-  "/Products/Kurol/page": "app/Products/Kurol/page.js",
-  "/Contact/page": "app/Contact/page.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js"
 }

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation'
 export default function DefaultNavbar() {
     const pathname = usePathname()
-    console.log(pathname);
+    // console.log(pathname);
 
     
 
