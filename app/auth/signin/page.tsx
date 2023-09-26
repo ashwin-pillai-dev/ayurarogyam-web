@@ -1,41 +1,39 @@
-import { useMutation, gql } from "@apollo/client";
-import { useCallback, useState } from "react";
 
 
 
-// "use client"
+
+
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getCsrfToken, signIn } from "next-auth/react"
 
 import DefaultFooter from "../../components/footer";
 import Image from "next/image";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
 
 export default function page() {
-//     const LOGIN_MUTATION = gql`
-//                             mutation Mutation($email: String!, $password: String!) {
-//                             loginAdmin(email: $email, password: $password) {
-//                                                 token
-//                                                     }
-// } `
-    // const [login, { data }] = useMutation(LOGIN_MUTATION);
+    //     const LOGIN_MUTATION = gql`
+    //                             mutation Mutation($email: String!, $password: String!) {
+    //                             loginAdmin(email: $email, password: $password) {
+    //                                                 token
+    //                                                     }
+    // } `
+    //     const [login, { data }] = useMutation(LOGIN_MUTATION);
 
-    async function logIn(formData:FormData) {
-        'use server'
-        // await signIn("credentials", { email: "jsmith", password: "1234" })
+    async function onSubmit(formData: FormData) {
 
 
-        // 'use server'
-
-        // debugger
-        // console.log(formData);
+        console.log(formData);
 
 
-        // const formDataObject: any = {};
 
-        // for (const [key, value] of formData.entries()) {
-        //     formDataObject[key] = value;
-        // }
-        // console.log(formDataObject);
+
+        const formDataObject: any = {};
+
+        for (const [key, value] of formData.entries()) {
+            formDataObject[key] = value;
+        }
+        console.log(formDataObject);
+
+        signIn("credentials", { email: formDataObject.email, password: formDataObject.password })
 
         // try {
         //     const response = await login({variables:formDataObject})
@@ -72,7 +70,13 @@ export default function page() {
                             <h1 className="text-xl font-bold leading-tight mb-4 tracking-tight place-self-center text-primary-700 md:text-2xl dark:text-white">
                                 Sign in to your account
                             </h1>
-                            <form className="md:space-y-6 mb-8" method="post" action="/api/auth/callback/credentials">
+                            <form className="md:space-y-6 mb-8" action={async (data) => {
+                                // e.pre
+                                await onSubmit(data);
+                                // console.log(data);
+
+
+                            }}>
                                 <div>
                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Your email
@@ -141,6 +145,14 @@ export default function page() {
 
         </section>
     );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    return {
+        props: {
+            csrfToken: await getCsrfToken(context),
+        },
+    }
 }
 
 
