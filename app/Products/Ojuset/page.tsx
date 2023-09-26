@@ -8,7 +8,7 @@ export default function page() {
     const BENEFITS = [
         {
             image: '/muscle-fitness.png',
-            title: 'Health and Fitness',
+            title: 'Lifesyle & Fitness',
             link: '/Products/Ojuset/benefits/1'
         },
 
@@ -20,12 +20,12 @@ export default function page() {
 
         {
             image: '/old-man.png',
-            title: 'Old people',
+            title: 'For Geriatrics - Care for the unique health needs of the elderly',
             link: '/Products/Ojuset/benefits/3'
         },
         {
             image: '/weakened.png',
-            title: 'Exisiting diseases',
+            title: 'Ojuset: Your Ageless Wellness Companion',
             link: '/Products/Ojuset/benefits/4'
         },
     ]
@@ -50,25 +50,22 @@ export default function page() {
                                 <div className=" flex flex-col h-full justify-around">
 
                                     <div className="">
-                                        <h1 className="text-4xl font-bold mb-4 font-serif text-primary-700">Revitalize Your Intimate Relationships</h1>
+                                        <h1 className="text-4xl font-bold mb-4 font-serif text-primary-700">Welcome to Ojuset Capsule: Your Path to Total Wellness</h1>
 
                                         <p className="text-primary-600 mb-6">
-                                            Intimacy plays a vital role in maintaining a fulfilling relationship. We understand that sexual health can sometimes face challenges due to various factors, such as stress, age, or lifestyle.
-                                        </p>
-                                        <p className="text-primary-600">
+                                        At Ayur Arogyam, we believe that wellness is not just an absence of illness, but a state of vitality and balance that allows you to live life to the fullest. With this philosophy at heart, we introduce you to Ojuset Capsule, a total wellness product that encompasses the essence of health, vitality, and rejuvenation.                                        </p>
+                                        {/* <p className="text-primary-600">
                                             Our line of Ayurvedic products for sexual enhancement is formulated to address these concerns naturally.
                                             Using traditional herbs and ingredients known for their aphrodisiac properties, our products can help improve stamina, vitality, and overall sexual performance.
                                             Rediscover the joy of intimate moments with our safe and effective solutions.
-                                        </p>
+                                        </p> */}
 
                                     </div>
 
                                     <div className="lg:mb-16">
-                                        <h2 className="mb-4 text-4xl font-bold mb-4 font-serif text-primary-700 dark:text-white">Harnessing the Power of Ayurveda</h2>
+                                        <h2 className="mb-4 text-4xl font-bold mb-4 font-serif text-primary-700 dark:text-white">Boosting Stamina, Elevating Energy:</h2>
                                         <p className="text-primary-600">
-                                            Intimacy is an essential aspect of a fulfilling relationship,
-                                            and at Ayur Arogyam, we understand the importance of sexual health. Introducing our flagship product,
-                                            Ojuset –the natural solution for enhancing your intimate experiences.
+                                        Ojuset Capsule is your steadfast companion in the quest for boundless energy and unwavering stamina. Whether you're striving for peak performance at the gym, seeking to regain your vitality with age, or simply looking to infuse your days with vigor, Ojuset Capsule is here to empower you.
                                         </p>
                                     </div>
 

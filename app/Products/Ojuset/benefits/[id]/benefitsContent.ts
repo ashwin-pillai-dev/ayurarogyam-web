@@ -70,8 +70,8 @@ export const content = [
         id: '3',
         image1: '/old-people.jpg',
         header1: 'Ojuset: Your Ageless Wellness Companion',
-        content1: 
-        `At Ayur Arogyam, we believe that every stage of life should be lived with vibrancy, energy, and vitality. Our commitment to your well-being extends far beyond words; it's deeply ingrained in our mission. We understand that the golden years should be cherished and embraced, filled with the joys of life.
+        content1:
+            `At Ayur Arogyam, we believe that every stage of life should be lived with vibrancy, energy, and vitality. Our commitment to your well-being extends far beyond words; it's deeply ingrained in our mission. We understand that the golden years should be cherished and embraced, filled with the joys of life.
         
         In this beautiful phase of life, we introduce you to Ojuset Capsule, a testament to our dedication to nurturing your health and vitality. We know that aging comes with its unique set of challenges, and we're here to support you on this incredible journey.
         
@@ -84,7 +84,38 @@ export const content = [
 
         Our commitment to your vitality is reflected in every capsule. With Ojuset, you can look forward to embracing each day with a renewed sense of energy and enthusiasm. Say goodbye to unnecessary tiredness and welcome the joy of feeling active and agile.`,
 
-        benefits:null
+        benefits: null
+    },
+
+    {
+        id: '4',
+        image1: '/weak-patient-2.jpg',
+        header1: 'For Comorbidity - Multiple Disorders or illnesses occurring in the same person',
+        content1:
+            `At Ayur Arogyam, we understand that life's journey can sometimes lead us down challenging paths, where health conditions like paralysis, diabetes, stroke, Blood pressure, Alzheimer's, Cancer and more can sap our strength and vitality. It is during these times of resilience that we introduce Ojuset Capsule, a beacon of hope and rejuvenation`,
+        header2: `Ojuset Capsule: Renewed Strength for Health Challenges`,
+        content2: `Ojuset Capsule has proven to be a ray of light for those facing health challenges that often leave them feeling weak and fatigued. It is specifically formulated to provide renewed strength and energy, offering support to individuals navigating through conditions that may affect their physical and mental well-being.`,
+
+        benefits: [
+            {
+                title: `Increased Energy`,
+                content: `Ojuset Capsule helps replenish lost energy, offering a much-needed boost to counteract fatigue`,
+                icon: '/diet.png'
+            },
+            {
+                title: `Enhanced Vitality`,
+                content: `It contributes to improved vitality, helping individuals better manage the daily demands of their health conditions`,
+                icon: `/pleasure.png`
+            },
+            {
+                title: `Wellness Support`,
+                content: `Ojuset Capsule provides essential nutrients that may be lacking due to dietary restrictions or medical conditions, promoting overall well-being.`,
+                icon: `/safety.png`
+            },
+
+
+
+        ]
     },
 
 ]
