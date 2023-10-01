@@ -301,7 +301,7 @@ function page() {
                                 className: "md:order-2 bg-blue",
                                 children: [
                                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h2", {
-                                        className: "text-xl text-primary-700 font-bold mb-4",
+                                        className: "text-5xl text-primary-700 font-bold mb-4",
                                         children: "KUROL"
                                     }),
                                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h1", {
@@ -325,7 +325,7 @@ function page() {
                             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
                                 className: "md:order-1 justify-self-center",
                                 children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_image__WEBPACK_IMPORTED_MODULE_3___default()), {
-                                    src: "/kurol-insta.jpg",
+                                    src: "/kurol-banner.jpg",
                                     alt: "Kurol Tablet",
                                     width: 400,
                                     height: 300,

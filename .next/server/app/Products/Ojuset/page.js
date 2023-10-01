@@ -306,17 +306,17 @@ function BenefitCard(props) {
         className: "text-center text-gray-500 dark:text-gray-400",
         children: [
             /*#__PURE__*/ jsx_runtime_.jsx("div", {
-                className: "mx-auto mb-4 w-36 h-36 rounded-full bg-primary-600 flex items-center justify-center",
+                className: "mx-auto mb-3 w-14 h-14 rounded-full bg-primary-600 flex items-center justify-center",
                 children: /*#__PURE__*/ jsx_runtime_.jsx((image_default()), {
-                    height: 150,
-                    width: 150,
+                    height: 80,
+                    width: 80,
                     src: image,
-                    className: "w-20 h-20",
+                    className: "w-6 h-6",
                     alt: image
                 })
             }),
             /*#__PURE__*/ jsx_runtime_.jsx("h3", {
-                className: "mb-1 text-2xl font-bold tracking-tight text-gray-700 dark:text-white",
+                className: "mb-1 underline  underline-offset-2 text-medium font-bold tracking-tight text-gray-700 dark:text-white",
                 children: title
             })
         ]
@@ -343,12 +343,12 @@ function page() {
         },
         {
             image: "/old-man.png",
-            title: "For Geriatrics - Care for the unique health needs of the elderly",
+            title: "Geriatrics - Care for elderly",
             link: "/Products/Ojuset/benefits/3"
         },
         {
             image: "/weakened.png",
-            title: "Ojuset: Your Ageless Wellness Companion",
+            title: "Ageless Wellness Companion",
             link: "/Products/Ojuset/benefits/4"
         }
     ];
@@ -361,53 +361,61 @@ function page() {
                     className: "dark:bg-gray-900 mt-10",
                     children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
                         children: [
+                            /*#__PURE__*/ jsx_runtime_.jsx("h2", {
+                                className: "text-4xl  text-gray-600 pb-4",
+                                children: "OJUSET CAPSULE"
+                            }),
+                            /*#__PURE__*/ jsx_runtime_.jsx("div", {
+                                className: "space-y-8 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-12 md:space-y-0 mb-4 mt-2",
+                                children: BENEFITS.map((benefit, index)=>{
+                                    return /*#__PURE__*/ jsx_runtime_.jsx(BenefitCard, {
+                                        title: benefit.title,
+                                        image: benefit.image,
+                                        link: benefit.link
+                                    }, index);
+                                })
+                            }),
                             /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
                                 className: "md:grid md:grid-cols-2 justify-between",
                                 children: [
-                                    /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
+                                    /*#__PURE__*/ jsx_runtime_.jsx("div", {
                                         className: "md:order-1 p-4 ",
-                                        children: [
-                                            /*#__PURE__*/ jsx_runtime_.jsx("h2", {
-                                                className: "text-4xl  text-gray-600 pb-4",
-                                                children: "OJUSET CAPSULE"
-                                            }),
-                                            /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
-                                                className: " flex flex-col h-full justify-around",
-                                                children: [
-                                                    /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
-                                                        className: "",
-                                                        children: [
-                                                            /*#__PURE__*/ jsx_runtime_.jsx("h1", {
-                                                                className: "text-4xl font-bold mb-4 font-serif text-primary-700",
-                                                                children: "Welcome to Ojuset Capsule: Your Path to Total Wellness"
-                                                            }),
-                                                            /*#__PURE__*/ jsx_runtime_.jsx("p", {
-                                                                className: "text-primary-600 mb-6",
-                                                                children: "At Ayur Arogyam, we believe that wellness is not just an absence of illness, but a state of vitality and balance that allows you to live life to the fullest. With this philosophy at heart, we introduce you to Ojuset Capsule, a total wellness product that encompasses the essence of health, vitality, and rejuvenation.                                        "
-                                                            })
-                                                        ]
-                                                    }),
-                                                    /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
-                                                        className: "lg:mb-16",
-                                                        children: [
-                                                            /*#__PURE__*/ jsx_runtime_.jsx("h2", {
-                                                                className: "mb-4 text-4xl font-bold mb-4 font-serif text-primary-700 dark:text-white",
-                                                                children: "Boosting Stamina, Elevating Energy:"
-                                                            }),
-                                                            /*#__PURE__*/ jsx_runtime_.jsx("p", {
-                                                                className: "text-primary-600",
-                                                                children: "Ojuset Capsule is your steadfast companion in the quest for boundless energy and unwavering stamina. Whether you're striving for peak performance at the gym, seeking to regain your vitality with age, or simply looking to infuse your days with vigor, Ojuset Capsule is here to empower you."
-                                                            })
-                                                        ]
-                                                    })
-                                                ]
-                                            })
-                                        ]
+                                        children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
+                                            className: " flex flex-col h-full justify-around",
+                                            children: [
+                                                /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
+                                                    className: "",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx_runtime_.jsx("h1", {
+                                                            className: "text-4xl font-bold mb-4 font-serif text-primary-700",
+                                                            children: "Welcome to Ojuset Capsule: Your Path to Total Wellness"
+                                                        }),
+                                                        /*#__PURE__*/ jsx_runtime_.jsx("p", {
+                                                            className: "text-primary-600 mb-6",
+                                                            children: "At Ayur Arogyam, we believe that wellness is not just an absence of illness, but a state of vitality and balance that allows you to live life to the fullest. With this philosophy at heart, we introduce you to Ojuset Capsule, a total wellness product that encompasses the essence of health, vitality, and rejuvenation.                                        "
+                                                        })
+                                                    ]
+                                                }),
+                                                /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
+                                                    className: "lg:mb-16",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx_runtime_.jsx("h2", {
+                                                            className: "mb-4 text-4xl font-bold mb-4 font-serif text-primary-700 dark:text-white",
+                                                            children: "Boosting Stamina, Elevating Energy:"
+                                                        }),
+                                                        /*#__PURE__*/ jsx_runtime_.jsx("p", {
+                                                            className: "text-primary-600",
+                                                            children: "Ojuset Capsule is your steadfast companion in the quest for boundless energy and unwavering stamina. Whether you're striving for peak performance at the gym, seeking to regain your vitality with age, or simply looking to infuse your days with vigor, Ojuset Capsule is here to empower you."
+                                                        })
+                                                    ]
+                                                })
+                                            ]
+                                        })
                                     }),
                                     /*#__PURE__*/ jsx_runtime_.jsx("div", {
                                         className: "md:order-2  flex justify-center p-5 md:p-0  justify-self-center self-center",
                                         children: /*#__PURE__*/ jsx_runtime_.jsx((image_default()), {
-                                            src: "/ojuset-vitality.jpg",
+                                            src: "/PUNARJITH- OJUSET Capsules.jpg",
                                             alt: "Kurol Tablet",
                                             width: 400,
                                             height: 300,
@@ -415,31 +423,6 @@ function page() {
                                         })
                                     })
                                 ]
-                            }),
-                            /*#__PURE__*/ jsx_runtime_.jsx("section", {
-                                className: "bg-white dark:bg-gray-900",
-                                children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
-                                    className: "py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6",
-                                    children: [
-                                        /*#__PURE__*/ jsx_runtime_.jsx("div", {
-                                            className: "w-full  flex  justify-center",
-                                            children: /*#__PURE__*/ jsx_runtime_.jsx("h2", {
-                                                className: "text-4xl self-center   font-bold mb-4 font-serif text-primary-700 dark:text-white",
-                                                children: "Benefits of Ojuset"
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx_runtime_.jsx("div", {
-                                            className: "space-y-8 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-12 md:space-y-0",
-                                            children: BENEFITS.map((benefit, index)=>{
-                                                return /*#__PURE__*/ jsx_runtime_.jsx(BenefitCard, {
-                                                    title: benefit.title,
-                                                    image: benefit.image,
-                                                    link: benefit.link
-                                                }, index);
-                                            })
-                                        })
-                                    ]
-                                })
                             })
                         ]
                     })

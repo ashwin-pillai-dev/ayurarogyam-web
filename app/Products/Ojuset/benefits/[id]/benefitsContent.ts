@@ -68,7 +68,7 @@ export const content = [
     },
     {
         id: '3',
-        image1: '/old-people.jpg',
+        image1: '/old-geriatrics.jpg',
         header1: 'Ojuset: Your Ageless Wellness Companion',
         content1:
             `At Ayur Arogyam, we believe that every stage of life should be lived with vibrancy, energy, and vitality. Our commitment to your well-being extends far beyond words; it's deeply ingrained in our mission. We understand that the golden years should be cherished and embraced, filled with the joys of life.

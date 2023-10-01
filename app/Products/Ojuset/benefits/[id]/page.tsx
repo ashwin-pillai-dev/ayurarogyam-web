@@ -38,13 +38,13 @@ export default function Page({ params }: { params: { id: string } }) {
 
                 </div>
 
-                <div className="md:order-2 flex justify-center p-5 md:p-0  justify-self-center self-center">
+                <div className="md:order-2 relative justify-center h-full w-5/6 p-5 md:p-0  justify-self-center self-center">
                     <Image
                         src={benifit ? benifit.image1 : ''}
                         alt="Kurol Tablet"
-                        height={300}
-
-                        width={400}
+                        fill={true}
+                        style={{objectFit:'cover'}}
+ 
                         className="rounded-lg"
                     />
                 </div>

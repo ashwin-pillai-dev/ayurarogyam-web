@@ -277,12 +277,12 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 1146:
+/***/ 1058:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3912, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157))
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 2157));
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 218))
 
 /***/ }),
 
@@ -370,7 +370,7 @@ const content = [
     },
     {
         id: "3",
-        image1: "/old-people.jpg",
+        image1: "/old-geriatrics.jpg",
         header1: "Ojuset: Your Ageless Wellness Companion",
         content1: `At Ayur Arogyam, we believe that every stage of life should be lived with vibrancy, energy, and vitality. Our commitment to your well-being extends far beyond words; it's deeply ingrained in our mission. We understand that the golden years should be cherished and embraced, filled with the joys of life.
         
@@ -462,12 +462,14 @@ function Page({ params }) {
                         })
                     }),
                     /*#__PURE__*/ jsx_runtime_.jsx("div", {
-                        className: "md:order-2 flex justify-center p-5 md:p-0  justify-self-center self-center",
+                        className: "md:order-2 relative justify-center h-full w-5/6 p-5 md:p-0  justify-self-center self-center",
                         children: /*#__PURE__*/ jsx_runtime_.jsx((image_default()), {
                             src: benifit ? benifit.image1 : "",
                             alt: "Kurol Tablet",
-                            height: 300,
-                            width: 400,
+                            fill: true,
+                            style: {
+                                objectFit: "cover"
+                            },
                             className: "rounded-lg"
                         })
                     })

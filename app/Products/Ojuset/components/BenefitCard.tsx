@@ -12,12 +12,12 @@ export default function BenefitCard(props: any) {
         //     <p className="text-gray-500 dark:text-gray-400">{desc}</p>
         // </div>
         <a href={link} className="text-center text-gray-500 dark:text-gray-400">
-            <div className="mx-auto mb-4 w-36 h-36 rounded-full bg-primary-600 flex items-center justify-center">
-                    <Image height={150} width={150} src={image}className="w-20 h-20" alt={image}/>
+            <div className="mx-auto mb-3 w-14 h-14 rounded-full bg-primary-600 flex items-center justify-center">
+                    <Image height={80} width={80} src={image}className="w-6 h-6" alt={image}/>
 
             </div>
 
-            <h3 className="mb-1 text-2xl font-bold tracking-tight text-gray-700 dark:text-white">
+            <h3 className="mb-1 underline  underline-offset-2 text-medium font-bold tracking-tight text-gray-700 dark:text-white">
                 {title}
             </h3>
         </a>
