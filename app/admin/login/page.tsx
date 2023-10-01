@@ -1,68 +1,62 @@
-import { useMutation, gql } from "@apollo/client";
-import { useCallback, useState } from "react";
+"use client"
 
-
-
-// "use client"
-
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { toast, ToastContainer } from 'react-toastify';
 import DefaultFooter from "../../components/footer";
 import Image from "next/image";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { useRouter, usePathname, useSearchParams, redirect } from "next/navigation";
+import { getCsrfToken, signIn } from "next-auth/react";
+import { useState } from "react";
 
-export default function page() {
-//     const LOGIN_MUTATION = gql`
-//                             mutation Mutation($email: String!, $password: String!) {
-//                             loginAdmin(email: $email, password: $password) {
-//                                                 token
-//                                                     }
-// } `
-    // const [login, { data }] = useMutation(LOGIN_MUTATION);
-
-    async function logIn(formData:FormData) {
-        'use server'
-        // await signIn("credentials", { email: "jsmith", password: "1234" })
+export default function page({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const [data, setData] = useState({ email: '', password: '' })
+    const router = useRouter();
+    console.log('CSRF: ' + csrfToken);
 
 
-        // 'use server'
 
-        // debugger
-        // console.log(formData);
+    async function logIn(e: any) {
+        e.preventDefault();
+        try {
+            const res: any = await signIn(
+                "credentials",
+                {
+                    ...data,
+                    redirect: false
+                },
+            )
+            console.log(res);
+
+            if (res.error) {
+                console.log('Authentication error:', res.error);
+                toast.error(res.error, {
+                    position: toast.POSITION.TOP_LEFT
+                });
+            } else {
+                // Authentication was successful
+                console.log(res);
+                toast.success("Success Notification !", {
+                    position: toast.POSITION.TOP_CENTER
+                });
+                router.push('/admin/dashboard');
+            }
+
+        } catch (error) {
+            console.log(error);
 
 
-        // const formDataObject: any = {};
-
-        // for (const [key, value] of formData.entries()) {
-        //     formDataObject[key] = value;
-        // }
-        // console.log(formDataObject);
-
-        // try {
-        //     const response = await login({variables:formDataObject})
-        //     console.log(response.data);
-
-
-        // } catch (error: any) {
-        //     throw new Error('Error loggin in' + error.message)
-
-        // }
-
+        }
 
 
     }
 
 
 
-
-
-
-
-
-
-
     return (
         <section className="bg-gray-50 dark:bg-gray-900 my-0 py-0 ">
             <div className="flex flex-col items-center justify-between   h-screen  mx-auto  lg:py-0">
+                <ToastContainer />
+
                 <div className="flex flex-col items-center justify-center w-full  h-full">
                     <div className="w-full bg-white rounded-lg shadow dark:border  sm:max-w-md xl:py-0 dark:bg-gray-800 dark:border-gray-700 ">
                         <div className="px-6 space-x-4 md:space-x-6 ">
@@ -72,8 +66,11 @@ export default function page() {
                             <h1 className="text-xl font-bold leading-tight mb-4 tracking-tight place-self-center text-primary-700 md:text-2xl dark:text-white">
                                 Sign in to your account
                             </h1>
-                            <form className="md:space-y-6 mb-8" method="post" action="/api/auth/callback/credentials">
+                            <form className="md:space-y-6 mb-8" onSubmit={logIn}>
+                                {/* <input name="csrfToken" type="hidden" defaultValue={csrfToken} /> */}
+
                                 <div>
+
                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Your email
                                     </label>
@@ -83,6 +80,7 @@ export default function page() {
                                         id="email"
                                         className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         placeholder="name@company.com"
+                                        onChange={(e) => setData({ ...data, email: e.target.value })}
                                         required
                                     />
                                 </div>
@@ -95,6 +93,7 @@ export default function page() {
                                         name="password"
                                         id="password"
                                         placeholder="••••••••"
+                                        onChange={(e) => setData({ ...data, password: e.target.value })}
                                         className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         required
                                     />
@@ -141,6 +140,14 @@ export default function page() {
 
         </section>
     );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    return {
+        props: {
+            csrfToken: await getCsrfToken(context),
+        },
+    }
 }
 
 

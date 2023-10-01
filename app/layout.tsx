@@ -2,6 +2,7 @@
 // referrd and followed https://github.com/apollographql/apollo-client-nextjs for apollo provider for makig graphql queries and mutations
 
 import './globals.css'
+import "react-toastify/dist/ReactToastify.css";
 import { Inter } from 'next/font/google'
 import { ApolloWrapper } from '../lib/apollo-wraper'
 

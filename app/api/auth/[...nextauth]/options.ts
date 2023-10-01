@@ -1,7 +1,16 @@
+import { PrismaClient } from "@prisma/client"
+import { DefaultArgs } from "@prisma/client/runtime/library"
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from 'next-auth/providers/credentials'
+import bcrypt from 'bcryptjs';
+import {PrismaAdapter} from '@auth/prisma-adapter'
+
+
+const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
+  adapter:PrismaAdapter(prisma),
+
     session: {
       strategy: 'jwt'
     },
@@ -21,42 +30,41 @@ export const authOptions: NextAuthOptions = {
           password: { label: 'Password', type: 'password' }
         },
         async authorize(credentials) {
-            console.log('creds'+credentials)
-        //   if (!credentials?.email || !credentials.password) {
-        //     return null
-        //   }
-  
-        //   const user = await prisma.user.findUnique({
-        //     where: {
-        //       email: credentials.email
-        //     }
-        //   })
-  
-        //   if (!user) {
-        //     return null
-        //   }
-  
-        //   const isPasswordValid = await compare(
-        //     credentials.password,
-        //     user.password
-        //   )
-  
-        //   if (!isPasswordValid) {
-        //     return null
-        //   }
-  
-        //   return {
-        //     id: user.id + '',
-        //     email: user.email,
-        //     name: user.name,
-        //     randomKey: 'Hey cool'
-        //   }
-
-        return {
-            id: '12345',
-            email: 'ashwin@gmail.com',
-            name:'Ashwin'
+            // console.log('creds'+{...credentials})
+          if (!credentials?.email || !credentials.password) {
+            throw new Error('Email or password not provided')
           }
+  
+          const admin = await prisma.admin.findUnique({
+            where: {
+              email: credentials.email
+            }
+          })
+
+          console.log('admin: ' + admin);
+          
+  
+          if (!admin) {
+            throw new Error('Admin not found')
+          }
+  
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            admin.password
+          )
+  
+          if (!isPasswordValid) {
+            throw new Error('Invalid Password')
+          }
+  
+          return {
+            id: admin.id + '',
+            email: admin.email,
+            name: admin.name,
+            randomKey: 'Hey cool'
+          }
+
+
         }
       })
     ],
@@ -86,4 +94,6 @@ export const authOptions: NextAuthOptions = {
       }
     }
   }
+
+
   
