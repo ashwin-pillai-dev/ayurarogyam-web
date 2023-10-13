@@ -1,7 +1,7 @@
 import { extendType, objectType } from 'nexus';
 import {PutObjectCommand} from   "@aws-sdk/client-s3";
 import { createId } from '@paralleldrive/cuid2';
-import s3Clinet from '@/lib/s3Client';
+import s3Client from '@/lib/s3Client';
 import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
 
 
@@ -35,7 +35,7 @@ export const S3PresignedUrl  = extendType({
                 
 
                 try {
-                  const response = await getSignedUrl(s3Clinet, command, {expiresIn: 3600});
+                  const response = await getSignedUrl(s3Client, command, {expiresIn: 3600});
                   console.log(response);
                   return response;
                 } catch (err:any) {

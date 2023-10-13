@@ -15,30 +15,165 @@ model User {
   email String @unique
 }
 
-model Category {
-  id    String @id @default(uuid())
-  name  String
-  image String
-}
-
 model Admin {
-  id          String    @id @default(uuid())
-  name        String
-  email       String    @unique
-  profile     String?
-  enabled     Boolean   @default(true)
-  deleted     Boolean   @default(false)
-  password    String
-  adminRoleId Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  role        AdminRole @relation(fields: [adminRoleId], references: [id])
+  id            String    @id @default(uuid())
+  name          String
+  email         String?   @unique
+  contactNumber String    @unique
+  profile       String?
+  enabled       Boolean   @default(true)
+  deleted       Boolean   @default(false)
+  password      String
+  adminRoleId   Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          AdminRole @relation(fields: [adminRoleId], references: [id])
 }
 
 model AdminRole {
   id        Int      @id @default(autoincrement())
-  roleName  String
+  roleName  String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   admins    Admin[]
+}
+
+model City {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Client {
+  id            String     @id @default(uuid())
+  name          String
+  email         String?    @unique
+  address       String?
+  contactNumber String     @unique
+  clientType    ClientType @relation(fields: [clientTypeId], references: [id])
+  clientTypeId  String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  invoice       Invoice[]
+}
+
+model ClientType {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  clients   Client[]
+  Prices    Prices[]
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String
+  image     String
+  desc      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Product {
+  id         String      @id @default(uuid())
+  name       String
+  image      String
+  desc       String?
+  mrp        Float
+  category   Category    @relation(fields: [categoryId], references: [id])
+  categoryId String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  Prices     Prices[]
+  Inventory  Inventory[]
+}
+
+model Prices {
+  id               String     @id @default(uuid())
+  startingQtyLimit Int
+  endingQtyLimit   Int
+  amount           Float
+  product          Product  @relation(fields: [productId], references: [id])
+  productId        String
+  clientType       ClientType @relation(fields: [clientTypeId], references: [id])
+  clientTypeId     String
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+model Invoice {
+  id            String        @id @default(uuid())
+  invoiceNumber String
+  quantity      Int
+  subTotal      Float
+  total         Float
+  invoiceDate   DateTime
+  isPaid        Boolean       @default(false)
+  client        Client        @relation(fields: [clientId], references: [id])
+  clientId      String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  invoiceItem   InvoiceItem[]
+  Sale          Sale[]
+}
+
+model InvoiceItem {
+  id        String   @id @default(uuid())
+  quantity  Int
+  amount    Float
+  total     Float
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Sale {
+  id        String   @id @default(uuid())
+  date      DateTime
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+  partner   Partner  @relation(fields: [partnerId], references: [id])
+  partnerId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Partner {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?   @unique
+  contactNumber String @unique
+  profile   String?
+  enabled   Boolean  @default(true)
+  deleted   Boolean  @default(false)
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Sale      Sale[]
+}
+
+model InventoryType {
+  id        String      @id @default(uuid())
+  name      String
+  desc      String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  Inventory Inventory[]
+}
+
+model Inventory {
+  id              String        @id @default(uuid())
+  name            String
+  image           String?
+  qty             Float
+  inventoryType   InventoryType @relation(fields: [inventoryTypeId], references: [id])
+  products        Product       @relation(fields: [productId], references: [id])
+  inventoryTypeId String
+  productId       String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }

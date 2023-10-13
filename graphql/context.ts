@@ -16,7 +16,7 @@ export async function createContext(req: any, res: any): Promise<Context> {
     
     // let admin = null
     // if (token !== '') {
-    //     const decodedToken = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+    //     const decodedToken = await jwt.verify(token, process.env.NEXTAUTH_SECRET);
     //     if (decodedToken || decodedToken.adminId) {
     //         admin = await prisma.admin.findUnique({
     //             where: { id: decodedToken.adminId },

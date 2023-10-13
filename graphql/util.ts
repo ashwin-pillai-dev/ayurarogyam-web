@@ -5,7 +5,7 @@ import {Context} from './context'
 export const verifyToken = async(token: String, ctx: Context) => {
 
     try {
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        const decodedToken = jwt.verify(token, process.env.NEXTAUTH_SECRET);
 
         if (!decodedToken || !decodedToken.adminId) {
             throw new Error('Invalid token.');

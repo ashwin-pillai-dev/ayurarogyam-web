@@ -1,99 +1,106 @@
 import { PrismaClient } from "@prisma/client"
-import { DefaultArgs } from "@prisma/client/runtime/library"
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs';
-import {PrismaAdapter} from '@auth/prisma-adapter'
+import { PrismaAdapter } from '@auth/prisma-adapter'
 
 
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
-  adapter:PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: 'jwt'
+  },
+  pages: {
+    signIn: '/login'
 
-    session: {
-      strategy: 'jwt'
-    },
-    pages:{
-        signIn:'/admin/login'
-
-    },
-    providers: [
-      CredentialsProvider({
-        name: 'Sign in',
-        credentials: {
-          email: {
-            label: 'Email',
-            type: 'email',
-            placeholder: 'hello@example.com'
-          },
-          password: { label: 'Password', type: 'password' }
+  },
+  providers: [
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: {
+          label: 'Email',
+          type: 'email',
+          placeholder: 'hello@example.com'
         },
-        async authorize(credentials) {
-            // console.log('creds'+{...credentials})
-          if (!credentials?.email || !credentials.password) {
-            throw new Error('Email or password not provided')
-          }
-  
-          const admin = await prisma.admin.findUnique({
-            where: {
-              email: credentials.email
-            }
-          })
-
-          console.log('admin: ' + admin);
-          
-  
-          if (!admin) {
-            throw new Error('Admin not found')
-          }
-  
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            admin.password
-          )
-  
-          if (!isPasswordValid) {
-            throw new Error('Invalid Password')
-          }
-  
-          return {
-            id: admin.id + '',
-            email: admin.email,
-            name: admin.name,
-            randomKey: 'Hey cool'
-          }
-
-
-        }
-      })
-    ],
-    callbacks: {
-      session: ({ session, token }) => {
-        console.log('Session Callback', { session, token })
-        return {
-          ...session,
-          user: {
-            ...session.user,
-            id: token.id,
-            randomKey: token.randomKey
-          }
-        }
+        password: { label: 'Password', type: 'password' },
       },
-      jwt: ({ token, user }) => {
-        console.log('JWT Callback', { token, user })
-        if (user) {
-          const u = user as unknown as any
-          return {
-            ...token,
-            id: u.id,
-            randomKey: u.randomKey
-          }
+      async authorize(credentials) {
+        const creds: any = credentials;
+
+        // Create a URL object
+        const url = new URL(creds.callbackUrl);
+
+        // Get the value of the "callbackUrl" parameter
+        const callbackUrl = url.searchParams.get("callbackUrl");
+        console.log('callback url');
+        console.log(callbackUrl);
+
+
+        if (!credentials?.email || !credentials.password) {
+          throw new Error('Email or password not provided')
         }
-        return token
+
+        const admin = await prisma.admin.findUnique({
+          where: {
+            email: credentials.email
+          },
+          include: {
+            role: true
+          }
+        })
+        if (!admin) {
+          throw new Error('Admin not found')
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          admin.password
+        )
+
+        if (!isPasswordValid) {
+          throw new Error('Invalid Password')
+        }
+
+        console.log('admin found:');
+        console.log({
+          id: admin.id,
+          email: admin.email,
+          name: admin.name,
+          role: admin.role.roleName
+        });
+
+
+        return {
+          id: admin.id,
+          email: admin.email,
+          name: admin.name,
+          role: admin.role.roleName
+        }
       }
+    })
+  ],
+  callbacks: {
+    session: ({ session, token }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+        },
+        accessToken: token
+      }
+    },
+    jwt: ({ token, user }) => {
+      if (user) {
+        const userRole: any = user
+        token.role = userRole.role
+      }
+      return token
     }
+
   }
+}
 
 
-  

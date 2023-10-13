@@ -55,7 +55,7 @@ export const Query = extendType({
             resolve: async (_parent, _args, ctx) => {
                 try {
                     // Verify the token
-                    await verifyToken(ctx.token, ctx);
+                    // await verifyToken(ctx.token, ctx);
                     try {
                         const admins = await ctx.prisma.admin.findMany({
                             include: {
@@ -206,7 +206,7 @@ export const AdminMutation = extendType({
 
                     const token = jwt.sign(
                         { adminId: admin.id },
-                        process.env.JWT_SECRET_KEY, 
+                        process.env.NEXTAUTH_SECRET, 
                         { expiresIn: '7 days' }
                     );
 
@@ -225,7 +225,7 @@ export const AdminMutation = extendType({
             },
             resolve: async (_, { token }, ctx) => {
                 try {
-                    const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+                    const decodedToken = jwt.verify(token, process.env.NEXTAUTH_SECRET);
 
                     if (!decodedToken || !decodedToken.adminId) {
                         throw new Error('Invalid token.');
