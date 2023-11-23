@@ -2,6 +2,7 @@
 // import { useState, useEffect } from 'react';
 // import {getAgents} from '../services'
 
+import Link from "next/link";
 import { getAgents } from "../../agent/services";
 
 
@@ -104,9 +105,12 @@ export default async function page() {
                                     <th scope="col" className="px-4 py-3">Partner Name</th>
                                     <th scope="col" className="px-4 py-3">Email</th>
                                     <th scope="col" className="px-4 py-3">Contact Number</th>
+                                    <th scope="col" className="px-4 py-3">Actions</th>
+
                                     {/* <th scope="col" className="px-4 py-3"></th>
                                     <th scope="col" className="px-4 py-3">Description</th>
                                     <th scope="col" className="px-4 py-3">Price</th>
+                                    
                                     <th scope="col" className="px-4 py-3">
                                         <span className="sr-only">Actions</span>
                                     </th> */}
@@ -121,6 +125,9 @@ export default async function page() {
                                                 <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{partner.name}</th>
                                                 <td className="px-4 py-3">{partner.email}</td>
                                                 <td className="px-4 py-3">{partner.contactNumber}</td>
+                                                <td className="px-4 py-3"><Link className='' href={`/admin/commisions/list/${partner.id}` }>commissions</Link></td>
+
+
                                             </tr>
                                         )
                                     })

@@ -7,12 +7,14 @@ import { revalidatePath } from 'next/cache'
 
 export async function addAgent(input: FormData) {
 
-    const { name, email, password,contactNumber } = Object.fromEntries(input)
+    const { name, email, password,contactNumber,roleId } = Object.fromEntries(input)
     const agentData = {
         name: name.toString(),
         email: email.toString(),
         contactNumber:contactNumber.toString(),
         password: await bcrypt.hash(password, 10),
+        partnerRoleId:roleId.toString()
+        
     }
 
     try {

@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("RDS_DATABASE_URL")
 }
 
 model User {
@@ -78,17 +78,18 @@ model Category {
 }
 
 model Product {
-  id         String      @id @default(uuid())
-  name       String
-  image      String
-  desc       String?
-  mrp        Float
-  category   Category    @relation(fields: [categoryId], references: [id])
-  categoryId String
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  Prices     Prices[]
-  Inventory  Inventory[]
+  id          String        @id @default(uuid())
+  name        String
+  image       String
+  desc        String?
+  mrp         Float
+  category    Category      @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Prices      Prices[]
+  Inventory   Inventory[]
+  InvoiceItem InvoiceItem[]
 }
 
 model Prices {
@@ -96,7 +97,7 @@ model Prices {
   startingQtyLimit Int
   endingQtyLimit   Int
   amount           Float
-  product          Product  @relation(fields: [productId], references: [id])
+  product          Product    @relation(fields: [productId], references: [id])
   productId        String
   clientType       ClientType @relation(fields: [clientTypeId], references: [id])
   clientTypeId     String
@@ -117,7 +118,8 @@ model Invoice {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   invoiceItem   InvoiceItem[]
-  Sale          Sale[]
+  sale          Sale?         @relation(fields: [saleId], references: [id])
+  saleId        String?       @unique
 }
 
 model InvoiceItem {
@@ -127,33 +129,61 @@ model InvoiceItem {
   total     Float
   invoice   Invoice  @relation(fields: [invoiceId], references: [id])
   invoiceId String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Sale {
-  id        String   @id @default(uuid())
-  date      DateTime
-  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
-  invoiceId String
-  partner   Partner  @relation(fields: [partnerId], references: [id])
-  partnerId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String       @id @default(uuid())
+  date        DateTime
+  visitType   String       @default("0")
+  remarks     String?
+  invoice     Invoice?
+  partner     Partner      @relation(fields: [partnerId], references: [id])
+  partnerId   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  commissions Commission[]
+}
+
+model PartnerRole {
+  id      String    @id @default(uuid())
+  name    String    @unique
+  // Add any other fields related to partner roles here
+  Partner Partner[]
 }
 
 model Partner {
-  id        String   @id @default(uuid())
-  name      String
-  email     String?   @unique
-  contactNumber String @unique
-  profile   String?
-  enabled   Boolean  @default(true)
-  deleted   Boolean  @default(false)
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Sale      Sale[]
+  id            String  @id @default(uuid())
+  name          String
+  email         String? @unique
+  contactNumber String  @unique
+  profile       String?
+  enabled       Boolean      @default(true)
+  deleted       Boolean      @default(false)
+  password      String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  sales         Sale[]
+  commissions   Commission[]
+  leader        Partner?     @relation("LeaderToMembers", fields: [leaderId], references: [id])
+  leaderId      String?      @map("leader_id")
+  members       Partner[]    @relation("LeaderToMembers")
+  role          PartnerRole @relation(fields: [partnerRoleId], references: [id])
+  partnerRoleId String
+}
+
+model Commission {
+  id            String   @id @default(uuid())
+  paid          Boolean  @default(false)
+  dateOfPayment DateTime
+  salesId       String
+  sales         Sale     @relation(fields: [salesId], references: [id])
+  partnerId     String
+  partner       Partner  @relation(fields: [partnerId], references: [id])
+  amount        Int // You can specify the data type for the amount as per your requirements
 }
 
 model InventoryType {

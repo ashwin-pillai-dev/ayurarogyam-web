@@ -1,28 +1,39 @@
-import { Client } from '@prisma/client';
-import React, { useState } from 'react';
 import Select from 'react-select';
 
-export default function SearchAbleSelect({options,getLabel,name,getValue}:{
+export default function SearchAbleSelect({options,defaultValue,value,getLabel,name,id,getValue,onChange}:{
     options:any[],
     isClearable?:boolean,
+    defaultValue?:any,
     isDisabled?:boolean,
+    value?:any,
     getLabel:any,
-    getValue:any
+    getValue:any,
+    id:string,
     name:string
+    onChange?:Function
 }){
+
 
 
   return (
     <>
 
 <Select
-      defaultValue={null}
+      defaultValue={defaultValue?defaultValue:null}
       isClearable
       isSearchable
+      id={id}
       name={name}
       options={options}
       getOptionLabel={getLabel}
       getOptionValue={getValue}
+      value={value??value}
+      onChange={(value)=>{
+        if(typeof(onChange) == 'function'){
+          onChange(value)
+        }
+      }
+    }
     />
 
       {/* <Select

@@ -1,30 +1,141 @@
 'use client'
-import { ToastContainer } from 'react-toastify';
-import { FileInput, Label, Button, Select, Datepicker } from 'flowbite-react';
-import { addProduct } from '../actions'
-import { Client, Product } from '@prisma/client'
+import { Label, Button, Datepicker, Select } from 'flowbite-react';
+import { ProductWithPrices, SalesParam, addSales } from '../actions'
+import { Client, Product, Partner } from '@prisma/client'
 import SearchAbleSelect from '../../components/SearchAbleSelect/SearchAbleSelect'
-
+import React, { useRef, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { Spinner } from 'flowbite-react';
+import { useRouter } from 'next/navigation';
 
 type PropType = {
     clients: Client[]
     products: Product[]
+    partners: Partner[]
+}
+type VistType = {
+    label: string,
+    value: string
 }
 
-const SalesForm: React.FC<PropType> = (props) => {
-    const { clients, products } = props;
 
+const SalesForm: React.FC<PropType> = (props) => {
+    const { clients, products, partners } = props;
+    const [addedItems, setAddedItems] = useState<ProductWithPrices[]>([]);
+    const [qty, setQty] = useState(''); // Use state for qty
+    const [product, setProduct] = useState<Product | null>(null); // Use state for product
+    const [client, setClient] = useState<Client | null>(null);
+    const [partner, setPartner] = useState<Partner | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const visitTypes: VistType[] = [
+        { label: 'Sale', value: '0' },
+        { label: 'follow-up', value: '1' },
+    ]
+    const qtyRef = useRef(null);
+    const router = useRouter()
+
+    function onProductSelect(prod: any) {
+        setProduct(prod); // Update product state
+    }
+
+    function onClientSelect(value: any) {
+        setClient(value); // Update client state
+    }
+
+    function onPartnerSelect(value: any) {
+        console.log(value);
+        
+        setPartner(value); // Update client state
+    }
+
+    async function getFilteredPrices() {
+        setLoading(true)
+        try {
+            if (product && qty) {
+                const response = await fetch(`/api/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, { cache: 'no-store' });
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(`response: ${data}`);
+                    const item = {
+                        product,
+                        productId: product.id,
+                        price: Number(data.amount),
+                        total: data.amount * Number(qty),
+                        qty: Number(qty),
+                    };
+                    setAddedItems([...addedItems, item]);
+                    setQty('');
+                    setProduct(null);
+                    setLoading(false)
+                } else {
+                    setLoading(false)
+                    toast.error("Error adding items!", {
+                        position: toast.POSITION.TOP_CENTER
+                    });
+                    console.error('Error fetching data');
+                }
+            }
+        } catch (error) {
+            setLoading(false)
+            toast.error("Error adding items!", {
+                position: toast.POSITION.TOP_CENTER
+            });
+        }
+    }
+
+    async function onSubmit(params: FormData) {
+
+        const { client, date, visitType, remarks } = Object.fromEntries(params);
+        const salesInput: SalesParam = {
+            clientId: client.toString(),
+            visitType: visitType.toString(),
+            remarks: remarks.toString(),
+            date: date.toString(),
+            partnerId: partner?partner.toString():'',
+            partner:partner,
+            productWithPrices: addedItems
+        }
+
+        console.log(`sales Input:`);
+        console.log(salesInput.partner);
+        
+
+        try {
+            setLoading(true)
+            console.log('sales add call');
+            
+            const response = await addSales(salesInput)
+            if (response != undefined) {
+                setLoading(false)
+                router.push('/admin/sales/list')
+
+            }
+        } catch (error: any) {
+            setLoading(false)
+            toast.error(error.message, {
+                position: toast.POSITION.TOP_CENTER
+            });
+
+        }
+    }
 
     return (
         <section className="bg-white dark:bg-gray-900">
             <ToastContainer />
+            {loading && (
+                <div className="fixed top-0 left-0 w-full h-full bg-gray-300 opacity-75 flex items-center justify-center z-50">
+                    <Spinner
+                        aria-label="Info spinner example"
+                        color="info"
+                    />
+                </div>
+            )}
+
             <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
                 <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
-                    New Sale
+                    New Sale /  Follow - up
                 </h2>
-                <form className="space-y-4 md:space-y-6 " action={addProduct}>
-
-
+                <form className="space-y-4 md:space-y-6 " action={onSubmit}>
                     <div
                         className="max-w-lg"
                         id="selectDate" >
@@ -35,22 +146,75 @@ const SalesForm: React.FC<PropType> = (props) => {
                                 id='date'
                             />
                         </div>
-
                         <Datepicker name='date' id='date' required={true} />
                     </div>
 
-
-
                     <div
                         className="max-w-lg"
-                        id="selectClient" >
+                        id="client" >
                         <Label
-                            htmlFor="Cliet"
+                            htmlFor="client"
                             value="Select Client"
                             id='client'
                         />
+                        <SearchAbleSelect id='client' name='client' value={client} options={clients} getLabel={(option: any) => `${option.name}`} getValue={(option: any) => `${option.id}`} onChange={onClientSelect} ></SearchAbleSelect>
 
-                        <SearchAbleSelect name='client' options={clients} getLabel={(option: any) => `${option.name}`} getValue={(option: any) => `${option['id']}`} ></SearchAbleSelect>
+                    </div>
+
+                    <div
+                        className="max-w-lg"
+                        id="partner" >
+                        <Label
+                            htmlFor="partner"
+                            value="Select Partner"
+                            id='partner'
+                        />
+                        <SearchAbleSelect id='partner' name='partner' value={partner} options={partners} getLabel={(option: any) => `${option.name}`} getValue={(option: any) => `${option}`} onChange={onPartnerSelect}  ></SearchAbleSelect>
+
+                    </div>
+
+                    <div
+                        className="max-w-lg"
+                        id="visitType"
+                    >
+
+                        <div>
+                            <Label
+                                htmlFor="visitType"
+                                value="Select Visit Type"
+                            />
+                        </div>
+                        <Select
+                            id="visitType"
+                            name='visitType'
+                            required
+                        >
+                            {
+                                visitTypes.map((visitType: VistType) => {
+                                    return (
+                                        <option key={visitType.value} value={visitType.value}>
+                                            {visitType.label}
+                                        </option>
+                                    );
+
+                                })
+                            }
+                        </Select>
+                    </div>
+                    <div
+                        className="max-w-lg"
+                        id="remarks" >
+                        <Label
+                            htmlFor="remarks"
+                            value="Remarks"
+                            id='remarks'
+                        />
+                        <textarea
+                            name="remarks"
+                            rows={4}
+                            id="remarks"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Remarks"
+                        />
 
                     </div>
 
@@ -63,9 +227,13 @@ const SalesForm: React.FC<PropType> = (props) => {
                             />
                             <SearchAbleSelect
                                 name='product'
+                                id='product'
                                 options={products}
                                 getLabel={(option: any) => `${option.name}`}
-                                getValue={(option: any) => `${option['id']}`} />
+                                getValue={(option: any) => `${option['id']}`}
+                                onChange={onProductSelect}
+                                value={product}
+                            />
 
                         </div>
 
@@ -76,26 +244,57 @@ const SalesForm: React.FC<PropType> = (props) => {
                                 id='qty'
                             />
                             <input
-                                type="text" name="quantity"
-                                id="quantity"
+                                type="text"
+                                name="qty"
+                                onChange={(e) => setQty(e.target.value)}
+                                value={qty}
+                                id="qty"
+                                ref={qtyRef}
                                 className="bg-gray-50  max-w-md border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Quantity" required={true} />
+                                placeholder="Quantity" />
 
                         </div>
-
                         <Button
                             size="xs"
-                            type="button"
+                            // type="submit"
+                            onClick={getFilteredPrices}
                             className=" w-1/4 md:w-full bg-primary-600 hover:bg-primary-700 self-end  focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg h-10  px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                         >
                             <p className='text-white font-medium  text-sm'>
                                 Add Item
                             </p>
                         </Button>
-
-
-
                     </div>
+                    <div>
+                        <ul className="divide-y divide-gray-200">
+                            {addedItems.map((item, index) => {
+                                return (<li key={index} className="py-2">
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <p className="text-lg font-semibold">{item.product?.name}</p>
+                                            <p>Qty: {item.qty.toString()}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-lg font-semibold">₹{item.price}</p>
+                                        </div>
+                                    </div>
+                                </li>)
+
+                            }
+
+                            )}
+                        </ul>
+                    </div>
+
+
+
+                    {/* <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0 max-w-md">
+                                    <h3 className="mb-2 text-xl font-bold dark:text-white">Ojuset</h3>
+                                    <h3 className="mb-2 text-xl font-bold dark:text-white">10pcs</h3>
+                                    <h3 className="mb-2 text-xl font-bold dark:text-white">80000</h3>
+            
+            
+                                </div> */}
                     <Button
 
                         size="xs"

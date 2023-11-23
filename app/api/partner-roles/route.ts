@@ -33,18 +33,11 @@ export async function GET(request: NextRequest) {
                   }
             }
         })
-        const res = await prisma.inventory.findMany(
+        const res = await prisma.partnerRole.findMany(
             {
             skip: skip,
             take: Number(limit),
             where: {...filters},
-            include: {
-                products: true,
-                inventoryType: true
-            },
-            orderBy:{
-                createdAt:'desc',
-            }
         }
         );
 
@@ -64,4 +57,3 @@ export async function GET(request: NextRequest) {
 
     }
 }
-

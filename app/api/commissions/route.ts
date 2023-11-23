@@ -3,17 +3,22 @@ import prisma from '../../../lib/prisma';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
-    const productId:any = searchParams.get('productId')
+    const partnerId:any = searchParams.get('partnerId')
 
 
     try {
-        const res = await prisma.prices.findMany({
+        const res = await prisma.commission.findMany({
             include: {
-                clientType: true
+                partner: true,
+                sales:{
+                    include:{
+                        invoice:true
+                    }
+                }
             },
 
             where: {
-                productId: productId, 
+                partnerId: partnerId, 
             },
         });
         return Response.json(res)

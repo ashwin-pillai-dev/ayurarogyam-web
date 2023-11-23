@@ -2,6 +2,7 @@
 import DefaultNavbar from "./navbar/navbar";
 import DefaultSidebar from "../sidebar/sideBar";
 import { useState } from "react";
+import NavBarNew from "./navbar/NavBarNew";
 
 
 export default function NavSideWrapper() {
@@ -14,9 +15,9 @@ export default function NavSideWrapper() {
 
     return (
         <>
-            <DefaultNavbar onDrawerClick={drawerClicked} />
+            <NavBarNew onDrawerClick={drawerClicked} />
 
-                    <DefaultSidebar sidebarVisible={drawerVisible} /> 
+            <DefaultSidebar sidebarVisible={drawerVisible} />
         </>
     )
 }

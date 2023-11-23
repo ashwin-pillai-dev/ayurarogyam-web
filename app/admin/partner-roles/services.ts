@@ -6,7 +6,7 @@ interface PropType{
   page:string
   limit:string
 }
-export async function getInventory(props:PropType) {
+export async function getPartnerRoles(props:PropType) {
   const search = props.query;
   const {page,limit} = props;
   const filter:Filter[]=[
@@ -29,7 +29,7 @@ export async function getInventory(props:PropType) {
   }
 
     try{
-    const response = await get('/inventory',params)
+    const response = await get('/partner-roles',params)
 
     console.log(response.ok);
     

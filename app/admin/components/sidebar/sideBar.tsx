@@ -43,6 +43,10 @@ const DefaultSidebar:React.FC<PropType> = ({sidebarVisible}) => {
                                 <Sidebar.Item href="/admin/client-type/list">
                                     Client type
                                 </Sidebar.Item>
+                                <Sidebar.Item href="/admin/partner-roles/list">
+                                    Partner Roles
+                                </Sidebar.Item>
+
                                 <Sidebar.Item href="/admin/inventory-type/list">
                                     Inventory type
                                 </Sidebar.Item>

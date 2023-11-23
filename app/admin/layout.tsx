@@ -25,7 +25,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
 
-        <ApolloWrapper>
           <NavSideWrapper/>
 
           {/* <DefaultNavbar /> 
@@ -34,7 +33,6 @@ export default function RootLayout({
 
           {children}
           </main>
-        </ApolloWrapper>
       </body>
     </html>
   )
