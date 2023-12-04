@@ -4,35 +4,58 @@
 // import '../global.css'
 import "react-toastify/dist/ReactToastify.css";
 import { Inter } from 'next/font/google'
-import { ApolloWrapper } from '../../lib/apollo-wraper'
-import DefaultNavbar from "./components/navbar/navbar";
-import DefaultSidebar from "./components/sidebar/sideBar";
 import NavSideWrapper from "./components/NavSideWrapper/navSideWrapper";
+import { Suspense } from "react";
+import Loading from './loading'
 
 const inter = Inter({ subsets: ['latin'] })
+import { getServerSession } from "next-auth/next"
+import {authOptions}  from '../api/auth/[...nextauth]/options'
+
 
 export const metadata = {
   title: 'Ayur-Arogyam',
   description: 'Elvate health with Ayurveda',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const session = await getServerSession(authOptions)
+  console.log('session');
+  console.log(session);
+   let user;
+
+   if (session?.user)
+   {
+    user=session.user
+
+   }
+
+   console.log('user');
+   console.log(user);
+   
+
+  
+
   return (
     <html lang="en">
       <body className={inter.className}>
 
-          <NavSideWrapper/>
+        <NavSideWrapper user={session?.user} />
 
-          {/* <DefaultNavbar /> 
+        {/* <DefaultNavbar /> 
           <DefaultSidebar/> */}
-         <main className="md:ml-64 h-auto pt-20">
+        <main className="md:ml-64 h-auto pt-20">
 
-          {children}
-          </main>
+          <Suspense fallback={<Loading />}>
+            {children}
+          </Suspense>
+
+
+        </main>
       </body>
     </html>
   )

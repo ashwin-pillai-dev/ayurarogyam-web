@@ -2,14 +2,22 @@
 
 import { Avatar, Dropdown, Navbar } from 'flowbite-react';
 import Image from "next/image";
+import { signOut } from "next-auth/react"
+
+
 
 type propType = {
-    onDrawerClick: Function
+    onDrawerClick: Function,
+    user:any
 
 }
 
 
-export default function NavbarWithDropdown({ onDrawerClick }: propType) {
+export default function NavbarWithDropdown({ onDrawerClick,user }: propType) {
+    console.log('user fromnavbar new ');
+    console.log(user.user);
+    
+    
     return (
 
         <Navbar className="bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50"  fluid rounded>
@@ -63,14 +71,14 @@ export default function NavbarWithDropdown({ onDrawerClick }: propType) {
                     }
                 >
                     <Dropdown.Header>
-                        <span className="block text-sm">Bonnie Green</span>
-                        <span className="block truncate text-sm font-medium">name@flowbite.com</span>
+                        <span className="block text-sm">{user.user.name}</span>
+                        <span className="block truncate text-sm font-medium">{user.user.email}</span>
                     </Dropdown.Header>
                     <Dropdown.Item>Dashboard</Dropdown.Item>
                     <Dropdown.Item>Settings</Dropdown.Item>
                     <Dropdown.Item>Earnings</Dropdown.Item>
                     <Dropdown.Divider />
-                    <Dropdown.Item>Sign out</Dropdown.Item>
+                    <Dropdown.Item onClick={()=> signOut({ callbackUrl: 'http://localhost:3000/admin' })}>Sign out</Dropdown.Item>
                 </Dropdown>
             </div>
         </Navbar>

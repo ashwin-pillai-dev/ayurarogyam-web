@@ -14,7 +14,7 @@ async function main() {
 // Create an admin with the superadmin role
 const superAdmin = await prisma.admin.create({
     data: {
-        name: 'Admin Name',
+        name: 'Anil Pillai',
         email: 'anilpillai.vibrant@gmail.com',
         password: await bcrypt.hash('123456789', 10),
         contactNumber: '8087979983',

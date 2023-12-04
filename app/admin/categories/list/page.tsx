@@ -111,7 +111,7 @@ export default async function page() {
           
                                                 <th scope="row" className="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 <div className="relative w-16 h-16 rounded-lg overflow-hidden">
-                                                <Image fill={true} style={{objectFit:'contain'}} src={s3bucketurl + category.image } alt="" className="rounded-full" />
+                                                {/* <Image fill={true} style={{objectFit:'contain'}} src={s3bucketurl + category.image } alt="" className="rounded-full" /> */}
                                                 </div>
                                                 <span className="font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {category.name}

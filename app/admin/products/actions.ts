@@ -10,6 +10,9 @@ import { FileUpload } from '../common/services';
 
 export async function addProduct(input: FormData) {
     const { name, file, desc, mrp, category } = Object.fromEntries(input)
+    console.log('category');
+    console.log(category);
+    
     let fileObj: any = file;
     const uploadResponse = await FileUpload(fileObj)
 
@@ -21,6 +24,9 @@ export async function addProduct(input: FormData) {
         categoryId: category.toString()
 
     }
+    console.log("product data");
+    console.log(data);
+    
     try {
 
             const product = await prisma.product.create({

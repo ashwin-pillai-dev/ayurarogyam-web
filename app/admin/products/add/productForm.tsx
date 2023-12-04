@@ -11,6 +11,9 @@ type PropType = {
 
 const ProductForm: React.FC<PropType> = (props) => {
     const { categories } = props
+    console.log('categories');
+    console.log(categories);
+    
 
     return (
         <section className="bg-white dark:bg-gray-900">

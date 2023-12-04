@@ -4,7 +4,6 @@
 import './globals.css'
 import "react-toastify/dist/ReactToastify.css";
 import { Inter } from 'next/font/google'
-import { ApolloWrapper } from '../lib/apollo-wraper'
 
 
 const inter = Inter({ subsets: ['latin'] })
