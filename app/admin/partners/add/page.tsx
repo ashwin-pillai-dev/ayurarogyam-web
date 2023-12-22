@@ -75,7 +75,7 @@ export default async function page() {
                         </p>
                     </Button>
                 </form> */}
-                <PartnerForm partnerRoles={patnerRoles.data} addPartnerRole={addAgent}/>
+                <PartnerForm partnerRoles={patnerRoles.data} addPartner={addAgent}/>
             </div>
         </section>
     )

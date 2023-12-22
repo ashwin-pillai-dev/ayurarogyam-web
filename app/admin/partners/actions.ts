@@ -4,16 +4,23 @@ import prisma from'../../../lib/prisma'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
+type addPartnerInputType = {
+    name: string;
+    roleId: string;
+    email: string;
+    contactNumber: string;
+    password: string;
+};
 
-export async function addAgent(input: FormData) {
 
-    const { name, email, password,contactNumber,roleId } = Object.fromEntries(input)
+export async function addAgent(input: addPartnerInputType) {
+
     const agentData = {
-        name: name.toString(),
-        email: email.toString(),
-        contactNumber:contactNumber.toString(),
-        password: await bcrypt.hash(password, 10),
-        partnerRoleId:roleId.toString()
+        name: input.name,
+        email: input.email,
+        contactNumber:input.contactNumber,
+        password: await bcrypt.hash(input.password, 10),
+        partnerRoleId:input.roleId
         
     }
 
@@ -24,7 +31,8 @@ export async function addAgent(input: FormData) {
 
         });
         revalidatePath(`/admin/partners/list`);
-        redirect(`/admin/partners/list`)
+        return admin;
+        // redirect(`/admin/partners/list`)
 
     } catch (error) {
         console.error('Error in adding agent:', error);
