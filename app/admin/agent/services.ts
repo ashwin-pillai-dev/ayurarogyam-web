@@ -2,9 +2,8 @@
 export async function getAgents() {
     try {
       
-      const response = await  fetch('http://localhost:3000/api/partners');
+      const response = await  fetch(`${process.env.API_URL}/partners`);
       
-
       if (response.ok) {        
         const data = await response.json();
         return data;

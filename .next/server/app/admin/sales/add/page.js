@@ -777,7 +777,7 @@ const SalesForm = (props)=>{
 /* harmony export */ });
 async function getAgents() {
     try {
-        const response = await fetch("http://localhost:3000/api/partners");
+        const response = await fetch(`${process.env.API_URL}/partners`);
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -1104,7 +1104,7 @@ async function page() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,3578,4493,3236,4855,6608,9733,5918,3650], () => (__webpack_exec__(18768)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,3578,4493,3236,4855,9540,9733,5918,3650], () => (__webpack_exec__(18768)));
 module.exports = __webpack_exports__;
 
 })();

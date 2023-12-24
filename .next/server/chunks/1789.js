@@ -13,7 +13,6 @@ const get = async (url, params)=>{
     try {
         let proccessedUrl = `${process.env.API_URL + url}?page=${params.page}&limit=${params.limit}&orderBy=${params.orderBy}`;
         console.log(`env api url: ${process.env.API_URL}`);
-        console.log(`URL: ${url}`);
         console.log(`processed URL: ${proccessedUrl}`);
         if (params?.filters?.length > 0) {
             const filters = getStringFromFilters(params.filters);
