@@ -2,7 +2,8 @@
 export async function getClientTypes() {
     try {
       
-      const response = await  fetch('http://localhost:3000/api/client-types');
+      const response = await  fetch(`${process.env.API_URL}/client-types`);
+      
       
 
       if (response.ok) {        

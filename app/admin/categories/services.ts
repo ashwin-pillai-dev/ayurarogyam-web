@@ -2,7 +2,7 @@
 export async function getCategories() {
     try {
       
-      const response = await  fetch('http://localhost:3000/api/categories');
+      const response = await  fetch(`${process.env.API_URL}/categories`);
       
 
       if (response.ok) {        

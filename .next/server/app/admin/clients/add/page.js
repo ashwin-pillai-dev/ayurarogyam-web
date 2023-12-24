@@ -180,7 +180,7 @@ module.exports = require("next/dist/shared/lib/server-inserted-html");
 
 /***/ }),
 
-/***/ 3349:
+/***/ 459:
 /***/ ((module) => {
 
 "use strict";
@@ -394,14 +394,14 @@ module.exports = {
 
 /***/ }),
 
-/***/ 52989:
+/***/ 16044:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 74527));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3280, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3349, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23))
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 459, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23))
 
 /***/ }),
 
@@ -544,7 +544,7 @@ const ClientForm = (props)=>{
 /* harmony export */ });
 async function getClientTypes() {
     try {
-        const response = await fetch("http://localhost:3000/api/client-types");
+        const response = await fetch(`${process.env.API_URL}/client-types`);
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -699,7 +699,7 @@ if (true) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,6133,188,4378,8875,369,9540,9733,5918], () => (__webpack_exec__(27625)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,6133,188,4378,8875,369,6418,9733,5918], () => (__webpack_exec__(27625)));
 module.exports = __webpack_exports__;
 
 })();

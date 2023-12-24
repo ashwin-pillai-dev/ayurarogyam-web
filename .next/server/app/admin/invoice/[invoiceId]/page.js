@@ -373,7 +373,7 @@ var jsx_runtime_ = __webpack_require__(76931);
 ;// CONCATENATED MODULE: ./app/admin/invoice/services.ts
 async function getInvoiceById(invoiceId) {
     try {
-        const response = await fetch(`http://localhost:3000/api/invoice?invoiceId=${invoiceId}`, {
+        const response = await fetch(`${process.env.API_URL}/invoice?invoiceId=${invoiceId}`, {
             cache: "no-store"
         });
         if (response.ok) {
@@ -521,7 +521,7 @@ async function page({ params }) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,9540,9733,5918], () => (__webpack_exec__(99512)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,6418,9733,5918], () => (__webpack_exec__(99512)));
 module.exports = __webpack_exports__;
 
 })();

@@ -607,7 +607,7 @@ var moment_default = /*#__PURE__*/__webpack_require__.n(moment);
 ;// CONCATENATED MODULE: ./app/admin/commisions/services.ts
 async function getCommissions(partnerId) {
     try {
-        const response = await fetch(`http://localhost:3000/api/commissions?partnerId=${partnerId}`, {
+        const response = await fetch(`${process.env.API_URL}/commissions?partnerId=${partnerId}`, {
             cache: "no-store"
         });
         if (response.ok) {
@@ -788,7 +788,7 @@ async function Page({ params }) {
 var __webpack_require__ = require("../../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,4493,322,4475,4855,8109,9540,9733,5918,3650], () => (__webpack_exec__(1051)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,4493,322,4475,4855,8109,6418,9733,5918,3650], () => (__webpack_exec__(1051)));
 module.exports = __webpack_exports__;
 
 })();

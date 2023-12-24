@@ -180,7 +180,7 @@ module.exports = require("next/dist/shared/lib/server-inserted-html");
 
 /***/ }),
 
-/***/ 3349:
+/***/ 459:
 /***/ ((module) => {
 
 "use strict";
@@ -450,15 +450,15 @@ module.exports = {
 
 /***/ }),
 
-/***/ 1897:
+/***/ 56604:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 93578));
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 87886));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3280, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3349, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23))
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 459, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23))
 
 /***/ }),
 
@@ -598,7 +598,7 @@ function FormItems(props) {
 /* harmony export */ });
 async function getInventoryTypes() {
     try {
-        const response = await fetch("http://localhost:3000/api/inventory-types");
+        const response = await fetch(`${process.env.API_URL}/inventory-types`);
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -866,7 +866,7 @@ async function page() {
 /* harmony export */ });
 async function getProducts() {
     try {
-        const response = await fetch("http://localhost:3000/api/products");
+        const response = await fetch(`${process.env.API_URL}/products`);
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -933,7 +933,7 @@ s3Client = new _aws_sdk_client_s3__WEBPACK_IMPORTED_MODULE_0__.S3Client({
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,6133,188,3578,4378,8875,369,5291,3353,9540,9733,5918], () => (__webpack_exec__(52981)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,6133,188,3578,4378,8875,369,5291,3353,6418,9733,5918], () => (__webpack_exec__(52981)));
 module.exports = __webpack_exports__;
 
 })();

@@ -467,7 +467,7 @@ function FilterSearch(props) {
 /* harmony export */ });
 async function getClients() {
     try {
-        const response = await fetch("http://localhost:3000/api/clients");
+        const response = await fetch(`${process.env.API_URL}/clients`);
         if (response.ok) {
             const data = await response.json();
             console.log(data);
@@ -543,7 +543,7 @@ async function getSales(props) {
 }
 async function fetchFilteredPrice(productId, clientTypeId, qty) {
     try {
-        const response = await fetch(`http://localhost:3000/api/?productId=${productId}&clientTypeId=${clientTypeId}&qty=${qty}`);
+        const response = await fetch(`${process.env.API_URL}/filteredPrices?productId=${productId}&clientTypeId=${clientTypeId}&qty=${qty}`);
         if (response.ok) {
             const result = await response.json();
             return result;
@@ -933,7 +933,7 @@ async function page({ searchParams }) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,322,4855,9540,9733,5918,1789,778], () => (__webpack_exec__(51523)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,322,4855,6418,9733,5918,1789,778], () => (__webpack_exec__(51523)));
 module.exports = __webpack_exports__;
 
 })();

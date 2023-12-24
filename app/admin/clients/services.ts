@@ -2,7 +2,7 @@
 export async function getClients() {
     try {
       
-      const response = await  fetch('http://localhost:3000/api/clients');
+      const response = await  fetch(`${process.env.API_URL}/clients`);
       
 
       if (response.ok) {        

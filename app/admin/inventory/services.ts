@@ -30,6 +30,7 @@ export async function getInventory(props:PropType) {
 
     try{
     const response = await get('/inventory',params)
+    
 
     console.log(response.ok);
     

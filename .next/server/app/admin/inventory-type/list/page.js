@@ -591,7 +591,7 @@ async function page() {
 /* harmony export */ });
 async function getInventoryTypes() {
     try {
-        const response = await fetch("http://localhost:3000/api/inventory-types");
+        const response = await fetch(`${process.env.API_URL}/inventory-types`);
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -613,7 +613,7 @@ async function getInventoryTypes() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,9540,9733,5918], () => (__webpack_exec__(33546)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,6418,9733,5918], () => (__webpack_exec__(33546)));
 module.exports = __webpack_exports__;
 
 })();
