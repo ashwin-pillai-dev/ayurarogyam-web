@@ -5,8 +5,8 @@ export const AdminRole = objectType({
     definition(t) {
       t.int('id');
       t.string('roleName');
-      t.dateTime('createdAt');
-      t.dateTime('updatedAt');
+      // t.dateTime('createdAt');
+      // t.dateTime('updatedAt');
     },
   });
 

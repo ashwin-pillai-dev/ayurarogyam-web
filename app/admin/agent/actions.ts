@@ -17,14 +17,15 @@ export async function addAgent(input: FormData) {
         email: email.toString(),
         contactNumber:contactNumber.toString(),
         password: await bcrypt.hash(password, 10),
+
     }
 
     try {
 
-        const admin = await prisma.partner.create({
-            data: agentData,
+        // const admin = await prisma.partner.create({
+        //     data: agentData,
 
-        });
+        // });
         revalidatePath(`/admin/partners/list`);
         redirect(`/admin/partners/list`)
 

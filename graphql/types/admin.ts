@@ -15,8 +15,8 @@ export const Admins = objectType({
         t.nonNull.boolean('deleted');
         t.nonNull.string('password');
         t.int('adminRoleId');
-        t.dateTime('createdAt');
-        t.dateTime('updatedAt');
+        // t.dateTime('createdAt');
+        // t.dateTime('updatedAt');
         t.field('role', { type: 'AdminRole' });
     },
 });
