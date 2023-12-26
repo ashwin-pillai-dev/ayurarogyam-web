@@ -6,11 +6,6 @@ import prisma from '../../../lib/prisma';
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
-// export const dynamicParams = true;
-// export const config = { dynamic: true };
-
-
-
 
 export async function GET(request: Request) {
     try {

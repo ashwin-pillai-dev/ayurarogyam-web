@@ -56,8 +56,14 @@ export async function GET(request: Request) {
         const total =  await prisma.inventory.count()
 
         const responseData = {data:res,limit:Number(limit),page:Number(pageParam),total:total}
+        console.log('responseData');
+        console.log(responseData);
+        
 
         const response = Response.json(responseData);
+        console.log('response');
+        console.log(response.json);
+        
         return response
     } catch (error) {
         console.log('error log server');

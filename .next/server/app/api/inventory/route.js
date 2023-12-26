@@ -105,7 +105,11 @@ async function GET(request) {
             page: Number(pageParam),
             total: total
         };
+        console.log("responseData");
+        console.log(responseData);
         const response = Response.json(responseData);
+        console.log("response");
+        console.log(response.json);
         return response;
     } catch (error) {
         console.log("error log server");

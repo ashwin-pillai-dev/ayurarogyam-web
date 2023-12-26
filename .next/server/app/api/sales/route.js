@@ -56,8 +56,6 @@ var prisma = __webpack_require__(94734);
 
 const dynamic = "force-dynamic";
 const revalidate = 0;
-// export const dynamicParams = true;
-// export const config = { dynamic: true };
 async function GET(request) {
     try {
         console.log("in route sales");
