@@ -58,7 +58,7 @@ const dynamic = "force-dynamic";
 const revalidate = 0;
 async function GET(request) {
     try {
-        const searchParams = request.nextUrl.searchParams;
+        const { searchParams } = new URL(request.url);
         const pageParam = searchParams.get("page");
         const limitParam = searchParams.get("limit");
         console.log(`page${pageParam} limit ${limitParam}`);

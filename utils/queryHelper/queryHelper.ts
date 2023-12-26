@@ -4,10 +4,14 @@ import { requestParams, Filter } from "./queryHelper.types";
 export const get = async (url: string, params: requestParams) => {
     try {
         let proccessedUrl = `${process.env.API_URL + url}?page=${params.page}&limit=${params.limit}&orderBy=${params.orderBy}`
+        // let proccessedUrl = `${'http://localhost:3000/api' + url}?page=${params.page}&limit=${params.limit}&orderBy=${params.orderBy}`
         if (params?.filters?.length > 0) {
             const filters: string = getStringFromFilters(params.filters);
             proccessedUrl = `${proccessedUrl}&${filters}`
         }
+        console.log('proccessedUrl');
+        console.log(proccessedUrl);
+        
         const res = await fetch(proccessedUrl);
         console.log('response');
         console.log(res);
