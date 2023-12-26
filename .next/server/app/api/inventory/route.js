@@ -58,6 +58,7 @@ const dynamic = "force-dynamic";
 const revalidate = 0;
 async function GET(request) {
     try {
+        console.log("in route inventory");
         const { searchParams } = new URL(request.url);
         const pageParam = searchParams.get("page");
         const limitParam = searchParams.get("limit");
