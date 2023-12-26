@@ -41,7 +41,8 @@ var route_namespaceObject = {};
 __webpack_require__.r(route_namespaceObject);
 __webpack_require__.d(route_namespaceObject, {
   GET: () => (GET),
-  dynamic: () => (dynamic)
+  dynamic: () => (dynamic),
+  revalidate: () => (revalidate)
 });
 
 // EXTERNAL MODULE: ./node_modules/next/dist/server/node-polyfill-headers.js
@@ -54,7 +55,7 @@ var prisma = __webpack_require__(94734);
 ;// CONCATENATED MODULE: ./app/api/inventory/route.ts
 
 const dynamic = "force-dynamic";
-// export const dynamic = 'auto';
+const revalidate = 0;
 async function GET(request) {
     try {
         const searchParams = request.nextUrl.searchParams;
