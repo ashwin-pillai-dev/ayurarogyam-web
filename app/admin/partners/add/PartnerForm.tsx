@@ -69,8 +69,8 @@ const PartnerForm: React.FC<PropType> = (props) => {
             
             // Handle successful form submission (e.g., send data to backend)
         } else {
-            const errors = validationResult.error.flatten().fieldErrors;
-            setFormErrors(errors);
+            // const errors = validationResult.error.flatten().fieldErrors;
+            // setFormErrors(errors);
         }
     };
 

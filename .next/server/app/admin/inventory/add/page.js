@@ -434,7 +434,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const actions = {
-'6ec40b2958eb4850e00a414d237c7022a9a2d82a': () => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 81556)).then(mod => mod["addInventory"]),
+'6ec40b2958eb4850e00a414d237c7022a9a2d82a': () => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 64598)).then(mod => mod["addInventory"]),
 }
 
 async function endpoint(id, ...args) {
@@ -450,15 +450,15 @@ module.exports = {
 
 /***/ }),
 
-/***/ 56604:
+/***/ 46840:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 93578));
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 87886));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 93578));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3280, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 459, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23))
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23))
 
 /***/ }),
 
@@ -613,7 +613,7 @@ async function getInventoryTypes() {
 
 /***/ }),
 
-/***/ 81556:
+/***/ 64598:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -639,8 +639,21 @@ var dist_cjs = __webpack_require__(11332);
 var s3_request_presigner_dist_cjs = __webpack_require__(45066);
 // EXTERNAL MODULE: ./node_modules/@paralleldrive/cuid2/index.js
 var cuid2 = __webpack_require__(33399);
-// EXTERNAL MODULE: ./lib/s3Client.ts
-var lib_s3Client = __webpack_require__(80400);
+;// CONCATENATED MODULE: ./lib/s3Client.ts
+
+let s3Client_s3Client;
+let accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+let secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+console.log(process.env.APP_AWS_REGION);
+s3Client_s3Client = new dist_cjs.S3Client({
+    region: process.env.APP_AWS_REGION,
+    credentials: {
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey
+    }
+});
+/* harmony default export */ const lib_s3Client = (s3Client_s3Client);
+
 ;// CONCATENATED MODULE: ./app/admin/common/services.ts
 
 
@@ -690,7 +703,7 @@ async function getSignedS3Url(file) {
             Key: `${fileKey}.${getFileExtension(file)}`
         });
         console.log("key: " + fileKey);
-        const response = await (0,s3_request_presigner_dist_cjs.getSignedUrl)(lib_s3Client/* default */.Z, command, {
+        const response = await (0,s3_request_presigner_dist_cjs.getSignedUrl)(lib_s3Client, command, {
             expiresIn: 3600
         });
         return {
@@ -794,8 +807,8 @@ __webpack_require__.d(__webpack_exports__, {
 var jsx_runtime_ = __webpack_require__(76931);
 // EXTERNAL MODULE: ./node_modules/react-toastify/dist/react-toastify.esm.mjs
 var react_toastify_esm = __webpack_require__(25291);
-// EXTERNAL MODULE: ./app/admin/inventory/actions.ts + 1 modules
-var actions = __webpack_require__(81556);
+// EXTERNAL MODULE: ./app/admin/inventory/actions.ts + 2 modules
+var actions = __webpack_require__(64598);
 // EXTERNAL MODULE: ./node_modules/next/dist/build/webpack/loaders/next-flight-loader/module-proxy.js
 var module_proxy = __webpack_require__(21313);
 ;// CONCATENATED MODULE: ./app/admin/inventory/add/formItems.tsx
@@ -898,32 +911,6 @@ if (true) {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (prisma);
 
 
-/***/ }),
-
-/***/ 80400:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _aws_sdk_client_s3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11332);
-/* harmony import */ var _aws_sdk_client_s3__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_aws_sdk_client_s3__WEBPACK_IMPORTED_MODULE_0__);
-
-let s3Client;
-let accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-let secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-console.log(process.env.APP_AWS_REGION);
-s3Client = new _aws_sdk_client_s3__WEBPACK_IMPORTED_MODULE_0__.S3Client({
-    region: process.env.APP_AWS_REGION,
-    credentials: {
-        accessKeyId: accessKeyId,
-        secretAccessKey: secretAccessKey
-    }
-});
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (s3Client);
-
-
 /***/ })
 
 };
@@ -933,7 +920,7 @@ s3Client = new _aws_sdk_client_s3__WEBPACK_IMPORTED_MODULE_0__.S3Client({
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,6133,188,3578,4378,8875,369,5291,3353,6418,9733,5918], () => (__webpack_exec__(52981)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,3578,4378,8875,369,5291,3353,9540,9733,5918], () => (__webpack_exec__(52981)));
 module.exports = __webpack_exports__;
 
 })();

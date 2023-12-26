@@ -8,11 +8,6 @@ import NavBarNew from "./navbar/NavBarNew";
 
 export default function NavSideWrapper(user:any ) {
     const [drawerVisible, setDrawerVisible] = useState(false)
-    
-        console.log('user from NavSideWrapper');
-        console.log(user);
-
-        
 
     const drawerClicked = () => {
         setDrawerVisible(!drawerVisible)

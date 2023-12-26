@@ -2,7 +2,7 @@ exports.id = 6750;
 exports.ids = [6750];
 exports.modules = {
 
-/***/ 43863:
+/***/ 79492:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -25,7 +25,7 @@ __webpack_require__.d(__webpack_exports__, {
   computePosition: () => (/* reexport */ floating_ui_dom/* computePosition */.oo),
   detectOverflow: () => (/* reexport */ floating_ui_core/* detectOverflow */.US),
   flip: () => (/* reexport */ floating_ui_core/* flip */.RR),
-  getOverflowAncestors: () => (/* reexport */ floating_ui_dom/* getOverflowAncestors */.Kx),
+  getOverflowAncestors: () => (/* reexport */ floating_ui_utils_dom/* getOverflowAncestors */.Kx),
   hide: () => (/* reexport */ floating_ui_core/* hide */.Cp),
   inline: () => (/* reexport */ floating_ui_core/* inline */.Qo),
   inner: () => (/* binding */ inner),
@@ -61,13 +61,15 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
 var floating_ui_dom = __webpack_require__(62631);
+// EXTERNAL MODULE: ./node_modules/@floating-ui/utils/dom/dist/floating-ui.utils.dom.mjs
+var floating_ui_utils_dom = __webpack_require__(16361);
 // EXTERNAL MODULE: ./node_modules/@floating-ui/core/dist/floating-ui.core.mjs
 var floating_ui_core = __webpack_require__(47612);
 // EXTERNAL MODULE: external "next/dist/compiled/react-experimental"
 var react_experimental_ = __webpack_require__(17640);
 // EXTERNAL MODULE: external "next/dist/compiled/react-dom-experimental/server-rendering-stub"
 var server_rendering_stub_ = __webpack_require__(55752);
-;// CONCATENATED MODULE: ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.esm.js
+;// CONCATENATED MODULE: ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
 
 
 
@@ -184,7 +186,7 @@ function useLatestRef(value) {
 
 /**
  * Provides data to position a floating element.
- * @see https://floating-ui.com/docs/react
+ * @see https://floating-ui.com/docs/useFloating
  */
 function useFloating(options) {
   if (options === void 0) {
@@ -611,10 +613,10 @@ function getWindow(value) {
   return getDocument(value).defaultView || window;
 }
 function isElement(value) {
-  return value ? value instanceof getWindow(value).Element : false;
+  return value ? value instanceof Element || value instanceof getWindow(value).Element : false;
 }
 function isHTMLElement(value) {
-  return value ? value instanceof getWindow(value).HTMLElement : false;
+  return value ? value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement : false;
 }
 function isShadowRoot(node) {
   // Browsers without `ShadowRoot` support
@@ -659,13 +661,6 @@ function isMouseLikePointerType(pointerType, strict) {
 }
 function isReactEvent(event) {
   return 'nativeEvent' in event;
-}
-function isHidden(el) {
-  if (!el) return false;
-  return el.offsetParent === null;
-}
-function isRootElement(element) {
-  return element.matches('html,body');
 }
 
 function contains(parent, child) {
@@ -1480,6 +1475,7 @@ function FloatingFocusManager(props) {
   const {
     context,
     children,
+    disabled = false,
     order = ['content'],
     guards: _guards = true,
     initialFocus = 0,
@@ -1543,9 +1539,7 @@ function FloatingFocusManager(props) {
     }).filter(Boolean).flat();
   }, [domReference, floating, orderRef, getTabbableContent]);
   react_experimental_.useEffect(() => {
-    if (!modal) {
-      return;
-    }
+    if (disabled || !modal) return;
     function onKeyDown(event) {
       if (event.key === 'Tab') {
         // The focus guards have nothing to focus, so we need to stop the event.
@@ -1573,11 +1567,9 @@ function FloatingFocusManager(props) {
     return () => {
       doc.removeEventListener('keydown', onKeyDown);
     };
-  }, [domReference, floating, modal, orderRef, refs, isTypeableCombobox, getTabbableContent, getTabbableElements]);
+  }, [disabled, domReference, floating, modal, orderRef, refs, isTypeableCombobox, getTabbableContent, getTabbableElements]);
   react_experimental_.useEffect(() => {
-    if (!closeOnFocusOut) {
-      return;
-    }
+    if (disabled || !closeOnFocusOut) return;
 
     // In Safari, buttons lose focus when pressing them.
     function handlePointerDown() {
@@ -1617,9 +1609,11 @@ function FloatingFocusManager(props) {
         !modal && floating.removeEventListener('focusout', handleFocusOutside);
       };
     }
-  }, [domReference, floating, modal, nodeId, tree, portalContext, onOpenChange, closeOnFocusOut]);
+  }, [disabled, domReference, floating, modal, nodeId, tree, portalContext, onOpenChange, closeOnFocusOut]);
   react_experimental_.useEffect(() => {
     var _portalContext$portal;
+    if (disabled) return;
+
     // Don't hide portals nested within the parent portal.
     const portalNodes = Array.from((portalContext == null ? void 0 : (_portalContext$portal = portalContext.portalNode) == null ? void 0 : _portalContext$portal.querySelectorAll("[" + createAttribute('portal') + "]")) || []);
     if (floating && modal) {
@@ -1630,9 +1624,9 @@ function FloatingFocusManager(props) {
         cleanup();
       };
     }
-  }, [domReference, floating, modal, orderRef, portalContext, isTypeableCombobox, guards]);
+  }, [disabled, domReference, floating, modal, orderRef, portalContext, isTypeableCombobox, guards]);
   floating_ui_react_esm_index(() => {
-    if (!floating) return;
+    if (disabled || !floating) return;
     const doc = getDocument(floating);
     const previouslyFocusedElement = activeElement(doc);
 
@@ -1648,9 +1642,9 @@ function FloatingFocusManager(props) {
         });
       }
     });
-  }, [open, floating, ignoreInitialFocus, getTabbableElements, initialFocusRef]);
+  }, [disabled, open, floating, ignoreInitialFocus, getTabbableElements, initialFocusRef]);
   floating_ui_react_esm_index(() => {
-    if (!floating) return;
+    if (disabled || !floating) return;
     let preventReturnFocusScroll = false;
     const doc = getDocument(floating);
     const previouslyFocusedElement = activeElement(doc);
@@ -1698,12 +1692,12 @@ function FloatingFocusManager(props) {
         });
       }
     };
-  }, [floating, returnFocusRef, dataRef, refs, events, tree, nodeId]);
+  }, [disabled, floating, returnFocusRef, dataRef, refs, events, tree, nodeId]);
 
   // Synchronize the `context` & `modal` value to the FloatingPortal context.
   // It will decide whether or not it needs to render its own guards.
   floating_ui_react_esm_index(() => {
-    if (!portalContext) return;
+    if (disabled || !portalContext) return;
     portalContext.setFocusManagerState({
       ...context,
       modal,
@@ -1713,8 +1707,9 @@ function FloatingFocusManager(props) {
     return () => {
       portalContext.setFocusManagerState(null);
     };
-  }, [portalContext, modal, open, closeOnFocusOut, context]);
+  }, [disabled, portalContext, modal, open, closeOnFocusOut, context]);
   floating_ui_react_esm_index(() => {
+    if (disabled) return;
     if (floating && typeof MutationObserver === 'function') {
       const handleMutation = () => {
         const tabIndex = floating.getAttribute('tabindex');
@@ -1737,14 +1732,17 @@ function FloatingFocusManager(props) {
         observer.disconnect();
       };
     }
-  }, [floating, refs, orderRef, getTabbableContent]);
+  }, [disabled, floating, refs, orderRef, getTabbableContent]);
   function renderDismissButton(location) {
-    return visuallyHiddenDismiss && modal ? /*#__PURE__*/react_experimental_.createElement(VisuallyHiddenDismiss, {
+    if (disabled || !visuallyHiddenDismiss || !modal) {
+      return null;
+    }
+    return /*#__PURE__*/react_experimental_.createElement(VisuallyHiddenDismiss, {
       ref: location === 'start' ? startDismissButtonRef : endDismissButtonRef,
       onClick: event => onOpenChange(false, event.nativeEvent)
-    }, typeof visuallyHiddenDismiss === 'string' ? visuallyHiddenDismiss : 'Dismiss') : null;
+    }, typeof visuallyHiddenDismiss === 'string' ? visuallyHiddenDismiss : 'Dismiss');
   }
-  const shouldRenderGuards = guards && !isTypeableCombobox && (isInsidePortal || modal);
+  const shouldRenderGuards = !disabled && guards && !isTypeableCombobox && (isInsidePortal || modal);
   return /*#__PURE__*/react_experimental_.createElement(react_experimental_.Fragment, null, shouldRenderGuards && /*#__PURE__*/react_experimental_.createElement(FocusGuard, {
     "data-type": "inside",
     ref: portalContext == null ? void 0 : portalContext.beforeInsideRef,
@@ -2036,10 +2034,8 @@ function useClick(context, props) {
           if (eventOption === 'click') {
             return;
           }
-          if (open) {
-            if (toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === 'mousedown' : true)) {
-              onOpenChange(false, event.nativeEvent);
-            }
+          if (open && toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === 'mousedown' : true)) {
+            onOpenChange(false, event.nativeEvent);
           } else {
             // Prevent stealing focus from the floating element
             event.preventDefault();
@@ -2054,10 +2050,8 @@ function useClick(context, props) {
           if (isMouseLikePointerType(pointerTypeRef.current, true) && ignoreMouse) {
             return;
           }
-          if (open) {
-            if (toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === 'click' : true)) {
-              onOpenChange(false, event.nativeEvent);
-            }
+          if (open && toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === 'click' : true)) {
+            onOpenChange(false, event.nativeEvent);
           } else {
             onOpenChange(true, event.nativeEvent);
           }
@@ -2073,10 +2067,8 @@ function useClick(context, props) {
             didKeyDownRef.current = true;
           }
           if (event.key === 'Enter') {
-            if (open) {
-              if (toggle) {
-                onOpenChange(false, event.nativeEvent);
-              }
+            if (open && toggle) {
+              onOpenChange(false, event.nativeEvent);
             } else {
               onOpenChange(true, event.nativeEvent);
             }
@@ -2088,10 +2080,8 @@ function useClick(context, props) {
           }
           if (event.key === ' ' && didKeyDownRef.current) {
             didKeyDownRef.current = false;
-            if (open) {
-              if (toggle) {
-                onOpenChange(false, event.nativeEvent);
-              }
+            if (open && toggle) {
+              onOpenChange(false, event.nativeEvent);
             } else {
               onOpenChange(true, event.nativeEvent);
             }
@@ -2300,19 +2290,6 @@ function useClientPoint(context, props) {
   }, [enabled, handleReferenceEnterOrMove]);
 }
 
-function closest(node, selector) {
-  if (!node || isElement(node) && isRootElement(node)) {
-    return null;
-  }
-  if (isShadowRoot(node)) {
-    return closest(node.host, selector);
-  }
-  if (isElement(node) && node.matches(selector)) {
-    return node;
-  }
-  return closest(node.parentNode, selector);
-}
-
 /**
  * Check whether the event.target is within the provided node. Uses event.composedPath if available for custom element support.
  *
@@ -2433,19 +2410,6 @@ function useDismiss(context, props) {
       return;
     }
     const target = getTarget(event);
-    const targetIsElement = isElement(target);
-    const targetParent = targetIsElement && target.parentNode;
-    const inertSelector = "[" + createAttribute('inert') + "]";
-    const isThirdPartyElement = targetIsElement && !isRootElement(target) && getDocument(target).querySelector(inertSelector) && !(closest(target, inertSelector) ||
-    // For comboboxes where the reference element avoids the inert trap,
-    // check if any siblings have the inert marker.
-    isElement(targetParent) && !isRootElement(targetParent) && targetParent.querySelector(inertSelector));
-
-    // Prevent closing when clicking third party extensions injected *after*
-    // the floating element opens.
-    if (isThirdPartyElement) {
-      return;
-    }
 
     // Check if the click occurred on the scrollbar
     if (isHTMLElement(target) && floating) {
@@ -2515,13 +2479,13 @@ function useDismiss(context, props) {
     let ancestors = [];
     if (ancestorScroll) {
       if (isElement(domReference)) {
-        ancestors = (0,floating_ui_dom/* getOverflowAncestors */.Kx)(domReference);
+        ancestors = (0,floating_ui_utils_dom/* getOverflowAncestors */.Kx)(domReference);
       }
       if (isElement(floating)) {
-        ancestors = ancestors.concat((0,floating_ui_dom/* getOverflowAncestors */.Kx)(floating));
+        ancestors = ancestors.concat((0,floating_ui_utils_dom/* getOverflowAncestors */.Kx)(floating));
       }
       if (!isElement(reference) && reference && reference.contextElement) {
-        ancestors = ancestors.concat((0,floating_ui_dom/* getOverflowAncestors */.Kx)(reference.contextElement));
+        ancestors = ancestors.concat((0,floating_ui_utils_dom/* getOverflowAncestors */.Kx)(reference.contextElement));
       }
     }
 
@@ -2873,7 +2837,7 @@ function findNonDisabledIndex(listRef, _temp) {
   do {
     var _list$index, _list$index2;
     index = index + (decrement ? -amount : amount);
-  } while (index >= 0 && index <= list.length - 1 && (disabledIndices ? disabledIndices.includes(index) : list[index] == null || ((_list$index = list[index]) == null ? void 0 : _list$index.hasAttribute('disabled')) || ((_list$index2 = list[index]) == null ? void 0 : _list$index2.getAttribute('aria-disabled')) === 'true' || isHidden(list[index])));
+  } while (index >= 0 && index <= list.length - 1 && (disabledIndices ? disabledIndices.includes(index) : list[index] == null || ((_list$index = list[index]) == null ? void 0 : _list$index.hasAttribute('disabled')) || ((_list$index2 = list[index]) == null ? void 0 : _list$index2.getAttribute('aria-disabled')) === 'true'));
   return index;
 }
 function doSwitch(orientation, vertical, horizontal) {
@@ -6263,7 +6227,7 @@ exports.datePickerTheme = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Dropdown = exports.DropdownContext = void 0;
 const jsx_runtime_1 = __webpack_require__(76931);
-const react_1 = __webpack_require__(43863);
+const react_1 = __webpack_require__(79492);
 const react_2 = __webpack_require__(17640);
 const hi_1 = __webpack_require__(75655);
 const __1 = __webpack_require__(99920);
@@ -6412,7 +6376,7 @@ exports.DropdownHeader = DropdownHeader;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DropdownItem = void 0;
 const jsx_runtime_1 = __webpack_require__(76931);
-const react_1 = __webpack_require__(43863);
+const react_1 = __webpack_require__(79492);
 const react_2 = __webpack_require__(17640);
 const tailwind_merge_1 = __webpack_require__(83233);
 const __1 = __webpack_require__(99920);
@@ -6700,7 +6664,7 @@ exports.floatingLabelTheme = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Floating = void 0;
 const jsx_runtime_1 = __webpack_require__(76931);
-const react_1 = __webpack_require__(43863);
+const react_1 = __webpack_require__(79492);
 const react_2 = __webpack_require__(17640);
 const tailwind_merge_1 = __webpack_require__(83233);
 const use_floating_1 = __webpack_require__(54665);
@@ -6759,7 +6723,7 @@ exports.Floating = Floating;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getArrowPlacement = exports.getPlacement = exports.getMiddleware = void 0;
-const react_1 = __webpack_require__(43863);
+const react_1 = __webpack_require__(79492);
 /**
  * @see https://floating-ui.com/docs/middleware
  */
@@ -7490,7 +7454,7 @@ exports.listGroupTheme = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Modal = void 0;
 const jsx_runtime_1 = __webpack_require__(76931);
-const react_1 = __webpack_require__(43863);
+const react_1 = __webpack_require__(79492);
 const react_2 = __webpack_require__(17640);
 const tailwind_merge_1 = __webpack_require__(83233);
 const __1 = __webpack_require__(99920);
@@ -10240,7 +10204,7 @@ exports.omit = omit;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.useFloatingInteractions = exports.useBaseFLoating = void 0;
-const react_1 = __webpack_require__(43863);
+const react_1 = __webpack_require__(79492);
 const helpers_1 = __webpack_require__(82473);
 const useBaseFLoating = ({ open, arrowRef, placement = 'top', setOpen, }) => {
     return (0, react_1.useFloating)({
@@ -19945,7 +19909,7 @@ if (true) {
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-function r(){for(var r,o,t=0,n="";t<arguments.length;)(r=arguments[t++])&&(o=e(r))&&(n&&(n+=" "),n+=o);return n}function e(r){if("string"==typeof r)return r;for(var o,t="",n=0;n<r.length;n++)r[n]&&(o=e(r[n]))&&(t&&(t+=" "),t+=o);return t}Object.defineProperty(exports, "__esModule", ({value:!0}));var o="-";function t(r){var e=function(r){var e=r.theme,o=r.prefix,t={nextPart:new Map,validators:[]},n=function(r,e){return e?r.map((function(r){return[r[0],r[1].map((function(r){return"string"==typeof r?e+r:"object"==typeof r?Object.fromEntries(Object.entries(r).map((function(r){return[e+r[0],r[1]]}))):r}))]})):r}(Object.entries(r.classGroups),o);return n.forEach((function(r){a(r[1],t,r[0],e)})),t}(r),t=r.conflictingClassGroups,l=r.conflictingClassGroupModifiers,s=void 0===l?{}:l;return{getClassGroupId:function(r){var t=r.split(o);return""===t[0]&&1!==t.length&&t.shift(),n(t,e)||function(r){if(i.test(r)){var e=i.exec(r)[1],o=e?.substring(0,e.indexOf(":"));if(o)return"arbitrary.."+o}}(r)},getConflictingClassGroupIds:function(r,e){var o=t[r]||[];return e&&s[r]?[].concat(o,s[r]):o}}}function n(r,e){if(0===r.length)return e.classGroupId;var t=e.nextPart.get(r[0]),i=t?n(r.slice(1),t):void 0;if(i)return i;if(0!==e.validators.length){var a=r.join(o);return e.validators.find((function(r){return(0,r.validator)(a)}))?.classGroupId}}var i=/^\[(.+)\]$/;function a(r,e,o,t){r.forEach((function(r){if("string"!=typeof r){if("function"==typeof r)return r.isThemeGetter?void a(r(t),e,o,t):void e.validators.push({validator:r,classGroupId:o});Object.entries(r).forEach((function(r){a(r[1],l(e,r[0]),o,t)}))}else(""===r?e:l(e,r)).classGroupId=o}))}function l(r,e){var t=r;return e.split(o).forEach((function(r){t.nextPart.has(r)||t.nextPart.set(r,{nextPart:new Map,validators:[]}),t=t.nextPart.get(r)})),t}function s(r){if(r<1)return{get:function(){},set:function(){}};var e=0,o=new Map,t=new Map;function n(n,i){o.set(n,i),++e>r&&(e=0,t=o,o=new Map)}return{get:function(r){var e=o.get(r);return void 0!==e?e:void 0!==(e=t.get(r))?(n(r,e),e):void 0},set:function(r,e){o.has(r)?o.set(r,e):n(r,e)}}}var c="!";function d(r){var e=r.separator||":",o=1===e.length,t=e[0],n=e.length;return function(r){for(var i,a=[],l=0,s=0,d=0;d<r.length;d++){var u=r[d];if(0===l){if(u===t&&(o||r.slice(d,d+n)===e)){a.push(r.slice(s,d)),s=d+n;continue}if("/"===u){i=d;continue}}"["===u?l++:"]"===u&&l--}var p=0===a.length?r:r.substring(s),f=p.startsWith(c);return{modifiers:a,hasImportantModifier:f,baseClassName:f?p.substring(1):p,maybePostfixModifierPosition:i&&i>s?i-s:void 0}}}var u=/\s+/;function p(){for(var e=arguments.length,o=new Array(e),n=0;n<e;n++)o[n]=arguments[n];var i,a,l,p=function(r){var e=o[0],n=o.slice(1).reduce((function(r,e){return e(r)}),e());return i=function(r){return{cache:s(r.cacheSize),splitModifiers:d(r),...t(r)}}(n),a=i.cache.get,l=i.cache.set,p=f,f(r)};function f(r){var e=a(r);if(e)return e;var o=function(r,e){var o=e.splitModifiers,t=e.getClassGroupId,n=e.getConflictingClassGroupIds,i=new Set;return r.trim().split(u).map((function(r){var e=o(r),n=e.modifiers,i=e.hasImportantModifier,a=e.baseClassName,l=e.maybePostfixModifierPosition,s=t(l?a.substring(0,l):a),d=Boolean(l);if(!s){if(!l)return{isTailwindClass:!1,originalClassName:r};if(!(s=t(a)))return{isTailwindClass:!1,originalClassName:r};d=!1}var u=function(r){if(r.length<=1)return r;var e=[],o=[];return r.forEach((function(r){"["===r[0]?(e.push.apply(e,o.sort().concat([r])),o=[]):o.push(r)})),e.push.apply(e,o.sort()),e}(n).join(":");return{isTailwindClass:!0,modifierId:i?u+c:u,classGroupId:s,originalClassName:r,hasPostfixModifier:d}})).reverse().filter((function(r){if(!r.isTailwindClass)return!0;var e=r.modifierId,o=r.classGroupId,t=r.hasPostfixModifier,a=e+o;return!i.has(a)&&(i.add(a),n(o,t).forEach((function(r){return i.add(e+r)})),!0)})).reverse().map((function(r){return r.originalClassName})).join(" ")}(r,i);return l(r,o),o}return function(){return p(r.apply(null,arguments))}}function f(r){var e=function(e){return e[r]||[]};return e.isThemeGetter=!0,e}var b=/^\[(?:([a-z-]+):)?(.+)\]$/i,m=/^\d+\/\d+$/,g=new Set(["px","full","screen"]),h=/^(\d+(\.\d+)?)?(xs|sm|md|lg|xl)$/,v=/\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh|cq(w|h|i|b|min|max))|^0$/,y=/^-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)/;function x(r){return M(r)||g.has(r)||m.test(r)||w(r)}function w(r){return T(r,"length",O)}function k(r){return T(r,"size",E)}function z(r){return T(r,"position",E)}function C(r){return T(r,"url",_)}function j(r){return T(r,"number",M)}function M(r){return!Number.isNaN(Number(r))}function G(r){return r.endsWith("%")&&M(r.slice(0,-1))}function P(r){return W(r)||T(r,"number",W)}function I(r){return b.test(r)}function A(){return!0}function N(r){return h.test(r)}function S(r){return T(r,"",$)}function T(r,e,o){var t=b.exec(r);return!!t&&(t[1]?t[1]===e:o(t[2]))}function O(r){return v.test(r)}function E(){return!1}function _(r){return r.startsWith("url(")}function W(r){return Number.isInteger(Number(r))}function $(r){return y.test(r)}var R={__proto__:null,isAny:A,isArbitraryLength:w,isArbitraryNumber:j,isArbitraryPosition:z,isArbitraryShadow:S,isArbitrarySize:k,isArbitraryUrl:C,isArbitraryValue:I,isArbitraryWeight:j,isInteger:P,isLength:x,isNumber:M,isPercent:G,isTshirtSize:N};function q(){var r=f("colors"),e=f("spacing"),o=f("blur"),t=f("brightness"),n=f("borderColor"),i=f("borderRadius"),a=f("borderSpacing"),l=f("borderWidth"),s=f("contrast"),c=f("grayscale"),d=f("hueRotate"),u=f("invert"),p=f("gap"),b=f("gradientColorStops"),m=f("gradientColorStopPositions"),g=f("inset"),h=f("margin"),v=f("opacity"),y=f("padding"),T=f("saturate"),O=f("scale"),E=f("sepia"),_=f("skew"),W=f("space"),$=f("translate"),R=function(){return["auto",e]},q=function(){return["",x]},L=function(){return["auto",M,I]},B=function(){return["","0",I]},D=function(){return[M,j]},J=function(){return[M,I]};return{cacheSize:500,theme:{colors:[A],spacing:[x],blur:["none","",N,w],brightness:D(),borderColor:[r],borderRadius:["none","","full",N,w],borderSpacing:[e],borderWidth:q(),contrast:D(),grayscale:B(),hueRotate:J(),invert:B(),gap:[e],gradientColorStops:[r],gradientColorStopPositions:[G,w],inset:R(),margin:R(),opacity:D(),padding:[e],saturate:D(),scale:D(),sepia:B(),skew:J(),space:[e],translate:[e]},classGroups:{aspect:[{aspect:["auto","square","video",I]}],container:["container"],columns:[{columns:[N]}],"break-after":[{"break-after":["auto","avoid","all","avoid-page","page","left","right","column"]}],"break-before":[{"break-before":["auto","avoid","all","avoid-page","page","left","right","column"]}],"break-inside":[{"break-inside":["auto","avoid","avoid-page","avoid-column"]}],"box-decoration":[{"box-decoration":["slice","clone"]}],box:[{box:["border","content"]}],display:["block","inline-block","inline","flex","inline-flex","table","inline-table","table-caption","table-cell","table-column","table-column-group","table-footer-group","table-header-group","table-row-group","table-row","flow-root","grid","inline-grid","contents","list-item","hidden"],float:[{float:["right","left","none"]}],clear:[{clear:["left","right","both","none"]}],isolation:["isolate","isolation-auto"],"object-fit":[{object:["contain","cover","fill","none","scale-down"]}],"object-position":[{object:[].concat(["bottom","center","left","left-bottom","left-top","right","right-bottom","right-top","top"],[I])}],overflow:[{overflow:["auto","hidden","clip","visible","scroll"]}],"overflow-x":[{"overflow-x":["auto","hidden","clip","visible","scroll"]}],"overflow-y":[{"overflow-y":["auto","hidden","clip","visible","scroll"]}],overscroll:[{overscroll:["auto","contain","none"]}],"overscroll-x":[{"overscroll-x":["auto","contain","none"]}],"overscroll-y":[{"overscroll-y":["auto","contain","none"]}],position:["static","fixed","absolute","relative","sticky"],inset:[{inset:[g]}],"inset-x":[{"inset-x":[g]}],"inset-y":[{"inset-y":[g]}],start:[{start:[g]}],end:[{end:[g]}],top:[{top:[g]}],right:[{right:[g]}],bottom:[{bottom:[g]}],left:[{left:[g]}],visibility:["visible","invisible","collapse"],z:[{z:["auto",P]}],basis:[{basis:R()}],"flex-direction":[{flex:["row","row-reverse","col","col-reverse"]}],"flex-wrap":[{flex:["wrap","wrap-reverse","nowrap"]}],flex:[{flex:["1","auto","initial","none",I]}],grow:[{grow:B()}],shrink:[{shrink:B()}],order:[{order:["first","last","none",P]}],"grid-cols":[{"grid-cols":[A]}],"col-start-end":[{col:["auto",{span:[P]},I]}],"col-start":[{"col-start":L()}],"col-end":[{"col-end":L()}],"grid-rows":[{"grid-rows":[A]}],"row-start-end":[{row:["auto",{span:[P]},I]}],"row-start":[{"row-start":L()}],"row-end":[{"row-end":L()}],"grid-flow":[{"grid-flow":["row","col","dense","row-dense","col-dense"]}],"auto-cols":[{"auto-cols":["auto","min","max","fr",I]}],"auto-rows":[{"auto-rows":["auto","min","max","fr",I]}],gap:[{gap:[p]}],"gap-x":[{"gap-x":[p]}],"gap-y":[{"gap-y":[p]}],"justify-content":[{justify:["normal"].concat(["start","end","center","between","around","evenly","stretch"])}],"justify-items":[{"justify-items":["start","end","center","stretch"]}],"justify-self":[{"justify-self":["auto","start","end","center","stretch"]}],"align-content":[{content:["normal"].concat(["start","end","center","between","around","evenly","stretch"],["baseline"])}],"align-items":[{items:["start","end","center","baseline","stretch"]}],"align-self":[{self:["auto","start","end","center","stretch","baseline"]}],"place-content":[{"place-content":[].concat(["start","end","center","between","around","evenly","stretch"],["baseline"])}],"place-items":[{"place-items":["start","end","center","baseline","stretch"]}],"place-self":[{"place-self":["auto","start","end","center","stretch"]}],p:[{p:[y]}],px:[{px:[y]}],py:[{py:[y]}],ps:[{ps:[y]}],pe:[{pe:[y]}],pt:[{pt:[y]}],pr:[{pr:[y]}],pb:[{pb:[y]}],pl:[{pl:[y]}],m:[{m:[h]}],mx:[{mx:[h]}],my:[{my:[h]}],ms:[{ms:[h]}],me:[{me:[h]}],mt:[{mt:[h]}],mr:[{mr:[h]}],mb:[{mb:[h]}],ml:[{ml:[h]}],"space-x":[{"space-x":[W]}],"space-x-reverse":["space-x-reverse"],"space-y":[{"space-y":[W]}],"space-y-reverse":["space-y-reverse"],w:[{w:["auto","min","max","fit",e]}],"min-w":[{"min-w":["min","max","fit",x]}],"max-w":[{"max-w":["0","none","full","min","max","fit","prose",{screen:[N]},N,w]}],h:[{h:[e,"auto","min","max","fit"]}],"min-h":[{"min-h":["min","max","fit",x]}],"max-h":[{"max-h":[e,"min","max","fit"]}],"font-size":[{text:["base",N,w]}],"font-smoothing":["antialiased","subpixel-antialiased"],"font-style":["italic","not-italic"],"font-weight":[{font:["thin","extralight","light","normal","medium","semibold","bold","extrabold","black",j]}],"font-family":[{font:[A]}],"fvn-normal":["normal-nums"],"fvn-ordinal":["ordinal"],"fvn-slashed-zero":["slashed-zero"],"fvn-figure":["lining-nums","oldstyle-nums"],"fvn-spacing":["proportional-nums","tabular-nums"],"fvn-fraction":["diagonal-fractions","stacked-fractons"],tracking:[{tracking:["tighter","tight","normal","wide","wider","widest",w]}],"line-clamp":[{"line-clamp":["none",M,j]}],leading:[{leading:["none","tight","snug","normal","relaxed","loose",x]}],"list-image":[{"list-image":["none",I]}],"list-style-type":[{list:["none","disc","decimal",I]}],"list-style-position":[{list:["inside","outside"]}],"placeholder-color":[{placeholder:[r]}],"placeholder-opacity":[{"placeholder-opacity":[v]}],"text-alignment":[{text:["left","center","right","justify","start","end"]}],"text-color":[{text:[r]}],"text-opacity":[{"text-opacity":[v]}],"text-decoration":["underline","overline","line-through","no-underline"],"text-decoration-style":[{decoration:[].concat(["solid","dashed","dotted","double","none"],["wavy"])}],"text-decoration-thickness":[{decoration:["auto","from-font",x]}],"underline-offset":[{"underline-offset":["auto",x]}],"text-decoration-color":[{decoration:[r]}],"text-transform":["uppercase","lowercase","capitalize","normal-case"],"text-overflow":["truncate","text-ellipsis","text-clip"],indent:[{indent:[e]}],"vertical-align":[{align:["baseline","top","middle","bottom","text-top","text-bottom","sub","super",w]}],whitespace:[{whitespace:["normal","nowrap","pre","pre-line","pre-wrap","break-spaces"]}],break:[{break:["normal","words","all","keep"]}],hyphens:[{hyphens:["none","manual","auto"]}],content:[{content:["none",I]}],"bg-attachment":[{bg:["fixed","local","scroll"]}],"bg-clip":[{"bg-clip":["border","padding","content","text"]}],"bg-opacity":[{"bg-opacity":[v]}],"bg-origin":[{"bg-origin":["border","padding","content"]}],"bg-position":[{bg:[].concat(["bottom","center","left","left-bottom","left-top","right","right-bottom","right-top","top"],[z])}],"bg-repeat":[{bg:["no-repeat",{repeat:["","x","y","round","space"]}]}],"bg-size":[{bg:["auto","cover","contain",k]}],"bg-image":[{bg:["none",{"gradient-to":["t","tr","r","br","b","bl","l","tl"]},C]}],"bg-color":[{bg:[r]}],"gradient-from-pos":[{from:[m]}],"gradient-via-pos":[{via:[m]}],"gradient-to-pos":[{to:[m]}],"gradient-from":[{from:[b]}],"gradient-via":[{via:[b]}],"gradient-to":[{to:[b]}],rounded:[{rounded:[i]}],"rounded-s":[{"rounded-s":[i]}],"rounded-e":[{"rounded-e":[i]}],"rounded-t":[{"rounded-t":[i]}],"rounded-r":[{"rounded-r":[i]}],"rounded-b":[{"rounded-b":[i]}],"rounded-l":[{"rounded-l":[i]}],"rounded-ss":[{"rounded-ss":[i]}],"rounded-se":[{"rounded-se":[i]}],"rounded-ee":[{"rounded-ee":[i]}],"rounded-es":[{"rounded-es":[i]}],"rounded-tl":[{"rounded-tl":[i]}],"rounded-tr":[{"rounded-tr":[i]}],"rounded-br":[{"rounded-br":[i]}],"rounded-bl":[{"rounded-bl":[i]}],"border-w":[{border:[l]}],"border-w-x":[{"border-x":[l]}],"border-w-y":[{"border-y":[l]}],"border-w-s":[{"border-s":[l]}],"border-w-e":[{"border-e":[l]}],"border-w-t":[{"border-t":[l]}],"border-w-r":[{"border-r":[l]}],"border-w-b":[{"border-b":[l]}],"border-w-l":[{"border-l":[l]}],"border-opacity":[{"border-opacity":[v]}],"border-style":[{border:[].concat(["solid","dashed","dotted","double","none"],["hidden"])}],"divide-x":[{"divide-x":[l]}],"divide-x-reverse":["divide-x-reverse"],"divide-y":[{"divide-y":[l]}],"divide-y-reverse":["divide-y-reverse"],"divide-opacity":[{"divide-opacity":[v]}],"divide-style":[{divide:["solid","dashed","dotted","double","none"]}],"border-color":[{border:[n]}],"border-color-x":[{"border-x":[n]}],"border-color-y":[{"border-y":[n]}],"border-color-t":[{"border-t":[n]}],"border-color-r":[{"border-r":[n]}],"border-color-b":[{"border-b":[n]}],"border-color-l":[{"border-l":[n]}],"divide-color":[{divide:[n]}],"outline-style":[{outline:[""].concat(["solid","dashed","dotted","double","none"])}],"outline-offset":[{"outline-offset":[x]}],"outline-w":[{outline:[x]}],"outline-color":[{outline:[r]}],"ring-w":[{ring:q()}],"ring-w-inset":["ring-inset"],"ring-color":[{ring:[r]}],"ring-opacity":[{"ring-opacity":[v]}],"ring-offset-w":[{"ring-offset":[x]}],"ring-offset-color":[{"ring-offset":[r]}],shadow:[{shadow:["","inner","none",N,S]}],"shadow-color":[{shadow:[A]}],opacity:[{opacity:[v]}],"mix-blend":[{"mix-blend":["normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light","difference","exclusion","hue","saturation","color","luminosity","plus-lighter"]}],"bg-blend":[{"bg-blend":["normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light","difference","exclusion","hue","saturation","color","luminosity","plus-lighter"]}],filter:[{filter:["","none"]}],blur:[{blur:[o]}],brightness:[{brightness:[t]}],contrast:[{contrast:[s]}],"drop-shadow":[{"drop-shadow":["","none",N,I]}],grayscale:[{grayscale:[c]}],"hue-rotate":[{"hue-rotate":[d]}],invert:[{invert:[u]}],saturate:[{saturate:[T]}],sepia:[{sepia:[E]}],"backdrop-filter":[{"backdrop-filter":["","none"]}],"backdrop-blur":[{"backdrop-blur":[o]}],"backdrop-brightness":[{"backdrop-brightness":[t]}],"backdrop-contrast":[{"backdrop-contrast":[s]}],"backdrop-grayscale":[{"backdrop-grayscale":[c]}],"backdrop-hue-rotate":[{"backdrop-hue-rotate":[d]}],"backdrop-invert":[{"backdrop-invert":[u]}],"backdrop-opacity":[{"backdrop-opacity":[v]}],"backdrop-saturate":[{"backdrop-saturate":[T]}],"backdrop-sepia":[{"backdrop-sepia":[E]}],"border-collapse":[{border:["collapse","separate"]}],"border-spacing":[{"border-spacing":[a]}],"border-spacing-x":[{"border-spacing-x":[a]}],"border-spacing-y":[{"border-spacing-y":[a]}],"table-layout":[{table:["auto","fixed"]}],caption:[{caption:["top","bottom"]}],transition:[{transition:["none","all","","colors","opacity","shadow","transform",I]}],duration:[{duration:J()}],ease:[{ease:["linear","in","out","in-out",I]}],delay:[{delay:J()}],animate:[{animate:["none","spin","ping","pulse","bounce",I]}],transform:[{transform:["","gpu","none"]}],scale:[{scale:[O]}],"scale-x":[{"scale-x":[O]}],"scale-y":[{"scale-y":[O]}],rotate:[{rotate:[P,I]}],"translate-x":[{"translate-x":[$]}],"translate-y":[{"translate-y":[$]}],"skew-x":[{"skew-x":[_]}],"skew-y":[{"skew-y":[_]}],"transform-origin":[{origin:["center","top","top-right","right","bottom-right","bottom","bottom-left","left","top-left",I]}],accent:[{accent:["auto",r]}],appearance:["appearance-none"],cursor:[{cursor:["auto","default","pointer","wait","text","move","help","not-allowed","none","context-menu","progress","cell","crosshair","vertical-text","alias","copy","no-drop","grab","grabbing","all-scroll","col-resize","row-resize","n-resize","e-resize","s-resize","w-resize","ne-resize","nw-resize","se-resize","sw-resize","ew-resize","ns-resize","nesw-resize","nwse-resize","zoom-in","zoom-out",I]}],"caret-color":[{caret:[r]}],"pointer-events":[{"pointer-events":["none","auto"]}],resize:[{resize:["none","y","x",""]}],"scroll-behavior":[{scroll:["auto","smooth"]}],"scroll-m":[{"scroll-m":[e]}],"scroll-mx":[{"scroll-mx":[e]}],"scroll-my":[{"scroll-my":[e]}],"scroll-ms":[{"scroll-ms":[e]}],"scroll-me":[{"scroll-me":[e]}],"scroll-mt":[{"scroll-mt":[e]}],"scroll-mr":[{"scroll-mr":[e]}],"scroll-mb":[{"scroll-mb":[e]}],"scroll-ml":[{"scroll-ml":[e]}],"scroll-p":[{"scroll-p":[e]}],"scroll-px":[{"scroll-px":[e]}],"scroll-py":[{"scroll-py":[e]}],"scroll-ps":[{"scroll-ps":[e]}],"scroll-pe":[{"scroll-pe":[e]}],"scroll-pt":[{"scroll-pt":[e]}],"scroll-pr":[{"scroll-pr":[e]}],"scroll-pb":[{"scroll-pb":[e]}],"scroll-pl":[{"scroll-pl":[e]}],"snap-align":[{snap:["start","end","center","align-none"]}],"snap-stop":[{snap:["normal","always"]}],"snap-type":[{snap:["none","x","y","both"]}],"snap-strictness":[{snap:["mandatory","proximity"]}],touch:[{touch:["auto","none","pinch-zoom","manipulation",{pan:["x","left","right","y","up","down"]}]}],select:[{select:["none","text","all","auto"]}],"will-change":[{"will-change":["auto","scroll","contents","transform",I]}],fill:[{fill:[r,"none"]}],"stroke-w":[{stroke:[x,j]}],stroke:[{stroke:[r,"none"]}],sr:["sr-only","not-sr-only"]},conflictingClassGroups:{overflow:["overflow-x","overflow-y"],overscroll:["overscroll-x","overscroll-y"],inset:["inset-x","inset-y","start","end","top","right","bottom","left"],"inset-x":["right","left"],"inset-y":["top","bottom"],flex:["basis","grow","shrink"],gap:["gap-x","gap-y"],p:["px","py","ps","pe","pt","pr","pb","pl"],px:["pr","pl"],py:["pt","pb"],m:["mx","my","ms","me","mt","mr","mb","ml"],mx:["mr","ml"],my:["mt","mb"],"font-size":["leading"],"fvn-normal":["fvn-ordinal","fvn-slashed-zero","fvn-figure","fvn-spacing","fvn-fraction"],"fvn-ordinal":["fvn-normal"],"fvn-slashed-zero":["fvn-normal"],"fvn-figure":["fvn-normal"],"fvn-spacing":["fvn-normal"],"fvn-fraction":["fvn-normal"],rounded:["rounded-s","rounded-e","rounded-t","rounded-r","rounded-b","rounded-l","rounded-ss","rounded-se","rounded-ee","rounded-es","rounded-tl","rounded-tr","rounded-br","rounded-bl"],"rounded-s":["rounded-ss","rounded-es"],"rounded-e":["rounded-se","rounded-ee"],"rounded-t":["rounded-tl","rounded-tr"],"rounded-r":["rounded-tr","rounded-br"],"rounded-b":["rounded-br","rounded-bl"],"rounded-l":["rounded-tl","rounded-bl"],"border-spacing":["border-spacing-x","border-spacing-y"],"border-w":["border-w-s","border-w-e","border-w-t","border-w-r","border-w-b","border-w-l"],"border-w-x":["border-w-r","border-w-l"],"border-w-y":["border-w-t","border-w-b"],"border-color":["border-color-t","border-color-r","border-color-b","border-color-l"],"border-color-x":["border-color-r","border-color-l"],"border-color-y":["border-color-t","border-color-b"],"scroll-m":["scroll-mx","scroll-my","scroll-ms","scroll-me","scroll-mt","scroll-mr","scroll-mb","scroll-ml"],"scroll-mx":["scroll-mr","scroll-ml"],"scroll-my":["scroll-mt","scroll-mb"],"scroll-p":["scroll-px","scroll-py","scroll-ps","scroll-pe","scroll-pt","scroll-pr","scroll-pb","scroll-pl"],"scroll-px":["scroll-pr","scroll-pl"],"scroll-py":["scroll-pt","scroll-pb"]},conflictingClassGroupModifiers:{"font-size":["leading"]}}}function L(r,e){for(var o in e)J(r,o,e[o]);return r}var B=Object.prototype.hasOwnProperty,D=new Set(["string","number","boolean"]);function J(r,e,o){if(B.call(r,e)&&!D.has(typeof o)&&null!==o){if(Array.isArray(o)&&Array.isArray(r[e]))r[e]=r[e].concat(o);else if("object"==typeof o&&"object"==typeof r[e]){if(null===r[e])return void(r[e]=o);for(var t in o)J(r[e],t,o[t])}}else r[e]=o}var U=p(q),V=r;exports.createTailwindMerge=p,exports.extendTailwindMerge=function(r){for(var e=arguments.length,o=new Array(e>1?e-1:0),t=1;t<e;t++)o[t-1]=arguments[t];return p.apply(void 0,"function"==typeof r?[q,r].concat(o):[function(){return L(q(),r)}].concat(o))},exports.fromTheme=f,exports.getDefaultConfig=q,exports.join=V,exports.mergeConfigs=L,exports.twJoin=r,exports.twMerge=U,exports.validators=R;
+function r(){for(var r,o,t=0,n="";t<arguments.length;)(r=arguments[t++])&&(o=e(r))&&(n&&(n+=" "),n+=o);return n}function e(r){if("string"==typeof r)return r;for(var o,t="",n=0;n<r.length;n++)r[n]&&(o=e(r[n]))&&(t&&(t+=" "),t+=o);return t}Object.defineProperty(exports, "__esModule", ({value:!0}));var o="-";function t(r){var e=function(r){var e=r.theme,o=r.prefix,t={nextPart:new Map,validators:[]},n=function(r,e){return e?r.map((function(r){return[r[0],r[1].map((function(r){return"string"==typeof r?e+r:"object"==typeof r?Object.fromEntries(Object.entries(r).map((function(r){return[e+r[0],r[1]]}))):r}))]})):r}(Object.entries(r.classGroups),o);return n.forEach((function(r){a(r[1],t,r[0],e)})),t}(r),t=r.conflictingClassGroups,l=r.conflictingClassGroupModifiers,s=void 0===l?{}:l;return{getClassGroupId:function(r){var t=r.split(o);return""===t[0]&&1!==t.length&&t.shift(),n(t,e)||function(r){if(i.test(r)){var e=i.exec(r)[1],o=e?.substring(0,e.indexOf(":"));if(o)return"arbitrary.."+o}}(r)},getConflictingClassGroupIds:function(r,e){var o=t[r]||[];return e&&s[r]?[].concat(o,s[r]):o}}}function n(r,e){if(0===r.length)return e.classGroupId;var t=e.nextPart.get(r[0]),i=t?n(r.slice(1),t):void 0;if(i)return i;if(0!==e.validators.length){var a=r.join(o);return e.validators.find((function(r){return(0,r.validator)(a)}))?.classGroupId}}var i=/^\[(.+)\]$/;function a(r,e,o,t){r.forEach((function(r){if("string"!=typeof r){if("function"==typeof r)return r.isThemeGetter?void a(r(t),e,o,t):void e.validators.push({validator:r,classGroupId:o});Object.entries(r).forEach((function(r){a(r[1],l(e,r[0]),o,t)}))}else(""===r?e:l(e,r)).classGroupId=o}))}function l(r,e){var t=r;return e.split(o).forEach((function(r){t.nextPart.has(r)||t.nextPart.set(r,{nextPart:new Map,validators:[]}),t=t.nextPart.get(r)})),t}function s(r){if(r<1)return{get:function(){},set:function(){}};var e=0,o=new Map,t=new Map;function n(n,i){o.set(n,i),++e>r&&(e=0,t=o,o=new Map)}return{get:function(r){var e=o.get(r);return void 0!==e?e:void 0!==(e=t.get(r))?(n(r,e),e):void 0},set:function(r,e){o.has(r)?o.set(r,e):n(r,e)}}}var c="!";function d(r){var e=r.separator||":",o=1===e.length,t=e[0],n=e.length;return function(r){for(var i,a=[],l=0,s=0,d=0;d<r.length;d++){var u=r[d];if(0===l){if(u===t&&(o||r.slice(d,d+n)===e)){a.push(r.slice(s,d)),s=d+n;continue}if("/"===u){i=d;continue}}"["===u?l++:"]"===u&&l--}var p=0===a.length?r:r.substring(s),f=p.startsWith(c);return{modifiers:a,hasImportantModifier:f,baseClassName:f?p.substring(1):p,maybePostfixModifierPosition:i&&i>s?i-s:void 0}}}var u=/\s+/;function p(){for(var e=arguments.length,o=new Array(e),n=0;n<e;n++)o[n]=arguments[n];var i,a,l,p=function(r){var e=o[0],n=o.slice(1).reduce((function(r,e){return e(r)}),e());return i=function(r){return{cache:s(r.cacheSize),splitModifiers:d(r),...t(r)}}(n),a=i.cache.get,l=i.cache.set,p=f,f(r)};function f(r){var e=a(r);if(e)return e;var o=function(r,e){var o=e.splitModifiers,t=e.getClassGroupId,n=e.getConflictingClassGroupIds,i=new Set;return r.trim().split(u).map((function(r){var e=o(r),n=e.modifiers,i=e.hasImportantModifier,a=e.baseClassName,l=e.maybePostfixModifierPosition,s=t(l?a.substring(0,l):a),d=Boolean(l);if(!s){if(!l)return{isTailwindClass:!1,originalClassName:r};if(!(s=t(a)))return{isTailwindClass:!1,originalClassName:r};d=!1}var u=function(r){if(r.length<=1)return r;var e=[],o=[];return r.forEach((function(r){"["===r[0]?(e.push.apply(e,o.sort().concat([r])),o=[]):o.push(r)})),e.push.apply(e,o.sort()),e}(n).join(":");return{isTailwindClass:!0,modifierId:i?u+c:u,classGroupId:s,originalClassName:r,hasPostfixModifier:d}})).reverse().filter((function(r){if(!r.isTailwindClass)return!0;var e=r.modifierId,o=r.classGroupId,t=r.hasPostfixModifier,a=e+o;return!i.has(a)&&(i.add(a),n(o,t).forEach((function(r){return i.add(e+r)})),!0)})).reverse().map((function(r){return r.originalClassName})).join(" ")}(r,i);return l(r,o),o}return function(){return p(r.apply(null,arguments))}}function f(r){var e=function(e){return e[r]||[]};return e.isThemeGetter=!0,e}var b=/^\[(?:([a-z-]+):)?(.+)\]$/i,m=/^\d+\/\d+$/,g=new Set(["px","full","screen"]),h=/^(\d+(\.\d+)?)?(xs|sm|md|lg|xl)$/,v=/\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh|cq(w|h|i|b|min|max))|\b(calc|min|max|clamp)\(.+\)|^0$/,y=/^-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)/;function x(r){return M(r)||g.has(r)||m.test(r)||w(r)}function w(r){return T(r,"length",O)}function k(r){return T(r,"size",E)}function z(r){return T(r,"position",E)}function C(r){return T(r,"url",_)}function j(r){return T(r,"number",M)}function M(r){return!Number.isNaN(Number(r))}function G(r){return r.endsWith("%")&&M(r.slice(0,-1))}function P(r){return W(r)||T(r,"number",W)}function I(r){return b.test(r)}function A(){return!0}function N(r){return h.test(r)}function S(r){return T(r,"",$)}function T(r,e,o){var t=b.exec(r);return!!t&&(t[1]?t[1]===e:o(t[2]))}function O(r){return v.test(r)}function E(){return!1}function _(r){return r.startsWith("url(")}function W(r){return Number.isInteger(Number(r))}function $(r){return y.test(r)}var R={__proto__:null,isAny:A,isArbitraryLength:w,isArbitraryNumber:j,isArbitraryPosition:z,isArbitraryShadow:S,isArbitrarySize:k,isArbitraryUrl:C,isArbitraryValue:I,isArbitraryWeight:j,isInteger:P,isLength:x,isNumber:M,isPercent:G,isTshirtSize:N};function q(){var r=f("colors"),e=f("spacing"),o=f("blur"),t=f("brightness"),n=f("borderColor"),i=f("borderRadius"),a=f("borderSpacing"),l=f("borderWidth"),s=f("contrast"),c=f("grayscale"),d=f("hueRotate"),u=f("invert"),p=f("gap"),b=f("gradientColorStops"),m=f("gradientColorStopPositions"),g=f("inset"),h=f("margin"),v=f("opacity"),y=f("padding"),T=f("saturate"),O=f("scale"),E=f("sepia"),_=f("skew"),W=f("space"),$=f("translate"),R=function(){return["auto",I,e]},q=function(){return[I,e]},L=function(){return["",x]},B=function(){return["auto",M,I]},D=function(){return["","0",I]},J=function(){return[M,j]},U=function(){return[M,I]};return{cacheSize:500,theme:{colors:[A],spacing:[x],blur:["none","",N,I],brightness:J(),borderColor:[r],borderRadius:["none","","full",N,I],borderSpacing:q(),borderWidth:L(),contrast:J(),grayscale:D(),hueRotate:U(),invert:D(),gap:q(),gradientColorStops:[r],gradientColorStopPositions:[G,w],inset:R(),margin:R(),opacity:J(),padding:q(),saturate:J(),scale:J(),sepia:D(),skew:U(),space:q(),translate:q()},classGroups:{aspect:[{aspect:["auto","square","video",I]}],container:["container"],columns:[{columns:[N]}],"break-after":[{"break-after":["auto","avoid","all","avoid-page","page","left","right","column"]}],"break-before":[{"break-before":["auto","avoid","all","avoid-page","page","left","right","column"]}],"break-inside":[{"break-inside":["auto","avoid","avoid-page","avoid-column"]}],"box-decoration":[{"box-decoration":["slice","clone"]}],box:[{box:["border","content"]}],display:["block","inline-block","inline","flex","inline-flex","table","inline-table","table-caption","table-cell","table-column","table-column-group","table-footer-group","table-header-group","table-row-group","table-row","flow-root","grid","inline-grid","contents","list-item","hidden"],float:[{float:["right","left","none"]}],clear:[{clear:["left","right","both","none"]}],isolation:["isolate","isolation-auto"],"object-fit":[{object:["contain","cover","fill","none","scale-down"]}],"object-position":[{object:[].concat(["bottom","center","left","left-bottom","left-top","right","right-bottom","right-top","top"],[I])}],overflow:[{overflow:["auto","hidden","clip","visible","scroll"]}],"overflow-x":[{"overflow-x":["auto","hidden","clip","visible","scroll"]}],"overflow-y":[{"overflow-y":["auto","hidden","clip","visible","scroll"]}],overscroll:[{overscroll:["auto","contain","none"]}],"overscroll-x":[{"overscroll-x":["auto","contain","none"]}],"overscroll-y":[{"overscroll-y":["auto","contain","none"]}],position:["static","fixed","absolute","relative","sticky"],inset:[{inset:[g]}],"inset-x":[{"inset-x":[g]}],"inset-y":[{"inset-y":[g]}],start:[{start:[g]}],end:[{end:[g]}],top:[{top:[g]}],right:[{right:[g]}],bottom:[{bottom:[g]}],left:[{left:[g]}],visibility:["visible","invisible","collapse"],z:[{z:["auto",P]}],basis:[{basis:R()}],"flex-direction":[{flex:["row","row-reverse","col","col-reverse"]}],"flex-wrap":[{flex:["wrap","wrap-reverse","nowrap"]}],flex:[{flex:["1","auto","initial","none",I]}],grow:[{grow:D()}],shrink:[{shrink:D()}],order:[{order:["first","last","none",P]}],"grid-cols":[{"grid-cols":[A]}],"col-start-end":[{col:["auto",{span:["full",P]},I]}],"col-start":[{"col-start":B()}],"col-end":[{"col-end":B()}],"grid-rows":[{"grid-rows":[A]}],"row-start-end":[{row:["auto",{span:[P]},I]}],"row-start":[{"row-start":B()}],"row-end":[{"row-end":B()}],"grid-flow":[{"grid-flow":["row","col","dense","row-dense","col-dense"]}],"auto-cols":[{"auto-cols":["auto","min","max","fr",I]}],"auto-rows":[{"auto-rows":["auto","min","max","fr",I]}],gap:[{gap:[p]}],"gap-x":[{"gap-x":[p]}],"gap-y":[{"gap-y":[p]}],"justify-content":[{justify:["normal"].concat(["start","end","center","between","around","evenly","stretch"])}],"justify-items":[{"justify-items":["start","end","center","stretch"]}],"justify-self":[{"justify-self":["auto","start","end","center","stretch"]}],"align-content":[{content:["normal"].concat(["start","end","center","between","around","evenly","stretch"],["baseline"])}],"align-items":[{items:["start","end","center","baseline","stretch"]}],"align-self":[{self:["auto","start","end","center","stretch","baseline"]}],"place-content":[{"place-content":[].concat(["start","end","center","between","around","evenly","stretch"],["baseline"])}],"place-items":[{"place-items":["start","end","center","baseline","stretch"]}],"place-self":[{"place-self":["auto","start","end","center","stretch"]}],p:[{p:[y]}],px:[{px:[y]}],py:[{py:[y]}],ps:[{ps:[y]}],pe:[{pe:[y]}],pt:[{pt:[y]}],pr:[{pr:[y]}],pb:[{pb:[y]}],pl:[{pl:[y]}],m:[{m:[h]}],mx:[{mx:[h]}],my:[{my:[h]}],ms:[{ms:[h]}],me:[{me:[h]}],mt:[{mt:[h]}],mr:[{mr:[h]}],mb:[{mb:[h]}],ml:[{ml:[h]}],"space-x":[{"space-x":[W]}],"space-x-reverse":["space-x-reverse"],"space-y":[{"space-y":[W]}],"space-y-reverse":["space-y-reverse"],w:[{w:["auto","min","max","fit",I,e]}],"min-w":[{"min-w":["min","max","fit",I,x]}],"max-w":[{"max-w":["0","none","full","min","max","fit","prose",{screen:[N]},N,I]}],h:[{h:[I,e,"auto","min","max","fit"]}],"min-h":[{"min-h":["min","max","fit",I,x]}],"max-h":[{"max-h":[I,e,"min","max","fit"]}],"font-size":[{text:["base",N,w]}],"font-smoothing":["antialiased","subpixel-antialiased"],"font-style":["italic","not-italic"],"font-weight":[{font:["thin","extralight","light","normal","medium","semibold","bold","extrabold","black",j]}],"font-family":[{font:[A]}],"fvn-normal":["normal-nums"],"fvn-ordinal":["ordinal"],"fvn-slashed-zero":["slashed-zero"],"fvn-figure":["lining-nums","oldstyle-nums"],"fvn-spacing":["proportional-nums","tabular-nums"],"fvn-fraction":["diagonal-fractions","stacked-fractons"],tracking:[{tracking:["tighter","tight","normal","wide","wider","widest",I]}],"line-clamp":[{"line-clamp":["none",M,j]}],leading:[{leading:["none","tight","snug","normal","relaxed","loose",I,x]}],"list-image":[{"list-image":["none",I]}],"list-style-type":[{list:["none","disc","decimal",I]}],"list-style-position":[{list:["inside","outside"]}],"placeholder-color":[{placeholder:[r]}],"placeholder-opacity":[{"placeholder-opacity":[v]}],"text-alignment":[{text:["left","center","right","justify","start","end"]}],"text-color":[{text:[r]}],"text-opacity":[{"text-opacity":[v]}],"text-decoration":["underline","overline","line-through","no-underline"],"text-decoration-style":[{decoration:[].concat(["solid","dashed","dotted","double","none"],["wavy"])}],"text-decoration-thickness":[{decoration:["auto","from-font",x]}],"underline-offset":[{"underline-offset":["auto",I,x]}],"text-decoration-color":[{decoration:[r]}],"text-transform":["uppercase","lowercase","capitalize","normal-case"],"text-overflow":["truncate","text-ellipsis","text-clip"],indent:[{indent:q()}],"vertical-align":[{align:["baseline","top","middle","bottom","text-top","text-bottom","sub","super",I]}],whitespace:[{whitespace:["normal","nowrap","pre","pre-line","pre-wrap","break-spaces"]}],break:[{break:["normal","words","all","keep"]}],hyphens:[{hyphens:["none","manual","auto"]}],content:[{content:["none",I]}],"bg-attachment":[{bg:["fixed","local","scroll"]}],"bg-clip":[{"bg-clip":["border","padding","content","text"]}],"bg-opacity":[{"bg-opacity":[v]}],"bg-origin":[{"bg-origin":["border","padding","content"]}],"bg-position":[{bg:[].concat(["bottom","center","left","left-bottom","left-top","right","right-bottom","right-top","top"],[z])}],"bg-repeat":[{bg:["no-repeat",{repeat:["","x","y","round","space"]}]}],"bg-size":[{bg:["auto","cover","contain",k]}],"bg-image":[{bg:["none",{"gradient-to":["t","tr","r","br","b","bl","l","tl"]},C]}],"bg-color":[{bg:[r]}],"gradient-from-pos":[{from:[m]}],"gradient-via-pos":[{via:[m]}],"gradient-to-pos":[{to:[m]}],"gradient-from":[{from:[b]}],"gradient-via":[{via:[b]}],"gradient-to":[{to:[b]}],rounded:[{rounded:[i]}],"rounded-s":[{"rounded-s":[i]}],"rounded-e":[{"rounded-e":[i]}],"rounded-t":[{"rounded-t":[i]}],"rounded-r":[{"rounded-r":[i]}],"rounded-b":[{"rounded-b":[i]}],"rounded-l":[{"rounded-l":[i]}],"rounded-ss":[{"rounded-ss":[i]}],"rounded-se":[{"rounded-se":[i]}],"rounded-ee":[{"rounded-ee":[i]}],"rounded-es":[{"rounded-es":[i]}],"rounded-tl":[{"rounded-tl":[i]}],"rounded-tr":[{"rounded-tr":[i]}],"rounded-br":[{"rounded-br":[i]}],"rounded-bl":[{"rounded-bl":[i]}],"border-w":[{border:[l]}],"border-w-x":[{"border-x":[l]}],"border-w-y":[{"border-y":[l]}],"border-w-s":[{"border-s":[l]}],"border-w-e":[{"border-e":[l]}],"border-w-t":[{"border-t":[l]}],"border-w-r":[{"border-r":[l]}],"border-w-b":[{"border-b":[l]}],"border-w-l":[{"border-l":[l]}],"border-opacity":[{"border-opacity":[v]}],"border-style":[{border:[].concat(["solid","dashed","dotted","double","none"],["hidden"])}],"divide-x":[{"divide-x":[l]}],"divide-x-reverse":["divide-x-reverse"],"divide-y":[{"divide-y":[l]}],"divide-y-reverse":["divide-y-reverse"],"divide-opacity":[{"divide-opacity":[v]}],"divide-style":[{divide:["solid","dashed","dotted","double","none"]}],"border-color":[{border:[n]}],"border-color-x":[{"border-x":[n]}],"border-color-y":[{"border-y":[n]}],"border-color-t":[{"border-t":[n]}],"border-color-r":[{"border-r":[n]}],"border-color-b":[{"border-b":[n]}],"border-color-l":[{"border-l":[n]}],"divide-color":[{divide:[n]}],"outline-style":[{outline:[""].concat(["solid","dashed","dotted","double","none"])}],"outline-offset":[{"outline-offset":[I,x]}],"outline-w":[{outline:[x]}],"outline-color":[{outline:[r]}],"ring-w":[{ring:L()}],"ring-w-inset":["ring-inset"],"ring-color":[{ring:[r]}],"ring-opacity":[{"ring-opacity":[v]}],"ring-offset-w":[{"ring-offset":[x]}],"ring-offset-color":[{"ring-offset":[r]}],shadow:[{shadow:["","inner","none",N,S]}],"shadow-color":[{shadow:[A]}],opacity:[{opacity:[v]}],"mix-blend":[{"mix-blend":["normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light","difference","exclusion","hue","saturation","color","luminosity","plus-lighter"]}],"bg-blend":[{"bg-blend":["normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light","difference","exclusion","hue","saturation","color","luminosity","plus-lighter"]}],filter:[{filter:["","none"]}],blur:[{blur:[o]}],brightness:[{brightness:[t]}],contrast:[{contrast:[s]}],"drop-shadow":[{"drop-shadow":["","none",N,I]}],grayscale:[{grayscale:[c]}],"hue-rotate":[{"hue-rotate":[d]}],invert:[{invert:[u]}],saturate:[{saturate:[T]}],sepia:[{sepia:[E]}],"backdrop-filter":[{"backdrop-filter":["","none"]}],"backdrop-blur":[{"backdrop-blur":[o]}],"backdrop-brightness":[{"backdrop-brightness":[t]}],"backdrop-contrast":[{"backdrop-contrast":[s]}],"backdrop-grayscale":[{"backdrop-grayscale":[c]}],"backdrop-hue-rotate":[{"backdrop-hue-rotate":[d]}],"backdrop-invert":[{"backdrop-invert":[u]}],"backdrop-opacity":[{"backdrop-opacity":[v]}],"backdrop-saturate":[{"backdrop-saturate":[T]}],"backdrop-sepia":[{"backdrop-sepia":[E]}],"border-collapse":[{border:["collapse","separate"]}],"border-spacing":[{"border-spacing":[a]}],"border-spacing-x":[{"border-spacing-x":[a]}],"border-spacing-y":[{"border-spacing-y":[a]}],"table-layout":[{table:["auto","fixed"]}],caption:[{caption:["top","bottom"]}],transition:[{transition:["none","all","","colors","opacity","shadow","transform",I]}],duration:[{duration:U()}],ease:[{ease:["linear","in","out","in-out",I]}],delay:[{delay:U()}],animate:[{animate:["none","spin","ping","pulse","bounce",I]}],transform:[{transform:["","gpu","none"]}],scale:[{scale:[O]}],"scale-x":[{"scale-x":[O]}],"scale-y":[{"scale-y":[O]}],rotate:[{rotate:[P,I]}],"translate-x":[{"translate-x":[$]}],"translate-y":[{"translate-y":[$]}],"skew-x":[{"skew-x":[_]}],"skew-y":[{"skew-y":[_]}],"transform-origin":[{origin:["center","top","top-right","right","bottom-right","bottom","bottom-left","left","top-left",I]}],accent:[{accent:["auto",r]}],appearance:["appearance-none"],cursor:[{cursor:["auto","default","pointer","wait","text","move","help","not-allowed","none","context-menu","progress","cell","crosshair","vertical-text","alias","copy","no-drop","grab","grabbing","all-scroll","col-resize","row-resize","n-resize","e-resize","s-resize","w-resize","ne-resize","nw-resize","se-resize","sw-resize","ew-resize","ns-resize","nesw-resize","nwse-resize","zoom-in","zoom-out",I]}],"caret-color":[{caret:[r]}],"pointer-events":[{"pointer-events":["none","auto"]}],resize:[{resize:["none","y","x",""]}],"scroll-behavior":[{scroll:["auto","smooth"]}],"scroll-m":[{"scroll-m":q()}],"scroll-mx":[{"scroll-mx":q()}],"scroll-my":[{"scroll-my":q()}],"scroll-ms":[{"scroll-ms":q()}],"scroll-me":[{"scroll-me":q()}],"scroll-mt":[{"scroll-mt":q()}],"scroll-mr":[{"scroll-mr":q()}],"scroll-mb":[{"scroll-mb":q()}],"scroll-ml":[{"scroll-ml":q()}],"scroll-p":[{"scroll-p":q()}],"scroll-px":[{"scroll-px":q()}],"scroll-py":[{"scroll-py":q()}],"scroll-ps":[{"scroll-ps":q()}],"scroll-pe":[{"scroll-pe":q()}],"scroll-pt":[{"scroll-pt":q()}],"scroll-pr":[{"scroll-pr":q()}],"scroll-pb":[{"scroll-pb":q()}],"scroll-pl":[{"scroll-pl":q()}],"snap-align":[{snap:["start","end","center","align-none"]}],"snap-stop":[{snap:["normal","always"]}],"snap-type":[{snap:["none","x","y","both"]}],"snap-strictness":[{snap:["mandatory","proximity"]}],touch:[{touch:["auto","none","pinch-zoom","manipulation",{pan:["x","left","right","y","up","down"]}]}],select:[{select:["none","text","all","auto"]}],"will-change":[{"will-change":["auto","scroll","contents","transform",I]}],fill:[{fill:[r,"none"]}],"stroke-w":[{stroke:[x,j]}],stroke:[{stroke:[r,"none"]}],sr:["sr-only","not-sr-only"]},conflictingClassGroups:{overflow:["overflow-x","overflow-y"],overscroll:["overscroll-x","overscroll-y"],inset:["inset-x","inset-y","start","end","top","right","bottom","left"],"inset-x":["right","left"],"inset-y":["top","bottom"],flex:["basis","grow","shrink"],gap:["gap-x","gap-y"],p:["px","py","ps","pe","pt","pr","pb","pl"],px:["pr","pl"],py:["pt","pb"],m:["mx","my","ms","me","mt","mr","mb","ml"],mx:["mr","ml"],my:["mt","mb"],"font-size":["leading"],"fvn-normal":["fvn-ordinal","fvn-slashed-zero","fvn-figure","fvn-spacing","fvn-fraction"],"fvn-ordinal":["fvn-normal"],"fvn-slashed-zero":["fvn-normal"],"fvn-figure":["fvn-normal"],"fvn-spacing":["fvn-normal"],"fvn-fraction":["fvn-normal"],rounded:["rounded-s","rounded-e","rounded-t","rounded-r","rounded-b","rounded-l","rounded-ss","rounded-se","rounded-ee","rounded-es","rounded-tl","rounded-tr","rounded-br","rounded-bl"],"rounded-s":["rounded-ss","rounded-es"],"rounded-e":["rounded-se","rounded-ee"],"rounded-t":["rounded-tl","rounded-tr"],"rounded-r":["rounded-tr","rounded-br"],"rounded-b":["rounded-br","rounded-bl"],"rounded-l":["rounded-tl","rounded-bl"],"border-spacing":["border-spacing-x","border-spacing-y"],"border-w":["border-w-s","border-w-e","border-w-t","border-w-r","border-w-b","border-w-l"],"border-w-x":["border-w-r","border-w-l"],"border-w-y":["border-w-t","border-w-b"],"border-color":["border-color-t","border-color-r","border-color-b","border-color-l"],"border-color-x":["border-color-r","border-color-l"],"border-color-y":["border-color-t","border-color-b"],"scroll-m":["scroll-mx","scroll-my","scroll-ms","scroll-me","scroll-mt","scroll-mr","scroll-mb","scroll-ml"],"scroll-mx":["scroll-mr","scroll-ml"],"scroll-my":["scroll-mt","scroll-mb"],"scroll-p":["scroll-px","scroll-py","scroll-ps","scroll-pe","scroll-pt","scroll-pr","scroll-pb","scroll-pl"],"scroll-px":["scroll-pr","scroll-pl"],"scroll-py":["scroll-pt","scroll-pb"]},conflictingClassGroupModifiers:{"font-size":["leading"]}}}function L(r,e){for(var o in e)J(r,o,e[o]);return r}var B=Object.prototype.hasOwnProperty,D=new Set(["string","number","boolean"]);function J(r,e,o){if(B.call(r,e)&&!D.has(typeof o)&&null!==o){if(Array.isArray(o)&&Array.isArray(r[e]))r[e]=r[e].concat(o);else if("object"==typeof o&&"object"==typeof r[e]){if(null===r[e])return void(r[e]=o);for(var t in o)J(r[e],t,o[t])}}else r[e]=o}var U=p(q),V=r;exports.createTailwindMerge=p,exports.extendTailwindMerge=function(r){for(var e=arguments.length,o=new Array(e>1?e-1:0),t=1;t<e;t++)o[t-1]=arguments[t];return p.apply(void 0,"function"==typeof r?[q,r].concat(o):[function(){return L(q(),r)}].concat(o))},exports.fromTheme=f,exports.getDefaultConfig=q,exports.join=V,exports.mergeConfigs=L,exports.twJoin=r,exports.twMerge=U,exports.validators=R;
 //# sourceMappingURL=tailwind-merge.cjs.production.min.js.map
 
 
@@ -19957,7 +19921,6 @@ function r(){for(var r,o,t=0,n="";t<arguments.length;)(r=arguments[t++])&&(o=e(r
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Cp: () => (/* binding */ hide),
-/* harmony export */   JB: () => (/* binding */ rectToClientRect),
 /* harmony export */   Qo: () => (/* binding */ inline),
 /* harmony export */   RR: () => (/* binding */ flip),
 /* harmony export */   US: () => (/* binding */ detectOverflow),
@@ -19969,34 +19932,23 @@ function r(){for(var r,o,t=0,n="";t<arguments.length;)(r=arguments[t++])&&(o=e(r
 /* harmony export */   uY: () => (/* binding */ shift),
 /* harmony export */   x7: () => (/* binding */ arrow)
 /* harmony export */ });
-function getAlignment(placement) {
-  return placement.split('-')[1];
-}
+/* harmony import */ var _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36978);
 
-function getLengthFromAxis(axis) {
-  return axis === 'y' ? 'height' : 'width';
-}
 
-function getSide(placement) {
-  return placement.split('-')[0];
-}
-
-function getMainAxisFromPlacement(placement) {
-  return ['top', 'bottom'].includes(getSide(placement)) ? 'x' : 'y';
-}
 
 function computeCoordsFromPlacement(_ref, placement, rtl) {
   let {
     reference,
     floating
   } = _ref;
+  const sideAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSideAxis */ .Qq)(placement);
+  const alignmentAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignmentAxis */ .Wh)(placement);
+  const alignLength = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAxisLength */ .I4)(alignmentAxis);
+  const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(placement);
+  const isVertical = sideAxis === 'y';
   const commonX = reference.x + reference.width / 2 - floating.width / 2;
   const commonY = reference.y + reference.height / 2 - floating.height / 2;
-  const mainAxis = getMainAxisFromPlacement(placement);
-  const length = getLengthFromAxis(mainAxis);
-  const commonAlign = reference[length] / 2 - floating[length] / 2;
-  const side = getSide(placement);
-  const isVertical = mainAxis === 'x';
+  const commonAlign = reference[alignLength] / 2 - floating[alignLength] / 2;
   let coords;
   switch (side) {
     case 'top':
@@ -20029,12 +19981,12 @@ function computeCoordsFromPlacement(_ref, placement, rtl) {
         y: reference.y
       };
   }
-  switch (getAlignment(placement)) {
+  switch ((0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignment */ .hp)(placement)) {
     case 'start':
-      coords[mainAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
+      coords[alignmentAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
       break;
     case 'end':
-      coords[mainAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
+      coords[alignmentAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
       break;
   }
   return coords;
@@ -20132,39 +20084,6 @@ const computePosition = async (reference, floating, config) => {
   };
 };
 
-function evaluate(value, param) {
-  return typeof value === 'function' ? value(param) : value;
-}
-
-function expandPaddingObject(padding) {
-  return {
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    ...padding
-  };
-}
-
-function getSideObjectFromPadding(padding) {
-  return typeof padding !== 'number' ? expandPaddingObject(padding) : {
-    top: padding,
-    right: padding,
-    bottom: padding,
-    left: padding
-  };
-}
-
-function rectToClientRect(rect) {
-  return {
-    ...rect,
-    top: rect.y,
-    left: rect.x,
-    right: rect.x + rect.width,
-    bottom: rect.y + rect.height
-  };
-}
-
 /**
  * Resolves with an object of overflow side offsets that determine how much the
  * element is overflowing a given clipping boundary on each side.
@@ -20192,11 +20111,11 @@ async function detectOverflow(state, options) {
     elementContext = 'floating',
     altBoundary = false,
     padding = 0
-  } = evaluate(options, state);
-  const paddingObject = getSideObjectFromPadding(padding);
+  } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state);
+  const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getPaddingObject */ .yd)(padding);
   const altContext = elementContext === 'floating' ? 'reference' : 'floating';
   const element = elements[altBoundary ? altContext : elementContext];
-  const clippingClientRect = rectToClientRect(await platform.getClippingRect({
+  const clippingClientRect = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .rectToClientRect */ .JB)(await platform.getClippingRect({
     element: ((_await$platform$isEle = await (platform.isElement == null ? void 0 : platform.isElement(element))) != null ? _await$platform$isEle : true) ? element : element.contextElement || (await (platform.getDocumentElement == null ? void 0 : platform.getDocumentElement(elements.floating))),
     boundary,
     rootBoundary,
@@ -20215,7 +20134,7 @@ async function detectOverflow(state, options) {
     x: 1,
     y: 1
   };
-  const elementClientRect = rectToClientRect(platform.convertOffsetParentRelativeRectToViewportRelativeRect ? await platform.convertOffsetParentRelativeRectToViewportRelativeRect({
+  const elementClientRect = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .rectToClientRect */ .JB)(platform.convertOffsetParentRelativeRectToViewportRelativeRect ? await platform.convertOffsetParentRelativeRectToViewportRelativeRect({
     rect,
     offsetParent,
     strategy
@@ -20226,13 +20145,6 @@ async function detectOverflow(state, options) {
     left: (clippingClientRect.left - elementClientRect.left + paddingObject.left) / offsetScale.x,
     right: (elementClientRect.right - clippingClientRect.right + paddingObject.right) / offsetScale.x
   };
-}
-
-const min = Math.min;
-const max = Math.max;
-
-function within(min$1, value, max$1) {
-  return max(min$1, min(value, max$1));
 }
 
 /**
@@ -20250,23 +20162,24 @@ const arrow = options => ({
       placement,
       rects,
       platform,
-      elements
+      elements,
+      middlewareData
     } = state;
     // Since `element` is required, we don't Partial<> the type.
     const {
       element,
       padding = 0
-    } = evaluate(options, state) || {};
+    } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state) || {};
     if (element == null) {
       return {};
     }
-    const paddingObject = getSideObjectFromPadding(padding);
+    const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getPaddingObject */ .yd)(padding);
     const coords = {
       x,
       y
     };
-    const axis = getMainAxisFromPlacement(placement);
-    const length = getLengthFromAxis(axis);
+    const axis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignmentAxis */ .Wh)(placement);
+    const length = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAxisLength */ .I4)(axis);
     const arrowDimensions = await platform.getDimensions(element);
     const isYAxis = axis === 'y';
     const minProp = isYAxis ? 'top' : 'left';
@@ -20286,75 +20199,41 @@ const arrow = options => ({
     // If the padding is large enough that it causes the arrow to no longer be
     // centered, modify the padding so that it is centered.
     const largestPossiblePadding = clientSize / 2 - arrowDimensions[length] / 2 - 1;
-    const minPadding = min(paddingObject[minProp], largestPossiblePadding);
-    const maxPadding = min(paddingObject[maxProp], largestPossiblePadding);
+    const minPadding = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .min */ .VV)(paddingObject[minProp], largestPossiblePadding);
+    const maxPadding = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .min */ .VV)(paddingObject[maxProp], largestPossiblePadding);
 
     // Make sure the arrow doesn't overflow the floating element if the center
     // point is outside the floating element's bounds.
     const min$1 = minPadding;
     const max = clientSize - arrowDimensions[length] - maxPadding;
     const center = clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
-    const offset = within(min$1, center, max);
+    const offset = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .clamp */ .uZ)(min$1, center, max);
 
     // If the reference is small enough that the arrow's padding causes it to
     // to point to nothing for an aligned placement, adjust the offset of the
-    // floating element itself. This stops `shift()` from taking action, but can
-    // be worked around by calling it again after the `arrow()` if desired.
-    const shouldAddOffset = getAlignment(placement) != null && center != offset && rects.reference[length] / 2 - (center < min$1 ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
-    const alignmentOffset = shouldAddOffset ? center < min$1 ? min$1 - center : max - center : 0;
+    // floating element itself. To ensure `shift()` continues to take action,
+    // a single reset is performed when this is true.
+    const shouldAddOffset = !middlewareData.arrow && (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignment */ .hp)(placement) != null && center != offset && rects.reference[length] / 2 - (center < min$1 ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
+    const alignmentOffset = shouldAddOffset ? center < min$1 ? center - min$1 : center - max : 0;
     return {
-      [axis]: coords[axis] - alignmentOffset,
+      [axis]: coords[axis] + alignmentOffset,
       data: {
         [axis]: offset,
-        centerOffset: center - offset + alignmentOffset
-      }
+        centerOffset: center - offset - alignmentOffset,
+        ...(shouldAddOffset && {
+          alignmentOffset
+        })
+      },
+      reset: shouldAddOffset
     };
   }
 });
 
-const sides = ['top', 'right', 'bottom', 'left'];
-const allPlacements = /*#__PURE__*/sides.reduce((acc, side) => acc.concat(side, side + "-start", side + "-end"), []);
-
-const oppositeSideMap = {
-  left: 'right',
-  right: 'left',
-  bottom: 'top',
-  top: 'bottom'
-};
-function getOppositePlacement(placement) {
-  return placement.replace(/left|right|bottom|top/g, side => oppositeSideMap[side]);
-}
-
-function getAlignmentSides(placement, rects, rtl) {
-  if (rtl === void 0) {
-    rtl = false;
-  }
-  const alignment = getAlignment(placement);
-  const mainAxis = getMainAxisFromPlacement(placement);
-  const length = getLengthFromAxis(mainAxis);
-  let mainAlignmentSide = mainAxis === 'x' ? alignment === (rtl ? 'end' : 'start') ? 'right' : 'left' : alignment === 'start' ? 'bottom' : 'top';
-  if (rects.reference[length] > rects.floating[length]) {
-    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
-  }
-  return {
-    main: mainAlignmentSide,
-    cross: getOppositePlacement(mainAlignmentSide)
-  };
-}
-
-const oppositeAlignmentMap = {
-  start: 'end',
-  end: 'start'
-};
-function getOppositeAlignmentPlacement(placement) {
-  return placement.replace(/start|end/g, alignment => oppositeAlignmentMap[alignment]);
-}
-
 function getPlacementList(alignment, autoAlignment, allowedPlacements) {
-  const allowedPlacementsSortedByAlignment = alignment ? [...allowedPlacements.filter(placement => getAlignment(placement) === alignment), ...allowedPlacements.filter(placement => getAlignment(placement) !== alignment)] : allowedPlacements.filter(placement => getSide(placement) === placement);
+  const allowedPlacementsSortedByAlignment = alignment ? [...allowedPlacements.filter(placement => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignment */ .hp)(placement) === alignment), ...allowedPlacements.filter(placement => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignment */ .hp)(placement) !== alignment)] : allowedPlacements.filter(placement => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(placement) === placement);
   return allowedPlacementsSortedByAlignment.filter(placement => {
     if (alignment) {
-      return getAlignment(placement) === alignment || (autoAlignment ? getOppositeAlignmentPlacement(placement) !== placement : false);
+      return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignment */ .hp)(placement) === alignment || (autoAlignment ? (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getOppositeAlignmentPlacement */ .Go)(placement) !== placement : false);
     }
     return true;
   });
@@ -20384,36 +20263,33 @@ const autoPlacement = function (options) {
       const {
         crossAxis = false,
         alignment,
-        allowedPlacements = allPlacements,
+        allowedPlacements = _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .placements */ .Ct,
         autoAlignment = true,
         ...detectOverflowOptions
-      } = evaluate(options, state);
-      const placements = alignment !== undefined || allowedPlacements === allPlacements ? getPlacementList(alignment || null, autoAlignment, allowedPlacements) : allowedPlacements;
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state);
+      const placements$1 = alignment !== undefined || allowedPlacements === _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .placements */ .Ct ? getPlacementList(alignment || null, autoAlignment, allowedPlacements) : allowedPlacements;
       const overflow = await detectOverflow(state, detectOverflowOptions);
       const currentIndex = ((_middlewareData$autoP = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP.index) || 0;
-      const currentPlacement = placements[currentIndex];
+      const currentPlacement = placements$1[currentIndex];
       if (currentPlacement == null) {
         return {};
       }
-      const {
-        main,
-        cross
-      } = getAlignmentSides(currentPlacement, rects, await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating)));
+      const alignmentSides = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignmentSides */ .i8)(currentPlacement, rects, await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating)));
 
       // Make `computeCoords` start from the right place.
       if (placement !== currentPlacement) {
         return {
           reset: {
-            placement: placements[0]
+            placement: placements$1[0]
           }
         };
       }
-      const currentOverflows = [overflow[getSide(currentPlacement)], overflow[main], overflow[cross]];
+      const currentOverflows = [overflow[(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(currentPlacement)], overflow[alignmentSides[0]], overflow[alignmentSides[1]]];
       const allOverflows = [...(((_middlewareData$autoP2 = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP2.overflows) || []), {
         placement: currentPlacement,
         overflows: currentOverflows
       }];
-      const nextPlacement = placements[currentIndex + 1];
+      const nextPlacement = placements$1[currentIndex + 1];
 
       // There are more placements to check.
       if (nextPlacement) {
@@ -20428,7 +20304,7 @@ const autoPlacement = function (options) {
         };
       }
       const placementsSortedByMostSpace = allOverflows.map(d => {
-        const alignment = getAlignment(d.placement);
+        const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignment */ .hp)(d.placement);
         return [d.placement, alignment && crossAxis ?
         // Check along the mainAxis and main crossAxis side.
         d.overflows.slice(0, 2).reduce((acc, v) => acc + v, 0) :
@@ -20438,7 +20314,7 @@ const autoPlacement = function (options) {
       const placementsThatFitOnEachSide = placementsSortedByMostSpace.filter(d => d[2].slice(0,
       // Aligned placements should not check their opposite crossAxis
       // side.
-      getAlignment(d[0]) ? 2 : 3).every(v => v <= 0));
+      (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignment */ .hp)(d[0]) ? 2 : 3).every(v => v <= 0));
       const resetPlacement = ((_placementsThatFitOnE = placementsThatFitOnEachSide[0]) == null ? void 0 : _placementsThatFitOnE[0]) || placementsSortedByMostSpace[0][0];
       if (resetPlacement !== placement) {
         return {
@@ -20456,40 +20332,6 @@ const autoPlacement = function (options) {
   };
 };
 
-function getExpandedPlacements(placement) {
-  const oppositePlacement = getOppositePlacement(placement);
-  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
-}
-
-function getSideList(side, isStart, rtl) {
-  const lr = ['left', 'right'];
-  const rl = ['right', 'left'];
-  const tb = ['top', 'bottom'];
-  const bt = ['bottom', 'top'];
-  switch (side) {
-    case 'top':
-    case 'bottom':
-      if (rtl) return isStart ? rl : lr;
-      return isStart ? lr : rl;
-    case 'left':
-    case 'right':
-      return isStart ? tb : bt;
-    default:
-      return [];
-  }
-}
-function getOppositeAxisPlacements(placement, flipAlignment, direction, rtl) {
-  const alignment = getAlignment(placement);
-  let list = getSideList(getSide(placement), direction === 'start', rtl);
-  if (alignment) {
-    list = list.map(side => side + "-" + alignment);
-    if (flipAlignment) {
-      list = list.concat(list.map(getOppositeAlignmentPlacement));
-    }
-  }
-  return list;
-}
-
 /**
  * Optimizes the visibility of the floating element by flipping the `placement`
  * in order to keep it in view when the preferred placement(s) will overflow the
@@ -20504,7 +20346,7 @@ const flip = function (options) {
     name: 'flip',
     options,
     async fn(state) {
-      var _middlewareData$flip;
+      var _middlewareData$arrow, _middlewareData$flip;
       const {
         placement,
         middlewareData,
@@ -20521,13 +20363,21 @@ const flip = function (options) {
         fallbackAxisSideDirection = 'none',
         flipAlignment = true,
         ...detectOverflowOptions
-      } = evaluate(options, state);
-      const side = getSide(placement);
-      const isBasePlacement = getSide(initialPlacement) === initialPlacement;
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state);
+
+      // If a reset by the arrow was caused due to an alignment offset being
+      // added, we should skip any logic now since `flip()` has already done its
+      // work.
+      // https://github.com/floating-ui/floating-ui/issues/2549#issuecomment-1719601643
+      if ((_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(placement);
+      const isBasePlacement = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(initialPlacement) === initialPlacement;
       const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating));
-      const fallbackPlacements = specifiedFallbackPlacements || (isBasePlacement || !flipAlignment ? [getOppositePlacement(initialPlacement)] : getExpandedPlacements(initialPlacement));
+      const fallbackPlacements = specifiedFallbackPlacements || (isBasePlacement || !flipAlignment ? [(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getOppositePlacement */ .pw)(initialPlacement)] : (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getExpandedPlacements */ .gy)(initialPlacement));
       if (!specifiedFallbackPlacements && fallbackAxisSideDirection !== 'none') {
-        fallbackPlacements.push(...getOppositeAxisPlacements(initialPlacement, flipAlignment, fallbackAxisSideDirection, rtl));
+        fallbackPlacements.push(...(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getOppositeAxisPlacements */ .KX)(initialPlacement, flipAlignment, fallbackAxisSideDirection, rtl));
       }
       const placements = [initialPlacement, ...fallbackPlacements];
       const overflow = await detectOverflow(state, detectOverflowOptions);
@@ -20537,11 +20387,8 @@ const flip = function (options) {
         overflows.push(overflow[side]);
       }
       if (checkCrossAxis) {
-        const {
-          main,
-          cross
-        } = getAlignmentSides(placement, rects, rtl);
-        overflows.push(overflow[main], overflow[cross]);
+        const sides = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignmentSides */ .i8)(placement, rects, rtl);
+        overflows.push(overflow[sides[0]], overflow[sides[1]]);
       }
       overflowsData = [...overflowsData, {
         placement,
@@ -20609,7 +20456,7 @@ function getSideOffsets(overflow, rect) {
   };
 }
 function isAnySideFullyClipped(overflow) {
-  return sides.some(side => overflow[side] >= 0);
+  return _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .sides */ .mA.some(side => overflow[side] >= 0);
 }
 /**
  * Provides data to hide the floating element in applicable situations, such as
@@ -20630,7 +20477,7 @@ const hide = function (options) {
       const {
         strategy = 'referenceHidden',
         ...detectOverflowOptions
-      } = evaluate(options, state);
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state);
       switch (strategy) {
         case 'referenceHidden':
           {
@@ -20670,10 +20517,10 @@ const hide = function (options) {
 };
 
 function getBoundingRect(rects) {
-  const minX = min(...rects.map(rect => rect.left));
-  const minY = min(...rects.map(rect => rect.top));
-  const maxX = max(...rects.map(rect => rect.right));
-  const maxY = max(...rects.map(rect => rect.bottom));
+  const minX = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .min */ .VV)(...rects.map(rect => rect.left));
+  const minY = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .min */ .VV)(...rects.map(rect => rect.top));
+  const maxX = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .max */ .Fp)(...rects.map(rect => rect.right));
+  const maxY = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .max */ .Fp)(...rects.map(rect => rect.bottom));
   return {
     x: minX,
     y: minY,
@@ -20694,7 +20541,7 @@ function getRectsByLine(rects) {
     }
     prevRect = rect;
   }
-  return groups.map(rect => rectToClientRect(getBoundingRect(rect)));
+  return groups.map(rect => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .rectToClientRect */ .JB)(getBoundingRect(rect)));
 }
 /**
  * Provides improved positioning for inline reference elements that can span
@@ -20723,11 +20570,11 @@ const inline = function (options) {
         padding = 2,
         x,
         y
-      } = evaluate(options, state);
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state);
       const nativeClientRects = Array.from((await (platform.getClientRects == null ? void 0 : platform.getClientRects(elements.reference))) || []);
       const clientRects = getRectsByLine(nativeClientRects);
-      const fallback = rectToClientRect(getBoundingRect(nativeClientRects));
-      const paddingObject = getSideObjectFromPadding(padding);
+      const fallback = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .rectToClientRect */ .JB)(getBoundingRect(nativeClientRects));
+      const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getPaddingObject */ .yd)(padding);
       function getBoundingClientRect() {
         // There are two rects and they are disjoined.
         if (clientRects.length === 2 && clientRects[0].left > clientRects[1].right && x != null && y != null) {
@@ -20737,10 +20584,10 @@ const inline = function (options) {
 
         // There are 2 or more connected rects.
         if (clientRects.length >= 2) {
-          if (getMainAxisFromPlacement(placement) === 'x') {
+          if ((0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSideAxis */ .Qq)(placement) === 'y') {
             const firstRect = clientRects[0];
             const lastRect = clientRects[clientRects.length - 1];
-            const isTop = getSide(placement) === 'top';
+            const isTop = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(placement) === 'top';
             const top = firstRect.top;
             const bottom = lastRect.bottom;
             const left = isTop ? firstRect.left : lastRect.left;
@@ -20758,9 +20605,9 @@ const inline = function (options) {
               y: top
             };
           }
-          const isLeftSide = getSide(placement) === 'left';
-          const maxRight = max(...clientRects.map(rect => rect.right));
-          const minLeft = min(...clientRects.map(rect => rect.left));
+          const isLeftSide = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(placement) === 'left';
+          const maxRight = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .max */ .Fp)(...clientRects.map(rect => rect.right));
+          const minLeft = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .min */ .VV)(...clientRects.map(rect => rect.left));
           const measureRects = clientRects.filter(rect => isLeftSide ? rect.left === minLeft : rect.right === maxRight);
           const top = measureRects[0].top;
           const bottom = measureRects[measureRects.length - 1].bottom;
@@ -20800,6 +20647,8 @@ const inline = function (options) {
   };
 };
 
+// For type backwards-compatibility, the `OffsetOptions` type was also
+// Derivable.
 async function convertValueToCoords(state, options) {
   const {
     placement,
@@ -20807,12 +20656,12 @@ async function convertValueToCoords(state, options) {
     elements
   } = state;
   const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating));
-  const side = getSide(placement);
-  const alignment = getAlignment(placement);
-  const isVertical = getMainAxisFromPlacement(placement) === 'x';
+  const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(placement);
+  const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignment */ .hp)(placement);
+  const isVertical = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSideAxis */ .Qq)(placement) === 'y';
   const mainAxisMulti = ['left', 'top'].includes(side) ? -1 : 1;
   const crossAxisMulti = rtl && isVertical ? -1 : 1;
-  const rawValue = evaluate(options, state);
+  const rawValue = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state);
 
   // eslint-disable-next-line prefer-const
   let {
@@ -20856,23 +20705,31 @@ const offset = function (options) {
     name: 'offset',
     options,
     async fn(state) {
+      var _middlewareData$offse, _middlewareData$arrow;
       const {
         x,
-        y
+        y,
+        placement,
+        middlewareData
       } = state;
       const diffCoords = await convertValueToCoords(state, options);
+
+      // If the placement is the same and the arrow caused an alignment offset
+      // then we don't need to change the positioning coordinates.
+      if (placement === ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse.placement) && (_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
       return {
         x: x + diffCoords.x,
         y: y + diffCoords.y,
-        data: diffCoords
+        data: {
+          ...diffCoords,
+          placement
+        }
       };
     }
   };
 };
-
-function getCrossAxis(axis) {
-  return axis === 'x' ? 'y' : 'x';
-}
 
 /**
  * Optimizes the visibility of the floating element by shifting it in order to
@@ -20908,14 +20765,14 @@ const shift = function (options) {
           }
         },
         ...detectOverflowOptions
-      } = evaluate(options, state);
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state);
       const coords = {
         x,
         y
       };
       const overflow = await detectOverflow(state, detectOverflowOptions);
-      const mainAxis = getMainAxisFromPlacement(getSide(placement));
-      const crossAxis = getCrossAxis(mainAxis);
+      const crossAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSideAxis */ .Qq)((0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(placement));
+      const mainAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getOppositeAxis */ .Rn)(crossAxis);
       let mainAxisCoord = coords[mainAxis];
       let crossAxisCoord = coords[crossAxis];
       if (checkMainAxis) {
@@ -20923,14 +20780,14 @@ const shift = function (options) {
         const maxSide = mainAxis === 'y' ? 'bottom' : 'right';
         const min = mainAxisCoord + overflow[minSide];
         const max = mainAxisCoord - overflow[maxSide];
-        mainAxisCoord = within(min, mainAxisCoord, max);
+        mainAxisCoord = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .clamp */ .uZ)(min, mainAxisCoord, max);
       }
       if (checkCrossAxis) {
         const minSide = crossAxis === 'y' ? 'top' : 'left';
         const maxSide = crossAxis === 'y' ? 'bottom' : 'right';
         const min = crossAxisCoord + overflow[minSide];
         const max = crossAxisCoord - overflow[maxSide];
-        crossAxisCoord = within(min, crossAxisCoord, max);
+        crossAxisCoord = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .clamp */ .uZ)(min, crossAxisCoord, max);
       }
       const limitedCoords = limiter.fn({
         ...state,
@@ -20968,16 +20825,16 @@ const limitShift = function (options) {
         offset = 0,
         mainAxis: checkMainAxis = true,
         crossAxis: checkCrossAxis = true
-      } = evaluate(options, state);
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state);
       const coords = {
         x,
         y
       };
-      const mainAxis = getMainAxisFromPlacement(placement);
-      const crossAxis = getCrossAxis(mainAxis);
+      const crossAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSideAxis */ .Qq)(placement);
+      const mainAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getOppositeAxis */ .Rn)(crossAxis);
       let mainAxisCoord = coords[mainAxis];
       let crossAxisCoord = coords[crossAxis];
-      const rawOffset = evaluate(offset, state);
+      const rawOffset = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(offset, state);
       const computedOffset = typeof rawOffset === 'number' ? {
         mainAxis: rawOffset,
         crossAxis: 0
@@ -20999,7 +20856,7 @@ const limitShift = function (options) {
       if (checkCrossAxis) {
         var _middlewareData$offse, _middlewareData$offse2;
         const len = mainAxis === 'y' ? 'width' : 'height';
-        const isOriginSide = ['top', 'left'].includes(getSide(placement));
+        const isOriginSide = ['top', 'left'].includes((0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(placement));
         const limitMin = rects.reference[crossAxis] - rects.floating[len] + (isOriginSide ? ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse[crossAxis]) || 0 : 0) + (isOriginSide ? 0 : computedOffset.crossAxis);
         const limitMax = rects.reference[crossAxis] + rects.reference[len] + (isOriginSide ? 0 : ((_middlewareData$offse2 = middlewareData.offset) == null ? void 0 : _middlewareData$offse2[crossAxis]) || 0) - (isOriginSide ? computedOffset.crossAxis : 0);
         if (crossAxisCoord < limitMin) {
@@ -21039,12 +20896,11 @@ const size = function (options) {
       const {
         apply = () => {},
         ...detectOverflowOptions
-      } = evaluate(options, state);
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .evaluate */ .ku)(options, state);
       const overflow = await detectOverflow(state, detectOverflowOptions);
-      const side = getSide(placement);
-      const alignment = getAlignment(placement);
-      const axis = getMainAxisFromPlacement(placement);
-      const isXAxis = axis === 'x';
+      const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSide */ .k3)(placement);
+      const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getAlignment */ .hp)(placement);
+      const isYAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .getSideAxis */ .Qq)(placement) === 'y';
       const {
         width,
         height
@@ -21063,22 +20919,22 @@ const size = function (options) {
       const noShift = !state.middlewareData.shift;
       let availableHeight = overflowAvailableHeight;
       let availableWidth = overflowAvailableWidth;
-      if (isXAxis) {
+      if (isYAxis) {
         const maximumClippingWidth = width - overflow.left - overflow.right;
-        availableWidth = alignment || noShift ? min(overflowAvailableWidth, maximumClippingWidth) : maximumClippingWidth;
+        availableWidth = alignment || noShift ? (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .min */ .VV)(overflowAvailableWidth, maximumClippingWidth) : maximumClippingWidth;
       } else {
         const maximumClippingHeight = height - overflow.top - overflow.bottom;
-        availableHeight = alignment || noShift ? min(overflowAvailableHeight, maximumClippingHeight) : maximumClippingHeight;
+        availableHeight = alignment || noShift ? (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .min */ .VV)(overflowAvailableHeight, maximumClippingHeight) : maximumClippingHeight;
       }
       if (noShift && !alignment) {
-        const xMin = max(overflow.left, 0);
-        const xMax = max(overflow.right, 0);
-        const yMin = max(overflow.top, 0);
-        const yMax = max(overflow.bottom, 0);
-        if (isXAxis) {
-          availableWidth = width - 2 * (xMin !== 0 || xMax !== 0 ? xMin + xMax : max(overflow.left, overflow.right));
+        const xMin = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .max */ .Fp)(overflow.left, 0);
+        const xMax = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .max */ .Fp)(overflow.right, 0);
+        const yMin = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .max */ .Fp)(overflow.top, 0);
+        const yMax = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .max */ .Fp)(overflow.bottom, 0);
+        if (isYAxis) {
+          availableWidth = width - 2 * (xMin !== 0 || xMax !== 0 ? xMin + xMax : (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .max */ .Fp)(overflow.left, overflow.right));
         } else {
-          availableHeight = height - 2 * (yMin !== 0 || yMax !== 0 ? yMin + yMax : max(overflow.top, overflow.bottom));
+          availableHeight = height - 2 * (yMin !== 0 || yMax !== 0 ? yMin + yMax : (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__/* .max */ .Fp)(overflow.top, overflow.bottom));
         }
       }
       await apply({
@@ -21110,95 +20966,28 @@ const size = function (options) {
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Jv: () => (/* binding */ platform),
-/* harmony export */   Kx: () => (/* binding */ getOverflowAncestors),
 /* harmony export */   Me: () => (/* binding */ autoUpdate),
 /* harmony export */   oo: () => (/* binding */ computePosition)
 /* harmony export */ });
-/* harmony import */ var _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(47612);
+/* harmony import */ var _floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(36978);
+/* harmony import */ var _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(47612);
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(16361);
 
 
 
-function getWindow(node) {
-  var _node$ownerDocument;
-  return ((_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
-}
 
-function getComputedStyle$1(element) {
-  return getWindow(element).getComputedStyle(element);
-}
 
-function isNode(value) {
-  return value instanceof getWindow(value).Node;
-}
-function getNodeName(node) {
-  if (isNode(node)) {
-    return (node.nodeName || '').toLowerCase();
-  }
-  // Mocked nodes in testing environments may not be instances of Node. By
-  // returning `#document` an infinite loop won't occur.
-  // https://github.com/floating-ui/floating-ui/issues/2317
-  return '#document';
-}
-
-function isHTMLElement(value) {
-  return value instanceof getWindow(value).HTMLElement;
-}
-function isElement(value) {
-  return value instanceof getWindow(value).Element;
-}
-function isShadowRoot(node) {
-  // Browsers without `ShadowRoot` support.
-  if (typeof ShadowRoot === 'undefined') {
-    return false;
-  }
-  return node instanceof getWindow(node).ShadowRoot || node instanceof ShadowRoot;
-}
-function isOverflowElement(element) {
-  const {
-    overflow,
-    overflowX,
-    overflowY,
-    display
-  } = getComputedStyle$1(element);
-  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && !['inline', 'contents'].includes(display);
-}
-function isTableElement(element) {
-  return ['table', 'td', 'th'].includes(getNodeName(element));
-}
-function isContainingBlock(element) {
-  const safari = isSafari();
-  const css = getComputedStyle$1(element);
-
-  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
-  return css.transform !== 'none' || css.perspective !== 'none' || (css.containerType ? css.containerType !== 'normal' : false) || !safari && (css.backdropFilter ? css.backdropFilter !== 'none' : false) || !safari && (css.filter ? css.filter !== 'none' : false) || ['transform', 'perspective', 'filter'].some(value => (css.willChange || '').includes(value)) || ['paint', 'layout', 'strict', 'content'].some(value => (css.contain || '').includes(value));
-}
-function isSafari() {
-  if (typeof CSS === 'undefined' || !CSS.supports) return false;
-  return CSS.supports('-webkit-backdrop-filter', 'none');
-}
-function isLastTraversableNode(node) {
-  return ['html', 'body', '#document'].includes(getNodeName(node));
-}
-
-const min = Math.min;
-const max = Math.max;
-const round = Math.round;
-const floor = Math.floor;
-const createEmptyCoords = v => ({
-  x: v,
-  y: v
-});
 
 function getCssDimensions(element) {
-  const css = getComputedStyle$1(element);
+  const css = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(element);
   // In testing environments, the `width` and `height` properties are empty
   // strings for SVG elements, returning NaN. Fallback to `0` in this case.
   let width = parseFloat(css.width) || 0;
   let height = parseFloat(css.height) || 0;
-  const hasOffset = isHTMLElement(element);
+  const hasOffset = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isHTMLElement */ .Re)(element);
   const offsetWidth = hasOffset ? element.offsetWidth : width;
   const offsetHeight = hasOffset ? element.offsetHeight : height;
-  const shouldFallback = round(width) !== offsetWidth || round(height) !== offsetHeight;
+  const shouldFallback = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .round */ .NM)(width) !== offsetWidth || (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .round */ .NM)(height) !== offsetHeight;
   if (shouldFallback) {
     width = offsetWidth;
     height = offsetHeight;
@@ -21211,13 +21000,13 @@ function getCssDimensions(element) {
 }
 
 function unwrapElement(element) {
-  return !isElement(element) ? element.contextElement : element;
+  return !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isElement */ .kK)(element) ? element.contextElement : element;
 }
 
 function getScale(element) {
   const domElement = unwrapElement(element);
-  if (!isHTMLElement(domElement)) {
-    return createEmptyCoords(1);
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isHTMLElement */ .Re)(domElement)) {
+    return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .createCoords */ .ze)(1);
   }
   const rect = domElement.getBoundingClientRect();
   const {
@@ -21225,8 +21014,8 @@ function getScale(element) {
     height,
     $
   } = getCssDimensions(domElement);
-  let x = ($ ? round(rect.width) : rect.width) / width;
-  let y = ($ ? round(rect.height) : rect.height) / height;
+  let x = ($ ? (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .round */ .NM)(rect.width) : rect.width) / width;
+  let y = ($ ? (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .round */ .NM)(rect.height) : rect.height) / height;
 
   // 0, NaN, or Infinity should always fallback to 1.
 
@@ -21242,23 +21031,25 @@ function getScale(element) {
   };
 }
 
-const noOffsets = /*#__PURE__*/createEmptyCoords(0);
-function getVisualOffsets(element, isFixed, floatingOffsetParent) {
-  var _win$visualViewport, _win$visualViewport2;
-  if (isFixed === void 0) {
-    isFixed = true;
-  }
-  if (!isSafari()) {
-    return noOffsets;
-  }
-  const win = element ? getWindow(element) : window;
-  if (!floatingOffsetParent || isFixed && floatingOffsetParent !== win) {
+const noOffsets = /*#__PURE__*/(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .createCoords */ .ze)(0);
+function getVisualOffsets(element) {
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getWindow */ .Jj)(element);
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isWebKit */ .Pf)() || !win.visualViewport) {
     return noOffsets;
   }
   return {
-    x: ((_win$visualViewport = win.visualViewport) == null ? void 0 : _win$visualViewport.offsetLeft) || 0,
-    y: ((_win$visualViewport2 = win.visualViewport) == null ? void 0 : _win$visualViewport2.offsetTop) || 0
+    x: win.visualViewport.offsetLeft,
+    y: win.visualViewport.offsetTop
   };
+}
+function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
+  if (isFixed === void 0) {
+    isFixed = false;
+  }
+  if (!floatingOffsetParent || isFixed && floatingOffsetParent !== (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getWindow */ .Jj)(element)) {
+    return false;
+  }
+  return isFixed;
 }
 
 function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
@@ -21270,29 +21061,29 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
   }
   const clientRect = element.getBoundingClientRect();
   const domElement = unwrapElement(element);
-  let scale = createEmptyCoords(1);
+  let scale = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .createCoords */ .ze)(1);
   if (includeScale) {
     if (offsetParent) {
-      if (isElement(offsetParent)) {
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isElement */ .kK)(offsetParent)) {
         scale = getScale(offsetParent);
       }
     } else {
       scale = getScale(element);
     }
   }
-  const visualOffsets = getVisualOffsets(domElement, isFixedStrategy, offsetParent);
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .createCoords */ .ze)(0);
   let x = (clientRect.left + visualOffsets.x) / scale.x;
   let y = (clientRect.top + visualOffsets.y) / scale.y;
   let width = clientRect.width / scale.x;
   let height = clientRect.height / scale.y;
   if (domElement) {
-    const win = getWindow(domElement);
-    const offsetWin = offsetParent && isElement(offsetParent) ? getWindow(offsetParent) : offsetParent;
+    const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getWindow */ .Jj)(domElement);
+    const offsetWin = offsetParent && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isElement */ .kK)(offsetParent) ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getWindow */ .Jj)(offsetParent) : offsetParent;
     let currentIFrame = win.frameElement;
     while (currentIFrame && offsetParent && offsetWin !== win) {
       const iframeScale = getScale(currentIFrame);
       const iframeRect = currentIFrame.getBoundingClientRect();
-      const css = getComputedStyle(currentIFrame);
+      const css = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(currentIFrame);
       const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css.paddingLeft)) * iframeScale.x;
       const top = iframeRect.top + (currentIFrame.clientTop + parseFloat(css.paddingTop)) * iframeScale.y;
       x *= iframeScale.x;
@@ -21301,32 +21092,15 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
       height *= iframeScale.y;
       x += left;
       y += top;
-      currentIFrame = getWindow(currentIFrame).frameElement;
+      currentIFrame = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getWindow */ .Jj)(currentIFrame).frameElement;
     }
   }
-  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_0__/* .rectToClientRect */ .JB)({
+  return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .rectToClientRect */ .JB)({
     width,
     height,
     x,
     y
   });
-}
-
-function getDocumentElement(node) {
-  return ((isNode(node) ? node.ownerDocument : node.document) || window.document).documentElement;
-}
-
-function getNodeScroll(element) {
-  if (isElement(element)) {
-    return {
-      scrollLeft: element.scrollLeft,
-      scrollTop: element.scrollTop
-    };
-  }
-  return {
-    scrollLeft: element.pageXOffset,
-    scrollTop: element.pageYOffset
-  };
 }
 
 function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
@@ -21335,8 +21109,8 @@ function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
     offsetParent,
     strategy
   } = _ref;
-  const isOffsetParentAnElement = isHTMLElement(offsetParent);
-  const documentElement = getDocumentElement(offsetParent);
+  const isOffsetParentAnElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isHTMLElement */ .Re)(offsetParent);
+  const documentElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getDocumentElement */ .tF)(offsetParent);
   if (offsetParent === documentElement) {
     return rect;
   }
@@ -21344,13 +21118,13 @@ function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
     scrollLeft: 0,
     scrollTop: 0
   };
-  let scale = createEmptyCoords(1);
-  const offsets = createEmptyCoords(0);
+  let scale = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .createCoords */ .ze)(1);
+  const offsets = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .createCoords */ .ze)(0);
   if (isOffsetParentAnElement || !isOffsetParentAnElement && strategy !== 'fixed') {
-    if (getNodeName(offsetParent) !== 'body' || isOverflowElement(documentElement)) {
-      scroll = getNodeScroll(offsetParent);
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getNodeName */ .wk)(offsetParent) !== 'body' || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isOverflowElement */ .ao)(documentElement)) {
+      scroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getNodeScroll */ .Lw)(offsetParent);
     }
-    if (isHTMLElement(offsetParent)) {
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isHTMLElement */ .Re)(offsetParent)) {
       const offsetRect = getBoundingClientRect(offsetParent);
       scale = getScale(offsetParent);
       offsets.x = offsetRect.x + offsetParent.clientLeft;
@@ -21365,24 +21139,28 @@ function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
   };
 }
 
+function getClientRects(element) {
+  return Array.from(element.getClientRects());
+}
+
 function getWindowScrollBarX(element) {
   // If <html> has a CSS width greater than the viewport, then this will be
   // incorrect for RTL.
-  return getBoundingClientRect(getDocumentElement(element)).left + getNodeScroll(element).scrollLeft;
+  return getBoundingClientRect((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getDocumentElement */ .tF)(element)).left + (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getNodeScroll */ .Lw)(element).scrollLeft;
 }
 
 // Gets the entire size of the scrollable document area, even extending outside
 // of the `<html>` and `<body>` rect bounds if horizontally scrollable.
 function getDocumentRect(element) {
-  const html = getDocumentElement(element);
-  const scroll = getNodeScroll(element);
+  const html = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getDocumentElement */ .tF)(element);
+  const scroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getNodeScroll */ .Lw)(element);
   const body = element.ownerDocument.body;
-  const width = max(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
-  const height = max(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
+  const width = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .max */ .Fp)(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
+  const height = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .max */ .Fp)(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
   let x = -scroll.scrollLeft + getWindowScrollBarX(element);
   const y = -scroll.scrollTop;
-  if (getComputedStyle$1(body).direction === 'rtl') {
-    x += max(html.clientWidth, body.clientWidth) - width;
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(body).direction === 'rtl') {
+    x += (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .max */ .Fp)(html.clientWidth, body.clientWidth) - width;
   }
   return {
     width,
@@ -21392,50 +21170,9 @@ function getDocumentRect(element) {
   };
 }
 
-function getParentNode(node) {
-  if (getNodeName(node) === 'html') {
-    return node;
-  }
-  const result =
-  // Step into the shadow DOM of the parent of a slotted node.
-  node.assignedSlot ||
-  // DOM Element detected.
-  node.parentNode ||
-  // ShadowRoot detected.
-  isShadowRoot(node) && node.host ||
-  // Fallback.
-  getDocumentElement(node);
-  return isShadowRoot(result) ? result.host : result;
-}
-
-function getNearestOverflowAncestor(node) {
-  const parentNode = getParentNode(node);
-  if (isLastTraversableNode(parentNode)) {
-    return node.ownerDocument ? node.ownerDocument.body : node.body;
-  }
-  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
-    return parentNode;
-  }
-  return getNearestOverflowAncestor(parentNode);
-}
-
-function getOverflowAncestors(node, list) {
-  var _node$ownerDocument;
-  if (list === void 0) {
-    list = [];
-  }
-  const scrollableAncestor = getNearestOverflowAncestor(node);
-  const isBody = scrollableAncestor === ((_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.body);
-  const win = getWindow(scrollableAncestor);
-  if (isBody) {
-    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : []);
-  }
-  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor));
-}
-
 function getViewportRect(element, strategy) {
-  const win = getWindow(element);
-  const html = getDocumentElement(element);
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getWindow */ .Jj)(element);
+  const html = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getDocumentElement */ .tF)(element);
   const visualViewport = win.visualViewport;
   let width = html.clientWidth;
   let height = html.clientHeight;
@@ -21444,7 +21181,7 @@ function getViewportRect(element, strategy) {
   if (visualViewport) {
     width = visualViewport.width;
     height = visualViewport.height;
-    const visualViewportBased = isSafari();
+    const visualViewportBased = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isWebKit */ .Pf)();
     if (!visualViewportBased || visualViewportBased && strategy === 'fixed') {
       x = visualViewport.offsetLeft;
       y = visualViewport.offsetTop;
@@ -21463,7 +21200,7 @@ function getInnerBoundingClientRect(element, strategy) {
   const clientRect = getBoundingClientRect(element, true, strategy === 'fixed');
   const top = clientRect.top + element.clientTop;
   const left = clientRect.left + element.clientLeft;
-  const scale = isHTMLElement(element) ? getScale(element) : createEmptyCoords(1);
+  const scale = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isHTMLElement */ .Re)(element) ? getScale(element) : (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .createCoords */ .ze)(1);
   const width = element.clientWidth * scale.x;
   const height = element.clientHeight * scale.y;
   const x = left * scale.x;
@@ -21480,8 +21217,8 @@ function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) 
   if (clippingAncestor === 'viewport') {
     rect = getViewportRect(element, strategy);
   } else if (clippingAncestor === 'document') {
-    rect = getDocumentRect(getDocumentElement(element));
-  } else if (isElement(clippingAncestor)) {
+    rect = getDocumentRect((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getDocumentElement */ .tF)(element));
+  } else if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isElement */ .kK)(clippingAncestor)) {
     rect = getInnerBoundingClientRect(clippingAncestor, strategy);
   } else {
     const visualOffsets = getVisualOffsets(element);
@@ -21491,14 +21228,14 @@ function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) 
       y: clippingAncestor.y - visualOffsets.y
     };
   }
-  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_0__/* .rectToClientRect */ .JB)(rect);
+  return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .rectToClientRect */ .JB)(rect);
 }
 function hasFixedPositionAncestor(element, stopNode) {
-  const parentNode = getParentNode(element);
-  if (parentNode === stopNode || !isElement(parentNode) || isLastTraversableNode(parentNode)) {
+  const parentNode = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getParentNode */ .Ow)(element);
+  if (parentNode === stopNode || !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isElement */ .kK)(parentNode) || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isLastTraversableNode */ .Py)(parentNode)) {
     return false;
   }
-  return getComputedStyle$1(parentNode).position === 'fixed' || hasFixedPositionAncestor(parentNode, stopNode);
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(parentNode).position === 'fixed' || hasFixedPositionAncestor(parentNode, stopNode);
 }
 
 // A "clipping ancestor" is an `overflow` element with the characteristic of
@@ -21509,19 +21246,19 @@ function getClippingElementAncestors(element, cache) {
   if (cachedResult) {
     return cachedResult;
   }
-  let result = getOverflowAncestors(element).filter(el => isElement(el) && getNodeName(el) !== 'body');
+  let result = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getOverflowAncestors */ .Kx)(element, [], false).filter(el => (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isElement */ .kK)(el) && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getNodeName */ .wk)(el) !== 'body');
   let currentContainingBlockComputedStyle = null;
-  const elementIsFixed = getComputedStyle$1(element).position === 'fixed';
-  let currentNode = elementIsFixed ? getParentNode(element) : element;
+  const elementIsFixed = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(element).position === 'fixed';
+  let currentNode = elementIsFixed ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getParentNode */ .Ow)(element) : element;
 
   // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
-  while (isElement(currentNode) && !isLastTraversableNode(currentNode)) {
-    const computedStyle = getComputedStyle$1(currentNode);
-    const currentNodeIsContaining = isContainingBlock(currentNode);
+  while ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isElement */ .kK)(currentNode) && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isLastTraversableNode */ .Py)(currentNode)) {
+    const computedStyle = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(currentNode);
+    const currentNodeIsContaining = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isContainingBlock */ .hT)(currentNode);
     if (!currentNodeIsContaining && computedStyle.position === 'fixed') {
       currentContainingBlockComputedStyle = null;
     }
-    const shouldDropCurrentNode = elementIsFixed ? !currentNodeIsContaining && !currentContainingBlockComputedStyle : !currentNodeIsContaining && computedStyle.position === 'static' && !!currentContainingBlockComputedStyle && ['absolute', 'fixed'].includes(currentContainingBlockComputedStyle.position) || isOverflowElement(currentNode) && !currentNodeIsContaining && hasFixedPositionAncestor(element, currentNode);
+    const shouldDropCurrentNode = elementIsFixed ? !currentNodeIsContaining && !currentContainingBlockComputedStyle : !currentNodeIsContaining && computedStyle.position === 'static' && !!currentContainingBlockComputedStyle && ['absolute', 'fixed'].includes(currentContainingBlockComputedStyle.position) || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isOverflowElement */ .ao)(currentNode) && !currentNodeIsContaining && hasFixedPositionAncestor(element, currentNode);
     if (shouldDropCurrentNode) {
       // Drop non-containing blocks.
       result = result.filter(ancestor => ancestor !== currentNode);
@@ -21529,7 +21266,7 @@ function getClippingElementAncestors(element, cache) {
       // Record last containing block for next iteration.
       currentContainingBlockComputedStyle = computedStyle;
     }
-    currentNode = getParentNode(currentNode);
+    currentNode = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getParentNode */ .Ow)(currentNode);
   }
   cache.set(element, result);
   return result;
@@ -21549,10 +21286,10 @@ function getClippingRect(_ref) {
   const firstClippingAncestor = clippingAncestors[0];
   const clippingRect = clippingAncestors.reduce((accRect, clippingAncestor) => {
     const rect = getClientRectFromClippingAncestor(element, clippingAncestor, strategy);
-    accRect.top = max(rect.top, accRect.top);
-    accRect.right = min(rect.right, accRect.right);
-    accRect.bottom = min(rect.bottom, accRect.bottom);
-    accRect.left = max(rect.left, accRect.left);
+    accRect.top = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .max */ .Fp)(rect.top, accRect.top);
+    accRect.right = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .min */ .VV)(rect.right, accRect.right);
+    accRect.bottom = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .min */ .VV)(rect.bottom, accRect.bottom);
+    accRect.left = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .max */ .Fp)(rect.left, accRect.left);
     return accRect;
   }, getClientRectFromClippingAncestor(element, firstClippingAncestor, strategy));
   return {
@@ -21567,59 +21304,21 @@ function getDimensions(element) {
   return getCssDimensions(element);
 }
 
-function getTrueOffsetParent(element, polyfill) {
-  if (!isHTMLElement(element) || getComputedStyle$1(element).position === 'fixed') {
-    return null;
-  }
-  if (polyfill) {
-    return polyfill(element);
-  }
-  return element.offsetParent;
-}
-function getContainingBlock(element) {
-  let currentNode = getParentNode(element);
-  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
-    if (isContainingBlock(currentNode)) {
-      return currentNode;
-    } else {
-      currentNode = getParentNode(currentNode);
-    }
-  }
-  return null;
-}
-
-// Gets the closest ancestor positioned element. Handles some edge cases,
-// such as table ancestors and cross browser bugs.
-function getOffsetParent(element, polyfill) {
-  const window = getWindow(element);
-  if (!isHTMLElement(element)) {
-    return window;
-  }
-  let offsetParent = getTrueOffsetParent(element, polyfill);
-  while (offsetParent && isTableElement(offsetParent) && getComputedStyle$1(offsetParent).position === 'static') {
-    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
-  }
-  if (offsetParent && (getNodeName(offsetParent) === 'html' || getNodeName(offsetParent) === 'body' && getComputedStyle$1(offsetParent).position === 'static' && !isContainingBlock(offsetParent))) {
-    return window;
-  }
-  return offsetParent || getContainingBlock(element) || window;
-}
-
 function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
-  const isOffsetParentAnElement = isHTMLElement(offsetParent);
-  const documentElement = getDocumentElement(offsetParent);
+  const isOffsetParentAnElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isHTMLElement */ .Re)(offsetParent);
+  const documentElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getDocumentElement */ .tF)(offsetParent);
   const isFixed = strategy === 'fixed';
   const rect = getBoundingClientRect(element, true, isFixed, offsetParent);
   let scroll = {
     scrollLeft: 0,
     scrollTop: 0
   };
-  const offsets = createEmptyCoords(0);
+  const offsets = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .createCoords */ .ze)(0);
   if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
-    if (getNodeName(offsetParent) !== 'body' || isOverflowElement(documentElement)) {
-      scroll = getNodeScroll(offsetParent);
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getNodeName */ .wk)(offsetParent) !== 'body' || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isOverflowElement */ .ao)(documentElement)) {
+      scroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getNodeScroll */ .Lw)(offsetParent);
     }
-    if (isHTMLElement(offsetParent)) {
+    if (isOffsetParentAnElement) {
       const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
       offsets.x = offsetRect.x + offsetParent.clientLeft;
       offsets.y = offsetRect.y + offsetParent.clientTop;
@@ -21635,40 +21334,73 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
   };
 }
 
+function getTrueOffsetParent(element, polyfill) {
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isHTMLElement */ .Re)(element) || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(element).position === 'fixed') {
+    return null;
+  }
+  if (polyfill) {
+    return polyfill(element);
+  }
+  return element.offsetParent;
+}
+
+// Gets the closest ancestor positioned element. Handles some edge cases,
+// such as table ancestors and cross browser bugs.
+function getOffsetParent(element, polyfill) {
+  const window = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getWindow */ .Jj)(element);
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isHTMLElement */ .Re)(element)) {
+    return window;
+  }
+  let offsetParent = getTrueOffsetParent(element, polyfill);
+  while (offsetParent && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isTableElement */ .Ze)(offsetParent) && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(offsetParent).position === 'static') {
+    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
+  }
+  if (offsetParent && ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getNodeName */ .wk)(offsetParent) === 'html' || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getNodeName */ .wk)(offsetParent) === 'body' && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(offsetParent).position === 'static' && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isContainingBlock */ .hT)(offsetParent))) {
+    return window;
+  }
+  return offsetParent || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getContainingBlock */ .gQ)(element) || window;
+}
+
+const getElementRects = async function (_ref) {
+  let {
+    reference,
+    floating,
+    strategy
+  } = _ref;
+  const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
+  const getDimensionsFn = this.getDimensions;
+  return {
+    reference: getRectRelativeToOffsetParent(reference, await getOffsetParentFn(floating), strategy),
+    floating: {
+      x: 0,
+      y: 0,
+      ...(await getDimensionsFn(floating))
+    }
+  };
+};
+
+function isRTL(element) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getComputedStyle */ .Dx)(element).direction === 'rtl';
+}
+
 const platform = {
-  getClippingRect,
   convertOffsetParentRelativeRectToViewportRelativeRect,
-  isElement,
-  getDimensions,
+  getDocumentElement: _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getDocumentElement */ .tF,
+  getClippingRect,
   getOffsetParent,
-  getDocumentElement,
+  getElementRects,
+  getClientRects,
+  getDimensions,
   getScale,
-  async getElementRects(_ref) {
-    let {
-      reference,
-      floating,
-      strategy
-    } = _ref;
-    const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
-    const getDimensionsFn = this.getDimensions;
-    return {
-      reference: getRectRelativeToOffsetParent(reference, await getOffsetParentFn(floating), strategy),
-      floating: {
-        x: 0,
-        y: 0,
-        ...(await getDimensionsFn(floating))
-      }
-    };
-  },
-  getClientRects: element => Array.from(element.getClientRects()),
-  isRTL: element => getComputedStyle$1(element).direction === 'rtl'
+  isElement: _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .isElement */ .kK,
+  isRTL
 };
 
 // https://samthor.au/2021/observing-dom/
 function observeMove(element, onMove) {
   let io = null;
   let timeoutId;
-  const root = getDocumentElement(element);
+  const root = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getDocumentElement */ .tF)(element);
   function cleanup() {
     clearTimeout(timeoutId);
     io && io.disconnect();
@@ -21694,14 +21426,14 @@ function observeMove(element, onMove) {
     if (!width || !height) {
       return;
     }
-    const insetTop = floor(top);
-    const insetRight = floor(root.clientWidth - (left + width));
-    const insetBottom = floor(root.clientHeight - (top + height));
-    const insetLeft = floor(left);
+    const insetTop = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .floor */ .GW)(top);
+    const insetRight = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .floor */ .GW)(root.clientWidth - (left + width));
+    const insetBottom = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .floor */ .GW)(root.clientHeight - (top + height));
+    const insetLeft = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .floor */ .GW)(left);
     const rootMargin = -insetTop + "px " + -insetRight + "px " + -insetBottom + "px " + -insetLeft + "px";
     const options = {
       rootMargin,
-      threshold: max(0, min(1, threshold)) || 1
+      threshold: (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .max */ .Fp)(0, (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__/* .min */ .VV)(1, threshold)) || 1
     };
     let isFirstUpdate = true;
     function handleObserve(entries) {
@@ -21758,7 +21490,7 @@ function autoUpdate(reference, floating, update, options) {
     animationFrame = false
   } = options;
   const referenceEl = unwrapElement(reference);
-  const ancestors = ancestorScroll || ancestorResize ? [...(referenceEl ? getOverflowAncestors(referenceEl) : []), ...getOverflowAncestors(floating)] : [];
+  const ancestors = ancestorScroll || ancestorResize ? [...(referenceEl ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getOverflowAncestors */ .Kx)(referenceEl) : []), ...(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__/* .getOverflowAncestors */ .Kx)(floating)] : [];
   ancestors.forEach(ancestor => {
     ancestorScroll && ancestor.addEventListener('scroll', update, {
       passive: true
@@ -21833,11 +21565,322 @@ const computePosition = (reference, floating, options) => {
     ...mergedOptions.platform,
     _c: cache
   };
-  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_0__/* .computePosition */ .oo)(reference, floating, {
+  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_2__/* .computePosition */ .oo)(reference, floating, {
     ...mergedOptions,
     platform: platformWithCache
   });
 };
+
+
+
+
+/***/ }),
+
+/***/ 36978:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Ct: () => (/* binding */ placements),
+/* harmony export */   Fp: () => (/* binding */ max),
+/* harmony export */   GW: () => (/* binding */ floor),
+/* harmony export */   Go: () => (/* binding */ getOppositeAlignmentPlacement),
+/* harmony export */   I4: () => (/* binding */ getAxisLength),
+/* harmony export */   JB: () => (/* binding */ rectToClientRect),
+/* harmony export */   KX: () => (/* binding */ getOppositeAxisPlacements),
+/* harmony export */   NM: () => (/* binding */ round),
+/* harmony export */   Qq: () => (/* binding */ getSideAxis),
+/* harmony export */   Rn: () => (/* binding */ getOppositeAxis),
+/* harmony export */   VV: () => (/* binding */ min),
+/* harmony export */   Wh: () => (/* binding */ getAlignmentAxis),
+/* harmony export */   gy: () => (/* binding */ getExpandedPlacements),
+/* harmony export */   hp: () => (/* binding */ getAlignment),
+/* harmony export */   i8: () => (/* binding */ getAlignmentSides),
+/* harmony export */   k3: () => (/* binding */ getSide),
+/* harmony export */   ku: () => (/* binding */ evaluate),
+/* harmony export */   mA: () => (/* binding */ sides),
+/* harmony export */   pw: () => (/* binding */ getOppositePlacement),
+/* harmony export */   uZ: () => (/* binding */ clamp),
+/* harmony export */   yd: () => (/* binding */ getPaddingObject),
+/* harmony export */   ze: () => (/* binding */ createCoords)
+/* harmony export */ });
+/* unused harmony exports alignments, expandPaddingObject */
+const sides = ['top', 'right', 'bottom', 'left'];
+const alignments = ['start', 'end'];
+const placements = /*#__PURE__*/sides.reduce((acc, side) => acc.concat(side, side + "-" + alignments[0], side + "-" + alignments[1]), []);
+const min = Math.min;
+const max = Math.max;
+const round = Math.round;
+const floor = Math.floor;
+const createCoords = v => ({
+  x: v,
+  y: v
+});
+const oppositeSideMap = {
+  left: 'right',
+  right: 'left',
+  bottom: 'top',
+  top: 'bottom'
+};
+const oppositeAlignmentMap = {
+  start: 'end',
+  end: 'start'
+};
+function clamp(start, value, end) {
+  return max(start, min(value, end));
+}
+function evaluate(value, param) {
+  return typeof value === 'function' ? value(param) : value;
+}
+function getSide(placement) {
+  return placement.split('-')[0];
+}
+function getAlignment(placement) {
+  return placement.split('-')[1];
+}
+function getOppositeAxis(axis) {
+  return axis === 'x' ? 'y' : 'x';
+}
+function getAxisLength(axis) {
+  return axis === 'y' ? 'height' : 'width';
+}
+function getSideAxis(placement) {
+  return ['top', 'bottom'].includes(getSide(placement)) ? 'y' : 'x';
+}
+function getAlignmentAxis(placement) {
+  return getOppositeAxis(getSideAxis(placement));
+}
+function getAlignmentSides(placement, rects, rtl) {
+  if (rtl === void 0) {
+    rtl = false;
+  }
+  const alignment = getAlignment(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const length = getAxisLength(alignmentAxis);
+  let mainAlignmentSide = alignmentAxis === 'x' ? alignment === (rtl ? 'end' : 'start') ? 'right' : 'left' : alignment === 'start' ? 'bottom' : 'top';
+  if (rects.reference[length] > rects.floating[length]) {
+    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
+  }
+  return [mainAlignmentSide, getOppositePlacement(mainAlignmentSide)];
+}
+function getExpandedPlacements(placement) {
+  const oppositePlacement = getOppositePlacement(placement);
+  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
+}
+function getOppositeAlignmentPlacement(placement) {
+  return placement.replace(/start|end/g, alignment => oppositeAlignmentMap[alignment]);
+}
+function getSideList(side, isStart, rtl) {
+  const lr = ['left', 'right'];
+  const rl = ['right', 'left'];
+  const tb = ['top', 'bottom'];
+  const bt = ['bottom', 'top'];
+  switch (side) {
+    case 'top':
+    case 'bottom':
+      if (rtl) return isStart ? rl : lr;
+      return isStart ? lr : rl;
+    case 'left':
+    case 'right':
+      return isStart ? tb : bt;
+    default:
+      return [];
+  }
+}
+function getOppositeAxisPlacements(placement, flipAlignment, direction, rtl) {
+  const alignment = getAlignment(placement);
+  let list = getSideList(getSide(placement), direction === 'start', rtl);
+  if (alignment) {
+    list = list.map(side => side + "-" + alignment);
+    if (flipAlignment) {
+      list = list.concat(list.map(getOppositeAlignmentPlacement));
+    }
+  }
+  return list;
+}
+function getOppositePlacement(placement) {
+  return placement.replace(/left|right|bottom|top/g, side => oppositeSideMap[side]);
+}
+function expandPaddingObject(padding) {
+  return {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    ...padding
+  };
+}
+function getPaddingObject(padding) {
+  return typeof padding !== 'number' ? expandPaddingObject(padding) : {
+    top: padding,
+    right: padding,
+    bottom: padding,
+    left: padding
+  };
+}
+function rectToClientRect(rect) {
+  return {
+    ...rect,
+    top: rect.y,
+    left: rect.x,
+    right: rect.x + rect.width,
+    bottom: rect.y + rect.height
+  };
+}
+
+
+
+
+/***/ }),
+
+/***/ 16361:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Dx: () => (/* binding */ getComputedStyle),
+/* harmony export */   Jj: () => (/* binding */ getWindow),
+/* harmony export */   Kx: () => (/* binding */ getOverflowAncestors),
+/* harmony export */   Lw: () => (/* binding */ getNodeScroll),
+/* harmony export */   Ow: () => (/* binding */ getParentNode),
+/* harmony export */   Pf: () => (/* binding */ isWebKit),
+/* harmony export */   Py: () => (/* binding */ isLastTraversableNode),
+/* harmony export */   Re: () => (/* binding */ isHTMLElement),
+/* harmony export */   Ze: () => (/* binding */ isTableElement),
+/* harmony export */   ao: () => (/* binding */ isOverflowElement),
+/* harmony export */   gQ: () => (/* binding */ getContainingBlock),
+/* harmony export */   hT: () => (/* binding */ isContainingBlock),
+/* harmony export */   kK: () => (/* binding */ isElement),
+/* harmony export */   tF: () => (/* binding */ getDocumentElement),
+/* harmony export */   wk: () => (/* binding */ getNodeName)
+/* harmony export */ });
+/* unused harmony exports getNearestOverflowAncestor, isNode, isShadowRoot */
+function getNodeName(node) {
+  if (isNode(node)) {
+    return (node.nodeName || '').toLowerCase();
+  }
+  // Mocked nodes in testing environments may not be instances of Node. By
+  // returning `#document` an infinite loop won't occur.
+  // https://github.com/floating-ui/floating-ui/issues/2317
+  return '#document';
+}
+function getWindow(node) {
+  var _node$ownerDocument;
+  return (node == null ? void 0 : (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function getDocumentElement(node) {
+  var _ref;
+  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
+}
+function isNode(value) {
+  return value instanceof Node || value instanceof getWindow(value).Node;
+}
+function isElement(value) {
+  return value instanceof Element || value instanceof getWindow(value).Element;
+}
+function isHTMLElement(value) {
+  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
+}
+function isShadowRoot(value) {
+  // Browsers without `ShadowRoot` support.
+  if (typeof ShadowRoot === 'undefined') {
+    return false;
+  }
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
+}
+function isOverflowElement(element) {
+  const {
+    overflow,
+    overflowX,
+    overflowY,
+    display
+  } = getComputedStyle(element);
+  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && !['inline', 'contents'].includes(display);
+}
+function isTableElement(element) {
+  return ['table', 'td', 'th'].includes(getNodeName(element));
+}
+function isContainingBlock(element) {
+  const webkit = isWebKit();
+  const css = getComputedStyle(element);
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
+  return css.transform !== 'none' || css.perspective !== 'none' || (css.containerType ? css.containerType !== 'normal' : false) || !webkit && (css.backdropFilter ? css.backdropFilter !== 'none' : false) || !webkit && (css.filter ? css.filter !== 'none' : false) || ['transform', 'perspective', 'filter'].some(value => (css.willChange || '').includes(value)) || ['paint', 'layout', 'strict', 'content'].some(value => (css.contain || '').includes(value));
+}
+function getContainingBlock(element) {
+  let currentNode = getParentNode(element);
+  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    if (isContainingBlock(currentNode)) {
+      return currentNode;
+    } else {
+      currentNode = getParentNode(currentNode);
+    }
+  }
+  return null;
+}
+function isWebKit() {
+  if (typeof CSS === 'undefined' || !CSS.supports) return false;
+  return CSS.supports('-webkit-backdrop-filter', 'none');
+}
+function isLastTraversableNode(node) {
+  return ['html', 'body', '#document'].includes(getNodeName(node));
+}
+function getComputedStyle(element) {
+  return getWindow(element).getComputedStyle(element);
+}
+function getNodeScroll(element) {
+  if (isElement(element)) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+  return {
+    scrollLeft: element.pageXOffset,
+    scrollTop: element.pageYOffset
+  };
+}
+function getParentNode(node) {
+  if (getNodeName(node) === 'html') {
+    return node;
+  }
+  const result =
+  // Step into the shadow DOM of the parent of a slotted node.
+  node.assignedSlot ||
+  // DOM Element detected.
+  node.parentNode ||
+  // ShadowRoot detected.
+  isShadowRoot(node) && node.host ||
+  // Fallback.
+  getDocumentElement(node);
+  return isShadowRoot(result) ? result.host : result;
+}
+function getNearestOverflowAncestor(node) {
+  const parentNode = getParentNode(node);
+  if (isLastTraversableNode(parentNode)) {
+    return node.ownerDocument ? node.ownerDocument.body : node.body;
+  }
+  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
+    return parentNode;
+  }
+  return getNearestOverflowAncestor(parentNode);
+}
+function getOverflowAncestors(node, list, traverseIframes) {
+  var _node$ownerDocument2;
+  if (list === void 0) {
+    list = [];
+  }
+  if (traverseIframes === void 0) {
+    traverseIframes = true;
+  }
+  const scrollableAncestor = getNearestOverflowAncestor(node);
+  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const win = getWindow(scrollableAncestor);
+  if (isBody) {
+    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], win.frameElement && traverseIframes ? getOverflowAncestors(win.frameElement) : []);
+  }
+  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
+}
 
 
 

@@ -11,7 +11,7 @@ exports.modules = {
 /* harmony export */ });
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(76931);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7318);
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(23494);
 
 
 function SearchAbleSelect({ options, defaultValue, value, getLabel, name, id, getValue, onChange }) {

@@ -40,7 +40,8 @@ __webpack_require__.d(__webpack_exports__, {
 var route_namespaceObject = {};
 __webpack_require__.r(route_namespaceObject);
 __webpack_require__.d(route_namespaceObject, {
-  GET: () => (GET)
+  GET: () => (GET),
+  dynamic: () => (dynamic)
 });
 
 // EXTERNAL MODULE: ./node_modules/next/dist/server/node-polyfill-headers.js
@@ -52,6 +53,8 @@ var module_default = /*#__PURE__*/__webpack_require__.n(app_route_module);
 var prisma = __webpack_require__(94734);
 ;// CONCATENATED MODULE: ./app/api/inventory/route.ts
 
+const dynamic = "force-dynamic";
+// export const dynamic = 'auto';
 async function GET(request) {
     try {
         const searchParams = request.nextUrl.searchParams;

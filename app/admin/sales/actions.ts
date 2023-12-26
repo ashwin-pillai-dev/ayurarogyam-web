@@ -3,7 +3,6 @@ import { revalidatePath } from 'next/cache';
 import prisma from '../../../lib/prisma';
 import { Product } from '@prisma/client';
 import { redirect } from 'next/navigation';
-import { visit } from 'graphql';
 
 
 export type ProductWithPrices = {

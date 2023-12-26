@@ -82,6 +82,9 @@ export default async function page({ searchParams }: { searchParams: { [key: str
 
 
     const response: any = await getSales({ filter: filters, page: page.toString(), limit: limit.toString() })
+    console.log('sales response');
+    console.log(response);
+    
 
     const sales: any = response.data
     const { total } = response

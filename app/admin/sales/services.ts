@@ -28,14 +28,18 @@ export async function getSales(props: PropType) {
 
   try {
     const response = await get('/sales', params)
+    // const response = await fetch('http://13.201.127.24:3000/api/inventory?page=1&limit=10&orderBy=id,ASC')
+    http://13.201.127.24:3000/api/inventory?page=1&limit=10&orderBy=id,ASC
 
     console.log(response.ok);
 
     if (response.ok) {
       console.log('before data');
+      console.log(response);
+      
       const res = await response.json();
       console.log('data');
-      console.log(res);
+      console.log(res.data);
       return res;
 
     } else {

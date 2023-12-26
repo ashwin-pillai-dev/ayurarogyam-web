@@ -263,10 +263,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17640);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var embla_carousel_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(79124);
-/* harmony import */ var embla_carousel_react__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(embla_carousel_react__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(17886);
-/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var embla_carousel_react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(71322);
+/* harmony import */ var embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4539);
 /* harmony import */ var next_image__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(48421);
 /* harmony import */ var next_image__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_image__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _EmblaCarousel_module_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9215);
@@ -284,8 +282,8 @@ const EmblaCarousel = (props)=>{
         stopOnMouseEnter: true
     };
     const { slides, options } = props;
-    const [emblaRef] = embla_carousel_react__WEBPACK_IMPORTED_MODULE_3___default()(options, [
-        embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4___default()(autoplayOptions)
+    const [emblaRef] = (0,embla_carousel_react__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)(options, [
+        (0,embla_carousel_autoplay__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)(autoplayOptions)
     ]);
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
         className: (_EmblaCarousel_module_css__WEBPACK_IMPORTED_MODULE_5___default().embla),
@@ -776,7 +774,7 @@ function Home() {
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,4444,6750,8421,1299,3073,6418,4748,1474], () => (__webpack_exec__(10480)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,4444,6750,8421,1299,8007,9540,4748,1474], () => (__webpack_exec__(10480)));
 module.exports = __webpack_exports__;
 
 })();

@@ -411,7 +411,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var next_navigation__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_navigation__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17640);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7318);
+/* harmony import */ var react_select__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23494);
 /* __next_internal_client_entry_do_not_use__ default auto */ 
 
 
@@ -525,12 +525,14 @@ async function getSales(props) {
     };
     try {
         const response = await (0,queryHelper/* get */.U)("/sales", params);
-        console.log(response.ok);
+        // const response = await fetch('http://13.201.127.24:3000/api/inventory?page=1&limit=10&orderBy=id,ASC')
+        http: console.log(response.ok);
         if (response.ok) {
             console.log("before data");
+            console.log(response);
             const res = await response.json();
             console.log("data");
-            console.log(res);
+            console.log(res.data);
             return res;
         } else {
             console.error("response not ok:", response.statusText);
@@ -675,6 +677,8 @@ async function page({ searchParams }) {
         page: page.toString(),
         limit: limit.toString()
     });
+    console.log("sales response");
+    console.log(response);
     const sales = response.data;
     const { total } = response;
     return /*#__PURE__*/ jsx_runtime_.jsx("section", {
@@ -933,7 +937,7 @@ async function page({ searchParams }) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,1476,9060,3370,7114,322,4855,6418,9733,5918,1789,778], () => (__webpack_exec__(51523)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,322,6897,9540,9733,5918,5158], () => (__webpack_exec__(51523)));
 module.exports = __webpack_exports__;
 
 })();

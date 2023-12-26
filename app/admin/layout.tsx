@@ -24,8 +24,6 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const session = await getServerSession(authOptions)
-  console.log('session');
-  console.log(session);
    let user;
 
    if (session?.user)
@@ -33,13 +31,6 @@ export default async function RootLayout({
     user=session.user
 
    }
-
-   console.log('user');
-   console.log(user);
-   
-
-  
-
   return (
     <html lang="en">
       <body className={inter.className}>

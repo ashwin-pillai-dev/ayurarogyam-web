@@ -721,7 +721,7 @@ var bcrypt_default = /*#__PURE__*/__webpack_require__.n(bcrypt);
  *
  * You need to use at least Prisma 2.26.0. Create a schema file in `prisma/schema.prisma` similar to this one:
  *
- * > This schema is adapted for use in Prisma and based upon our main [schema](https://authjs.dev/reference/adapters#models)
+ * > This schema is adapted for use in Prisma and based upon our main [schema](https://authjs.dev/reference/core/adapters#models)
  *
  * ```json title="schema.prisma"
  * datasource db {
@@ -1143,11 +1143,11 @@ const Prisma = {};
 exports.Prisma = Prisma;
 exports.$Enums = {};
 /**
- * Prisma Client JS version: 5.4.2
- * Query Engine version: ac9d7041ed77bcc8a8dbd2ab6616b39013829574
+ * Prisma Client JS version: 5.7.1
+ * Query Engine version: 0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5
  */ Prisma.prismaVersion = {
-    client: "5.4.2",
-    engine: "ac9d7041ed77bcc8a8dbd2ab6616b39013829574"
+    client: "5.7.1",
+    engine: "0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5"
 };
 Prisma.PrismaClientKnownRequestError = ()=>{
     throw new Error(`PrismaClientKnownRequestError is unable to be run ${runtimeDescription}.
@@ -2075,7 +2075,7 @@ function Ze(e, n, i) {
 }
 function Ee(e, n) {
     var i, r, t, s, o, u, l, f = 0, c = 0, a = 0, h = e.constructor, g = h.rounding, v = h.precision;
-    if (!e.d || !e.d[0] || e.e > 17) return new h(e.d ? e.d[0] ? e.s < 0 ? 0 : 1 / 0 : 1 : e.s ? e.s < 0 ? 0 : e : 0 / 0);
+    if (!e.d || !e.d[0] || e.e > 17) return new h(e.d ? e.d[0] ? e.s < 0 ? 0 : 1 / 0 : 1 : e.s ? e.s < 0 ? 0 : e : NaN);
     for(n == null ? (w = !1, l = v) : l = n, u = new h(.03125); e.e > -2;)e = e.times(u), a += 5;
     for(r = Math.log(M(2, a)) / Math.LN10 * 2 + 5 | 0, l += r, i = s = o = new h(1), h.precision = l;;){
         if (s = p(s.times(e), l, 1), i = i.times(++c), u = o.plus(S(s, i, l, 1)), O(u.d).slice(0, l) === O(o.d).slice(0, l)) {
@@ -4680,8 +4680,9 @@ class SessionStore {
     }
     get value() {
         const sortedKeys = Object.keys((0, _classPrivateFieldGet3.default)(this, _chunks)).sort((a, b)=>{
-            const aSuffix = parseInt(a.split(".").pop() || "0");
-            const bSuffix = parseInt(b.split(".").pop() || "0");
+            var _a$split$pop, _b$split$pop;
+            const aSuffix = parseInt((_a$split$pop = a.split(".").pop()) !== null && _a$split$pop !== void 0 ? _a$split$pop : "0");
+            const bSuffix = parseInt((_b$split$pop = b.split(".").pop()) !== null && _b$split$pop !== void 0 ? _b$split$pop : "0");
             return aSuffix - bSuffix;
         });
         return sortedKeys.map((key)=>(0, _classPrivateFieldGet3.default)(this, _chunks)[key]).join("");
@@ -4770,7 +4771,7 @@ var _exportNames = {
 exports.decode = decode;
 exports.encode = encode;
 exports.getToken = getToken;
-var _jose = __webpack_require__(507);
+var _jose = __webpack_require__(108);
 var _hkdf = _interopRequireDefault(__webpack_require__(506));
 var _uuid = __webpack_require__(389);
 var _cookie = __webpack_require__(741);
@@ -4789,17 +4790,17 @@ Object.keys(_types).forEach(function(key) {
 const DEFAULT_MAX_AGE = 30 * 24 * 60 * 60;
 const now = ()=>Date.now() / 1000 | 0;
 async function encode(params) {
-    const { token = {}, secret, maxAge = DEFAULT_MAX_AGE } = params;
-    const encryptionSecret = await getDerivedEncryptionKey(secret);
+    const { token = {}, secret, maxAge = DEFAULT_MAX_AGE, salt = "" } = params;
+    const encryptionSecret = await getDerivedEncryptionKey(secret, salt);
     return await new _jose.EncryptJWT(token).setProtectedHeader({
         alg: "dir",
         enc: "A256GCM"
     }).setIssuedAt().setExpirationTime(now() + maxAge).setJti((0, _uuid.v4)()).encrypt(encryptionSecret);
 }
 async function decode(params) {
-    const { token, secret } = params;
+    const { token, secret, salt = "" } = params;
     if (!token) return null;
-    const encryptionSecret = await getDerivedEncryptionKey(secret);
+    const encryptionSecret = await getDerivedEncryptionKey(secret, salt);
     const { payload } = await (0, _jose.jwtDecrypt)(token, encryptionSecret, {
         clockTolerance: 15
     });
@@ -4835,8 +4836,8 @@ async function getToken(params) {
         return null;
     }
 }
-async function getDerivedEncryptionKey(secret) {
-    return await (0, _hkdf.default)("sha256", secret, "", "NextAuth.js Generated Encryption Key", 32);
+async function getDerivedEncryptionKey(keyMaterial, salt) {
+    return await (0, _hkdf.default)("sha256", keyMaterial, salt, `NextAuth.js Generated Encryption Key${salt ? ` (${salt})` : ""}`, 32);
 }
 
 
@@ -6856,7 +6857,7 @@ async function web_hkdf(digest, ikm, salt, info, keylen) {
 
 /***/ }),
 
-/***/ 507:
+/***/ 108:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6882,6 +6883,7 @@ __webpack_require__.d(__webpack_exports__, {
   compactVerify: () => (/* reexport */ compactVerify),
   createLocalJWKSet: () => (/* reexport */ createLocalJWKSet),
   createRemoteJWKSet: () => (/* reexport */ createRemoteJWKSet),
+  cryptoRuntime: () => (/* reexport */ util_runtime),
   decodeJwt: () => (/* reexport */ decodeJwt),
   decodeProtectedHeader: () => (/* reexport */ decodeProtectedHeader),
   errors: () => (/* reexport */ errors_namespaceObject),
@@ -6902,7 +6904,7 @@ __webpack_require__.d(__webpack_exports__, {
   jwtVerify: () => (/* reexport */ jwtVerify)
 });
 
-// NAMESPACE OBJECT: ./node_modules/jose/dist/browser/util/errors.js
+// NAMESPACE OBJECT: ./node_modules/next-auth/node_modules/jose/dist/browser/util/errors.js
 var errors_namespaceObject = {};
 __webpack_require__.r(errors_namespaceObject);
 __webpack_require__.d(errors_namespaceObject, {
@@ -6923,7 +6925,7 @@ __webpack_require__.d(errors_namespaceObject, {
   JWTInvalid: () => (JWTInvalid)
 });
 
-// NAMESPACE OBJECT: ./node_modules/jose/dist/browser/util/base64url.js
+// NAMESPACE OBJECT: ./node_modules/next-auth/node_modules/jose/dist/browser/util/base64url.js
 var util_base64url_namespaceObject = {};
 __webpack_require__.r(util_base64url_namespaceObject);
 __webpack_require__.d(util_base64url_namespaceObject, {
@@ -6931,11 +6933,11 @@ __webpack_require__.d(util_base64url_namespaceObject, {
   encode: () => (base64url_encode)
 });
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/webcrypto.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/webcrypto.js
 /* harmony default export */ const webcrypto = (crypto);
 const isCryptoKey = (key)=>key instanceof CryptoKey;
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/digest.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/digest.js
 
 const digest = async (algorithm, data)=>{
     const subtleDigest = `SHA-${algorithm.slice(-3)}`;
@@ -6943,7 +6945,7 @@ const digest = async (algorithm, data)=>{
 };
 /* harmony default export */ const runtime_digest = (digest);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/buffer_utils.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/buffer_utils.js
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -7003,7 +7005,7 @@ async function concatKdf(secret, bits, value) {
     return res.slice(0, bits >> 3);
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/base64url.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/base64url.js
 
 const encodeBase64 = (input)=>{
     let unencoded = input;
@@ -7041,7 +7043,7 @@ const decode = (input)=>{
     }
 };
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/util/errors.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/util/errors.js
 class JOSEError extends Error {
     static get code() {
         return "ERR_JOSE_GENERIC";
@@ -7191,11 +7193,11 @@ class JWSSignatureVerificationFailed extends JOSEError {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/random.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/random.js
 
 /* harmony default export */ const random = (webcrypto.getRandomValues.bind(webcrypto));
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/iv.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/iv.js
 
 
 function bitLength(alg) {
@@ -7217,7 +7219,7 @@ function bitLength(alg) {
 }
 /* harmony default export */ const lib_iv = ((alg)=>random(new Uint8Array(bitLength(alg) >> 3)));
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/check_iv_length.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/check_iv_length.js
 
 
 const checkIvLength = (enc, iv)=>{
@@ -7227,7 +7229,7 @@ const checkIvLength = (enc, iv)=>{
 };
 /* harmony default export */ const check_iv_length = (checkIvLength);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/check_cek_length.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/check_cek_length.js
 
 const checkCekLength = (cek, expected)=>{
     const actual = cek.byteLength << 3;
@@ -7237,7 +7239,7 @@ const checkCekLength = (cek, expected)=>{
 };
 /* harmony default export */ const check_cek_length = (checkCekLength);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/timing_safe_equal.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/timing_safe_equal.js
 const timingSafeEqual = (a, b)=>{
     if (!(a instanceof Uint8Array)) {
         throw new TypeError("First argument must be a buffer");
@@ -7258,7 +7260,7 @@ const timingSafeEqual = (a, b)=>{
 };
 /* harmony default export */ const timing_safe_equal = (timingSafeEqual);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/crypto_key.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/crypto_key.js
 function unusable(name, prop = "algorithm.name") {
     return new TypeError(`CryptoKey does not support this operation, its ${prop} must be ${name}`);
 }
@@ -7404,7 +7406,7 @@ function checkEncCryptoKey(key, alg, ...usages) {
     checkUsage(key, usages);
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/invalid_key_input.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/invalid_key_input.js
 function message(msg, actual, ...types) {
     if (types.length > 2) {
         const last = types.pop();
@@ -7432,7 +7434,7 @@ function withAlg(alg, actual, ...types) {
     return message(`Key for the ${alg} algorithm must be `, actual, ...types);
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/is_key_like.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/is_key_like.js
 
 /* harmony default export */ const is_key_like = ((key)=>{
     return isCryptoKey(key);
@@ -7441,7 +7443,7 @@ const types = [
     "CryptoKey"
 ];
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/decrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/decrypt.js
 
 
 
@@ -7529,7 +7531,7 @@ const decrypt = async (enc, cek, ciphertext, iv, tag, aad)=>{
 };
 /* harmony default export */ const runtime_decrypt = (decrypt);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/zlib.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/zlib.js
 
 const inflate = async ()=>{
     throw new JOSENotSupported('JWE "zip" (Compression Algorithm) Header Parameter is not supported by your javascript runtime. You need to use the `inflateRaw` decrypt option to provide Inflate Raw implementation.');
@@ -7538,7 +7540,7 @@ const deflate = async ()=>{
     throw new JOSENotSupported('JWE "zip" (Compression Algorithm) Header Parameter is not supported by your javascript runtime. You need to use the `deflateRaw` encrypt option to provide Deflate Raw implementation.');
 };
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/is_disjoint.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/is_disjoint.js
 const isDisjoint = (...headers)=>{
     const sources = headers.filter(Boolean);
     if (sources.length === 0 || sources.length === 1) {
@@ -7562,7 +7564,7 @@ const isDisjoint = (...headers)=>{
 };
 /* harmony default export */ const is_disjoint = (isDisjoint);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/is_object.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/is_object.js
 function isObjectLike(value) {
     return typeof value === "object" && value !== null;
 }
@@ -7580,7 +7582,7 @@ function isObject(input) {
     return Object.getPrototypeOf(input) === proto;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/bogus.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/bogus.js
 const bogusWebCrypto = [
     {
         hash: "SHA-256",
@@ -7593,7 +7595,7 @@ const bogusWebCrypto = [
 ];
 /* harmony default export */ const bogus = (bogusWebCrypto);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/aeskw.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/aeskw.js
 
 
 
@@ -7629,7 +7631,7 @@ const unwrap = async (alg, key, encryptedKey)=>{
     return new Uint8Array(await webcrypto.subtle.exportKey("raw", cryptoKeyCek));
 };
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/ecdhes.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/ecdhes.js
 
 
 
@@ -7678,7 +7680,7 @@ function ecdhAllowed(key) {
     ].includes(key.algorithm.namedCurve) || key.algorithm.name === "X25519" || key.algorithm.name === "X448";
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/check_p2s.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/check_p2s.js
 
 function checkP2s(p2s) {
     if (!(p2s instanceof Uint8Array) || p2s.length < 8) {
@@ -7686,7 +7688,7 @@ function checkP2s(p2s) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/pbes2kw.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/pbes2kw.js
 
 
 
@@ -7748,7 +7750,7 @@ const pbes2kw_decrypt = async (alg, key, encryptedKey, p2c, p2s)=>{
     return unwrap(alg.slice(-6), derived, encryptedKey);
 };
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/subtle_rsaes.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/subtle_rsaes.js
 
 function subtleRsaEs(alg) {
     switch(alg){
@@ -7762,7 +7764,7 @@ function subtleRsaEs(alg) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/check_key_length.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/check_key_length.js
 /* harmony default export */ const check_key_length = ((alg, key)=>{
     if (alg.startsWith("RS") || alg.startsWith("PS")) {
         const { modulusLength } = key.algorithm;
@@ -7772,7 +7774,7 @@ function subtleRsaEs(alg) {
     }
 });
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/rsaes.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/rsaes.js
 
 
 
@@ -7811,7 +7813,7 @@ const rsaes_decrypt = async (alg, key, encryptedKey)=>{
     throw new TypeError('RSA-OAEP key "usages" must include "decrypt" or "unwrapKey" for this operation');
 };
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/cek.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/cek.js
 
 
 function cek_bitLength(alg) {
@@ -7833,13 +7835,13 @@ function cek_bitLength(alg) {
 }
 /* harmony default export */ const lib_cek = ((alg)=>random(new Uint8Array(cek_bitLength(alg) >> 3)));
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/format_pem.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/format_pem.js
 /* harmony default export */ const format_pem = ((b64, descriptor)=>{
     const newlined = (b64.match(/.{1,64}/g) || []).join("\n");
     return `-----BEGIN ${descriptor}-----\n${newlined}\n-----END ${descriptor}-----`;
 });
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/asn1.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/asn1.js
 
 
 
@@ -8130,7 +8132,7 @@ const fromX509 = (pem, alg, options)=>{
     return fromSPKI(spki, alg, options);
 };
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/jwk_to_key.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/jwk_to_key.js
 
 
 
@@ -8360,7 +8362,7 @@ const parse = async (jwk)=>{
 };
 /* harmony default export */ const jwk_to_key = (parse);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/key/import.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/key/import.js
 
 
 
@@ -8419,7 +8421,7 @@ async function importJWK(jwk, alg, octAsKeyObject) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/check_key_type.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/check_key_type.js
 
 
 const symmetricTypeCheck = (alg, key)=>{
@@ -8461,7 +8463,7 @@ const checkKeyType = (alg, key, usage)=>{
 };
 /* harmony default export */ const check_key_type = (checkKeyType);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/encrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/encrypt.js
 
 
 
@@ -8540,7 +8542,7 @@ const encrypt_encrypt = async (enc, plaintext, cek, iv, aad)=>{
 };
 /* harmony default export */ const runtime_encrypt = (encrypt_encrypt);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/aesgcmkw.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/aesgcmkw.js
 
 
 
@@ -8560,7 +8562,7 @@ async function aesgcmkw_unwrap(alg, key, encryptedKey, iv, tag) {
     return runtime_decrypt(jweAlgorithm, key, encryptedKey, iv, tag, new Uint8Array(0));
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/decrypt_key_management.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/decrypt_key_management.js
 
 
 
@@ -8674,7 +8676,7 @@ async function decryptKeyManagement(alg, key, encryptedKey, joseHeader, options)
 }
 /* harmony default export */ const decrypt_key_management = (decryptKeyManagement);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/validate_crit.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/validate_crit.js
 
 function validateCrit(Err, recognizedDefault, recognizedOption, protectedHeader, joseHeader) {
     if (joseHeader.crit !== undefined && protectedHeader.crit === undefined) {
@@ -8709,7 +8711,7 @@ function validateCrit(Err, recognizedDefault, recognizedOption, protectedHeader,
 }
 /* harmony default export */ const validate_crit = (validateCrit);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/validate_algorithms.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/validate_algorithms.js
 const validateAlgorithms = (option, algorithms)=>{
     if (algorithms !== undefined && (!Array.isArray(algorithms) || algorithms.some((s)=>typeof s !== "string"))) {
         throw new TypeError(`"${option}" option must be an array of strings`);
@@ -8721,7 +8723,7 @@ const validateAlgorithms = (option, algorithms)=>{
 };
 /* harmony default export */ const validate_algorithms = (validateAlgorithms);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwe/flattened/decrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwe/flattened/decrypt.js
 
 
 
@@ -8885,7 +8887,7 @@ async function flattenedDecrypt(jwe, key, options) {
     return result;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwe/compact/decrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwe/compact/decrypt.js
 
 
 
@@ -8920,7 +8922,7 @@ async function compactDecrypt(jwe, key, options) {
     return result;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwe/general/decrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwe/general/decrypt.js
 
 
 
@@ -8951,7 +8953,7 @@ async function generalDecrypt(jwe, key, options) {
     throw new JWEDecryptionFailed();
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/key_to_jwk.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/key_to_jwk.js
 
 
 
@@ -8974,7 +8976,7 @@ const keyToJWK = async (key)=>{
 };
 /* harmony default export */ const key_to_jwk = (keyToJWK);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/key/export.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/key/export.js
 
 
 
@@ -8988,7 +8990,7 @@ async function exportJWK(key) {
     return key_to_jwk(key);
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/encrypt_key_management.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/encrypt_key_management.js
 
 
 
@@ -9091,7 +9093,7 @@ async function encryptKeyManagement(alg, enc, key, providedCek, providedParamete
 }
 /* harmony default export */ const encrypt_key_management = (encryptKeyManagement);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwe/flattened/encrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwe/flattened/encrypt.js
 
 
 
@@ -9267,7 +9269,7 @@ class FlattenedEncrypt {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwe/general/encrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwe/general/encrypt.js
 
 
 
@@ -9438,7 +9440,7 @@ class GeneralEncrypt {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/subtle_dsa.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/subtle_dsa.js
 
 function subtleDsa(alg, algorithm) {
     const hash = `SHA-${alg.slice(-3)}`;
@@ -9482,7 +9484,7 @@ function subtleDsa(alg, algorithm) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/get_sign_verify_key.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/get_sign_verify_key.js
 
 
 
@@ -9506,7 +9508,7 @@ function get_sign_verify_key_getCryptoKey(alg, key, usage) {
     throw new TypeError(invalid_key_input(key, ...types, "Uint8Array"));
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/verify.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/verify.js
 
 
 
@@ -9523,7 +9525,7 @@ const verify = async (alg, key, signature, data)=>{
 };
 /* harmony default export */ const runtime_verify = (verify);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jws/flattened/verify.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jws/flattened/verify.js
 
 
 
@@ -9644,7 +9646,7 @@ async function flattenedVerify(jws, key, options) {
     return result;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jws/compact/verify.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jws/compact/verify.js
 
 
 
@@ -9677,7 +9679,7 @@ async function compactVerify(jws, key, options) {
     return result;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jws/general/verify.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jws/general/verify.js
 
 
 
@@ -9701,10 +9703,10 @@ async function generalVerify(jws, key, options) {
     throw new JWSSignatureVerificationFailed();
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/epoch.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/epoch.js
 /* harmony default export */ const epoch = ((date)=>Math.floor(date.getTime() / 1000));
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/secs.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/secs.js
 const minute = 60;
 const hour = minute * 60;
 const day = hour * 24;
@@ -9750,7 +9752,7 @@ const REGEX = /^(\d+|\d+\.\d+) ?(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h
     }
 });
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/lib/jwt_claims_set.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/lib/jwt_claims_set.js
 
 
 
@@ -9849,7 +9851,7 @@ const checkAudiencePresence = (audPayload, audOption)=>{
     return payload;
 });
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwt/verify.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwt/verify.js
 
 
 
@@ -9873,7 +9875,7 @@ async function jwtVerify(jwt, key, options) {
     return result;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwt/decrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwt/decrypt.js
 
 
 
@@ -9903,7 +9905,7 @@ async function jwtDecrypt(jwt, key, options) {
     return result;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwe/compact/encrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwe/compact/encrypt.js
 
 class CompactEncrypt {
     constructor(plaintext){
@@ -9937,7 +9939,7 @@ class CompactEncrypt {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/sign.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/sign.js
 
 
 
@@ -9950,7 +9952,7 @@ const sign = async (alg, key, data)=>{
 };
 /* harmony default export */ const runtime_sign = (sign);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jws/flattened/sign.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jws/flattened/sign.js
 
 
 
@@ -10037,7 +10039,7 @@ class FlattenedSign {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jws/compact/sign.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jws/compact/sign.js
 
 class CompactSign {
     constructor(payload){
@@ -10056,7 +10058,7 @@ class CompactSign {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jws/general/sign.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jws/general/sign.js
 
 
 class IndividualSignature {
@@ -10124,7 +10126,7 @@ class GeneralSign {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwt/produce.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwt/produce.js
 
 
 
@@ -10207,7 +10209,7 @@ class ProduceJWT {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwt/sign.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwt/sign.js
 
 
 
@@ -10228,7 +10230,7 @@ class SignJWT extends ProduceJWT {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwt/encrypt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwt/encrypt.js
 
 
 
@@ -10307,7 +10309,7 @@ class EncryptJWT extends ProduceJWT {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwk/thumbprint.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwk/thumbprint.js
 
 
 
@@ -10376,7 +10378,7 @@ async function calculateJwkThumbprintUri(jwk, digestAlgorithm) {
     return `urn:ietf:params:oauth:jwk-thumbprint:sha-${digestAlgorithm.slice(-3)}:${thumbprint}`;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwk/embedded.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwk/embedded.js
 
 
 
@@ -10398,7 +10400,7 @@ async function EmbeddedJWK(protectedHeader, token) {
     return key;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwks/local.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwks/local.js
 
 
 
@@ -10517,7 +10519,7 @@ function createLocalJWKSet(jwks) {
     };
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/fetch_jwks.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/fetch_jwks.js
 
 const fetchJwks = async (url, timeout, options)=>{
     let controller;
@@ -10550,7 +10552,7 @@ const fetchJwks = async (url, timeout, options)=>{
 };
 /* harmony default export */ const fetch_jwks = (fetchJwks);
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwks/remote.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwks/remote.js
 
 
 
@@ -10624,7 +10626,7 @@ function createRemoteJWKSet(url, options) {
     };
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/jwt/unsecured.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/jwt/unsecured.js
 
 
 
@@ -10661,12 +10663,12 @@ class UnsecuredJWT extends ProduceJWT {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/util/base64url.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/util/base64url.js
 
 const base64url_encode = encode;
 const base64url_decode = decode;
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/util/decode_protected_header.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/util/decode_protected_header.js
 
 
 
@@ -10699,7 +10701,7 @@ function decodeProtectedHeader(token) {
     }
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/util/decode_jwt.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/util/decode_jwt.js
 
 
 
@@ -10726,7 +10728,7 @@ function decodeJwt(jwt) {
     return result;
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/runtime/generate.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/generate.js
 
 
 
@@ -10944,19 +10946,27 @@ async function generateKeyPair(alg, options) {
     return webcrypto.subtle.generateKey(algorithm, (_c = options === null || options === void 0 ? void 0 : options.extractable) !== null && _c !== void 0 ? _c : false, keyUsages);
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/key/generate_key_pair.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/key/generate_key_pair.js
 
 async function generate_key_pair_generateKeyPair(alg, options) {
     return generateKeyPair(alg, options);
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/key/generate_secret.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/key/generate_secret.js
 
 async function generate_secret_generateSecret(alg, options) {
     return generateSecret(alg, options);
 }
 
-;// CONCATENATED MODULE: ./node_modules/jose/dist/browser/index.js
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/runtime/runtime.js
+/* harmony default export */ const runtime = ("WebCryptoAPI");
+
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/util/runtime.js
+
+/* harmony default export */ const util_runtime = (runtime);
+
+;// CONCATENATED MODULE: ./node_modules/next-auth/node_modules/jose/dist/browser/index.js
+
 
 
 

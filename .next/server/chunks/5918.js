@@ -153,8 +153,6 @@ var react = __webpack_require__(63370);
 
 
 function NavbarWithDropdown({ onDrawerClick, user }) {
-    console.log("user fromnavbar new ");
-    console.log(user.user);
     return /*#__PURE__*/ (0,jsx_runtime_.jsxs)(cjs.Navbar, {
         className: "bg-white border-b border-gray-200 px-4 py-2.5 dark:bg-gray-800 dark:border-gray-700 fixed left-0 right-0 top-0 z-50",
         fluid: true,
@@ -262,8 +260,6 @@ function NavbarWithDropdown({ onDrawerClick, user }) {
 
 function NavSideWrapper(user) {
     const [drawerVisible, setDrawerVisible] = (0,react_experimental_.useState)(false);
-    console.log("user from NavSideWrapper");
-    console.log(user);
     const drawerClicked = ()=>{
         setDrawerVisible(!drawerVisible);
     };
@@ -369,14 +365,10 @@ const metadata = {
 };
 async function RootLayout({ children }) {
     const session = await (0,next.getServerSession)(options/* authOptions */.L);
-    console.log("session");
-    console.log(session);
     let user;
     if (session?.user) {
         user = session.user;
     }
-    console.log("user");
-    console.log(user);
     return /*#__PURE__*/ jsx_runtime_.jsx("html", {
         lang: "en",
         children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("body", {

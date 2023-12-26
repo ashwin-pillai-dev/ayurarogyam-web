@@ -4,9 +4,19 @@ import { NextRequest } from "next/server";
 import prisma from '../../../lib/prisma';
 
 
-export async function GET(request: NextRequest) {
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+// export const dynamicParams = true;
+// export const config = { dynamic: true };
+
+
+
+
+export async function GET(request: Request) {
     try {
-        const searchParams = request.nextUrl.searchParams;
+        console.log('in route sales');
+        
+        const { searchParams } = new URL(request.url)
         const pageParam = searchParams.get('page');
         const limitParam = searchParams.get('limit');
         console.log(`page${pageParam} limit ${limitParam}`);

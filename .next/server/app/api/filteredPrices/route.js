@@ -52,6 +52,7 @@ var module_default = /*#__PURE__*/__webpack_require__.n(app_route_module);
 var prisma = __webpack_require__(94734);
 ;// CONCATENATED MODULE: ./app/api/filteredPrices/route.ts
 
+// export const dynamic = 'force-dynamic'
 async function GET(request) {
     console.log(request);
     const { searchParams } = new URL(request.url);

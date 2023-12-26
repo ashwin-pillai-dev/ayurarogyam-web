@@ -40,7 +40,9 @@ __webpack_require__.d(__webpack_exports__, {
 var route_namespaceObject = {};
 __webpack_require__.r(route_namespaceObject);
 __webpack_require__.d(route_namespaceObject, {
-  GET: () => (GET)
+  GET: () => (GET),
+  dynamic: () => (dynamic),
+  revalidate: () => (revalidate)
 });
 
 // EXTERNAL MODULE: ./node_modules/next/dist/server/node-polyfill-headers.js
@@ -52,9 +54,14 @@ var module_default = /*#__PURE__*/__webpack_require__.n(app_route_module);
 var prisma = __webpack_require__(94734);
 ;// CONCATENATED MODULE: ./app/api/sales/route.ts
 
+const dynamic = "force-dynamic";
+const revalidate = 0;
+// export const dynamicParams = true;
+// export const config = { dynamic: true };
 async function GET(request) {
     try {
-        const searchParams = request.nextUrl.searchParams;
+        console.log("in route sales");
+        const { searchParams } = new URL(request.url);
         const pageParam = searchParams.get("page");
         const limitParam = searchParams.get("limit");
         console.log(`page${pageParam} limit ${limitParam}`);
