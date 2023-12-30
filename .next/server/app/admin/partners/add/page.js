@@ -446,6 +446,8 @@ const PartnerForm = (props)=>{
         console.log("on submit form values");
         console.log(formValues);
         const validationResult = PartnerFormSchema.safeParse(formValues);
+        console.log("validationResult");
+        console.log(validationResult);
         if (validationResult.success) {
             console.log("Form values:");
             console.log(formValues);

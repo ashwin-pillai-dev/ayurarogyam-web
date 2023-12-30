@@ -51,6 +51,9 @@ const PartnerForm: React.FC<PropType> = (props) => {
 
 
         const validationResult = PartnerFormSchema.safeParse(formValues);
+        console.log('validationResult');
+        console.log(validationResult);
+        
 
         if (validationResult.success) {
             console.log('Form values:');

@@ -1942,92 +1942,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class AbortMultipartUploadCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class AbortMultipartUploadCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, AbortMultipartUploadCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "AbortMultipartUploadCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "AbortMultipartUpload"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_AbortMultipartUploadCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_AbortMultipartUploadCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "AbortMultipartUpload", {}).n("S3Client", "AbortMultipartUploadCommand").f(void 0, void 0).ser(Aws_restXml_1.se_AbortMultipartUploadCommand).de(Aws_restXml_1.de_AbortMultipartUploadCommand).build() {
 }
 exports.AbortMultipartUploadCommand = AbortMultipartUploadCommand;
 
@@ -2054,95 +1986,27 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class CompleteMultipartUploadCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class CompleteMultipartUploadCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, CompleteMultipartUploadCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_sdk_s3_1.getThrow200ExceptionsPlugin)(configuration));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "CompleteMultipartUploadCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.CompleteMultipartUploadRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.CompleteMultipartUploadOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "CompleteMultipartUpload"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_CompleteMultipartUploadCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_CompleteMultipartUploadCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_sdk_s3_1.getThrow200ExceptionsPlugin)(config),
+        (0, middleware_ssec_1.getSsecPlugin)(config)
+    ];
+}).s("AmazonS3", "CompleteMultipartUpload", {}).n("S3Client", "CompleteMultipartUploadCommand").f(models_0_1.CompleteMultipartUploadRequestFilterSensitiveLog, models_0_1.CompleteMultipartUploadOutputFilterSensitiveLog).ser(Aws_restXml_1.se_CompleteMultipartUploadCommand).de(Aws_restXml_1.de_CompleteMultipartUploadCommand).build() {
 }
 exports.CompleteMultipartUploadCommand = CompleteMultipartUploadCommand;
 
@@ -2169,91 +2033,27 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class CopyObjectCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            DisableS3ExpressSessionAuth: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class CopyObjectCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    DisableS3ExpressSessionAuth: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, CopyObjectCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_sdk_s3_1.getThrow200ExceptionsPlugin)(configuration));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "CopyObjectCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.CopyObjectRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.CopyObjectOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "CopyObject"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_CopyObjectCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_CopyObjectCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_sdk_s3_1.getThrow200ExceptionsPlugin)(config),
+        (0, middleware_ssec_1.getSsecPlugin)(config)
+    ];
+}).s("AmazonS3", "CopyObject", {}).n("S3Client", "CopyObjectCommand").f(models_0_1.CopyObjectRequestFilterSensitiveLog, models_0_1.CopyObjectOutputFilterSensitiveLog).ser(Aws_restXml_1.se_CopyObjectCommand).de(Aws_restXml_1.de_CopyObjectCommand).build() {
 }
 exports.CopyObjectCommand = CopyObjectCommand;
 
@@ -2279,97 +2079,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class CreateBucketCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            DisableAccessPoints: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class CreateBucketCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    DisableAccessPoints: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, CreateBucketCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_location_constraint_1.getLocationConstraintPlugin)(configuration));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "CreateBucketCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "CreateBucket"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_CreateBucketCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_CreateBucketCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_location_constraint_1.getLocationConstraintPlugin)(config)
+    ];
+}).s("AmazonS3", "CreateBucket", {}).n("S3Client", "CreateBucketCommand").f(void 0, void 0).ser(Aws_restXml_1.se_CreateBucketCommand).de(Aws_restXml_1.de_CreateBucketCommand).build() {
 }
 exports.CreateBucketCommand = CreateBucketCommand;
 
@@ -2395,94 +2127,26 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class CreateMultipartUploadCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class CreateMultipartUploadCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, CreateMultipartUploadCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "CreateMultipartUploadCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.CreateMultipartUploadRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.CreateMultipartUploadOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "CreateMultipartUpload"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_CreateMultipartUploadCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_CreateMultipartUploadCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_ssec_1.getSsecPlugin)(config)
+    ];
+}).s("AmazonS3", "CreateMultipartUpload", {}).n("S3Client", "CreateMultipartUploadCommand").f(models_0_1.CreateMultipartUploadRequestFilterSensitiveLog, models_0_1.CreateMultipartUploadOutputFilterSensitiveLog).ser(Aws_restXml_1.se_CreateMultipartUploadCommand).de(Aws_restXml_1.de_CreateMultipartUploadCommand).build() {
 }
 exports.CreateMultipartUploadCommand = CreateMultipartUploadCommand;
 
@@ -2507,89 +2171,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class CreateSessionCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            DisableS3ExpressSessionAuth: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class CreateSessionCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    DisableS3ExpressSessionAuth: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, CreateSessionCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "CreateSessionCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: models_0_1.CreateSessionOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "CreateSession"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_CreateSessionCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_CreateSessionCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "CreateSession", {}).n("S3Client", "CreateSessionCommand").f(void 0, models_0_1.CreateSessionOutputFilterSensitiveLog).ser(Aws_restXml_1.se_CreateSessionCommand).de(Aws_restXml_1.de_CreateSessionCommand).build() {
 }
 exports.CreateSessionCommand = CreateSessionCommand;
 
@@ -2614,92 +2214,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketAnalyticsConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketAnalyticsConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketAnalyticsConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketAnalyticsConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketAnalyticsConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketAnalyticsConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketAnalyticsConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketAnalyticsConfiguration", {}).n("S3Client", "DeleteBucketAnalyticsConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketAnalyticsConfigurationCommand).de(Aws_restXml_1.de_DeleteBucketAnalyticsConfigurationCommand).build() {
 }
 exports.DeleteBucketAnalyticsConfigurationCommand = DeleteBucketAnalyticsConfigurationCommand;
 
@@ -2724,92 +2256,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucket"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucket", {}).n("S3Client", "DeleteBucketCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketCommand).de(Aws_restXml_1.de_DeleteBucketCommand).build() {
 }
 exports.DeleteBucketCommand = DeleteBucketCommand;
 
@@ -2834,92 +2298,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketCorsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketCorsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketCorsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketCorsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketCors"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketCorsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketCorsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketCors", {}).n("S3Client", "DeleteBucketCorsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketCorsCommand).de(Aws_restXml_1.de_DeleteBucketCorsCommand).build() {
 }
 exports.DeleteBucketCorsCommand = DeleteBucketCorsCommand;
 
@@ -2944,92 +2340,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketEncryptionCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketEncryptionCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketEncryptionCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketEncryptionCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketEncryption"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketEncryptionCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketEncryptionCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketEncryption", {}).n("S3Client", "DeleteBucketEncryptionCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketEncryptionCommand).de(Aws_restXml_1.de_DeleteBucketEncryptionCommand).build() {
 }
 exports.DeleteBucketEncryptionCommand = DeleteBucketEncryptionCommand;
 
@@ -3054,92 +2382,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketIntelligentTieringConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketIntelligentTieringConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketIntelligentTieringConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketIntelligentTieringConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketIntelligentTieringConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketIntelligentTieringConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketIntelligentTieringConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketIntelligentTieringConfiguration", {}).n("S3Client", "DeleteBucketIntelligentTieringConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketIntelligentTieringConfigurationCommand).de(Aws_restXml_1.de_DeleteBucketIntelligentTieringConfigurationCommand).build() {
 }
 exports.DeleteBucketIntelligentTieringConfigurationCommand = DeleteBucketIntelligentTieringConfigurationCommand;
 
@@ -3164,92 +2424,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketInventoryConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketInventoryConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketInventoryConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketInventoryConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketInventoryConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketInventoryConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketInventoryConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketInventoryConfiguration", {}).n("S3Client", "DeleteBucketInventoryConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketInventoryConfigurationCommand).de(Aws_restXml_1.de_DeleteBucketInventoryConfigurationCommand).build() {
 }
 exports.DeleteBucketInventoryConfigurationCommand = DeleteBucketInventoryConfigurationCommand;
 
@@ -3274,92 +2466,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketLifecycleCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketLifecycleCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketLifecycleCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketLifecycleCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketLifecycle"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketLifecycleCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketLifecycleCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketLifecycle", {}).n("S3Client", "DeleteBucketLifecycleCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketLifecycleCommand).de(Aws_restXml_1.de_DeleteBucketLifecycleCommand).build() {
 }
 exports.DeleteBucketLifecycleCommand = DeleteBucketLifecycleCommand;
 
@@ -3384,92 +2508,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketMetricsConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketMetricsConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketMetricsConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketMetricsConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketMetricsConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketMetricsConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketMetricsConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketMetricsConfiguration", {}).n("S3Client", "DeleteBucketMetricsConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketMetricsConfigurationCommand).de(Aws_restXml_1.de_DeleteBucketMetricsConfigurationCommand).build() {
 }
 exports.DeleteBucketMetricsConfigurationCommand = DeleteBucketMetricsConfigurationCommand;
 
@@ -3494,92 +2550,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketOwnershipControlsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketOwnershipControlsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketOwnershipControlsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketOwnershipControlsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketOwnershipControls"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketOwnershipControlsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketOwnershipControlsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketOwnershipControls", {}).n("S3Client", "DeleteBucketOwnershipControlsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketOwnershipControlsCommand).de(Aws_restXml_1.de_DeleteBucketOwnershipControlsCommand).build() {
 }
 exports.DeleteBucketOwnershipControlsCommand = DeleteBucketOwnershipControlsCommand;
 
@@ -3604,92 +2592,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketPolicyCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketPolicyCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketPolicyCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketPolicyCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketPolicy"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketPolicyCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketPolicyCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketPolicy", {}).n("S3Client", "DeleteBucketPolicyCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketPolicyCommand).de(Aws_restXml_1.de_DeleteBucketPolicyCommand).build() {
 }
 exports.DeleteBucketPolicyCommand = DeleteBucketPolicyCommand;
 
@@ -3714,92 +2634,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketReplicationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketReplicationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketReplicationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketReplicationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketReplication"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketReplicationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketReplicationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketReplication", {}).n("S3Client", "DeleteBucketReplicationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketReplicationCommand).de(Aws_restXml_1.de_DeleteBucketReplicationCommand).build() {
 }
 exports.DeleteBucketReplicationCommand = DeleteBucketReplicationCommand;
 
@@ -3824,92 +2676,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketTaggingCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketTaggingCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketTaggingCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketTaggingCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketTagging"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketTaggingCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketTaggingCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketTagging", {}).n("S3Client", "DeleteBucketTaggingCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketTaggingCommand).de(Aws_restXml_1.de_DeleteBucketTaggingCommand).build() {
 }
 exports.DeleteBucketTaggingCommand = DeleteBucketTaggingCommand;
 
@@ -3934,92 +2718,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteBucketWebsiteCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteBucketWebsiteCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteBucketWebsiteCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteBucketWebsiteCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteBucketWebsite"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteBucketWebsiteCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteBucketWebsiteCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteBucketWebsite", {}).n("S3Client", "DeleteBucketWebsiteCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteBucketWebsiteCommand).de(Aws_restXml_1.de_DeleteBucketWebsiteCommand).build() {
 }
 exports.DeleteBucketWebsiteCommand = DeleteBucketWebsiteCommand;
 
@@ -4044,92 +2760,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteObjectCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteObjectCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteObjectCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteObjectCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteObject"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteObjectCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteObjectCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteObject", {}).n("S3Client", "DeleteObjectCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteObjectCommand).de(Aws_restXml_1.de_DeleteObjectCommand).build() {
 }
 exports.DeleteObjectCommand = DeleteObjectCommand;
 
@@ -4154,88 +2802,20 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteObjectTaggingCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteObjectTaggingCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteObjectTaggingCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteObjectTaggingCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteObjectTagging"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteObjectTaggingCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteObjectTaggingCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeleteObjectTagging", {}).n("S3Client", "DeleteObjectTaggingCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteObjectTaggingCommand).de(Aws_restXml_1.de_DeleteObjectTaggingCommand).build() {
 }
 exports.DeleteObjectTaggingCommand = DeleteObjectTaggingCommand;
 
@@ -4261,93 +2841,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeleteObjectsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeleteObjectsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeleteObjectsCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeleteObjectsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeleteObjects"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeleteObjectsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeleteObjectsCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "DeleteObjects", {}).n("S3Client", "DeleteObjectsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeleteObjectsCommand).de(Aws_restXml_1.de_DeleteObjectsCommand).build() {
 }
 exports.DeleteObjectsCommand = DeleteObjectsCommand;
 
@@ -4372,92 +2884,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class DeletePublicAccessBlockCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class DeletePublicAccessBlockCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DeletePublicAccessBlockCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "DeletePublicAccessBlockCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "DeletePublicAccessBlock"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_DeletePublicAccessBlockCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_DeletePublicAccessBlockCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "DeletePublicAccessBlock", {}).n("S3Client", "DeletePublicAccessBlockCommand").f(void 0, void 0).ser(Aws_restXml_1.se_DeletePublicAccessBlockCommand).de(Aws_restXml_1.de_DeletePublicAccessBlockCommand).build() {
 }
 exports.DeletePublicAccessBlockCommand = DeletePublicAccessBlockCommand;
 
@@ -4482,92 +2926,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketAccelerateConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketAccelerateConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketAccelerateConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketAccelerateConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketAccelerateConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketAccelerateConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketAccelerateConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketAccelerateConfiguration", {}).n("S3Client", "GetBucketAccelerateConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketAccelerateConfigurationCommand).de(Aws_restXml_1.de_GetBucketAccelerateConfigurationCommand).build() {
 }
 exports.GetBucketAccelerateConfigurationCommand = GetBucketAccelerateConfigurationCommand;
 
@@ -4592,92 +2968,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketAclCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketAclCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketAclCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketAclCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketAcl"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketAclCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketAclCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketAcl", {}).n("S3Client", "GetBucketAclCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketAclCommand).de(Aws_restXml_1.de_GetBucketAclCommand).build() {
 }
 exports.GetBucketAclCommand = GetBucketAclCommand;
 
@@ -4702,92 +3010,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketAnalyticsConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketAnalyticsConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketAnalyticsConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketAnalyticsConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketAnalyticsConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketAnalyticsConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketAnalyticsConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketAnalyticsConfiguration", {}).n("S3Client", "GetBucketAnalyticsConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketAnalyticsConfigurationCommand).de(Aws_restXml_1.de_GetBucketAnalyticsConfigurationCommand).build() {
 }
 exports.GetBucketAnalyticsConfigurationCommand = GetBucketAnalyticsConfigurationCommand;
 
@@ -4812,92 +3052,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketCorsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketCorsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketCorsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketCorsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketCors"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketCorsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketCorsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketCors", {}).n("S3Client", "GetBucketCorsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketCorsCommand).de(Aws_restXml_1.de_GetBucketCorsCommand).build() {
 }
 exports.GetBucketCorsCommand = GetBucketCorsCommand;
 
@@ -4922,93 +3094,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketEncryptionCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketEncryptionCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketEncryptionCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketEncryptionCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: models_0_1.GetBucketEncryptionOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketEncryption"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketEncryptionCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketEncryptionCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketEncryption", {}).n("S3Client", "GetBucketEncryptionCommand").f(void 0, models_0_1.GetBucketEncryptionOutputFilterSensitiveLog).ser(Aws_restXml_1.se_GetBucketEncryptionCommand).de(Aws_restXml_1.de_GetBucketEncryptionCommand).build() {
 }
 exports.GetBucketEncryptionCommand = GetBucketEncryptionCommand;
 
@@ -5033,92 +3137,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketIntelligentTieringConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketIntelligentTieringConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketIntelligentTieringConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketIntelligentTieringConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketIntelligentTieringConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketIntelligentTieringConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketIntelligentTieringConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketIntelligentTieringConfiguration", {}).n("S3Client", "GetBucketIntelligentTieringConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketIntelligentTieringConfigurationCommand).de(Aws_restXml_1.de_GetBucketIntelligentTieringConfigurationCommand).build() {
 }
 exports.GetBucketIntelligentTieringConfigurationCommand = GetBucketIntelligentTieringConfigurationCommand;
 
@@ -5143,93 +3179,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketInventoryConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketInventoryConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketInventoryConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketInventoryConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: models_0_1.GetBucketInventoryConfigurationOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketInventoryConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketInventoryConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketInventoryConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketInventoryConfiguration", {}).n("S3Client", "GetBucketInventoryConfigurationCommand").f(void 0, models_0_1.GetBucketInventoryConfigurationOutputFilterSensitiveLog).ser(Aws_restXml_1.se_GetBucketInventoryConfigurationCommand).de(Aws_restXml_1.de_GetBucketInventoryConfigurationCommand).build() {
 }
 exports.GetBucketInventoryConfigurationCommand = GetBucketInventoryConfigurationCommand;
 
@@ -5254,92 +3222,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketLifecycleConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketLifecycleConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketLifecycleConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketLifecycleConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketLifecycleConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketLifecycleConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketLifecycleConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketLifecycleConfiguration", {}).n("S3Client", "GetBucketLifecycleConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketLifecycleConfigurationCommand).de(Aws_restXml_1.de_GetBucketLifecycleConfigurationCommand).build() {
 }
 exports.GetBucketLifecycleConfigurationCommand = GetBucketLifecycleConfigurationCommand;
 
@@ -5364,92 +3264,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketLocationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketLocationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketLocationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketLocationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketLocation"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketLocationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketLocationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketLocation", {}).n("S3Client", "GetBucketLocationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketLocationCommand).de(Aws_restXml_1.de_GetBucketLocationCommand).build() {
 }
 exports.GetBucketLocationCommand = GetBucketLocationCommand;
 
@@ -5474,92 +3306,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketLoggingCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketLoggingCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketLoggingCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketLoggingCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketLogging"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketLoggingCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketLoggingCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketLogging", {}).n("S3Client", "GetBucketLoggingCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketLoggingCommand).de(Aws_restXml_1.de_GetBucketLoggingCommand).build() {
 }
 exports.GetBucketLoggingCommand = GetBucketLoggingCommand;
 
@@ -5584,92 +3348,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketMetricsConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketMetricsConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketMetricsConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketMetricsConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketMetricsConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketMetricsConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketMetricsConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketMetricsConfiguration", {}).n("S3Client", "GetBucketMetricsConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketMetricsConfigurationCommand).de(Aws_restXml_1.de_GetBucketMetricsConfigurationCommand).build() {
 }
 exports.GetBucketMetricsConfigurationCommand = GetBucketMetricsConfigurationCommand;
 
@@ -5694,92 +3390,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketNotificationConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketNotificationConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketNotificationConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketNotificationConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketNotificationConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketNotificationConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketNotificationConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketNotificationConfiguration", {}).n("S3Client", "GetBucketNotificationConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketNotificationConfigurationCommand).de(Aws_restXml_1.de_GetBucketNotificationConfigurationCommand).build() {
 }
 exports.GetBucketNotificationConfigurationCommand = GetBucketNotificationConfigurationCommand;
 
@@ -5804,92 +3432,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketOwnershipControlsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketOwnershipControlsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketOwnershipControlsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketOwnershipControlsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketOwnershipControls"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketOwnershipControlsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketOwnershipControlsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketOwnershipControls", {}).n("S3Client", "GetBucketOwnershipControlsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketOwnershipControlsCommand).de(Aws_restXml_1.de_GetBucketOwnershipControlsCommand).build() {
 }
 exports.GetBucketOwnershipControlsCommand = GetBucketOwnershipControlsCommand;
 
@@ -5914,92 +3474,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketPolicyCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketPolicyCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketPolicyCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketPolicyCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketPolicy"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketPolicyCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketPolicyCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketPolicy", {}).n("S3Client", "GetBucketPolicyCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketPolicyCommand).de(Aws_restXml_1.de_GetBucketPolicyCommand).build() {
 }
 exports.GetBucketPolicyCommand = GetBucketPolicyCommand;
 
@@ -6024,92 +3516,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketPolicyStatusCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketPolicyStatusCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketPolicyStatusCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketPolicyStatusCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketPolicyStatus"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketPolicyStatusCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketPolicyStatusCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketPolicyStatus", {}).n("S3Client", "GetBucketPolicyStatusCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketPolicyStatusCommand).de(Aws_restXml_1.de_GetBucketPolicyStatusCommand).build() {
 }
 exports.GetBucketPolicyStatusCommand = GetBucketPolicyStatusCommand;
 
@@ -6134,92 +3558,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketReplicationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketReplicationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketReplicationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketReplicationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketReplication"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketReplicationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketReplicationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketReplication", {}).n("S3Client", "GetBucketReplicationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketReplicationCommand).de(Aws_restXml_1.de_GetBucketReplicationCommand).build() {
 }
 exports.GetBucketReplicationCommand = GetBucketReplicationCommand;
 
@@ -6244,92 +3600,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketRequestPaymentCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketRequestPaymentCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketRequestPaymentCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketRequestPaymentCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketRequestPayment"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketRequestPaymentCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketRequestPaymentCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketRequestPayment", {}).n("S3Client", "GetBucketRequestPaymentCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketRequestPaymentCommand).de(Aws_restXml_1.de_GetBucketRequestPaymentCommand).build() {
 }
 exports.GetBucketRequestPaymentCommand = GetBucketRequestPaymentCommand;
 
@@ -6354,92 +3642,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketTaggingCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketTaggingCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketTaggingCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketTaggingCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketTagging"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketTaggingCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketTaggingCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketTagging", {}).n("S3Client", "GetBucketTaggingCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketTaggingCommand).de(Aws_restXml_1.de_GetBucketTaggingCommand).build() {
 }
 exports.GetBucketTaggingCommand = GetBucketTaggingCommand;
 
@@ -6464,92 +3684,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketVersioningCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketVersioningCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketVersioningCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketVersioningCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketVersioning"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketVersioningCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketVersioningCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketVersioning", {}).n("S3Client", "GetBucketVersioningCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketVersioningCommand).de(Aws_restXml_1.de_GetBucketVersioningCommand).build() {
 }
 exports.GetBucketVersioningCommand = GetBucketVersioningCommand;
 
@@ -6574,92 +3726,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetBucketWebsiteCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetBucketWebsiteCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetBucketWebsiteCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetBucketWebsiteCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetBucketWebsite"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetBucketWebsiteCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetBucketWebsiteCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetBucketWebsite", {}).n("S3Client", "GetBucketWebsiteCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetBucketWebsiteCommand).de(Aws_restXml_1.de_GetBucketWebsiteCommand).build() {
 }
 exports.GetBucketWebsiteCommand = GetBucketWebsiteCommand;
 
@@ -6684,92 +3768,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetObjectAclCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetObjectAclCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetObjectAclCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetObjectAclCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetObjectAcl"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetObjectAclCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetObjectAclCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetObjectAcl", {}).n("S3Client", "GetObjectAclCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetObjectAclCommand).de(Aws_restXml_1.de_GetObjectAclCommand).build() {
 }
 exports.GetObjectAclCommand = GetObjectAclCommand;
 
@@ -6795,90 +3811,22 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetObjectAttributesCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetObjectAttributesCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetObjectAttributesCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetObjectAttributesCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.GetObjectAttributesRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetObjectAttributes"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetObjectAttributesCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetObjectAttributesCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_ssec_1.getSsecPlugin)(config)
+    ];
+}).s("AmazonS3", "GetObjectAttributes", {}).n("S3Client", "GetObjectAttributesCommand").f(models_0_1.GetObjectAttributesRequestFilterSensitiveLog, void 0).ser(Aws_restXml_1.se_GetObjectAttributesCommand).de(Aws_restXml_1.de_GetObjectAttributesCommand).build() {
 }
 exports.GetObjectAttributesCommand = GetObjectAttributesCommand;
 
@@ -6905,71 +3853,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetObjectCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetObjectCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetObjectCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_ssec_1.getSsecPlugin)(config),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestChecksumRequired: false,
             requestValidationModeMember: "ChecksumMode",
@@ -6979,31 +3881,9 @@ class GetObjectCommand extends smithy_client_1.Command {
                 "SHA256",
                 "SHA1"
             ]
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetObjectCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.GetObjectRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.GetObjectOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetObject"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetObjectCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetObjectCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "GetObject", {}).n("S3Client", "GetObjectCommand").f(models_0_1.GetObjectRequestFilterSensitiveLog, models_0_1.GetObjectOutputFilterSensitiveLog).ser(Aws_restXml_1.se_GetObjectCommand).de(Aws_restXml_1.de_GetObjectCommand).build() {
 }
 exports.GetObjectCommand = GetObjectCommand;
 
@@ -7028,88 +3908,20 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetObjectLegalHoldCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetObjectLegalHoldCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetObjectLegalHoldCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetObjectLegalHoldCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetObjectLegalHold"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetObjectLegalHoldCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetObjectLegalHoldCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetObjectLegalHold", {}).n("S3Client", "GetObjectLegalHoldCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetObjectLegalHoldCommand).de(Aws_restXml_1.de_GetObjectLegalHoldCommand).build() {
 }
 exports.GetObjectLegalHoldCommand = GetObjectLegalHoldCommand;
 
@@ -7134,88 +3946,20 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetObjectLockConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetObjectLockConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetObjectLockConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetObjectLockConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetObjectLockConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetObjectLockConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetObjectLockConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetObjectLockConfiguration", {}).n("S3Client", "GetObjectLockConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetObjectLockConfigurationCommand).de(Aws_restXml_1.de_GetObjectLockConfigurationCommand).build() {
 }
 exports.GetObjectLockConfigurationCommand = GetObjectLockConfigurationCommand;
 
@@ -7240,88 +3984,20 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetObjectRetentionCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetObjectRetentionCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetObjectRetentionCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetObjectRetentionCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetObjectRetention"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetObjectRetentionCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetObjectRetentionCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetObjectRetention", {}).n("S3Client", "GetObjectRetentionCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetObjectRetentionCommand).de(Aws_restXml_1.de_GetObjectRetentionCommand).build() {
 }
 exports.GetObjectRetentionCommand = GetObjectRetentionCommand;
 
@@ -7346,88 +4022,20 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetObjectTaggingCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetObjectTaggingCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetObjectTaggingCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetObjectTaggingCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetObjectTagging"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetObjectTaggingCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetObjectTaggingCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetObjectTagging", {}).n("S3Client", "GetObjectTaggingCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetObjectTaggingCommand).de(Aws_restXml_1.de_GetObjectTaggingCommand).build() {
 }
 exports.GetObjectTaggingCommand = GetObjectTaggingCommand;
 
@@ -7452,89 +4060,21 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetObjectTorrentCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetObjectTorrentCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetObjectTorrentCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetObjectTorrentCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: models_0_1.GetObjectTorrentOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetObjectTorrent"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetObjectTorrentCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetObjectTorrentCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetObjectTorrent", {}).n("S3Client", "GetObjectTorrentCommand").f(void 0, models_0_1.GetObjectTorrentOutputFilterSensitiveLog).ser(Aws_restXml_1.se_GetObjectTorrentCommand).de(Aws_restXml_1.de_GetObjectTorrentCommand).build() {
 }
 exports.GetObjectTorrentCommand = GetObjectTorrentCommand;
 
@@ -7559,92 +4099,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class GetPublicAccessBlockCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class GetPublicAccessBlockCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetPublicAccessBlockCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "GetPublicAccessBlockCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "GetPublicAccessBlock"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_GetPublicAccessBlockCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_GetPublicAccessBlockCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "GetPublicAccessBlock", {}).n("S3Client", "GetPublicAccessBlockCommand").f(void 0, void 0).ser(Aws_restXml_1.se_GetPublicAccessBlockCommand).de(Aws_restXml_1.de_GetPublicAccessBlockCommand).build() {
 }
 exports.GetPublicAccessBlockCommand = GetPublicAccessBlockCommand;
 
@@ -7669,88 +4141,20 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class HeadBucketCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class HeadBucketCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, HeadBucketCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "HeadBucketCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "HeadBucket"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_HeadBucketCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_HeadBucketCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "HeadBucket", {}).n("S3Client", "HeadBucketCommand").f(void 0, void 0).ser(Aws_restXml_1.se_HeadBucketCommand).de(Aws_restXml_1.de_HeadBucketCommand).build() {
 }
 exports.HeadBucketCommand = HeadBucketCommand;
 
@@ -7776,94 +4180,26 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class HeadObjectCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class HeadObjectCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, HeadObjectCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "HeadObjectCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.HeadObjectRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.HeadObjectOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "HeadObject"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_HeadObjectCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_HeadObjectCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_ssec_1.getSsecPlugin)(config)
+    ];
+}).s("AmazonS3", "HeadObject", {}).n("S3Client", "HeadObjectCommand").f(models_0_1.HeadObjectRequestFilterSensitiveLog, models_0_1.HeadObjectOutputFilterSensitiveLog).ser(Aws_restXml_1.se_HeadObjectCommand).de(Aws_restXml_1.de_HeadObjectCommand).build() {
 }
 exports.HeadObjectCommand = HeadObjectCommand;
 
@@ -7888,92 +4224,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListBucketAnalyticsConfigurationsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListBucketAnalyticsConfigurationsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListBucketAnalyticsConfigurationsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListBucketAnalyticsConfigurationsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListBucketAnalyticsConfigurations"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListBucketAnalyticsConfigurationsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListBucketAnalyticsConfigurationsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListBucketAnalyticsConfigurations", {}).n("S3Client", "ListBucketAnalyticsConfigurationsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_ListBucketAnalyticsConfigurationsCommand).de(Aws_restXml_1.de_ListBucketAnalyticsConfigurationsCommand).build() {
 }
 exports.ListBucketAnalyticsConfigurationsCommand = ListBucketAnalyticsConfigurationsCommand;
 
@@ -7998,92 +4266,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListBucketIntelligentTieringConfigurationsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListBucketIntelligentTieringConfigurationsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListBucketIntelligentTieringConfigurationsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListBucketIntelligentTieringConfigurationsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListBucketIntelligentTieringConfigurations"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListBucketIntelligentTieringConfigurationsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListBucketIntelligentTieringConfigurationsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListBucketIntelligentTieringConfigurations", {}).n("S3Client", "ListBucketIntelligentTieringConfigurationsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_ListBucketIntelligentTieringConfigurationsCommand).de(Aws_restXml_1.de_ListBucketIntelligentTieringConfigurationsCommand).build() {
 }
 exports.ListBucketIntelligentTieringConfigurationsCommand = ListBucketIntelligentTieringConfigurationsCommand;
 
@@ -8108,93 +4308,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListBucketInventoryConfigurationsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListBucketInventoryConfigurationsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListBucketInventoryConfigurationsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListBucketInventoryConfigurationsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: models_0_1.ListBucketInventoryConfigurationsOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListBucketInventoryConfigurations"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListBucketInventoryConfigurationsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListBucketInventoryConfigurationsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListBucketInventoryConfigurations", {}).n("S3Client", "ListBucketInventoryConfigurationsCommand").f(void 0, models_0_1.ListBucketInventoryConfigurationsOutputFilterSensitiveLog).ser(Aws_restXml_1.se_ListBucketInventoryConfigurationsCommand).de(Aws_restXml_1.de_ListBucketInventoryConfigurationsCommand).build() {
 }
 exports.ListBucketInventoryConfigurationsCommand = ListBucketInventoryConfigurationsCommand;
 
@@ -8219,88 +4351,20 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListBucketMetricsConfigurationsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListBucketMetricsConfigurationsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListBucketMetricsConfigurationsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListBucketMetricsConfigurationsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListBucketMetricsConfigurations"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListBucketMetricsConfigurationsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListBucketMetricsConfigurationsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListBucketMetricsConfigurations", {}).n("S3Client", "ListBucketMetricsConfigurationsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_ListBucketMetricsConfigurationsCommand).de(Aws_restXml_1.de_ListBucketMetricsConfigurationsCommand).build() {
 }
 exports.ListBucketMetricsConfigurationsCommand = ListBucketMetricsConfigurationsCommand;
 
@@ -8325,84 +4389,16 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListBucketsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListBucketsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListBucketsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListBuckets"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListBucketsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListBucketsCommand)(output, context);
-    }
+class ListBucketsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListBuckets", {}).n("S3Client", "ListBucketsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_ListBucketsCommand).de(Aws_restXml_1.de_ListBucketsCommand).build() {
 }
 exports.ListBucketsCommand = ListBucketsCommand;
 
@@ -8427,88 +4423,20 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListDirectoryBucketsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListDirectoryBucketsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListDirectoryBucketsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListDirectoryBucketsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListDirectoryBuckets"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListDirectoryBucketsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListDirectoryBucketsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListDirectoryBuckets", {}).n("S3Client", "ListDirectoryBucketsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_ListDirectoryBucketsCommand).de(Aws_restXml_1.de_ListDirectoryBucketsCommand).build() {
 }
 exports.ListDirectoryBucketsCommand = ListDirectoryBucketsCommand;
 
@@ -8533,92 +4461,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListMultipartUploadsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Prefix: {
-                type: "contextParams",
-                name: "Prefix"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListMultipartUploadsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Prefix: {
+        type: "contextParams",
+        name: "Prefix"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListMultipartUploadsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListMultipartUploadsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListMultipartUploads"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListMultipartUploadsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListMultipartUploadsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListMultipartUploads", {}).n("S3Client", "ListMultipartUploadsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_ListMultipartUploadsCommand).de(Aws_restXml_1.de_ListMultipartUploadsCommand).build() {
 }
 exports.ListMultipartUploadsCommand = ListMultipartUploadsCommand;
 
@@ -8643,92 +4503,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListObjectVersionsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Prefix: {
-                type: "contextParams",
-                name: "Prefix"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListObjectVersionsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Prefix: {
+        type: "contextParams",
+        name: "Prefix"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListObjectVersionsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListObjectVersionsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListObjectVersions"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListObjectVersionsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListObjectVersionsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListObjectVersions", {}).n("S3Client", "ListObjectVersionsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_ListObjectVersionsCommand).de(Aws_restXml_1.de_ListObjectVersionsCommand).build() {
 }
 exports.ListObjectVersionsCommand = ListObjectVersionsCommand;
 
@@ -8753,92 +4545,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListObjectsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Prefix: {
-                type: "contextParams",
-                name: "Prefix"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListObjectsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Prefix: {
+        type: "contextParams",
+        name: "Prefix"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListObjectsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListObjectsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListObjects"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListObjectsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListObjectsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListObjects", {}).n("S3Client", "ListObjectsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_ListObjectsCommand).de(Aws_restXml_1.de_ListObjectsCommand).build() {
 }
 exports.ListObjectsCommand = ListObjectsCommand;
 
@@ -8863,92 +4587,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListObjectsV2Command extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Prefix: {
-                type: "contextParams",
-                name: "Prefix"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListObjectsV2Command extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Prefix: {
+        type: "contextParams",
+        name: "Prefix"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListObjectsV2Command.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListObjectsV2Command";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListObjectsV2"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListObjectsV2Command)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListObjectsV2Command)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "ListObjectsV2", {}).n("S3Client", "ListObjectsV2Command").f(void 0, void 0).ser(Aws_restXml_1.se_ListObjectsV2Command).de(Aws_restXml_1.de_ListObjectsV2Command).build() {
 }
 exports.ListObjectsV2Command = ListObjectsV2Command;
 
@@ -8974,94 +4630,26 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class ListPartsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class ListPartsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListPartsCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "ListPartsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.ListPartsRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "ListParts"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_ListPartsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_ListPartsCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_ssec_1.getSsecPlugin)(config)
+    ];
+}).s("AmazonS3", "ListParts", {}).n("S3Client", "ListPartsCommand").f(models_0_1.ListPartsRequestFilterSensitiveLog, void 0).ser(Aws_restXml_1.se_ListPartsCommand).de(Aws_restXml_1.de_ListPartsCommand).build() {
 }
 exports.ListPartsCommand = ListPartsCommand;
 
@@ -9087,97 +4675,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketAccelerateConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketAccelerateConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketAccelerateConfigurationCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: false
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketAccelerateConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketAccelerateConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketAccelerateConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketAccelerateConfigurationCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketAccelerateConfiguration", {}).n("S3Client", "PutBucketAccelerateConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketAccelerateConfigurationCommand).de(Aws_restXml_1.de_PutBucketAccelerateConfigurationCommand).build() {
 }
 exports.PutBucketAccelerateConfigurationCommand = PutBucketAccelerateConfigurationCommand;
 
@@ -9203,97 +4723,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketAclCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketAclCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketAclCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketAclCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketAcl"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketAclCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketAclCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketAcl", {}).n("S3Client", "PutBucketAclCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketAclCommand).de(Aws_restXml_1.de_PutBucketAclCommand).build() {
 }
 exports.PutBucketAclCommand = PutBucketAclCommand;
 
@@ -9318,92 +4770,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketAnalyticsConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketAnalyticsConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketAnalyticsConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketAnalyticsConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketAnalyticsConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketAnalyticsConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketAnalyticsConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "PutBucketAnalyticsConfiguration", {}).n("S3Client", "PutBucketAnalyticsConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketAnalyticsConfigurationCommand).de(Aws_restXml_1.de_PutBucketAnalyticsConfigurationCommand).build() {
 }
 exports.PutBucketAnalyticsConfigurationCommand = PutBucketAnalyticsConfigurationCommand;
 
@@ -9429,97 +4813,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketCorsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketCorsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketCorsCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketCorsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketCors"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketCorsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketCorsCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketCors", {}).n("S3Client", "PutBucketCorsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketCorsCommand).de(Aws_restXml_1.de_PutBucketCorsCommand).build() {
 }
 exports.PutBucketCorsCommand = PutBucketCorsCommand;
 
@@ -9545,98 +4861,30 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketEncryptionCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketEncryptionCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketEncryptionCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketEncryptionCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.PutBucketEncryptionRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketEncryption"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketEncryptionCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketEncryptionCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketEncryption", {}).n("S3Client", "PutBucketEncryptionCommand").f(models_0_1.PutBucketEncryptionRequestFilterSensitiveLog, void 0).ser(Aws_restXml_1.se_PutBucketEncryptionCommand).de(Aws_restXml_1.de_PutBucketEncryptionCommand).build() {
 }
 exports.PutBucketEncryptionCommand = PutBucketEncryptionCommand;
 
@@ -9661,92 +4909,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketIntelligentTieringConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketIntelligentTieringConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketIntelligentTieringConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketIntelligentTieringConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketIntelligentTieringConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketIntelligentTieringConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketIntelligentTieringConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "PutBucketIntelligentTieringConfiguration", {}).n("S3Client", "PutBucketIntelligentTieringConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketIntelligentTieringConfigurationCommand).de(Aws_restXml_1.de_PutBucketIntelligentTieringConfigurationCommand).build() {
 }
 exports.PutBucketIntelligentTieringConfigurationCommand = PutBucketIntelligentTieringConfigurationCommand;
 
@@ -9771,93 +4951,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_0_1 = __webpack_require__(92667);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketInventoryConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketInventoryConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketInventoryConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketInventoryConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.PutBucketInventoryConfigurationRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketInventoryConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketInventoryConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketInventoryConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "PutBucketInventoryConfiguration", {}).n("S3Client", "PutBucketInventoryConfigurationCommand").f(models_0_1.PutBucketInventoryConfigurationRequestFilterSensitiveLog, void 0).ser(Aws_restXml_1.se_PutBucketInventoryConfigurationCommand).de(Aws_restXml_1.de_PutBucketInventoryConfigurationCommand).build() {
 }
 exports.PutBucketInventoryConfigurationCommand = PutBucketInventoryConfigurationCommand;
 
@@ -9883,97 +4995,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketLifecycleConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketLifecycleConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketLifecycleConfigurationCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketLifecycleConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketLifecycleConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketLifecycleConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketLifecycleConfigurationCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketLifecycleConfiguration", {}).n("S3Client", "PutBucketLifecycleConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketLifecycleConfigurationCommand).de(Aws_restXml_1.de_PutBucketLifecycleConfigurationCommand).build() {
 }
 exports.PutBucketLifecycleConfigurationCommand = PutBucketLifecycleConfigurationCommand;
 
@@ -9999,97 +5043,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketLoggingCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketLoggingCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketLoggingCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketLoggingCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketLogging"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketLoggingCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketLoggingCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketLogging", {}).n("S3Client", "PutBucketLoggingCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketLoggingCommand).de(Aws_restXml_1.de_PutBucketLoggingCommand).build() {
 }
 exports.PutBucketLoggingCommand = PutBucketLoggingCommand;
 
@@ -10114,92 +5090,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketMetricsConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketMetricsConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketMetricsConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketMetricsConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketMetricsConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketMetricsConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketMetricsConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "PutBucketMetricsConfiguration", {}).n("S3Client", "PutBucketMetricsConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketMetricsConfigurationCommand).de(Aws_restXml_1.de_PutBucketMetricsConfigurationCommand).build() {
 }
 exports.PutBucketMetricsConfigurationCommand = PutBucketMetricsConfigurationCommand;
 
@@ -10224,92 +5132,24 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketNotificationConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketNotificationConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketNotificationConfigurationCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketNotificationConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketNotificationConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketNotificationConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketNotificationConfigurationCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "PutBucketNotificationConfiguration", {}).n("S3Client", "PutBucketNotificationConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketNotificationConfigurationCommand).de(Aws_restXml_1.de_PutBucketNotificationConfigurationCommand).build() {
 }
 exports.PutBucketNotificationConfigurationCommand = PutBucketNotificationConfigurationCommand;
 
@@ -10335,96 +5175,28 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketOwnershipControlsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketOwnershipControlsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketOwnershipControlsCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketOwnershipControlsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketOwnershipControls"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketOwnershipControlsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketOwnershipControlsCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketOwnershipControls", {}).n("S3Client", "PutBucketOwnershipControlsCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketOwnershipControlsCommand).de(Aws_restXml_1.de_PutBucketOwnershipControlsCommand).build() {
 }
 exports.PutBucketOwnershipControlsCommand = PutBucketOwnershipControlsCommand;
 
@@ -10450,97 +5222,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketPolicyCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketPolicyCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketPolicyCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketPolicyCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketPolicy"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketPolicyCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketPolicyCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketPolicy", {}).n("S3Client", "PutBucketPolicyCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketPolicyCommand).de(Aws_restXml_1.de_PutBucketPolicyCommand).build() {
 }
 exports.PutBucketPolicyCommand = PutBucketPolicyCommand;
 
@@ -10566,97 +5270,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketReplicationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketReplicationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketReplicationCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketReplicationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketReplication"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketReplicationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketReplicationCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketReplication", {}).n("S3Client", "PutBucketReplicationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketReplicationCommand).de(Aws_restXml_1.de_PutBucketReplicationCommand).build() {
 }
 exports.PutBucketReplicationCommand = PutBucketReplicationCommand;
 
@@ -10682,97 +5318,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketRequestPaymentCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketRequestPaymentCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketRequestPaymentCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketRequestPaymentCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketRequestPayment"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketRequestPaymentCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketRequestPaymentCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketRequestPayment", {}).n("S3Client", "PutBucketRequestPaymentCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketRequestPaymentCommand).de(Aws_restXml_1.de_PutBucketRequestPaymentCommand).build() {
 }
 exports.PutBucketRequestPaymentCommand = PutBucketRequestPaymentCommand;
 
@@ -10798,97 +5366,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketTaggingCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketTaggingCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketTaggingCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketTaggingCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketTagging"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketTaggingCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketTaggingCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketTagging", {}).n("S3Client", "PutBucketTaggingCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketTaggingCommand).de(Aws_restXml_1.de_PutBucketTaggingCommand).build() {
 }
 exports.PutBucketTaggingCommand = PutBucketTaggingCommand;
 
@@ -10914,97 +5414,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketVersioningCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketVersioningCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketVersioningCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketVersioningCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketVersioning"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketVersioningCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketVersioningCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketVersioning", {}).n("S3Client", "PutBucketVersioningCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketVersioningCommand).de(Aws_restXml_1.de_PutBucketVersioningCommand).build() {
 }
 exports.PutBucketVersioningCommand = PutBucketVersioningCommand;
 
@@ -11030,97 +5462,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutBucketWebsiteCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutBucketWebsiteCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutBucketWebsiteCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutBucketWebsiteCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutBucketWebsite"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutBucketWebsiteCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutBucketWebsiteCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutBucketWebsite", {}).n("S3Client", "PutBucketWebsiteCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutBucketWebsiteCommand).de(Aws_restXml_1.de_PutBucketWebsiteCommand).build() {
 }
 exports.PutBucketWebsiteCommand = PutBucketWebsiteCommand;
 
@@ -11146,97 +5510,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutObjectAclCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutObjectAclCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutObjectAclCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutObjectAclCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutObjectAcl"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutObjectAclCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutObjectAclCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutObjectAcl", {}).n("S3Client", "PutObjectAclCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutObjectAclCommand).de(Aws_restXml_1.de_PutObjectAclCommand).build() {
 }
 exports.PutObjectAclCommand = PutObjectAclCommand;
 
@@ -11264,100 +5560,32 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_1_1 = __webpack_require__(40434);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutObjectCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutObjectCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutObjectCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_sdk_s3_1.getCheckContentLengthHeaderPlugin)(configuration));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_sdk_s3_1.getCheckContentLengthHeaderPlugin)(config),
+        (0, middleware_ssec_1.getSsecPlugin)(config),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: false
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutObjectCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_1_1.PutObjectRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_1_1.PutObjectOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutObject"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutObjectCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutObjectCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutObject", {}).n("S3Client", "PutObjectCommand").f(models_1_1.PutObjectRequestFilterSensitiveLog, models_1_1.PutObjectOutputFilterSensitiveLog).ser(Aws_restXml_1.se_PutObjectCommand).de(Aws_restXml_1.de_PutObjectCommand).build() {
 }
 exports.PutObjectCommand = PutObjectCommand;
 
@@ -11383,93 +5611,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutObjectLegalHoldCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutObjectLegalHoldCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutObjectLegalHoldCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutObjectLegalHoldCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutObjectLegalHold"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutObjectLegalHoldCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutObjectLegalHoldCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutObjectLegalHold", {}).n("S3Client", "PutObjectLegalHoldCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutObjectLegalHoldCommand).de(Aws_restXml_1.de_PutObjectLegalHoldCommand).build() {
 }
 exports.PutObjectLegalHoldCommand = PutObjectLegalHoldCommand;
 
@@ -11495,93 +5655,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutObjectLockConfigurationCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutObjectLockConfigurationCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutObjectLockConfigurationCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutObjectLockConfigurationCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutObjectLockConfiguration"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutObjectLockConfigurationCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutObjectLockConfigurationCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutObjectLockConfiguration", {}).n("S3Client", "PutObjectLockConfigurationCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutObjectLockConfigurationCommand).de(Aws_restXml_1.de_PutObjectLockConfigurationCommand).build() {
 }
 exports.PutObjectLockConfigurationCommand = PutObjectLockConfigurationCommand;
 
@@ -11607,93 +5699,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutObjectRetentionCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutObjectRetentionCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutObjectRetentionCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutObjectRetentionCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutObjectRetention"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutObjectRetentionCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutObjectRetentionCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutObjectRetention", {}).n("S3Client", "PutObjectRetentionCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutObjectRetentionCommand).de(Aws_restXml_1.de_PutObjectRetentionCommand).build() {
 }
 exports.PutObjectRetentionCommand = PutObjectRetentionCommand;
 
@@ -11719,93 +5743,25 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutObjectTaggingCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutObjectTaggingCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutObjectTaggingCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutObjectTaggingCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutObjectTagging"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutObjectTaggingCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutObjectTaggingCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutObjectTagging", {}).n("S3Client", "PutObjectTaggingCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutObjectTaggingCommand).de(Aws_restXml_1.de_PutObjectTaggingCommand).build() {
 }
 exports.PutObjectTaggingCommand = PutObjectTaggingCommand;
 
@@ -11831,97 +5787,29 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const Aws_restXml_1 = __webpack_require__(85986);
-class PutPublicAccessBlockCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseS3ExpressControlEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class PutPublicAccessBlockCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseS3ExpressControlEndpoint: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, PutPublicAccessBlockCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: true
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "PutPublicAccessBlockCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "PutPublicAccessBlock"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_PutPublicAccessBlockCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_PutPublicAccessBlockCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "PutPublicAccessBlock", {}).n("S3Client", "PutPublicAccessBlockCommand").f(void 0, void 0).ser(Aws_restXml_1.se_PutPublicAccessBlockCommand).de(Aws_restXml_1.de_PutPublicAccessBlockCommand).build() {
 }
 exports.PutPublicAccessBlockCommand = PutPublicAccessBlockCommand;
 
@@ -11947,94 +5835,26 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_1_1 = __webpack_require__(40434);
 const Aws_restXml_1 = __webpack_require__(85986);
-class RestoreObjectCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class RestoreObjectCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, RestoreObjectCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: false
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "RestoreObjectCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_1_1.RestoreObjectRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "RestoreObject"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_RestoreObjectCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_RestoreObjectCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "RestoreObject", {}).n("S3Client", "RestoreObjectCommand").f(models_1_1.RestoreObjectRequestFilterSensitiveLog, void 0).ser(Aws_restXml_1.se_RestoreObjectCommand).de(Aws_restXml_1.de_RestoreObjectCommand).build() {
 }
 exports.RestoreObjectCommand = RestoreObjectCommand;
 
@@ -12060,93 +5880,26 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_1_1 = __webpack_require__(40434);
 const Aws_restXml_1 = __webpack_require__(85986);
-class SelectObjectContentCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class SelectObjectContentCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_ssec_1.getSsecPlugin)(config)
+    ];
+}).s("AmazonS3", "SelectObjectContent", {
+    eventStream: {
+        output: true
     }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, SelectObjectContentCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "SelectObjectContentCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_1_1.SelectObjectContentRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_1_1.SelectObjectContentOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "SelectObjectContent",
-                eventStream: {
-                    output: true
-                }
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_SelectObjectContentCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_SelectObjectContentCommand)(output, context);
-    }
+}).n("S3Client", "SelectObjectContentCommand").f(models_1_1.SelectObjectContentRequestFilterSensitiveLog, models_1_1.SelectObjectContentOutputFilterSensitiveLog).ser(Aws_restXml_1.se_SelectObjectContentCommand).de(Aws_restXml_1.de_SelectObjectContentCommand).build() {
 }
 exports.SelectObjectContentCommand = SelectObjectContentCommand;
 
@@ -12173,99 +5926,31 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_1_1 = __webpack_require__(40434);
 const Aws_restXml_1 = __webpack_require__(85986);
-class UploadPartCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            Key: {
-                type: "contextParams",
-                name: "Key"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class UploadPartCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
+    },
+    Key: {
+        type: "contextParams",
+        name: "Key"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, UploadPartCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        this.middlewareStack.use((0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(configuration, {
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_ssec_1.getSsecPlugin)(config),
+        (0, middleware_flexible_checksums_1.getFlexibleChecksumsPlugin)(config, {
             input: this.input,
             requestAlgorithmMember: "ChecksumAlgorithm",
             requestChecksumRequired: false
-        }));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "UploadPartCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_1_1.UploadPartRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_1_1.UploadPartOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "UploadPart"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_UploadPartCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_UploadPartCommand)(output, context);
-    }
+        })
+    ];
+}).s("AmazonS3", "UploadPart", {}).n("S3Client", "UploadPartCommand").f(models_1_1.UploadPartRequestFilterSensitiveLog, models_1_1.UploadPartOutputFilterSensitiveLog).ser(Aws_restXml_1.se_UploadPartCommand).de(Aws_restXml_1.de_UploadPartCommand).build() {
 }
 exports.UploadPartCommand = UploadPartCommand;
 
@@ -12292,91 +5977,27 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_1_1 = __webpack_require__(40434);
 const Aws_restXml_1 = __webpack_require__(85986);
-class UploadPartCopyCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            DisableS3ExpressSessionAuth: {
-                type: "staticContextParams",
-                value: true
-            },
-            Bucket: {
-                type: "contextParams",
-                name: "Bucket"
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class UploadPartCopyCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    DisableS3ExpressSessionAuth: {
+        type: "staticContextParams",
+        value: true
+    },
+    Bucket: {
+        type: "contextParams",
+        name: "Bucket"
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, UploadPartCopyCommand.getEndpointParameterInstructions()));
-        this.middlewareStack.use((0, middleware_sdk_s3_1.getThrow200ExceptionsPlugin)(configuration));
-        this.middlewareStack.use((0, middleware_ssec_1.getSsecPlugin)(configuration));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "UploadPartCopyCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_1_1.UploadPartCopyRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_1_1.UploadPartCopyOutputFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "UploadPartCopy"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_UploadPartCopyCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_UploadPartCopyCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions()),
+        (0, middleware_sdk_s3_1.getThrow200ExceptionsPlugin)(config),
+        (0, middleware_ssec_1.getSsecPlugin)(config)
+    ];
+}).s("AmazonS3", "UploadPartCopy", {}).n("S3Client", "UploadPartCopyCommand").f(models_1_1.UploadPartCopyRequestFilterSensitiveLog, models_1_1.UploadPartCopyOutputFilterSensitiveLog).ser(Aws_restXml_1.se_UploadPartCopyCommand).de(Aws_restXml_1.de_UploadPartCopyCommand).build() {
 }
 exports.UploadPartCopyCommand = UploadPartCopyCommand;
 
@@ -12401,89 +6022,21 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(47888);
 const models_1_1 = __webpack_require__(40434);
 const Aws_restXml_1 = __webpack_require__(85986);
-class WriteGetObjectResponseCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseObjectLambdaEndpoint: {
-                type: "staticContextParams",
-                value: true
-            },
-            ForcePathStyle: {
-                type: "clientContextParams",
-                name: "forcePathStyle"
-            },
-            UseArnRegion: {
-                type: "clientContextParams",
-                name: "useArnRegion"
-            },
-            DisableMultiRegionAccessPoints: {
-                type: "clientContextParams",
-                name: "disableMultiregionAccessPoints"
-            },
-            Accelerate: {
-                type: "clientContextParams",
-                name: "useAccelerateEndpoint"
-            },
-            DisableS3ExpressSessionAuth: {
-                type: "clientContextParams",
-                name: "disableS3ExpressSessionAuth"
-            },
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
+class WriteGetObjectResponseCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams,
+    UseObjectLambdaEndpoint: {
+        type: "staticContextParams",
+        value: true
     }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, WriteGetObjectResponseCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "S3Client";
-        const commandName = "WriteGetObjectResponseCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_1_1.WriteGetObjectResponseRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AmazonS3",
-                operation: "WriteGetObjectResponse"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restXml_1.se_WriteGetObjectResponseCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restXml_1.de_WriteGetObjectResponseCommand)(output, context);
-    }
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AmazonS3", "WriteGetObjectResponse", {}).n("S3Client", "WriteGetObjectResponseCommand").f(models_1_1.WriteGetObjectResponseRequestFilterSensitiveLog, void 0).ser(Aws_restXml_1.se_WriteGetObjectResponseCommand).de(Aws_restXml_1.de_WriteGetObjectResponseCommand).build() {
 }
 exports.WriteGetObjectResponseCommand = WriteGetObjectResponseCommand;
 
@@ -12606,7 +6159,7 @@ tslib_1.__exportStar(__webpack_require__(85676), exports);
 Object.defineProperty(exports, "__esModule", ({
     value: true
 }));
-exports.resolveClientEndpointParameters = void 0;
+exports.commonParams = exports.resolveClientEndpointParameters = void 0;
 const resolveClientEndpointParameters = (options)=>{
     return {
         ...options,
@@ -12620,6 +6173,48 @@ const resolveClientEndpointParameters = (options)=>{
     };
 };
 exports.resolveClientEndpointParameters = resolveClientEndpointParameters;
+exports.commonParams = {
+    ForcePathStyle: {
+        type: "clientContextParams",
+        name: "forcePathStyle"
+    },
+    UseArnRegion: {
+        type: "clientContextParams",
+        name: "useArnRegion"
+    },
+    DisableMultiRegionAccessPoints: {
+        type: "clientContextParams",
+        name: "disableMultiregionAccessPoints"
+    },
+    Accelerate: {
+        type: "clientContextParams",
+        name: "useAccelerateEndpoint"
+    },
+    DisableS3ExpressSessionAuth: {
+        type: "clientContextParams",
+        name: "disableS3ExpressSessionAuth"
+    },
+    UseGlobalEndpoint: {
+        type: "builtInParams",
+        name: "useGlobalEndpoint"
+    },
+    UseFIPS: {
+        type: "builtInParams",
+        name: "useFipsEndpoint"
+    },
+    Endpoint: {
+        type: "builtInParams",
+        name: "endpoint"
+    },
+    Region: {
+        type: "builtInParams",
+        name: "region"
+    },
+    UseDualStack: {
+        type: "builtInParams",
+        name: "useDualstackEndpoint"
+    }
+};
 
 
 /***/ }),
@@ -27122,61 +20717,17 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(71089);
 const models_0_1 = __webpack_require__(41755);
 const Aws_restJson1_1 = __webpack_require__(61067);
-class GetRoleCredentialsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetRoleCredentialsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "SSOClient";
-        const commandName = "GetRoleCredentialsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.GetRoleCredentialsRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.GetRoleCredentialsResponseFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "SWBPortalService",
-                operation: "GetRoleCredentials"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restJson1_1.se_GetRoleCredentialsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restJson1_1.de_GetRoleCredentialsCommand)(output, context);
-    }
+class GetRoleCredentialsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("SWBPortalService", "GetRoleCredentials", {}).n("SSOClient", "GetRoleCredentialsCommand").f(models_0_1.GetRoleCredentialsRequestFilterSensitiveLog, models_0_1.GetRoleCredentialsResponseFilterSensitiveLog).ser(Aws_restJson1_1.se_GetRoleCredentialsCommand).de(Aws_restJson1_1.de_GetRoleCredentialsCommand).build() {
 }
 exports.GetRoleCredentialsCommand = GetRoleCredentialsCommand;
 
@@ -27201,61 +20752,17 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(71089);
 const models_0_1 = __webpack_require__(41755);
 const Aws_restJson1_1 = __webpack_require__(61067);
-class ListAccountRolesCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListAccountRolesCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "SSOClient";
-        const commandName = "ListAccountRolesCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.ListAccountRolesRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "SWBPortalService",
-                operation: "ListAccountRoles"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restJson1_1.se_ListAccountRolesCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restJson1_1.de_ListAccountRolesCommand)(output, context);
-    }
+class ListAccountRolesCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("SWBPortalService", "ListAccountRoles", {}).n("SSOClient", "ListAccountRolesCommand").f(models_0_1.ListAccountRolesRequestFilterSensitiveLog, void 0).ser(Aws_restJson1_1.se_ListAccountRolesCommand).de(Aws_restJson1_1.de_ListAccountRolesCommand).build() {
 }
 exports.ListAccountRolesCommand = ListAccountRolesCommand;
 
@@ -27280,61 +20787,17 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(71089);
 const models_0_1 = __webpack_require__(41755);
 const Aws_restJson1_1 = __webpack_require__(61067);
-class ListAccountsCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, ListAccountsCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "SSOClient";
-        const commandName = "ListAccountsCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.ListAccountsRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "SWBPortalService",
-                operation: "ListAccounts"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restJson1_1.se_ListAccountsCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restJson1_1.de_ListAccountsCommand)(output, context);
-    }
+class ListAccountsCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("SWBPortalService", "ListAccounts", {}).n("SSOClient", "ListAccountsCommand").f(models_0_1.ListAccountsRequestFilterSensitiveLog, void 0).ser(Aws_restJson1_1.se_ListAccountsCommand).de(Aws_restJson1_1.de_ListAccountsCommand).build() {
 }
 exports.ListAccountsCommand = ListAccountsCommand;
 
@@ -27359,61 +20822,17 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(71089);
 const models_0_1 = __webpack_require__(41755);
 const Aws_restJson1_1 = __webpack_require__(61067);
-class LogoutCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, LogoutCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "SSOClient";
-        const commandName = "LogoutCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.LogoutRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "SWBPortalService",
-                operation: "Logout"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_restJson1_1.se_LogoutCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_restJson1_1.de_LogoutCommand)(output, context);
-    }
+class LogoutCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("SWBPortalService", "Logout", {}).n("SSOClient", "LogoutCommand").f(models_0_1.LogoutRequestFilterSensitiveLog, void 0).ser(Aws_restJson1_1.se_LogoutCommand).de(Aws_restJson1_1.de_LogoutCommand).build() {
 }
 exports.LogoutCommand = LogoutCommand;
 
@@ -27445,7 +20864,7 @@ tslib_1.__exportStar(__webpack_require__(68355), exports);
 Object.defineProperty(exports, "__esModule", ({
     value: true
 }));
-exports.resolveClientEndpointParameters = void 0;
+exports.commonParams = exports.resolveClientEndpointParameters = void 0;
 const resolveClientEndpointParameters = (options)=>{
     return {
         ...options,
@@ -27455,6 +20874,24 @@ const resolveClientEndpointParameters = (options)=>{
     };
 };
 exports.resolveClientEndpointParameters = resolveClientEndpointParameters;
+exports.commonParams = {
+    UseFIPS: {
+        type: "builtInParams",
+        name: "useFipsEndpoint"
+    },
+    Endpoint: {
+        type: "builtInParams",
+        name: "endpoint"
+    },
+    Region: {
+        type: "builtInParams",
+        name: "region"
+    },
+    UseDualStack: {
+        type: "builtInParams",
+        name: "useDualstackEndpoint"
+    }
+};
 
 
 /***/ }),
@@ -28742,65 +22179,17 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(2928);
 const models_0_1 = __webpack_require__(68933);
 const Aws_query_1 = __webpack_require__(31028);
-class AssumeRoleCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, AssumeRoleCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "STSClient";
-        const commandName = "AssumeRoleCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: models_0_1.AssumeRoleResponseFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AWSSecurityTokenServiceV20110615",
-                operation: "AssumeRole"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_query_1.se_AssumeRoleCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_query_1.de_AssumeRoleCommand)(output, context);
-    }
+class AssumeRoleCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AWSSecurityTokenServiceV20110615", "AssumeRole", {}).n("STSClient", "AssumeRoleCommand").f(void 0, models_0_1.AssumeRoleResponseFilterSensitiveLog).ser(Aws_query_1.se_AssumeRoleCommand).de(Aws_query_1.de_AssumeRoleCommand).build() {
 }
 exports.AssumeRoleCommand = AssumeRoleCommand;
 
@@ -28825,65 +22214,17 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(2928);
 const models_0_1 = __webpack_require__(68933);
 const Aws_query_1 = __webpack_require__(31028);
-class AssumeRoleWithSAMLCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, AssumeRoleWithSAMLCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "STSClient";
-        const commandName = "AssumeRoleWithSAMLCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.AssumeRoleWithSAMLRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.AssumeRoleWithSAMLResponseFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AWSSecurityTokenServiceV20110615",
-                operation: "AssumeRoleWithSAML"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_query_1.se_AssumeRoleWithSAMLCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_query_1.de_AssumeRoleWithSAMLCommand)(output, context);
-    }
+class AssumeRoleWithSAMLCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AWSSecurityTokenServiceV20110615", "AssumeRoleWithSAML", {}).n("STSClient", "AssumeRoleWithSAMLCommand").f(models_0_1.AssumeRoleWithSAMLRequestFilterSensitiveLog, models_0_1.AssumeRoleWithSAMLResponseFilterSensitiveLog).ser(Aws_query_1.se_AssumeRoleWithSAMLCommand).de(Aws_query_1.de_AssumeRoleWithSAMLCommand).build() {
 }
 exports.AssumeRoleWithSAMLCommand = AssumeRoleWithSAMLCommand;
 
@@ -28908,65 +22249,17 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(2928);
 const models_0_1 = __webpack_require__(68933);
 const Aws_query_1 = __webpack_require__(31028);
-class AssumeRoleWithWebIdentityCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, AssumeRoleWithWebIdentityCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "STSClient";
-        const commandName = "AssumeRoleWithWebIdentityCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: models_0_1.AssumeRoleWithWebIdentityRequestFilterSensitiveLog,
-            outputFilterSensitiveLog: models_0_1.AssumeRoleWithWebIdentityResponseFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AWSSecurityTokenServiceV20110615",
-                operation: "AssumeRoleWithWebIdentity"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_query_1.se_AssumeRoleWithWebIdentityCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_query_1.de_AssumeRoleWithWebIdentityCommand)(output, context);
-    }
+class AssumeRoleWithWebIdentityCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AWSSecurityTokenServiceV20110615", "AssumeRoleWithWebIdentity", {}).n("STSClient", "AssumeRoleWithWebIdentityCommand").f(models_0_1.AssumeRoleWithWebIdentityRequestFilterSensitiveLog, models_0_1.AssumeRoleWithWebIdentityResponseFilterSensitiveLog).ser(Aws_query_1.se_AssumeRoleWithWebIdentityCommand).de(Aws_query_1.de_AssumeRoleWithWebIdentityCommand).build() {
 }
 exports.AssumeRoleWithWebIdentityCommand = AssumeRoleWithWebIdentityCommand;
 
@@ -28991,64 +22284,16 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(2928);
 const Aws_query_1 = __webpack_require__(31028);
-class DecodeAuthorizationMessageCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, DecodeAuthorizationMessageCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "STSClient";
-        const commandName = "DecodeAuthorizationMessageCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AWSSecurityTokenServiceV20110615",
-                operation: "DecodeAuthorizationMessage"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_query_1.se_DecodeAuthorizationMessageCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_query_1.de_DecodeAuthorizationMessageCommand)(output, context);
-    }
+class DecodeAuthorizationMessageCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AWSSecurityTokenServiceV20110615", "DecodeAuthorizationMessage", {}).n("STSClient", "DecodeAuthorizationMessageCommand").f(void 0, void 0).ser(Aws_query_1.se_DecodeAuthorizationMessageCommand).de(Aws_query_1.de_DecodeAuthorizationMessageCommand).build() {
 }
 exports.DecodeAuthorizationMessageCommand = DecodeAuthorizationMessageCommand;
 
@@ -29073,64 +22318,16 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(2928);
 const Aws_query_1 = __webpack_require__(31028);
-class GetAccessKeyInfoCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetAccessKeyInfoCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "STSClient";
-        const commandName = "GetAccessKeyInfoCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AWSSecurityTokenServiceV20110615",
-                operation: "GetAccessKeyInfo"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_query_1.se_GetAccessKeyInfoCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_query_1.de_GetAccessKeyInfoCommand)(output, context);
-    }
+class GetAccessKeyInfoCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AWSSecurityTokenServiceV20110615", "GetAccessKeyInfo", {}).n("STSClient", "GetAccessKeyInfoCommand").f(void 0, void 0).ser(Aws_query_1.se_GetAccessKeyInfoCommand).de(Aws_query_1.de_GetAccessKeyInfoCommand).build() {
 }
 exports.GetAccessKeyInfoCommand = GetAccessKeyInfoCommand;
 
@@ -29155,64 +22352,16 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(2928);
 const Aws_query_1 = __webpack_require__(31028);
-class GetCallerIdentityCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetCallerIdentityCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "STSClient";
-        const commandName = "GetCallerIdentityCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: (_)=>_,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AWSSecurityTokenServiceV20110615",
-                operation: "GetCallerIdentity"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_query_1.se_GetCallerIdentityCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_query_1.de_GetCallerIdentityCommand)(output, context);
-    }
+class GetCallerIdentityCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AWSSecurityTokenServiceV20110615", "GetCallerIdentity", {}).n("STSClient", "GetCallerIdentityCommand").f(void 0, void 0).ser(Aws_query_1.se_GetCallerIdentityCommand).de(Aws_query_1.de_GetCallerIdentityCommand).build() {
 }
 exports.GetCallerIdentityCommand = GetCallerIdentityCommand;
 
@@ -29237,65 +22386,17 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(2928);
 const models_0_1 = __webpack_require__(68933);
 const Aws_query_1 = __webpack_require__(31028);
-class GetFederationTokenCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetFederationTokenCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "STSClient";
-        const commandName = "GetFederationTokenCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: models_0_1.GetFederationTokenResponseFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AWSSecurityTokenServiceV20110615",
-                operation: "GetFederationToken"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_query_1.se_GetFederationTokenCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_query_1.de_GetFederationTokenCommand)(output, context);
-    }
+class GetFederationTokenCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AWSSecurityTokenServiceV20110615", "GetFederationToken", {}).n("STSClient", "GetFederationTokenCommand").f(void 0, models_0_1.GetFederationTokenResponseFilterSensitiveLog).ser(Aws_query_1.se_GetFederationTokenCommand).de(Aws_query_1.de_GetFederationTokenCommand).build() {
 }
 exports.GetFederationTokenCommand = GetFederationTokenCommand;
 
@@ -29320,65 +22421,17 @@ Object.defineProperty(exports, "$Command", ({
         return smithy_client_1.Command;
     }
 }));
-const types_1 = __webpack_require__(82708);
+const EndpointParameters_1 = __webpack_require__(2928);
 const models_0_1 = __webpack_require__(68933);
 const Aws_query_1 = __webpack_require__(31028);
-class GetSessionTokenCommand extends smithy_client_1.Command {
-    static getEndpointParameterInstructions() {
-        return {
-            UseGlobalEndpoint: {
-                type: "builtInParams",
-                name: "useGlobalEndpoint"
-            },
-            UseFIPS: {
-                type: "builtInParams",
-                name: "useFipsEndpoint"
-            },
-            Endpoint: {
-                type: "builtInParams",
-                name: "endpoint"
-            },
-            Region: {
-                type: "builtInParams",
-                name: "region"
-            },
-            UseDualStack: {
-                type: "builtInParams",
-                name: "useDualstackEndpoint"
-            }
-        };
-    }
-    constructor(input){
-        super();
-        this.input = input;
-    }
-    resolveMiddleware(clientStack, configuration, options) {
-        this.middlewareStack.use((0, middleware_serde_1.getSerdePlugin)(configuration, this.serialize, this.deserialize));
-        this.middlewareStack.use((0, middleware_endpoint_1.getEndpointPlugin)(configuration, GetSessionTokenCommand.getEndpointParameterInstructions()));
-        const stack = clientStack.concat(this.middlewareStack);
-        const { logger } = configuration;
-        const clientName = "STSClient";
-        const commandName = "GetSessionTokenCommand";
-        const handlerExecutionContext = {
-            logger,
-            clientName,
-            commandName,
-            inputFilterSensitiveLog: (_)=>_,
-            outputFilterSensitiveLog: models_0_1.GetSessionTokenResponseFilterSensitiveLog,
-            [types_1.SMITHY_CONTEXT_KEY]: {
-                service: "AWSSecurityTokenServiceV20110615",
-                operation: "GetSessionToken"
-            }
-        };
-        const { requestHandler } = configuration;
-        return stack.resolve((request)=>requestHandler.handle(request.request, options || {}), handlerExecutionContext);
-    }
-    serialize(input, context) {
-        return (0, Aws_query_1.se_GetSessionTokenCommand)(input, context);
-    }
-    deserialize(output, context) {
-        return (0, Aws_query_1.de_GetSessionTokenCommand)(output, context);
-    }
+class GetSessionTokenCommand extends smithy_client_1.Command.classBuilder().ep({
+    ...EndpointParameters_1.commonParams
+}).m(function(Command, cs, config, o) {
+    return [
+        (0, middleware_serde_1.getSerdePlugin)(config, this.serialize, this.deserialize),
+        (0, middleware_endpoint_1.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+    ];
+}).s("AWSSecurityTokenServiceV20110615", "GetSessionToken", {}).n("STSClient", "GetSessionTokenCommand").f(void 0, models_0_1.GetSessionTokenResponseFilterSensitiveLog).ser(Aws_query_1.se_GetSessionTokenCommand).de(Aws_query_1.de_GetSessionTokenCommand).build() {
 }
 exports.GetSessionTokenCommand = GetSessionTokenCommand;
 
@@ -29539,7 +22592,7 @@ exports.decorateDefaultCredentialProvider = decorateDefaultCredentialProvider;
 Object.defineProperty(exports, "__esModule", ({
     value: true
 }));
-exports.resolveClientEndpointParameters = void 0;
+exports.commonParams = exports.resolveClientEndpointParameters = void 0;
 const resolveClientEndpointParameters = (options)=>{
     return {
         ...options,
@@ -29550,6 +22603,28 @@ const resolveClientEndpointParameters = (options)=>{
     };
 };
 exports.resolveClientEndpointParameters = resolveClientEndpointParameters;
+exports.commonParams = {
+    UseGlobalEndpoint: {
+        type: "builtInParams",
+        name: "useGlobalEndpoint"
+    },
+    UseFIPS: {
+        type: "builtInParams",
+        name: "useFipsEndpoint"
+    },
+    Endpoint: {
+        type: "builtInParams",
+        name: "endpoint"
+    },
+    Region: {
+        type: "builtInParams",
+        name: "region"
+    },
+    UseDualStack: {
+        type: "builtInParams",
+        name: "useDualstackEndpoint"
+    }
+};
 
 
 /***/ }),
@@ -36800,7 +29875,7 @@ var loadRestJsonErrorCode = (output, data)=>{
         return sanitizeErrorCode(data["__type"]);
     }
 };
-var CreateTokenCommand = class _CreateTokenCommand extends smithy_client_7.Command {
+class CreateTokenCommand extends smithy_client_7.Command {
     constructor(input){
         super();
         this.input = input;
@@ -36852,13 +29927,13 @@ var CreateTokenCommand = class _CreateTokenCommand extends smithy_client_7.Comma
     deserialize(output, context) {
         return de_CreateTokenCommand(output, context);
     }
-};
+}
 exports.CreateTokenCommand = CreateTokenCommand;
 const middleware_endpoint_3 = __webpack_require__(18715);
 const middleware_serde_2 = __webpack_require__(66053);
 const smithy_client_10 = __webpack_require__(77059);
 const types_2 = __webpack_require__(82708);
-var RegisterClientCommand = class _RegisterClientCommand extends smithy_client_10.Command {
+class RegisterClientCommand extends smithy_client_10.Command {
     constructor(input){
         super();
         this.input = input;
@@ -36910,12 +29985,12 @@ var RegisterClientCommand = class _RegisterClientCommand extends smithy_client_1
     deserialize(output, context) {
         return de_RegisterClientCommand(output, context);
     }
-};
+}
 const middleware_endpoint_4 = __webpack_require__(18715);
 const middleware_serde_3 = __webpack_require__(66053);
 const smithy_client_11 = __webpack_require__(77059);
 const types_3 = __webpack_require__(82708);
-var StartDeviceAuthorizationCommand = class _StartDeviceAuthorizationCommand extends smithy_client_11.Command {
+class StartDeviceAuthorizationCommand extends smithy_client_11.Command {
     constructor(input){
         super();
         this.input = input;
@@ -36967,7 +30042,7 @@ var StartDeviceAuthorizationCommand = class _StartDeviceAuthorizationCommand ext
     deserialize(output, context) {
         return de_StartDeviceAuthorizationCommand(output, context);
     }
-};
+}
 var commands = {
     CreateTokenCommand,
     RegisterClientCommand,
@@ -42011,7 +35086,7 @@ exports.StandardRetryStrategy = void 0;
 const protocol_http_1 = __webpack_require__(97225);
 const service_error_classification_1 = __webpack_require__(73453);
 const util_retry_1 = __webpack_require__(64500);
-const uuid_1 = __webpack_require__(95803);
+const uuid_1 = __webpack_require__(32629);
 const defaultRetryQuota_1 = __webpack_require__(28459);
 const delayDecider_1 = __webpack_require__(31634);
 const retryDecider_1 = __webpack_require__(24187);
@@ -42336,7 +35411,7 @@ const protocol_http_1 = __webpack_require__(97225);
 const service_error_classification_1 = __webpack_require__(73453);
 const smithy_client_1 = __webpack_require__(77059);
 const util_retry_1 = __webpack_require__(64500);
-const uuid_1 = __webpack_require__(95803);
+const uuid_1 = __webpack_require__(32629);
 const isStreamingPayload_1 = __webpack_require__(10444);
 const util_1 = __webpack_require__(5351);
 const retryMiddleware = (options)=>(next, context)=>async (args)=>{
@@ -42466,311 +35541,6 @@ const asSdkError = (error)=>{
     return new Error(`AWS SDK error wrapper for ${error}`);
 };
 exports.asSdkError = asSdkError;
-
-
-/***/ }),
-
-/***/ 95803:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  NIL: () => (/* reexport */ nil),
-  parse: () => (/* reexport */ esm_node_parse),
-  stringify: () => (/* reexport */ esm_node_stringify),
-  v1: () => (/* reexport */ esm_node_v1),
-  v3: () => (/* reexport */ esm_node_v3),
-  v4: () => (/* reexport */ esm_node_v4),
-  v5: () => (/* reexport */ esm_node_v5),
-  validate: () => (/* reexport */ esm_node_validate),
-  version: () => (/* reexport */ esm_node_version)
-});
-
-// EXTERNAL MODULE: external "crypto"
-var external_crypto_ = __webpack_require__(6113);
-var external_crypto_default = /*#__PURE__*/__webpack_require__.n(external_crypto_);
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/rng.js
-
-const rnds8Pool = new Uint8Array(256); // # of random values to pre-allocate
-let poolPtr = rnds8Pool.length;
-function rng() {
-    if (poolPtr > rnds8Pool.length - 16) {
-        external_crypto_default().randomFillSync(rnds8Pool);
-        poolPtr = 0;
-    }
-    return rnds8Pool.slice(poolPtr, poolPtr += 16);
-}
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/regex.js
-/* harmony default export */ const regex = (/^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/validate.js
-
-function validate(uuid) {
-    return typeof uuid === "string" && regex.test(uuid);
-}
-/* harmony default export */ const esm_node_validate = (validate);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/stringify.js
-
-/**
- * Convert array of 16 byte values to UUID string format of the form:
- * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
- */ const byteToHex = [];
-for(let i = 0; i < 256; ++i){
-    byteToHex.push((i + 0x100).toString(16).substr(1));
-}
-function stringify(arr, offset = 0) {
-    // Note: Be careful editing this code!  It's been tuned for performance
-    // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
-    const uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase(); // Consistency check for valid UUID.  If this throws, it's likely due to one
-    // of the following:
-    // - One or more input array values don't map to a hex octet (leading to
-    // "undefined" in the uuid)
-    // - Invalid input values for the RFC `version` or `variant` fields
-    if (!esm_node_validate(uuid)) {
-        throw TypeError("Stringified UUID is invalid");
-    }
-    return uuid;
-}
-/* harmony default export */ const esm_node_stringify = (stringify);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/v1.js
-
- // **`v1()` - Generate time-based UUID**
-//
-// Inspired by https://github.com/LiosK/UUID.js
-// and http://docs.python.org/library/uuid.html
-let _nodeId;
-let _clockseq; // Previous uuid creation time
-let _lastMSecs = 0;
-let _lastNSecs = 0; // See https://github.com/uuidjs/uuid for API details
-function v1(options, buf, offset) {
-    let i = buf && offset || 0;
-    const b = buf || new Array(16);
-    options = options || {};
-    let node = options.node || _nodeId;
-    let clockseq = options.clockseq !== undefined ? options.clockseq : _clockseq; // node and clockseq need to be initialized to random values if they're not
-    // specified.  We do this lazily to minimize issues related to insufficient
-    // system entropy.  See #189
-    if (node == null || clockseq == null) {
-        const seedBytes = options.random || (options.rng || rng)();
-        if (node == null) {
-            // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
-            node = _nodeId = [
-                seedBytes[0] | 0x01,
-                seedBytes[1],
-                seedBytes[2],
-                seedBytes[3],
-                seedBytes[4],
-                seedBytes[5]
-            ];
-        }
-        if (clockseq == null) {
-            // Per 4.2.2, randomize (14 bit) clockseq
-            clockseq = _clockseq = (seedBytes[6] << 8 | seedBytes[7]) & 0x3fff;
-        }
-    } // UUID timestamps are 100 nano-second units since the Gregorian epoch,
-    // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
-    // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
-    // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
-    let msecs = options.msecs !== undefined ? options.msecs : Date.now(); // Per 4.2.1.2, use count of uuid's generated during the current clock
-    // cycle to simulate higher resolution clock
-    let nsecs = options.nsecs !== undefined ? options.nsecs : _lastNSecs + 1; // Time since last uuid creation (in msecs)
-    const dt = msecs - _lastMSecs + (nsecs - _lastNSecs) / 10000; // Per 4.2.1.2, Bump clockseq on clock regression
-    if (dt < 0 && options.clockseq === undefined) {
-        clockseq = clockseq + 1 & 0x3fff;
-    } // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
-    // time interval
-    if ((dt < 0 || msecs > _lastMSecs) && options.nsecs === undefined) {
-        nsecs = 0;
-    } // Per 4.2.1.2 Throw error if too many uuids are requested
-    if (nsecs >= 10000) {
-        throw new Error("uuid.v1(): Can't create more than 10M uuids/sec");
-    }
-    _lastMSecs = msecs;
-    _lastNSecs = nsecs;
-    _clockseq = clockseq; // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
-    msecs += 12219292800000; // `time_low`
-    const tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
-    b[i++] = tl >>> 24 & 0xff;
-    b[i++] = tl >>> 16 & 0xff;
-    b[i++] = tl >>> 8 & 0xff;
-    b[i++] = tl & 0xff; // `time_mid`
-    const tmh = msecs / 0x100000000 * 10000 & 0xfffffff;
-    b[i++] = tmh >>> 8 & 0xff;
-    b[i++] = tmh & 0xff; // `time_high_and_version`
-    b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
-    b[i++] = tmh >>> 16 & 0xff; // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
-    b[i++] = clockseq >>> 8 | 0x80; // `clock_seq_low`
-    b[i++] = clockseq & 0xff; // `node`
-    for(let n = 0; n < 6; ++n){
-        b[i + n] = node[n];
-    }
-    return buf || esm_node_stringify(b);
-}
-/* harmony default export */ const esm_node_v1 = (v1);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/parse.js
-
-function parse(uuid) {
-    if (!esm_node_validate(uuid)) {
-        throw TypeError("Invalid UUID");
-    }
-    let v;
-    const arr = new Uint8Array(16); // Parse ########-....-....-....-............
-    arr[0] = (v = parseInt(uuid.slice(0, 8), 16)) >>> 24;
-    arr[1] = v >>> 16 & 0xff;
-    arr[2] = v >>> 8 & 0xff;
-    arr[3] = v & 0xff; // Parse ........-####-....-....-............
-    arr[4] = (v = parseInt(uuid.slice(9, 13), 16)) >>> 8;
-    arr[5] = v & 0xff; // Parse ........-....-####-....-............
-    arr[6] = (v = parseInt(uuid.slice(14, 18), 16)) >>> 8;
-    arr[7] = v & 0xff; // Parse ........-....-....-####-............
-    arr[8] = (v = parseInt(uuid.slice(19, 23), 16)) >>> 8;
-    arr[9] = v & 0xff; // Parse ........-....-....-....-############
-    // (Use "/" to avoid 32-bit truncation when bit-shifting high-order bytes)
-    arr[10] = (v = parseInt(uuid.slice(24, 36), 16)) / 0x10000000000 & 0xff;
-    arr[11] = v / 0x100000000 & 0xff;
-    arr[12] = v >>> 24 & 0xff;
-    arr[13] = v >>> 16 & 0xff;
-    arr[14] = v >>> 8 & 0xff;
-    arr[15] = v & 0xff;
-    return arr;
-}
-/* harmony default export */ const esm_node_parse = (parse);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/v35.js
-
-
-function stringToBytes(str) {
-    str = unescape(encodeURIComponent(str)); // UTF8 escape
-    const bytes = [];
-    for(let i = 0; i < str.length; ++i){
-        bytes.push(str.charCodeAt(i));
-    }
-    return bytes;
-}
-const DNS = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
-const URL = "6ba7b811-9dad-11d1-80b4-00c04fd430c8";
-/* harmony default export */ function v35(name, version, hashfunc) {
-    function generateUUID(value, namespace, buf, offset) {
-        if (typeof value === "string") {
-            value = stringToBytes(value);
-        }
-        if (typeof namespace === "string") {
-            namespace = esm_node_parse(namespace);
-        }
-        if (namespace.length !== 16) {
-            throw TypeError("Namespace must be array-like (16 iterable integer values, 0-255)");
-        } // Compute hash of namespace and value, Per 4.3
-        // Future: Use spread syntax when supported on all platforms, e.g. `bytes =
-        // hashfunc([...namespace, ... value])`
-        let bytes = new Uint8Array(16 + value.length);
-        bytes.set(namespace);
-        bytes.set(value, namespace.length);
-        bytes = hashfunc(bytes);
-        bytes[6] = bytes[6] & 0x0f | version;
-        bytes[8] = bytes[8] & 0x3f | 0x80;
-        if (buf) {
-            offset = offset || 0;
-            for(let i = 0; i < 16; ++i){
-                buf[offset + i] = bytes[i];
-            }
-            return buf;
-        }
-        return esm_node_stringify(bytes);
-    } // Function#name is not settable on some platforms (#270)
-    try {
-        generateUUID.name = name; // eslint-disable-next-line no-empty
-    } catch (err) {} // For CommonJS default export support
-    generateUUID.DNS = DNS;
-    generateUUID.URL = URL;
-    return generateUUID;
-}
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/md5.js
-
-function md5(bytes) {
-    if (Array.isArray(bytes)) {
-        bytes = Buffer.from(bytes);
-    } else if (typeof bytes === "string") {
-        bytes = Buffer.from(bytes, "utf8");
-    }
-    return external_crypto_default().createHash("md5").update(bytes).digest();
-}
-/* harmony default export */ const esm_node_md5 = (md5);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/v3.js
-
-
-const v3 = v35("v3", 0x30, esm_node_md5);
-/* harmony default export */ const esm_node_v3 = (v3);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/v4.js
-
-
-function v4(options, buf, offset) {
-    options = options || {};
-    const rnds = options.random || (options.rng || rng)(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
-    rnds[6] = rnds[6] & 0x0f | 0x40;
-    rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
-    if (buf) {
-        offset = offset || 0;
-        for(let i = 0; i < 16; ++i){
-            buf[offset + i] = rnds[i];
-        }
-        return buf;
-    }
-    return esm_node_stringify(rnds);
-}
-/* harmony default export */ const esm_node_v4 = (v4);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/sha1.js
-
-function sha1(bytes) {
-    if (Array.isArray(bytes)) {
-        bytes = Buffer.from(bytes);
-    } else if (typeof bytes === "string") {
-        bytes = Buffer.from(bytes, "utf8");
-    }
-    return external_crypto_default().createHash("sha1").update(bytes).digest();
-}
-/* harmony default export */ const esm_node_sha1 = (sha1);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/v5.js
-
-
-const v5 = v35("v5", 0x50, esm_node_sha1);
-/* harmony default export */ const esm_node_v5 = (v5);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/nil.js
-/* harmony default export */ const nil = ("00000000-0000-0000-0000-000000000000");
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/version.js
-
-function version(uuid) {
-    if (!esm_node_validate(uuid)) {
-        throw TypeError("Invalid UUID");
-    }
-    return parseInt(uuid.substr(14, 1), 16);
-}
-/* harmony default export */ const esm_node_version = (version);
-
-;// CONCATENATED MODULE: ./node_modules/@smithy/middleware-retry/node_modules/uuid/dist/esm-node/index.js
-
-
-
-
-
-
-
-
-
 
 
 /***/ }),
@@ -48177,12 +40947,7 @@ exports.fromString = fromString;
 Object.defineProperty(exports, "__esModule", ({
     value: true
 }));
-exports.booleanSelector = exports.SelectorType = void 0;
-var SelectorType;
-(function(SelectorType) {
-    SelectorType["ENV"] = "env";
-    SelectorType["CONFIG"] = "shared config entry";
-})(SelectorType = exports.SelectorType || (exports.SelectorType = {}));
+exports.booleanSelector = void 0;
 const booleanSelector = (obj, key, type)=>{
     if (!(key in obj)) return undefined;
     if (obj[key] === "true") return true;
@@ -48204,6 +40969,48 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 const tslib_1 = __webpack_require__(11786);
 tslib_1.__exportStar(__webpack_require__(5885), exports);
+tslib_1.__exportStar(__webpack_require__(46805), exports);
+tslib_1.__exportStar(__webpack_require__(43971), exports);
+
+
+/***/ }),
+
+/***/ 46805:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.numberSelector = void 0;
+const numberSelector = (obj, key, type)=>{
+    if (!(key in obj)) return undefined;
+    const numberValue = parseInt(obj[key], 10);
+    if (Number.isNaN(numberValue)) {
+        throw new TypeError(`Cannot load ${type} '${key}'. Expected number, got '${obj[key]}'.`);
+    }
+    return numberValue;
+};
+exports.numberSelector = numberSelector;
+
+
+/***/ }),
+
+/***/ 43971:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.SelectorType = void 0;
+var SelectorType;
+(function(SelectorType) {
+    SelectorType["ENV"] = "env";
+    SelectorType["CONFIG"] = "shared config entry";
+})(SelectorType = exports.SelectorType || (exports.SelectorType = {}));
 
 
 /***/ }),
@@ -52822,7 +45629,7 @@ function __disposeResources(env) {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"@aws-sdk/client-s3","description":"AWS SDK for JavaScript S3 Client for Node.js, Browser and React Native","version":"3.478.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo s3","test":"yarn test:unit","test:e2e":"yarn test:e2e:node && yarn test:e2e:browser","test:e2e:browser":"ts-mocha test/**/*.browser.ispec.ts && karma start karma.conf.js","test:e2e:node":"jest --c jest.config.e2e.js","test:unit":"ts-mocha test/unit/**/*.spec.ts"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha1-browser":"3.0.0","@aws-crypto/sha256-browser":"3.0.0","@aws-crypto/sha256-js":"3.0.0","@aws-sdk/client-sts":"3.478.0","@aws-sdk/core":"3.477.0","@aws-sdk/credential-provider-node":"3.478.0","@aws-sdk/middleware-bucket-endpoint":"3.470.0","@aws-sdk/middleware-expect-continue":"3.468.0","@aws-sdk/middleware-flexible-checksums":"3.468.0","@aws-sdk/middleware-host-header":"3.468.0","@aws-sdk/middleware-location-constraint":"3.468.0","@aws-sdk/middleware-logger":"3.468.0","@aws-sdk/middleware-recursion-detection":"3.468.0","@aws-sdk/middleware-sdk-s3":"3.474.0","@aws-sdk/middleware-signing":"3.468.0","@aws-sdk/middleware-ssec":"3.468.0","@aws-sdk/middleware-user-agent":"3.478.0","@aws-sdk/region-config-resolver":"3.470.0","@aws-sdk/signature-v4-multi-region":"3.474.0","@aws-sdk/types":"3.468.0","@aws-sdk/util-endpoints":"3.478.0","@aws-sdk/util-user-agent-browser":"3.468.0","@aws-sdk/util-user-agent-node":"3.470.0","@aws-sdk/xml-builder":"3.472.0","@smithy/config-resolver":"^2.0.21","@smithy/core":"^1.2.0","@smithy/eventstream-serde-browser":"^2.0.15","@smithy/eventstream-serde-config-resolver":"^2.0.15","@smithy/eventstream-serde-node":"^2.0.15","@smithy/fetch-http-handler":"^2.3.1","@smithy/hash-blob-browser":"^2.0.16","@smithy/hash-node":"^2.0.17","@smithy/hash-stream-node":"^2.0.17","@smithy/invalid-dependency":"^2.0.15","@smithy/md5-js":"^2.0.17","@smithy/middleware-content-length":"^2.0.17","@smithy/middleware-endpoint":"^2.2.3","@smithy/middleware-retry":"^2.0.24","@smithy/middleware-serde":"^2.0.15","@smithy/middleware-stack":"^2.0.9","@smithy/node-config-provider":"^2.1.8","@smithy/node-http-handler":"^2.2.1","@smithy/protocol-http":"^3.0.11","@smithy/smithy-client":"^2.1.18","@smithy/types":"^2.7.0","@smithy/url-parser":"^2.0.15","@smithy/util-base64":"^2.0.1","@smithy/util-body-length-browser":"^2.0.1","@smithy/util-body-length-node":"^2.1.0","@smithy/util-defaults-mode-browser":"^2.0.22","@smithy/util-defaults-mode-node":"^2.0.29","@smithy/util-endpoints":"^1.0.7","@smithy/util-retry":"^2.0.8","@smithy/util-stream":"^2.0.23","@smithy/util-utf8":"^2.0.2","@smithy/util-waiter":"^2.0.15","fast-xml-parser":"4.2.5","tslib":"^2.5.0"},"devDependencies":{"@smithy/service-client-documentation-generator":"^2.0.0","@tsconfig/node14":"1.0.3","@types/chai":"^4.2.11","@types/mocha":"^8.0.4","@types/node":"^14.14.31","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~4.9.5"},"engines":{"node":">=14.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-s3","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-s3"}}');
+module.exports = JSON.parse('{"name":"@aws-sdk/client-s3","description":"AWS SDK for JavaScript S3 Client for Node.js, Browser and React Native","version":"3.484.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo s3","test":"yarn test:unit","test:e2e":"yarn test:e2e:node && yarn test:e2e:browser","test:e2e:browser":"ts-mocha test/**/*.browser.ispec.ts && karma start karma.conf.js","test:e2e:node":"jest --c jest.config.e2e.js","test:unit":"ts-mocha test/unit/**/*.spec.ts"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha1-browser":"3.0.0","@aws-crypto/sha256-browser":"3.0.0","@aws-crypto/sha256-js":"3.0.0","@aws-sdk/client-sts":"3.484.0","@aws-sdk/core":"3.481.0","@aws-sdk/credential-provider-node":"3.484.0","@aws-sdk/middleware-bucket-endpoint":"3.484.0","@aws-sdk/middleware-expect-continue":"3.468.0","@aws-sdk/middleware-flexible-checksums":"3.468.0","@aws-sdk/middleware-host-header":"3.468.0","@aws-sdk/middleware-location-constraint":"3.468.0","@aws-sdk/middleware-logger":"3.468.0","@aws-sdk/middleware-recursion-detection":"3.468.0","@aws-sdk/middleware-sdk-s3":"3.484.0","@aws-sdk/middleware-signing":"3.468.0","@aws-sdk/middleware-ssec":"3.468.0","@aws-sdk/middleware-user-agent":"3.478.0","@aws-sdk/region-config-resolver":"3.484.0","@aws-sdk/signature-v4-multi-region":"3.484.0","@aws-sdk/types":"3.468.0","@aws-sdk/util-endpoints":"3.478.0","@aws-sdk/util-user-agent-browser":"3.468.0","@aws-sdk/util-user-agent-node":"3.470.0","@aws-sdk/xml-builder":"3.472.0","@smithy/config-resolver":"^2.0.22","@smithy/core":"^1.2.1","@smithy/eventstream-serde-browser":"^2.0.15","@smithy/eventstream-serde-config-resolver":"^2.0.15","@smithy/eventstream-serde-node":"^2.0.15","@smithy/fetch-http-handler":"^2.3.1","@smithy/hash-blob-browser":"^2.0.16","@smithy/hash-node":"^2.0.17","@smithy/hash-stream-node":"^2.0.17","@smithy/invalid-dependency":"^2.0.15","@smithy/md5-js":"^2.0.17","@smithy/middleware-content-length":"^2.0.17","@smithy/middleware-endpoint":"^2.2.3","@smithy/middleware-retry":"^2.0.25","@smithy/middleware-serde":"^2.0.15","@smithy/middleware-stack":"^2.0.9","@smithy/node-config-provider":"^2.1.8","@smithy/node-http-handler":"^2.2.1","@smithy/protocol-http":"^3.0.11","@smithy/smithy-client":"^2.2.0","@smithy/types":"^2.7.0","@smithy/url-parser":"^2.0.15","@smithy/util-base64":"^2.0.1","@smithy/util-body-length-browser":"^2.0.1","@smithy/util-body-length-node":"^2.1.0","@smithy/util-defaults-mode-browser":"^2.0.23","@smithy/util-defaults-mode-node":"^2.0.31","@smithy/util-endpoints":"^1.0.7","@smithy/util-retry":"^2.0.8","@smithy/util-stream":"^2.0.23","@smithy/util-utf8":"^2.0.2","@smithy/util-waiter":"^2.0.15","fast-xml-parser":"4.2.5","tslib":"^2.5.0"},"devDependencies":{"@smithy/service-client-documentation-generator":"^2.0.0","@tsconfig/node14":"1.0.3","@types/chai":"^4.2.11","@types/mocha":"^8.0.4","@types/node":"^14.14.31","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~4.9.5"},"engines":{"node":">=14.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-s3","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-s3"}}');
 
 /***/ }),
 
@@ -52830,7 +45637,7 @@ module.exports = JSON.parse('{"name":"@aws-sdk/client-s3","description":"AWS SDK
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"@aws-sdk/client-sso","description":"AWS SDK for JavaScript Sso Client for Node.js, Browser and React Native","version":"3.478.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo sso"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"3.0.0","@aws-crypto/sha256-js":"3.0.0","@aws-sdk/core":"3.477.0","@aws-sdk/middleware-host-header":"3.468.0","@aws-sdk/middleware-logger":"3.468.0","@aws-sdk/middleware-recursion-detection":"3.468.0","@aws-sdk/middleware-user-agent":"3.478.0","@aws-sdk/region-config-resolver":"3.470.0","@aws-sdk/types":"3.468.0","@aws-sdk/util-endpoints":"3.478.0","@aws-sdk/util-user-agent-browser":"3.468.0","@aws-sdk/util-user-agent-node":"3.470.0","@smithy/config-resolver":"^2.0.21","@smithy/core":"^1.2.0","@smithy/fetch-http-handler":"^2.3.1","@smithy/hash-node":"^2.0.17","@smithy/invalid-dependency":"^2.0.15","@smithy/middleware-content-length":"^2.0.17","@smithy/middleware-endpoint":"^2.2.3","@smithy/middleware-retry":"^2.0.24","@smithy/middleware-serde":"^2.0.15","@smithy/middleware-stack":"^2.0.9","@smithy/node-config-provider":"^2.1.8","@smithy/node-http-handler":"^2.2.1","@smithy/protocol-http":"^3.0.11","@smithy/smithy-client":"^2.1.18","@smithy/types":"^2.7.0","@smithy/url-parser":"^2.0.15","@smithy/util-base64":"^2.0.1","@smithy/util-body-length-browser":"^2.0.1","@smithy/util-body-length-node":"^2.1.0","@smithy/util-defaults-mode-browser":"^2.0.22","@smithy/util-defaults-mode-node":"^2.0.29","@smithy/util-endpoints":"^1.0.7","@smithy/util-retry":"^2.0.8","@smithy/util-utf8":"^2.0.2","tslib":"^2.5.0"},"devDependencies":{"@smithy/service-client-documentation-generator":"^2.0.0","@tsconfig/node14":"1.0.3","@types/node":"^14.14.31","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~4.9.5"},"engines":{"node":">=14.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sso","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sso"}}');
+module.exports = JSON.parse('{"name":"@aws-sdk/client-sso","description":"AWS SDK for JavaScript Sso Client for Node.js, Browser and React Native","version":"3.484.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo sso"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"3.0.0","@aws-crypto/sha256-js":"3.0.0","@aws-sdk/core":"3.481.0","@aws-sdk/middleware-host-header":"3.468.0","@aws-sdk/middleware-logger":"3.468.0","@aws-sdk/middleware-recursion-detection":"3.468.0","@aws-sdk/middleware-user-agent":"3.478.0","@aws-sdk/region-config-resolver":"3.484.0","@aws-sdk/types":"3.468.0","@aws-sdk/util-endpoints":"3.478.0","@aws-sdk/util-user-agent-browser":"3.468.0","@aws-sdk/util-user-agent-node":"3.470.0","@smithy/config-resolver":"^2.0.22","@smithy/core":"^1.2.1","@smithy/fetch-http-handler":"^2.3.1","@smithy/hash-node":"^2.0.17","@smithy/invalid-dependency":"^2.0.15","@smithy/middleware-content-length":"^2.0.17","@smithy/middleware-endpoint":"^2.2.3","@smithy/middleware-retry":"^2.0.25","@smithy/middleware-serde":"^2.0.15","@smithy/middleware-stack":"^2.0.9","@smithy/node-config-provider":"^2.1.8","@smithy/node-http-handler":"^2.2.1","@smithy/protocol-http":"^3.0.11","@smithy/smithy-client":"^2.2.0","@smithy/types":"^2.7.0","@smithy/url-parser":"^2.0.15","@smithy/util-base64":"^2.0.1","@smithy/util-body-length-browser":"^2.0.1","@smithy/util-body-length-node":"^2.1.0","@smithy/util-defaults-mode-browser":"^2.0.23","@smithy/util-defaults-mode-node":"^2.0.31","@smithy/util-endpoints":"^1.0.7","@smithy/util-retry":"^2.0.8","@smithy/util-utf8":"^2.0.2","tslib":"^2.5.0"},"devDependencies":{"@smithy/service-client-documentation-generator":"^2.0.0","@tsconfig/node14":"1.0.3","@types/node":"^14.14.31","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~4.9.5"},"engines":{"node":">=14.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sso","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sso"}}');
 
 /***/ }),
 
@@ -52838,7 +45645,7 @@ module.exports = JSON.parse('{"name":"@aws-sdk/client-sso","description":"AWS SD
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"@aws-sdk/client-sts","description":"AWS SDK for JavaScript Sts Client for Node.js, Browser and React Native","version":"3.478.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo sts","test":"yarn test:unit","test:unit":"jest"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"3.0.0","@aws-crypto/sha256-js":"3.0.0","@aws-sdk/core":"3.477.0","@aws-sdk/credential-provider-node":"3.478.0","@aws-sdk/middleware-host-header":"3.468.0","@aws-sdk/middleware-logger":"3.468.0","@aws-sdk/middleware-recursion-detection":"3.468.0","@aws-sdk/middleware-user-agent":"3.478.0","@aws-sdk/region-config-resolver":"3.470.0","@aws-sdk/types":"3.468.0","@aws-sdk/util-endpoints":"3.478.0","@aws-sdk/util-user-agent-browser":"3.468.0","@aws-sdk/util-user-agent-node":"3.470.0","@smithy/config-resolver":"^2.0.21","@smithy/core":"^1.2.0","@smithy/fetch-http-handler":"^2.3.1","@smithy/hash-node":"^2.0.17","@smithy/invalid-dependency":"^2.0.15","@smithy/middleware-content-length":"^2.0.17","@smithy/middleware-endpoint":"^2.2.3","@smithy/middleware-retry":"^2.0.24","@smithy/middleware-serde":"^2.0.15","@smithy/middleware-stack":"^2.0.9","@smithy/node-config-provider":"^2.1.8","@smithy/node-http-handler":"^2.2.1","@smithy/protocol-http":"^3.0.11","@smithy/smithy-client":"^2.1.18","@smithy/types":"^2.7.0","@smithy/url-parser":"^2.0.15","@smithy/util-base64":"^2.0.1","@smithy/util-body-length-browser":"^2.0.1","@smithy/util-body-length-node":"^2.1.0","@smithy/util-defaults-mode-browser":"^2.0.22","@smithy/util-defaults-mode-node":"^2.0.29","@smithy/util-endpoints":"^1.0.7","@smithy/util-middleware":"^2.0.8","@smithy/util-retry":"^2.0.8","@smithy/util-utf8":"^2.0.2","fast-xml-parser":"4.2.5","tslib":"^2.5.0"},"devDependencies":{"@smithy/service-client-documentation-generator":"^2.0.0","@tsconfig/node14":"1.0.3","@types/node":"^14.14.31","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~4.9.5"},"engines":{"node":">=14.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sts","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sts"}}');
+module.exports = JSON.parse('{"name":"@aws-sdk/client-sts","description":"AWS SDK for JavaScript Sts Client for Node.js, Browser and React Native","version":"3.484.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"tsc -p tsconfig.cjs.json","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo sts","test":"yarn test:unit","test:unit":"jest"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"3.0.0","@aws-crypto/sha256-js":"3.0.0","@aws-sdk/core":"3.481.0","@aws-sdk/credential-provider-node":"3.484.0","@aws-sdk/middleware-host-header":"3.468.0","@aws-sdk/middleware-logger":"3.468.0","@aws-sdk/middleware-recursion-detection":"3.468.0","@aws-sdk/middleware-user-agent":"3.478.0","@aws-sdk/region-config-resolver":"3.484.0","@aws-sdk/types":"3.468.0","@aws-sdk/util-endpoints":"3.478.0","@aws-sdk/util-user-agent-browser":"3.468.0","@aws-sdk/util-user-agent-node":"3.470.0","@smithy/config-resolver":"^2.0.22","@smithy/core":"^1.2.1","@smithy/fetch-http-handler":"^2.3.1","@smithy/hash-node":"^2.0.17","@smithy/invalid-dependency":"^2.0.15","@smithy/middleware-content-length":"^2.0.17","@smithy/middleware-endpoint":"^2.2.3","@smithy/middleware-retry":"^2.0.25","@smithy/middleware-serde":"^2.0.15","@smithy/middleware-stack":"^2.0.9","@smithy/node-config-provider":"^2.1.8","@smithy/node-http-handler":"^2.2.1","@smithy/protocol-http":"^3.0.11","@smithy/smithy-client":"^2.2.0","@smithy/types":"^2.7.0","@smithy/url-parser":"^2.0.15","@smithy/util-base64":"^2.0.1","@smithy/util-body-length-browser":"^2.0.1","@smithy/util-body-length-node":"^2.1.0","@smithy/util-defaults-mode-browser":"^2.0.23","@smithy/util-defaults-mode-node":"^2.0.31","@smithy/util-endpoints":"^1.0.7","@smithy/util-middleware":"^2.0.8","@smithy/util-retry":"^2.0.8","@smithy/util-utf8":"^2.0.2","fast-xml-parser":"4.2.5","tslib":"^2.5.0"},"devDependencies":{"@smithy/service-client-documentation-generator":"^2.0.0","@tsconfig/node14":"1.0.3","@types/node":"^14.14.31","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~4.9.5"},"engines":{"node":">=14.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-sts","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-sts"}}');
 
 /***/ }),
 
