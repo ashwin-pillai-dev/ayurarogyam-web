@@ -19,12 +19,14 @@ export async function addPartnerRole(input: FormData) {
             data
 
         });
-        revalidatePath(`/admin/partner-roles/list`);
-        redirect(`/admin/partner-roles/list`)
+
 
     } catch (error) {
         console.error('Error adding partner role:', error);
         throw error;
     }
+
+    revalidatePath(`/admin/partner-roles/list`);
+    redirect(`/admin/partner-roles/list`)
 
 }

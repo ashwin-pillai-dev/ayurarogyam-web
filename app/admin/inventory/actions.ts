@@ -34,12 +34,13 @@ export async function addInventory(input: FormData) {
             data
 
         });
-        revalidatePath(`/admin/inventory/list`);
-        redirect(`/admin/inventory/list`)
+
 
     } catch (error) {
         console.error('Error adding inventory:', error);
         throw error;
     }
+    revalidatePath(`/admin/inventory/list`);
+    redirect(`/admin/inventory/list`)
 
 }

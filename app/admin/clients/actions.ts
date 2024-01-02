@@ -22,12 +22,14 @@ export async function addClient(input: FormData) {
                 data
 
             });
-            revalidatePath(`/admin/clients/list`);
-            redirect(`/admin/clients/list`)
+
 
     } catch (error) {
         console.error('Error adding Product:', error);
         throw error;
     }
+
+    revalidatePath(`/admin/clients/list`);
+    redirect(`/admin/clients/list`)
 
 }

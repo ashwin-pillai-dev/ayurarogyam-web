@@ -89,6 +89,7 @@ export async function addSales(input: SalesParam) {
     console.log(commissions);
 
 
+    let newSale;
 
     try {
         const partner = input.partner;
@@ -96,7 +97,7 @@ export async function addSales(input: SalesParam) {
         console.log(partner);
         // Assuming the partner model is included in the input
 
-        const newSale = await prisma.sale.create({
+        newSale = await prisma.sale.create({
             include: {
                 partner: true,
                 invoice: {
@@ -134,13 +135,15 @@ export async function addSales(input: SalesParam) {
 
         console.log('Sale with Invoice and Invoice Items created successfully.');
         console.log(newSale);
-        revalidatePath(`/admin/sales/list`);
 
-        return {};
     } catch (error: any) {
         console.error('Error adding inventory:', error);
         throw error;
     }
+
+    revalidatePath(`/admin/sales/list`);
+
+    return {};
 }
 
 

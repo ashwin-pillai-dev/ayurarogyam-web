@@ -670,17 +670,18 @@ async function addAgent(input) {
         password: await bcryptjs__WEBPACK_IMPORTED_MODULE_1___default().hash(input.password, 10),
         partnerRoleId: input.roleId
     };
+    let admin;
     try {
-        const admin = await _lib_prisma__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z.partner.create({
+        admin = await _lib_prisma__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z.partner.create({
             data: agentData
         });
-        (0,next_cache__WEBPACK_IMPORTED_MODULE_3__.revalidatePath)(`/admin/partners/list`);
-        return admin;
     // redirect(`/admin/partners/list`)
     } catch (error) {
         console.error("Error in adding agent:", error);
         throw error;
     }
+    (0,next_cache__WEBPACK_IMPORTED_MODULE_3__.revalidatePath)(`/admin/partners/list`);
+    return admin;
 }
 
 (0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)([
@@ -787,7 +788,7 @@ if (true) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,3578,4378,369,5291,3732,9016,9733,5918,1789,3188], () => (__webpack_exec__(76466)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,3578,4378,369,5291,3732,9540,9733,5918,1789,3188], () => (__webpack_exec__(76466)));
 module.exports = __webpack_exports__;
 
 })();

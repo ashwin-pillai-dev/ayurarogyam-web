@@ -22,12 +22,14 @@ export async function addClientType(input: FormData) {
             data
 
         });
-        revalidatePath(`/admin/inventory-type/list`);
-        redirect(`/admin/inventory-type/list`)
+
 
     } catch (error) {
         console.error('Error adding inventory type:', error);
         throw error;
     }
+
+    revalidatePath(`/admin/inventory-type/list`);
+    redirect(`/admin/inventory-type/list`)
 
 }

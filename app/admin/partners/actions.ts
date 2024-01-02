@@ -23,20 +23,23 @@ export async function addAgent(input: addPartnerInputType) {
         partnerRoleId:input.roleId
         
     }
+    let admin;
 
     try {
 
-        const admin = await prisma.partner.create({
+        admin = await prisma.partner.create({
             data: agentData,
 
         });
-        revalidatePath(`/admin/partners/list`);
-        return admin;
         // redirect(`/admin/partners/list`)
 
     } catch (error) {
         console.error('Error in adding agent:', error);
         throw error;
     }
+    revalidatePath(`/admin/partners/list`);
+    return admin;
+
+
 
 }

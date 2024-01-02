@@ -679,12 +679,12 @@ async function addProduct(input) {
         const product = await _lib_prisma__WEBPACK_IMPORTED_MODULE_3__["default"].product.create({
             data
         });
-        (0,next_cache__WEBPACK_IMPORTED_MODULE_1__.revalidatePath)(`/admin/products/list`);
-        (0,next_navigation__WEBPACK_IMPORTED_MODULE_2__.redirect)(`/admin/products/list`);
     } catch (error) {
         console.error("Error adding Product:", error);
         throw error;
     }
+    (0,next_cache__WEBPACK_IMPORTED_MODULE_1__.revalidatePath)(`/admin/products/list`);
+    (0,next_navigation__WEBPACK_IMPORTED_MODULE_2__.redirect)(`/admin/products/list`);
 }
 
 (0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_5__["default"])([
@@ -749,7 +749,7 @@ async function page() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,3236,4475,8008,9016,9733,5918,9064], () => (__webpack_exec__(63446)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,3236,4475,8008,9540,9733,5918,9064], () => (__webpack_exec__(63446)));
 module.exports = __webpack_exports__;
 
 })();

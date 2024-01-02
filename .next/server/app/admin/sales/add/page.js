@@ -906,12 +906,13 @@ async function addSales(input) {
     }
     console.log("Commission:");
     console.log(commissions);
+    let newSale;
     try {
         const partner = input.partner;
         console.log(`partner in salea action:`);
         console.log(partner);
         // Assuming the partner model is included in the input
-        const newSale = await _lib_prisma__WEBPACK_IMPORTED_MODULE_2__["default"].sale.create({
+        newSale = await _lib_prisma__WEBPACK_IMPORTED_MODULE_2__["default"].sale.create({
             include: {
                 partner: true,
                 invoice: {
@@ -948,12 +949,12 @@ async function addSales(input) {
         });
         console.log("Sale with Invoice and Invoice Items created successfully.");
         console.log(newSale);
-        (0,next_cache__WEBPACK_IMPORTED_MODULE_1__.revalidatePath)(`/admin/sales/list`);
-        return {};
     } catch (error) {
         console.error("Error adding inventory:", error);
         throw error;
     }
+    (0,next_cache__WEBPACK_IMPORTED_MODULE_1__.revalidatePath)(`/admin/sales/list`);
+    return {};
 }
 // export async function addSales(input: SalesParam) {
 //     let subTotal: number = 0;
@@ -1104,7 +1105,7 @@ async function page() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,3236,6897,9016,9733,5918,3650], () => (__webpack_exec__(18768)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,3236,6897,9540,9733,5918,3650], () => (__webpack_exec__(18768)));
 module.exports = __webpack_exports__;
 
 })();

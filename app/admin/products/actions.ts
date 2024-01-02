@@ -33,12 +33,14 @@ export async function addProduct(input: FormData) {
                 data
 
             });
-            revalidatePath(`/admin/products/list`);
-            redirect(`/admin/products/list`)
+
 
     } catch (error) {
         console.error('Error adding Product:', error);
         throw error;
     }
+
+    revalidatePath(`/admin/products/list`);
+    redirect(`/admin/products/list`)
 
 }

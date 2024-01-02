@@ -28,11 +28,13 @@ try {
     });
     // revalidatePath(`/admin/prices/list/${data.productId}`);
     // revalidatePath('admin/prices/list','page')
-    redirect(`/admin/prices/list/${data.productId}`)
+   
 
 } catch (error) {
     console.error('Error adding client type:', error);
     throw error;
 }
+
+redirect(`/admin/prices/list/${data.productId}`)
 
 }

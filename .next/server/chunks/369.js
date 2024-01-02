@@ -8,7 +8,7 @@ exports.modules = {
 
 
 const cacheExports = {
-    unstable_cache: (__webpack_require__(68858)/* .unstable_cache */ .A),
+    unstable_cache: (__webpack_require__(36014)/* .unstable_cache */ .A),
     revalidateTag: (__webpack_require__(36892).revalidateTag),
     revalidatePath: (__webpack_require__(52776)/* .revalidatePath */ .t)
 };
@@ -83,7 +83,7 @@ function revalidateTag(tag) {
 
 /***/ }),
 
-/***/ 68858:
+/***/ 36014:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 var __webpack_unused_export__;

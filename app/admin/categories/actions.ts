@@ -34,12 +34,14 @@ export async function addCategory(input: FormData) {
             data
 
         });
-        revalidatePath(`/admin/categories/list`);
-        redirect(`/admin/categories/list`)
+
 
     } catch (error) {
         console.error('Error adding category:', error);
         throw error;
     }
+
+    revalidatePath(`/admin/categories/list`);
+    redirect(`/admin/categories/list`)
 
 }

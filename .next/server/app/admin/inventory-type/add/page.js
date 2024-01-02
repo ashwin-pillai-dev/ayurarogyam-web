@@ -180,7 +180,7 @@ module.exports = require("next/dist/shared/lib/server-inserted-html");
 
 /***/ }),
 
-/***/ 459:
+/***/ 3349:
 /***/ ((module) => {
 
 "use strict";
@@ -401,7 +401,7 @@ Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_re
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 50309));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3280, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 459, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3349, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23))
 
 /***/ }),
@@ -507,12 +507,12 @@ async function addClientType(input) {
         const category = await _lib_prisma__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z.inventoryType.create({
             data
         });
-        (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidatePath)(`/admin/inventory-type/list`);
-        (0,next_navigation__WEBPACK_IMPORTED_MODULE_3__.redirect)(`/admin/inventory-type/list`);
     } catch (error) {
         console.error("Error adding inventory type:", error);
         throw error;
     }
+    (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidatePath)(`/admin/inventory-type/list`);
+    (0,next_navigation__WEBPACK_IMPORTED_MODULE_3__.redirect)(`/admin/inventory-type/list`);
 }
 
 (0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)([
@@ -613,7 +613,7 @@ if (true) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,3578,4378,8875,369,5291,9016,9733,5918], () => (__webpack_exec__(47345)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,3578,4378,8875,369,5291,9540,9733,5918], () => (__webpack_exec__(47345)));
 module.exports = __webpack_exports__;
 
 })();
