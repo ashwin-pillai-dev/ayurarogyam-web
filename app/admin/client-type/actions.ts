@@ -34,7 +34,7 @@ export async function addClientType(input: FormData) {
 
     console.log('executing revaliate');
     
-    revalidatePath(`/admin/client-type/list`);
+    revalidatePath(`${process.env.API_URL}/client-types`);
 
     return clientType;
 

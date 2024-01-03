@@ -515,7 +515,7 @@ async function addClientType(input) {
         throw error;
     }
     console.log("executing revaliate");
-    (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidatePath)(`/admin/client-type/list`);
+    (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidatePath)(`${process.env.API_URL}/client-types`);
     return clientType;
 }
 
