@@ -294,7 +294,7 @@ __webpack_require__.r(__webpack_exports__);
         'add',
         {
         children: ['__PAGE__', {}, {
-          page: [() => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 70165)), "D:\\projects\\ayurarogyam-web\\app\\admin\\partners\\add\\page.tsx"],
+          page: [() => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 24333)), "D:\\projects\\ayurarogyam-web\\app\\admin\\partners\\add\\page.tsx"],
           
         }]
       },
@@ -692,7 +692,7 @@ async function addAgent(input) {
 
 /***/ }),
 
-/***/ 70165:
+/***/ 24333:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";

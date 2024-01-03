@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
     }
 
-    revalidatePath('/api/client-types')
+    revalidatePath(`${process.env.API_URL}/client-types`);    
     return Response.json(res);
 }
 

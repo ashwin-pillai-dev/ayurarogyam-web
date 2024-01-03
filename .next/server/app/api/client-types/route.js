@@ -62,7 +62,7 @@ async function GET(request) {
     } catch (error) {
         return Response.error();
     }
-    (0,cache.revalidatePath)("/api/client-types");
+    (0,cache.revalidatePath)(`${process.env.API_URL}/client-types`);
     return Response.json(res);
 }
 
