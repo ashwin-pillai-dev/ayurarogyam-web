@@ -50,15 +50,20 @@ var app_route_module = __webpack_require__(29267);
 var module_default = /*#__PURE__*/__webpack_require__.n(app_route_module);
 // EXTERNAL MODULE: ./lib/prisma.ts
 var prisma = __webpack_require__(94734);
+// EXTERNAL MODULE: ./node_modules/next/cache.js
+var cache = __webpack_require__(20369);
 ;// CONCATENATED MODULE: ./app/api/client-types/route.ts
 
+
 async function GET(request) {
+    let res;
     try {
-        const res = await prisma/* default */.Z.clientType.findMany();
-        return Response.json(res);
+        res = await prisma/* default */.Z.clientType.findMany();
     } catch (error) {
         return Response.error();
     }
+    (0,cache.revalidatePath)("/api/client-types");
+    return Response.json(res);
 }
 
 ;// CONCATENATED MODULE: ./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?page=%2Fapi%2Fclient-types%2Froute&name=app%2Fapi%2Fclient-types%2Froute&pagePath=private-next-app-dir%2Fapi%2Fclient-types%2Froute.ts&appDir=D%3A%5Cprojects%5Cayurarogyam-web%5Capp&appPaths=%2Fapi%2Fclient-types%2Froute&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!
@@ -117,7 +122,7 @@ if (true) {
 var __webpack_require__ = require("../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,6133,188,5981], () => (__webpack_exec__(53010)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,6133,188,5981,369], () => (__webpack_exec__(53010)));
 module.exports = __webpack_exports__;
 
 })();
