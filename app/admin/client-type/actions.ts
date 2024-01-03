@@ -1,7 +1,6 @@
 'use server'
 import prisma from'../../../lib/prisma'
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 
 
@@ -14,19 +13,29 @@ export async function addClientType(input: FormData) {
         name: name.toString(),
     }
     console.log(data);
+    let clientType ;
     
     try {
 
-        const category = await prisma.clientType.create({
+        clientType = await prisma.clientType.create({
             data
 
         });
-        revalidatePath(`/admin/client-type/list`);
-        redirect(`/admin/client-type/list`)
+        console.log('clientType');
+        console.log(clientType);
+        
+       
+        // redirect(`/admin/client-type/list`)
 
     } catch (error) {
         console.error('Error adding client type:', error);
         throw error;
     }
+
+    console.log('executing revaliate');
+    
+    revalidatePath(`/admin/client-type/list`);
+
+    return clientType;
 
 }

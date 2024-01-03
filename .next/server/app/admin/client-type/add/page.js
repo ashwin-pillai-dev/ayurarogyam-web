@@ -44,6 +44,14 @@ module.exports = require("next/dist/compiled/react-server-dom-webpack-experiment
 
 /***/ }),
 
+/***/ 35927:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("next/dist/compiled/react-server-dom-webpack-experimental/client.edge");
+
+/***/ }),
+
 /***/ 41844:
 /***/ ((module) => {
 
@@ -65,14 +73,6 @@ module.exports = require("next/dist/server/future/helpers/interception-routes");
 
 "use strict";
 module.exports = require("next/dist/shared/lib/app-router-context");
-
-/***/ }),
-
-/***/ 3280:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("next/dist/shared/lib/app-router-context.js");
 
 /***/ }),
 
@@ -105,14 +105,6 @@ module.exports = require("next/dist/shared/lib/head");
 
 "use strict";
 module.exports = require("next/dist/shared/lib/hooks-client-context");
-
-/***/ }),
-
-/***/ 69274:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("next/dist/shared/lib/hooks-client-context.js");
 
 /***/ }),
 
@@ -177,14 +169,6 @@ module.exports = require("next/dist/shared/lib/router/utils/remove-trailing-slas
 
 "use strict";
 module.exports = require("next/dist/shared/lib/server-inserted-html");
-
-/***/ }),
-
-/***/ 3349:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("next/dist/shared/lib/server-inserted-html.js");
 
 /***/ }),
 
@@ -373,12 +357,12 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 37857:
+/***/ 75568:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 
 const actions = {
-'bbe14bedf769b2421ce76819a1f3d4077050709d': () => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 25578)).then(mod => mod["addClientType"]),
+'bbe14bedf769b2421ce76819a1f3d4077050709d': () => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 16706)).then(mod => mod["addClientType"]),
 }
 
 async function endpoint(id, ...args) {
@@ -394,70 +378,109 @@ module.exports = {
 
 /***/ }),
 
-/***/ 88575:
+/***/ 38153:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 93578));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3280, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3349, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 20999))
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 66402))
 
 /***/ }),
 
-/***/ 20999:
+/***/ 66402:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ FormItems)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(76931);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var flowbite_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(99920);
-/* harmony import */ var flowbite_react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flowbite_react__WEBPACK_IMPORTED_MODULE_1__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "default": () => (/* binding */ FormItems)
+});
+
+// EXTERNAL MODULE: external "next/dist/compiled/react-experimental/jsx-runtime"
+var jsx_runtime_ = __webpack_require__(76931);
+// EXTERNAL MODULE: ./node_modules/flowbite-react/lib/cjs/index.js
+var cjs = __webpack_require__(99920);
+// EXTERNAL MODULE: ./node_modules/next/navigation.js
+var navigation = __webpack_require__(59483);
+// EXTERNAL MODULE: ./node_modules/next/dist/client/app-call-server.js
+var app_call_server = __webpack_require__(94783);
+// EXTERNAL MODULE: ./node_modules/next/dist/build/webpack/loaders/next-flight-loader/action-proxy.js
+var action_proxy = __webpack_require__(9025);
+// EXTERNAL MODULE: ./node_modules/next/dist/build/webpack/loaders/next-flight-loader/action-client-wrapper.js
+var action_client_wrapper = __webpack_require__(73787);
+;// CONCATENATED MODULE: ./app/admin/client-type/actions.ts
+
+
+
+function __build_action__(action, args) {
+  return callServer(action.$$id, args)
+}
+
+/* __next_internal_action_entry_do_not_use__ addClientType */ 
+
+var addClientType = (0,action_client_wrapper/* default */.Z)("bbe14bedf769b2421ce76819a1f3d4077050709d");
+
+
+;// CONCATENATED MODULE: ./app/admin/client-type/add/formItems.tsx
 /* __next_internal_client_entry_do_not_use__ default auto */ 
 
+
+
 function FormItems() {
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+    const router = (0,navigation.useRouter)();
+    async function onSubmit(formData) {
+        try {
+            const res = await addClientType(formData);
+            console.log("res from component");
+            console.log(res);
+            if (res) {
+                router.push(`/admin/client-type/list`);
+            }
+        } catch (error) {}
+    }
+    return /*#__PURE__*/ jsx_runtime_.jsx("div", {
         className: "space-y-4 md:space-y-6",
-        children: [
-            /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                children: [
-                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("label", {
-                        htmlFor: "name",
-                        className: "block mb-2 text-sm font-medium text-gray-900 dark:text-white",
-                        children: "Name"
-                    }),
-                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("input", {
-                        type: "text",
-                        name: "name",
-                        id: "name",
-                        className: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500",
-                        placeholder: "Client type name",
-                        required: true
+        children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("form", {
+            className: "space-y-4 md:space-y-6",
+            action: onSubmit,
+            children: [
+                /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
+                    children: [
+                        /*#__PURE__*/ jsx_runtime_.jsx("label", {
+                            htmlFor: "name",
+                            className: "block mb-2 text-sm font-medium text-gray-900 dark:text-white",
+                            children: "Name"
+                        }),
+                        /*#__PURE__*/ jsx_runtime_.jsx("input", {
+                            type: "text",
+                            name: "name",
+                            id: "name",
+                            className: "bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500",
+                            placeholder: "Client type name",
+                            required: true
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ jsx_runtime_.jsx(cjs.Button, {
+                    size: "xs",
+                    type: "submit",
+                    className: "w-full bg-primary-600 hover:bg-primary-700  focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg  px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800",
+                    children: /*#__PURE__*/ jsx_runtime_.jsx("p", {
+                        className: "text-white font-medium  text-sm",
+                        children: "Create Client type"
                     })
-                ]
-            }),
-            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(flowbite_react__WEBPACK_IMPORTED_MODULE_1__.Button, {
-                size: "xs",
-                type: "submit",
-                className: "w-full bg-primary-600 hover:bg-primary-700  focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg  px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800",
-                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("p", {
-                    className: "text-white font-medium  text-sm",
-                    children: "Create Client type"
                 })
-            })
-        ]
+            ]
+        })
     });
 }
 
 
 /***/ }),
 
-/***/ 25578:
+/***/ 16706:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -465,15 +488,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   addClientType: () => (/* binding */ addClientType)
 /* harmony export */ });
-/* harmony import */ var private_next_rsc_action_proxy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(47404);
-/* harmony import */ var _lib_prisma__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(94734);
-/* harmony import */ var next_cache__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(20369);
+/* harmony import */ var private_next_rsc_action_proxy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(66315);
+/* harmony import */ var _lib_prisma__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(34611);
+/* harmony import */ var next_cache__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(73236);
 /* harmony import */ var next_cache__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_cache__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var next_navigation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(78875);
-/* harmony import */ var next_navigation__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_navigation__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4206);
+/* harmony import */ var private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(19730);
 /* __next_internal_action_entry_do_not_use__ addClientType */ 
-
 
 
 async function addClientType(input) {
@@ -482,22 +502,27 @@ async function addClientType(input) {
         name: name.toString()
     };
     console.log(data);
+    let clientType;
     try {
-        const category = await _lib_prisma__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z.clientType.create({
+        clientType = await _lib_prisma__WEBPACK_IMPORTED_MODULE_1__["default"].clientType.create({
             data
         });
-        (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidatePath)(`/admin/client-type/list`);
-        (0,next_navigation__WEBPACK_IMPORTED_MODULE_3__.redirect)(`/admin/client-type/list`);
+        console.log("clientType");
+        console.log(clientType);
+    // redirect(`/admin/client-type/list`)
     } catch (error) {
         console.error("Error adding client type:", error);
         throw error;
     }
+    console.log("executing revaliate");
+    (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidatePath)(`/admin/client-type/list`);
+    return clientType;
 }
 
-(0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)([
+(0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_3__["default"])([
     addClientType
 ]);
-(0,private_next_rsc_action_proxy__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)("bbe14bedf769b2421ce76819a1f3d4077050709d", null, addClientType);
+(0,private_next_rsc_action_proxy__WEBPACK_IMPORTED_MODULE_0__["default"])("bbe14bedf769b2421ce76819a1f3d4077050709d", null, addClientType);
 
 
 /***/ }),
@@ -518,8 +543,6 @@ __webpack_require__.d(__webpack_exports__, {
 var jsx_runtime_ = __webpack_require__(76931);
 // EXTERNAL MODULE: ./node_modules/react-toastify/dist/react-toastify.esm.mjs
 var react_toastify_esm = __webpack_require__(25291);
-// EXTERNAL MODULE: ./app/admin/client-type/actions.ts
-var actions = __webpack_require__(25578);
 // EXTERNAL MODULE: ./node_modules/next/dist/build/webpack/loaders/next-flight-loader/module-proxy.js
 var module_proxy = __webpack_require__(21313);
 ;// CONCATENATED MODULE: ./app/admin/client-type/add/formItems.tsx
@@ -539,7 +562,6 @@ const __default__ = proxy.default;
 
 
 
-
 function page() {
     return /*#__PURE__*/ (0,jsx_runtime_.jsxs)("section", {
         className: "bg-white dark:bg-gray-900",
@@ -552,11 +574,7 @@ function page() {
                         className: "mb-4 text-xl font-bold text-gray-900 dark:text-white",
                         children: "Add New Client Type"
                     }),
-                    /*#__PURE__*/ jsx_runtime_.jsx("form", {
-                        className: "space-y-4 md:space-y-6",
-                        action: actions.addClientType,
-                        children: /*#__PURE__*/ jsx_runtime_.jsx(formItems, {})
-                    })
+                    /*#__PURE__*/ jsx_runtime_.jsx(formItems, {})
                 ]
             })
         ]
@@ -566,12 +584,12 @@ function page() {
 
 /***/ }),
 
-/***/ 94734:
+/***/ 34611:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _prisma_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(53524);
 /* harmony import */ var _prisma_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_prisma_client__WEBPACK_IMPORTED_MODULE_0__);
@@ -583,6 +601,14 @@ if (true) {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (prisma);
 
 
+/***/ }),
+
+/***/ 59483:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = __webpack_require__(75171)
+
+
 /***/ })
 
 };
@@ -592,7 +618,7 @@ if (true) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,3578,4378,8875,369,5291,9540,9733,5918], () => (__webpack_exec__(49705)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,5291,3236,9540,9733,5918], () => (__webpack_exec__(49705)));
 module.exports = __webpack_exports__;
 
 })();

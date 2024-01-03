@@ -2,6 +2,7 @@ import { ToastContainer } from 'react-toastify';
 import { addClientType } from '../actions';
 import FormItems from './formItems';
 
+
 export default function page() {
     return (
         <section className="bg-white dark:bg-gray-900">
@@ -10,9 +11,7 @@ export default function page() {
                 <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
                     Add New Client Type
                 </h2>
-                <form className="space-y-4 md:space-y-6" action={addClientType}>
                     <FormItems/>
-                </form>
             </div >
         </section >
     )

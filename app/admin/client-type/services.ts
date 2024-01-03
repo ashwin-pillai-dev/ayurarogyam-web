@@ -2,12 +2,15 @@
 export async function getClientTypes() {
     try {
       
-      const response = await  fetch(`${process.env.API_URL}/client-types`);
+      const response = await  fetch(`${process.env.API_URL}/client-types`,{ cache: 'no-store' });
       
       
 
       if (response.ok) {        
         const data = await response.json();
+        console.log('data');
+        console.log(data);
+        
         return data;
       } else {
         console.error('Error fetching admin data:', response.statusText);

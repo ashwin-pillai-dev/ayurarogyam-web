@@ -1,6 +1,6 @@
 'use server'
 import bcrypt from 'bcryptjs';
-import prisma from'../../../lib/prisma'
+import prisma from '../../../lib/prisma'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { FileUpload } from '../common/services';
@@ -28,12 +28,15 @@ export async function addCategory(input: FormData) {
         image: uploadResponse,
 
     }
+    let category;
     try {
 
-        const category = await prisma.category.create({
+        category = await prisma.category.create({
             data
 
         });
+
+
 
 
     } catch (error) {
@@ -42,6 +45,8 @@ export async function addCategory(input: FormData) {
     }
 
     revalidatePath(`/admin/categories/list`);
-    redirect(`/admin/categories/list`)
+    return category;
+
+    // redirect(`/admin/categories/list`)
 
 }
