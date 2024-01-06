@@ -62,6 +62,9 @@ async function GET(request) {
     } catch (error) {
         return Response.error();
     }
+    console.log(`Revalidate URL`);
+    console.log(`${process.env.API_URL}/client-types`);
+    `${process.env.API_URL}/client-types`;
     (0,cache.revalidatePath)(`${process.env.API_URL}/client-types`);
     return Response.json(res);
 }

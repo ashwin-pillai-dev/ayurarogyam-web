@@ -394,14 +394,14 @@ module.exports = {
 
 /***/ }),
 
-/***/ 10372:
+/***/ 30927:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 74527));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3280, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 459, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23))
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 74527))
 
 /***/ }),
 
@@ -544,9 +544,7 @@ const ClientForm = (props)=>{
 /* harmony export */ });
 async function getClientTypes() {
     try {
-        const response = await fetch(`${process.env.API_URL}/client-types`, {
-            cache: "no-store"
-        });
+        const response = await fetch(`${process.env.API_URL}/client-types`);
         if (response.ok) {
             const data = await response.json();
             console.log("data");

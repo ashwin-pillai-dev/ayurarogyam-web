@@ -585,9 +585,7 @@ async function page() {
 /* harmony export */ });
 async function getClientTypes() {
     try {
-        const response = await fetch(`${process.env.API_URL}/client-types`, {
-            cache: "no-store"
-        });
+        const response = await fetch(`${process.env.API_URL}/client-types`);
         if (response.ok) {
             const data = await response.json();
             console.log("data");

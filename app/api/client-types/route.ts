@@ -12,6 +12,9 @@ export async function GET(request: Request) {
 
 
     }
+    console.log(`Revalidate URL`);
+    console.log(`${process.env.API_URL}/client-types`);
+    `${process.env.API_URL}/client-types`
 
     revalidatePath(`${process.env.API_URL}/client-types`);    
     return Response.json(res);
