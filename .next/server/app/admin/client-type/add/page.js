@@ -378,11 +378,11 @@ module.exports = {
 
 /***/ }),
 
-/***/ 38153:
+/***/ 68685:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 93578));
-Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 66402))
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 66402));
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 93578))
 
 /***/ }),
 
@@ -515,7 +515,7 @@ async function addClientType(input) {
         throw error;
     }
     console.log("executing revaliate");
-    (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidatePath)(`/admin/client-type/list`);
+    (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidateTag)(`client-types`);
     return clientType;
 }
 

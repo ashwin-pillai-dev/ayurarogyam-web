@@ -50,10 +50,7 @@ var app_route_module = __webpack_require__(29267);
 var module_default = /*#__PURE__*/__webpack_require__.n(app_route_module);
 // EXTERNAL MODULE: ./lib/prisma.ts
 var prisma = __webpack_require__(94734);
-// EXTERNAL MODULE: ./node_modules/next/cache.js
-var cache = __webpack_require__(20369);
 ;// CONCATENATED MODULE: ./app/api/client-types/route.ts
-
 
 async function GET(request) {
     let res;
@@ -65,7 +62,7 @@ async function GET(request) {
     console.log(`Revalidate URL`);
     console.log(`${process.env.API_URL}/client-types`);
     `${process.env.API_URL}/client-types`;
-    (0,cache.revalidatePath)(`${process.env.API_URL}/client-types`);
+    // revalidatePath(`${process.env.API_URL}/client-types`);    
     return Response.json(res);
 }
 
@@ -125,7 +122,7 @@ if (true) {
 var __webpack_require__ = require("../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,6133,188,5981,369], () => (__webpack_exec__(53010)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,6133,188,5981], () => (__webpack_exec__(53010)));
 module.exports = __webpack_exports__;
 
 })();

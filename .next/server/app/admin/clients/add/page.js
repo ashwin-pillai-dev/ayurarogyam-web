@@ -394,13 +394,13 @@ module.exports = {
 
 /***/ }),
 
-/***/ 30927:
+/***/ 64478:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3280, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 459, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 74527))
 
 /***/ }),
@@ -544,7 +544,13 @@ const ClientForm = (props)=>{
 /* harmony export */ });
 async function getClientTypes() {
     try {
-        const response = await fetch(`${process.env.API_URL}/client-types`);
+        const response = await fetch(`${process.env.API_URL}/client-types`, {
+            next: {
+                tags: [
+                    "client-types"
+                ]
+            }
+        });
         if (response.ok) {
             const data = await response.json();
             console.log("data");
@@ -701,7 +707,7 @@ if (true) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,369,4378,8875,9540,9733,5918], () => (__webpack_exec__(27625)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,4378,8875,369,9540,9733,5918], () => (__webpack_exec__(27625)));
 module.exports = __webpack_exports__;
 
 })();

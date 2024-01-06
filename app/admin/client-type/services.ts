@@ -2,7 +2,7 @@
 export async function getClientTypes() {
     try {
       
-      const response = await  fetch(`${process.env.API_URL}/client-types`);
+      const response = await  fetch(`${process.env.API_URL}/client-types`,{next:{tags:['client-types']}});
       
       
 

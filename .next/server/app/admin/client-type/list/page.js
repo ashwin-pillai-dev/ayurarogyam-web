@@ -585,7 +585,13 @@ async function page() {
 /* harmony export */ });
 async function getClientTypes() {
     try {
-        const response = await fetch(`${process.env.API_URL}/client-types`);
+        const response = await fetch(`${process.env.API_URL}/client-types`, {
+            next: {
+                tags: [
+                    "client-types"
+                ]
+            }
+        });
         if (response.ok) {
             const data = await response.json();
             console.log("data");
