@@ -53,15 +53,16 @@ var prisma = __webpack_require__(94734);
 ;// CONCATENATED MODULE: ./app/api/client-types/route.ts
 
 async function GET(request) {
+    console.log("hello");
     let res;
     try {
         res = await prisma/* default */.Z.clientType.findMany();
     } catch (error) {
         return Response.error();
     }
-    console.log(`Revalidate URL`);
-    console.log(`${process.env.API_URL}/client-types`);
-    `${process.env.API_URL}/client-types`;
+    // console.log(`Revalidate URL`);
+    // console.log(`${process.env.API_URL}/client-types`);
+    // `${process.env.API_URL}/client-types`
     // revalidatePath(`${process.env.API_URL}/client-types`);    
     return Response.json(res);
 }

@@ -294,7 +294,7 @@ __webpack_require__.r(__webpack_exports__);
         'list',
         {
         children: ['__PAGE__', {}, {
-          page: [() => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 50281)), "D:\\projects\\ayurarogyam-web\\app\\admin\\inventory\\list\\page.tsx"],
+          page: [() => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 77374)), "D:\\projects\\ayurarogyam-web\\app\\admin\\inventory\\list\\page.tsx"],
           
         }]
       },
@@ -357,7 +357,7 @@ Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_re
 
 /***/ }),
 
-/***/ 50281:
+/***/ 77374:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";

@@ -3,7 +3,7 @@ import DefaultNavbar from './components/DefaultNavbar'
 import DefaultFooter from './components/footer'
 import Slider from './components/slider/slider'
 import EmblaCarousel from './components/carousel/EmblaCarousel';
-import { EmblaOptionsType } from 'embla-carousel-react';
+import  {EmblaOptionsType} from 'embla-carousel';
 
 export default function Home() {
   const slides = [

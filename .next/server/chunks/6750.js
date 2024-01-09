@@ -20,21 +20,21 @@ __webpack_require__.d(__webpack_exports__, {
   FloatingPortal: () => (/* binding */ FloatingPortal),
   FloatingTree: () => (/* binding */ FloatingTree),
   arrow: () => (/* reexport */ arrow),
-  autoPlacement: () => (/* reexport */ floating_ui_core/* autoPlacement */.X5),
+  autoPlacement: () => (/* reexport */ floating_ui_dom/* autoPlacement */.X5),
   autoUpdate: () => (/* reexport */ floating_ui_dom/* autoUpdate */.Me),
   computePosition: () => (/* reexport */ floating_ui_dom/* computePosition */.oo),
   detectOverflow: () => (/* reexport */ floating_ui_core/* detectOverflow */.US),
-  flip: () => (/* reexport */ floating_ui_core/* flip */.RR),
+  flip: () => (/* reexport */ floating_ui_dom/* flip */.RR),
   getOverflowAncestors: () => (/* reexport */ floating_ui_utils_dom/* getOverflowAncestors */.Kx),
-  hide: () => (/* reexport */ floating_ui_core/* hide */.Cp),
-  inline: () => (/* reexport */ floating_ui_core/* inline */.Qo),
+  hide: () => (/* reexport */ floating_ui_dom/* hide */.Cp),
+  inline: () => (/* reexport */ floating_ui_dom/* inline */.Qo),
   inner: () => (/* binding */ inner),
-  limitShift: () => (/* reexport */ floating_ui_core/* limitShift */.dr),
+  limitShift: () => (/* reexport */ floating_ui_dom/* limitShift */.dr),
   offset: () => (/* reexport */ floating_ui_core/* offset */.cv),
   platform: () => (/* reexport */ floating_ui_dom/* platform */.Jv),
   safePolygon: () => (/* binding */ safePolygon),
-  shift: () => (/* reexport */ floating_ui_core/* shift */.uY),
-  size: () => (/* reexport */ floating_ui_core/* size */.dp),
+  shift: () => (/* reexport */ floating_ui_dom/* shift */.uY),
+  size: () => (/* reexport */ floating_ui_dom/* size */.dp),
   useClick: () => (/* binding */ useClick),
   useClientPoint: () => (/* binding */ useClientPoint),
   useDelayGroup: () => (/* binding */ useDelayGroup),
@@ -61,10 +61,8 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
 var floating_ui_dom = __webpack_require__(62631);
-// EXTERNAL MODULE: ./node_modules/@floating-ui/utils/dom/dist/floating-ui.utils.dom.mjs
-var floating_ui_utils_dom = __webpack_require__(16361);
-// EXTERNAL MODULE: ./node_modules/@floating-ui/core/dist/floating-ui.core.mjs
-var floating_ui_core = __webpack_require__(47612);
+// EXTERNAL MODULE: ./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
+var floating_ui_utils_dom = __webpack_require__(72141);
 // EXTERNAL MODULE: external "next/dist/compiled/react-experimental"
 var react_experimental_ = __webpack_require__(17640);
 // EXTERNAL MODULE: external "next/dist/compiled/react-dom-experimental/server-rendering-stub"
@@ -96,14 +94,14 @@ const arrow = options => {
       } = typeof options === 'function' ? options(state) : options;
       if (element && isRef(element)) {
         if (element.current != null) {
-          return (0,floating_ui_core/* arrow */.x7)({
+          return (0,floating_ui_dom/* arrow */.x7)({
             element: element.current,
             padding
           }).fn(state);
         }
         return {};
       } else if (element) {
-        return (0,floating_ui_core/* arrow */.x7)({
+        return (0,floating_ui_dom/* arrow */.x7)({
           element,
           padding
         }).fn(state);
@@ -337,6 +335,8 @@ function useFloating(options) {
 
 
 
+// EXTERNAL MODULE: ./node_modules/@floating-ui/core/dist/floating-ui.core.mjs
+var floating_ui_core = __webpack_require__(47612);
 // EXTERNAL MODULE: ./node_modules/aria-hidden/dist/es5/index.js
 var es5 = __webpack_require__(36860);
 // EXTERNAL MODULE: ./node_modules/tabbable/dist/index.js
@@ -19994,7 +19994,7 @@ function computeCoordsFromPlacement(_ref, placement, rtl) {
 
 /**
  * Computes the `x` and `y` coordinates that will place the floating element
- * next to a reference element when it is given a certain positioning strategy.
+ * next to a given reference element.
  *
  * This export does not have any `platform` interface logic. You will need to
  * write one for the platform you are using Floating UI with.
@@ -20649,6 +20649,7 @@ const inline = function (options) {
 
 // For type backwards-compatibility, the `OffsetOptions` type was also
 // Derivable.
+
 async function convertValueToCoords(state, options) {
   const {
     placement,
@@ -20965,13 +20966,21 @@ const size = function (options) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Cp: () => (/* binding */ hide),
 /* harmony export */   Jv: () => (/* binding */ platform),
 /* harmony export */   Me: () => (/* binding */ autoUpdate),
-/* harmony export */   oo: () => (/* binding */ computePosition)
+/* harmony export */   Qo: () => (/* binding */ inline),
+/* harmony export */   RR: () => (/* binding */ flip),
+/* harmony export */   X5: () => (/* binding */ autoPlacement),
+/* harmony export */   dp: () => (/* binding */ size),
+/* harmony export */   dr: () => (/* binding */ limitShift),
+/* harmony export */   oo: () => (/* binding */ computePosition),
+/* harmony export */   uY: () => (/* binding */ shift),
+/* harmony export */   x7: () => (/* binding */ arrow)
 /* harmony export */ });
 /* harmony import */ var _floating_ui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(36978);
 /* harmony import */ var _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(47612);
-/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(16361);
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(72141);
 
 
 
@@ -21301,7 +21310,14 @@ function getClippingRect(_ref) {
 }
 
 function getDimensions(element) {
-  return getCssDimensions(element);
+  const {
+    width,
+    height
+  } = getCssDimensions(element);
+  return {
+    width,
+    height
+  };
 }
 
 function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
@@ -21548,9 +21564,65 @@ function autoUpdate(reference, floating, update, options) {
 }
 
 /**
+ * Optimizes the visibility of the floating element by choosing the placement
+ * that has the most space available automatically, without needing to specify a
+ * preferred placement. Alternative to `flip`.
+ * @see https://floating-ui.com/docs/autoPlacement
+ */
+const autoPlacement = _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__/* .autoPlacement */ .X5;
+
+/**
+ * Optimizes the visibility of the floating element by shifting it in order to
+ * keep it in view when it will overflow the clipping boundary.
+ * @see https://floating-ui.com/docs/shift
+ */
+const shift = _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__/* .shift */ .uY;
+
+/**
+ * Optimizes the visibility of the floating element by flipping the `placement`
+ * in order to keep it in view when the preferred placement(s) will overflow the
+ * clipping boundary. Alternative to `autoPlacement`.
+ * @see https://floating-ui.com/docs/flip
+ */
+const flip = _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__/* .flip */ .RR;
+
+/**
+ * Provides data that allows you to change the size of the floating element —
+ * for instance, prevent it from overflowing the clipping boundary or match the
+ * width of the reference element.
+ * @see https://floating-ui.com/docs/size
+ */
+const size = _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__/* .size */ .dp;
+
+/**
+ * Provides data to hide the floating element in applicable situations, such as
+ * when it is not in the same clipping context as the reference element.
+ * @see https://floating-ui.com/docs/hide
+ */
+const hide = _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__/* .hide */ .Cp;
+
+/**
+ * Provides data to position an inner element of the floating element so that it
+ * appears centered to the reference element.
+ * @see https://floating-ui.com/docs/arrow
+ */
+const arrow = _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__/* .arrow */ .x7;
+
+/**
+ * Provides improved positioning for inline reference elements that can span
+ * over multiple lines, such as hyperlinks or range selections.
+ * @see https://floating-ui.com/docs/inline
+ */
+const inline = _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__/* .inline */ .Qo;
+
+/**
+ * Built-in `limiter` that will stop `shift()` at a certain point.
+ */
+const limitShift = _floating_ui_core__WEBPACK_IMPORTED_MODULE_2__/* .limitShift */ .dr;
+
+/**
  * Computes the `x` and `y` coordinates that will place the floating element
- * next to a reference element when it is given a certain CSS positioning
- * strategy.
+ * next to a given reference element.
  */
 const computePosition = (reference, floating, options) => {
   // This caches the expensive `getClippingElementAncestors` function so that
@@ -21570,6 +21642,160 @@ const computePosition = (reference, floating, options) => {
     platform: platformWithCache
   });
 };
+
+
+
+
+/***/ }),
+
+/***/ 72141:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Dx: () => (/* binding */ getComputedStyle),
+/* harmony export */   Jj: () => (/* binding */ getWindow),
+/* harmony export */   Kx: () => (/* binding */ getOverflowAncestors),
+/* harmony export */   Lw: () => (/* binding */ getNodeScroll),
+/* harmony export */   Ow: () => (/* binding */ getParentNode),
+/* harmony export */   Pf: () => (/* binding */ isWebKit),
+/* harmony export */   Py: () => (/* binding */ isLastTraversableNode),
+/* harmony export */   Re: () => (/* binding */ isHTMLElement),
+/* harmony export */   Ze: () => (/* binding */ isTableElement),
+/* harmony export */   ao: () => (/* binding */ isOverflowElement),
+/* harmony export */   gQ: () => (/* binding */ getContainingBlock),
+/* harmony export */   hT: () => (/* binding */ isContainingBlock),
+/* harmony export */   kK: () => (/* binding */ isElement),
+/* harmony export */   tF: () => (/* binding */ getDocumentElement),
+/* harmony export */   wk: () => (/* binding */ getNodeName)
+/* harmony export */ });
+/* unused harmony exports getNearestOverflowAncestor, isNode, isShadowRoot */
+function getNodeName(node) {
+  if (isNode(node)) {
+    return (node.nodeName || '').toLowerCase();
+  }
+  // Mocked nodes in testing environments may not be instances of Node. By
+  // returning `#document` an infinite loop won't occur.
+  // https://github.com/floating-ui/floating-ui/issues/2317
+  return '#document';
+}
+function getWindow(node) {
+  var _node$ownerDocument;
+  return (node == null || (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function getDocumentElement(node) {
+  var _ref;
+  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
+}
+function isNode(value) {
+  return value instanceof Node || value instanceof getWindow(value).Node;
+}
+function isElement(value) {
+  return value instanceof Element || value instanceof getWindow(value).Element;
+}
+function isHTMLElement(value) {
+  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
+}
+function isShadowRoot(value) {
+  // Browsers without `ShadowRoot` support.
+  if (typeof ShadowRoot === 'undefined') {
+    return false;
+  }
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
+}
+function isOverflowElement(element) {
+  const {
+    overflow,
+    overflowX,
+    overflowY,
+    display
+  } = getComputedStyle(element);
+  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && !['inline', 'contents'].includes(display);
+}
+function isTableElement(element) {
+  return ['table', 'td', 'th'].includes(getNodeName(element));
+}
+function isContainingBlock(element) {
+  const webkit = isWebKit();
+  const css = getComputedStyle(element);
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
+  return css.transform !== 'none' || css.perspective !== 'none' || (css.containerType ? css.containerType !== 'normal' : false) || !webkit && (css.backdropFilter ? css.backdropFilter !== 'none' : false) || !webkit && (css.filter ? css.filter !== 'none' : false) || ['transform', 'perspective', 'filter'].some(value => (css.willChange || '').includes(value)) || ['paint', 'layout', 'strict', 'content'].some(value => (css.contain || '').includes(value));
+}
+function getContainingBlock(element) {
+  let currentNode = getParentNode(element);
+  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    if (isContainingBlock(currentNode)) {
+      return currentNode;
+    } else {
+      currentNode = getParentNode(currentNode);
+    }
+  }
+  return null;
+}
+function isWebKit() {
+  if (typeof CSS === 'undefined' || !CSS.supports) return false;
+  return CSS.supports('-webkit-backdrop-filter', 'none');
+}
+function isLastTraversableNode(node) {
+  return ['html', 'body', '#document'].includes(getNodeName(node));
+}
+function getComputedStyle(element) {
+  return getWindow(element).getComputedStyle(element);
+}
+function getNodeScroll(element) {
+  if (isElement(element)) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+  return {
+    scrollLeft: element.pageXOffset,
+    scrollTop: element.pageYOffset
+  };
+}
+function getParentNode(node) {
+  if (getNodeName(node) === 'html') {
+    return node;
+  }
+  const result =
+  // Step into the shadow DOM of the parent of a slotted node.
+  node.assignedSlot ||
+  // DOM Element detected.
+  node.parentNode ||
+  // ShadowRoot detected.
+  isShadowRoot(node) && node.host ||
+  // Fallback.
+  getDocumentElement(node);
+  return isShadowRoot(result) ? result.host : result;
+}
+function getNearestOverflowAncestor(node) {
+  const parentNode = getParentNode(node);
+  if (isLastTraversableNode(parentNode)) {
+    return node.ownerDocument ? node.ownerDocument.body : node.body;
+  }
+  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
+    return parentNode;
+  }
+  return getNearestOverflowAncestor(parentNode);
+}
+function getOverflowAncestors(node, list, traverseIframes) {
+  var _node$ownerDocument2;
+  if (list === void 0) {
+    list = [];
+  }
+  if (traverseIframes === void 0) {
+    traverseIframes = true;
+  }
+  const scrollableAncestor = getNearestOverflowAncestor(node);
+  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const win = getWindow(scrollableAncestor);
+  if (isBody) {
+    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], win.frameElement && traverseIframes ? getOverflowAncestors(win.frameElement) : []);
+  }
+  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
+}
 
 
 
@@ -21605,6 +21831,11 @@ const computePosition = (reference, floating, options) => {
 /* harmony export */   ze: () => (/* binding */ createCoords)
 /* harmony export */ });
 /* unused harmony exports alignments, expandPaddingObject */
+/**
+ * Custom positioning reference element.
+ * @see https://floating-ui.com/docs/virtual-elements
+ */
+
 const sides = ['top', 'right', 'bottom', 'left'];
 const alignments = ['start', 'end'];
 const placements = /*#__PURE__*/sides.reduce((acc, side) => acc.concat(side, side + "-" + alignments[0], side + "-" + alignments[1]), []);
@@ -21726,160 +21957,6 @@ function rectToClientRect(rect) {
     right: rect.x + rect.width,
     bottom: rect.y + rect.height
   };
-}
-
-
-
-
-/***/ }),
-
-/***/ 16361:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Dx: () => (/* binding */ getComputedStyle),
-/* harmony export */   Jj: () => (/* binding */ getWindow),
-/* harmony export */   Kx: () => (/* binding */ getOverflowAncestors),
-/* harmony export */   Lw: () => (/* binding */ getNodeScroll),
-/* harmony export */   Ow: () => (/* binding */ getParentNode),
-/* harmony export */   Pf: () => (/* binding */ isWebKit),
-/* harmony export */   Py: () => (/* binding */ isLastTraversableNode),
-/* harmony export */   Re: () => (/* binding */ isHTMLElement),
-/* harmony export */   Ze: () => (/* binding */ isTableElement),
-/* harmony export */   ao: () => (/* binding */ isOverflowElement),
-/* harmony export */   gQ: () => (/* binding */ getContainingBlock),
-/* harmony export */   hT: () => (/* binding */ isContainingBlock),
-/* harmony export */   kK: () => (/* binding */ isElement),
-/* harmony export */   tF: () => (/* binding */ getDocumentElement),
-/* harmony export */   wk: () => (/* binding */ getNodeName)
-/* harmony export */ });
-/* unused harmony exports getNearestOverflowAncestor, isNode, isShadowRoot */
-function getNodeName(node) {
-  if (isNode(node)) {
-    return (node.nodeName || '').toLowerCase();
-  }
-  // Mocked nodes in testing environments may not be instances of Node. By
-  // returning `#document` an infinite loop won't occur.
-  // https://github.com/floating-ui/floating-ui/issues/2317
-  return '#document';
-}
-function getWindow(node) {
-  var _node$ownerDocument;
-  return (node == null ? void 0 : (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
-}
-function getDocumentElement(node) {
-  var _ref;
-  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
-}
-function isNode(value) {
-  return value instanceof Node || value instanceof getWindow(value).Node;
-}
-function isElement(value) {
-  return value instanceof Element || value instanceof getWindow(value).Element;
-}
-function isHTMLElement(value) {
-  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
-}
-function isShadowRoot(value) {
-  // Browsers without `ShadowRoot` support.
-  if (typeof ShadowRoot === 'undefined') {
-    return false;
-  }
-  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
-}
-function isOverflowElement(element) {
-  const {
-    overflow,
-    overflowX,
-    overflowY,
-    display
-  } = getComputedStyle(element);
-  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && !['inline', 'contents'].includes(display);
-}
-function isTableElement(element) {
-  return ['table', 'td', 'th'].includes(getNodeName(element));
-}
-function isContainingBlock(element) {
-  const webkit = isWebKit();
-  const css = getComputedStyle(element);
-
-  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
-  return css.transform !== 'none' || css.perspective !== 'none' || (css.containerType ? css.containerType !== 'normal' : false) || !webkit && (css.backdropFilter ? css.backdropFilter !== 'none' : false) || !webkit && (css.filter ? css.filter !== 'none' : false) || ['transform', 'perspective', 'filter'].some(value => (css.willChange || '').includes(value)) || ['paint', 'layout', 'strict', 'content'].some(value => (css.contain || '').includes(value));
-}
-function getContainingBlock(element) {
-  let currentNode = getParentNode(element);
-  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
-    if (isContainingBlock(currentNode)) {
-      return currentNode;
-    } else {
-      currentNode = getParentNode(currentNode);
-    }
-  }
-  return null;
-}
-function isWebKit() {
-  if (typeof CSS === 'undefined' || !CSS.supports) return false;
-  return CSS.supports('-webkit-backdrop-filter', 'none');
-}
-function isLastTraversableNode(node) {
-  return ['html', 'body', '#document'].includes(getNodeName(node));
-}
-function getComputedStyle(element) {
-  return getWindow(element).getComputedStyle(element);
-}
-function getNodeScroll(element) {
-  if (isElement(element)) {
-    return {
-      scrollLeft: element.scrollLeft,
-      scrollTop: element.scrollTop
-    };
-  }
-  return {
-    scrollLeft: element.pageXOffset,
-    scrollTop: element.pageYOffset
-  };
-}
-function getParentNode(node) {
-  if (getNodeName(node) === 'html') {
-    return node;
-  }
-  const result =
-  // Step into the shadow DOM of the parent of a slotted node.
-  node.assignedSlot ||
-  // DOM Element detected.
-  node.parentNode ||
-  // ShadowRoot detected.
-  isShadowRoot(node) && node.host ||
-  // Fallback.
-  getDocumentElement(node);
-  return isShadowRoot(result) ? result.host : result;
-}
-function getNearestOverflowAncestor(node) {
-  const parentNode = getParentNode(node);
-  if (isLastTraversableNode(parentNode)) {
-    return node.ownerDocument ? node.ownerDocument.body : node.body;
-  }
-  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
-    return parentNode;
-  }
-  return getNearestOverflowAncestor(parentNode);
-}
-function getOverflowAncestors(node, list, traverseIframes) {
-  var _node$ownerDocument2;
-  if (list === void 0) {
-    list = [];
-  }
-  if (traverseIframes === void 0) {
-    traverseIframes = true;
-  }
-  const scrollableAncestor = getNearestOverflowAncestor(node);
-  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
-  const win = getWindow(scrollableAncestor);
-  if (isBody) {
-    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], win.frameElement && traverseIframes ? getOverflowAncestors(win.frameElement) : []);
-  }
-  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
 }
 
 

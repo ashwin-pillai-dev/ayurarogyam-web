@@ -3,6 +3,8 @@ import { revalidatePath } from 'next/cache';
 
 
 export async function GET(request: Request) {
+    console.log('hello');
+    
     let res;
     try {
         res = await prisma.clientType.findMany();
@@ -12,9 +14,9 @@ export async function GET(request: Request) {
 
 
     }
-    console.log(`Revalidate URL`);
-    console.log(`${process.env.API_URL}/client-types`);
-    `${process.env.API_URL}/client-types`
+    // console.log(`Revalidate URL`);
+    // console.log(`${process.env.API_URL}/client-types`);
+    // `${process.env.API_URL}/client-types`
 
     // revalidatePath(`${process.env.API_URL}/client-types`);    
     return Response.json(res);

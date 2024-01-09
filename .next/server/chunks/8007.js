@@ -301,6 +301,86 @@ function Alignment(align, viewSize) {
   return self;
 }
 
+function EventStore() {
+  let listeners = [];
+  function add(node, type, handler, options = {
+    passive: true
+  }) {
+    let removeListener;
+    if ('addEventListener' in node) {
+      node.addEventListener(type, handler, options);
+      removeListener = () => node.removeEventListener(type, handler, options);
+    } else {
+      const legacyMediaQueryList = node;
+      legacyMediaQueryList.addListener(handler);
+      removeListener = () => legacyMediaQueryList.removeListener(handler);
+    }
+    listeners.push(removeListener);
+    return self;
+  }
+  function clear() {
+    listeners = listeners.filter(remove => remove());
+  }
+  const self = {
+    add,
+    clear
+  };
+  return self;
+}
+
+function Animations(ownerDocument, ownerWindow, update, render) {
+  const documentVisibleHandler = EventStore();
+  const timeStep = 1000 / 60;
+  let lastTimeStamp = null;
+  let lag = 0;
+  let animationFrame = 0;
+  function init() {
+    documentVisibleHandler.add(ownerDocument, 'visibilitychange', () => {
+      if (ownerDocument.hidden) reset();
+    });
+  }
+  function destroy() {
+    stop();
+    documentVisibleHandler.clear();
+  }
+  function animate(timeStamp) {
+    if (!lastTimeStamp) lastTimeStamp = timeStamp;
+    const elapsed = timeStamp - lastTimeStamp;
+    lastTimeStamp = timeStamp;
+    lag += elapsed;
+    while (lag >= timeStep) {
+      update();
+      lag -= timeStep;
+    }
+    const lagOffset = mathAbs(lag / timeStep);
+    render(lagOffset);
+    if (animationFrame) ownerWindow.requestAnimationFrame(animate);
+  }
+  function start() {
+    if (animationFrame) return;
+    animationFrame = ownerWindow.requestAnimationFrame(animate);
+  }
+  function stop() {
+    ownerWindow.cancelAnimationFrame(animationFrame);
+    lastTimeStamp = null;
+    lag = 0;
+    animationFrame = 0;
+  }
+  function reset() {
+    lastTimeStamp = null;
+    lag = 0;
+  }
+  const self = {
+    init,
+    destroy,
+    start,
+    stop,
+    update,
+    render
+  };
+  return self;
+}
+
 function Axis(axis, direction) {
   const scroll = axis === 'y' ? 'y' : 'x';
   const cross = axis === 'y' ? 'x' : 'y';
@@ -401,33 +481,6 @@ function Direction(direction) {
   }
   const self = {
     apply
-  };
-  return self;
-}
-
-function EventStore() {
-  let listeners = [];
-  function add(node, type, handler, options = {
-    passive: true
-  }) {
-    let removeListener;
-    if ('addEventListener' in node) {
-      node.addEventListener(type, handler, options);
-      removeListener = () => node.removeEventListener(type, handler, options);
-    } else {
-      const legacyMediaQueryList = node;
-      legacyMediaQueryList.addListener(handler);
-      removeListener = () => legacyMediaQueryList.removeListener(handler);
-    }
-    listeners.push(removeListener);
-    return self;
-  }
-  function clear() {
-    listeners = listeners.filter(remove => remove());
-  }
-  const self = {
-    add,
-    clear
   };
   return self;
 }
@@ -993,12 +1046,20 @@ function ScrollTarget(loop, scrollSnaps, contentSize, limit, targetVector) {
   return self;
 }
 
-function ScrollTo(animation, indexCurrent, indexPrevious, scrollTarget, targetVector, eventHandler) {
+function ScrollTo(animation, indexCurrent, indexPrevious, scrollBody, scrollTarget, targetVector, eventHandler) {
   function scrollTo(target) {
     const distanceDiff = target.distance;
     const indexDiff = target.index !== indexCurrent.get();
     targetVector.add(distanceDiff);
-    if (distanceDiff) animation.start();
+    if (distanceDiff) {
+      if (scrollBody.duration()) {
+        animation.start();
+      } else {
+        animation.update();
+        animation.render(1);
+        animation.update();
+      }
+    }
     if (indexDiff) {
       indexPrevious.set(indexCurrent.get());
       indexCurrent.set(target.index);
@@ -1355,7 +1416,7 @@ function SlidesToScroll(axis, direction, viewSize, slidesToScroll, loop, contain
   return self;
 }
 
-function Engine(root, container, slides, ownerDocument, ownerWindow, options, eventHandler, animations) {
+function Engine(root, container, slides, ownerDocument, ownerWindow, options, eventHandler) {
   // Options
   const {
     align,
@@ -1450,12 +1511,7 @@ function Engine(root, container, slides, ownerDocument, ownerWindow, options, ev
     }
     translate.to(offsetLocation.get());
   };
-  const animation = {
-    start: () => animations.start(engine),
-    stop: () => animations.stop(engine),
-    update: () => update(engine),
-    render: lagOffset => render(engine, lagOffset)
-  };
+  const animation = Animations(ownerDocument, ownerWindow, () => update(engine), lagOffset => render(engine, lagOffset));
   // Shared
   const friction = 0.68;
   const startLocation = scrollSnaps[index.get()];
@@ -1464,7 +1520,7 @@ function Engine(root, container, slides, ownerDocument, ownerWindow, options, ev
   const target = Vector1D(startLocation);
   const scrollBody = ScrollBody(location, offsetLocation, target, duration, friction);
   const scrollTarget = ScrollTarget(loop, scrollSnaps, contentSize, limit, target);
-  const scrollTo = ScrollTo(animation, index, indexPrevious, scrollTarget, target, eventHandler);
+  const scrollTo = ScrollTo(animation, index, indexPrevious, scrollBody, scrollTarget, target, eventHandler);
   const scrollProgress = ScrollProgress(limit);
   const eventStore = EventStore();
   const slidesInView = SlidesInView(container, slides, eventHandler, inViewThreshold);
@@ -1511,55 +1567,6 @@ function Engine(root, container, slides, ownerDocument, ownerWindow, options, ev
     translate: Translate(axis, direction, container)
   };
   return engine;
-}
-
-function Animations(ownerWindow) {
-  const timeStep = 1000 / 60;
-  let engines = [];
-  let lastTimeStamp = null;
-  let lag = 0;
-  let animationFrame = 0;
-  function animate(timeStamp) {
-    if (!lastTimeStamp) lastTimeStamp = timeStamp;
-    const elapsed = timeStamp - lastTimeStamp;
-    lastTimeStamp = timeStamp;
-    lag += elapsed;
-    while (lag >= timeStep) {
-      engines.forEach(({
-        animation
-      }) => animation.update());
-      lag -= timeStep;
-    }
-    const lagOffset = mathAbs(lag / timeStep);
-    engines.forEach(({
-      animation
-    }) => animation.render(lagOffset));
-    if (animationFrame) ownerWindow.requestAnimationFrame(animate);
-  }
-  function start(engine) {
-    if (!engines.includes(engine)) engines.push(engine);
-    if (animationFrame) return;
-    animationFrame = ownerWindow.requestAnimationFrame(animate);
-  }
-  function stop(engine) {
-    engines = engines.filter(e => e !== engine);
-    if (engines.length) return;
-    ownerWindow.cancelAnimationFrame(animationFrame);
-    lastTimeStamp = null;
-    lag = 0;
-    animationFrame = 0;
-  }
-  function reset() {
-    lastTimeStamp = null;
-    lag = 0;
-  }
-  const self = {
-    start,
-    stop,
-    reset,
-    window: ownerWindow
-  };
-  return self;
 }
 
 function EventHandler() {
@@ -1661,11 +1668,7 @@ function EmblaCarousel(root, userOptions, userPlugins) {
   const optionsHandler = OptionsHandler(ownerWindow);
   const pluginsHandler = PluginsHandler(optionsHandler);
   const mediaHandlers = EventStore();
-  const documentVisibleHandler = EventStore();
   const eventHandler = EventHandler();
-  const {
-    animationRealms
-  } = EmblaCarousel;
   const {
     mergeOptions,
     optionsAtMedia,
@@ -1695,39 +1698,34 @@ function EmblaCarousel(root, userOptions, userPlugins) {
     const customSlides = isString(userSlides) ? container.querySelectorAll(userSlides) : userSlides;
     slides = [].slice.call(customSlides || container.children);
   }
-  function createEngine(options, animations) {
-    const engine = Engine(root, container, slides, ownerDocument, ownerWindow, options, eventHandler, animations);
+  function createEngine(options) {
+    const engine = Engine(root, container, slides, ownerDocument, ownerWindow, options, eventHandler);
     if (options.loop && !engine.slideLooper.canLoop()) {
       const optionsWithoutLoop = Object.assign({}, options, {
         loop: false
       });
-      return createEngine(optionsWithoutLoop, animations);
+      return createEngine(optionsWithoutLoop);
     }
     return engine;
   }
   function activate(withOptions, withPlugins) {
     if (destroyed) return;
-    const animationRealm = animationRealms.find(a => a.window === ownerWindow);
-    const animations = animationRealm || Animations(ownerWindow);
-    if (!animationRealm) animationRealms.push(animations);
     optionsBase = mergeOptions(optionsBase, withOptions);
     options = optionsAtMedia(optionsBase);
     pluginList = withPlugins || pluginList;
     storeElements();
-    engine = createEngine(options, animations);
+    engine = createEngine(options);
     optionsMediaQueries([optionsBase, ...pluginList.map(({
       options
     }) => options)]).forEach(query => mediaHandlers.add(query, 'change', reActivate));
     if (!options.active) return;
     engine.translate.to(engine.location.get());
+    engine.animation.init();
     engine.slidesInView.init();
     engine.slideFocus.init();
     engine.eventHandler.init(self);
     engine.resizeHandler.init(self);
     engine.slidesHandler.init(self);
-    documentVisibleHandler.add(ownerDocument, 'visibilitychange', () => {
-      if (ownerDocument.hidden) animations.reset();
-    });
     if (engine.options.loop) engine.slideLooper.loop();
     if (container.offsetParent && slides.length) engine.dragHandler.init(self);
     pluginApis = pluginsHandler.init(self, pluginList);
@@ -1742,16 +1740,15 @@ function EmblaCarousel(root, userOptions, userPlugins) {
   }
   function deActivate() {
     engine.dragHandler.destroy();
-    engine.animation.stop();
     engine.eventStore.clear();
     engine.translate.clear();
     engine.slideLooper.clear();
     engine.resizeHandler.destroy();
     engine.slidesHandler.destroy();
     engine.slidesInView.destroy();
+    engine.animation.destroy();
     pluginsHandler.destroy();
     mediaHandlers.clear();
-    documentVisibleHandler.clear();
   }
   function destroy() {
     if (destroyed) return;
@@ -1841,7 +1838,6 @@ function EmblaCarousel(root, userOptions, userPlugins) {
   setTimeout(() => eventHandler.emit('init'), 0);
   return self;
 }
-EmblaCarousel.animationRealms = [];
 EmblaCarousel.globalOptions = undefined;
 
 

@@ -2243,6 +2243,5757 @@ module.exports = __webpack_require__(39013);
 
 /***/ }),
 
+/***/ 21024:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+/*!
+ * cookie
+ * Copyright(c) 2012-2014 Roman Shtylman
+ * Copyright(c) 2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */ 
+/**
+ * Module exports.
+ * @public
+ */ exports.parse = parse;
+exports.serialize = serialize;
+/**
+ * Module variables.
+ * @private
+ */ var __toString = Object.prototype.toString;
+/**
+ * RegExp to match field-content in RFC 7230 sec 3.2
+ *
+ * field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
+ * field-vchar   = VCHAR / obs-text
+ * obs-text      = %x80-FF
+ */ var fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
+/**
+ * Parse a cookie header.
+ *
+ * Parse the given cookie header string into an object
+ * The object has the various cookies as keys(names) => values
+ *
+ * @param {string} str
+ * @param {object} [options]
+ * @return {object}
+ * @public
+ */ function parse(str, options) {
+    if (typeof str !== "string") {
+        throw new TypeError("argument str must be a string");
+    }
+    var obj = {};
+    var opt = options || {};
+    var dec = opt.decode || decode;
+    var index = 0;
+    while(index < str.length){
+        var eqIdx = str.indexOf("=", index);
+        // no more cookie pairs
+        if (eqIdx === -1) {
+            break;
+        }
+        var endIdx = str.indexOf(";", index);
+        if (endIdx === -1) {
+            endIdx = str.length;
+        } else if (endIdx < eqIdx) {
+            // backtrack on prior semicolon
+            index = str.lastIndexOf(";", eqIdx - 1) + 1;
+            continue;
+        }
+        var key = str.slice(index, eqIdx).trim();
+        // only assign once
+        if (undefined === obj[key]) {
+            var val = str.slice(eqIdx + 1, endIdx).trim();
+            // quoted values
+            if (val.charCodeAt(0) === 0x22) {
+                val = val.slice(1, -1);
+            }
+            obj[key] = tryDecode(val, dec);
+        }
+        index = endIdx + 1;
+    }
+    return obj;
+}
+/**
+ * Serialize data into a cookie header.
+ *
+ * Serialize the a name value pair into a cookie string suitable for
+ * http headers. An optional options object specified cookie parameters.
+ *
+ * serialize('foo', 'bar', { httpOnly: true })
+ *   => "foo=bar; httpOnly"
+ *
+ * @param {string} name
+ * @param {string} val
+ * @param {object} [options]
+ * @return {string}
+ * @public
+ */ function serialize(name, val, options) {
+    var opt = options || {};
+    var enc = opt.encode || encode;
+    if (typeof enc !== "function") {
+        throw new TypeError("option encode is invalid");
+    }
+    if (!fieldContentRegExp.test(name)) {
+        throw new TypeError("argument name is invalid");
+    }
+    var value = enc(val);
+    if (value && !fieldContentRegExp.test(value)) {
+        throw new TypeError("argument val is invalid");
+    }
+    var str = name + "=" + value;
+    if (null != opt.maxAge) {
+        var maxAge = opt.maxAge - 0;
+        if (isNaN(maxAge) || !isFinite(maxAge)) {
+            throw new TypeError("option maxAge is invalid");
+        }
+        str += "; Max-Age=" + Math.floor(maxAge);
+    }
+    if (opt.domain) {
+        if (!fieldContentRegExp.test(opt.domain)) {
+            throw new TypeError("option domain is invalid");
+        }
+        str += "; Domain=" + opt.domain;
+    }
+    if (opt.path) {
+        if (!fieldContentRegExp.test(opt.path)) {
+            throw new TypeError("option path is invalid");
+        }
+        str += "; Path=" + opt.path;
+    }
+    if (opt.expires) {
+        var expires = opt.expires;
+        if (!isDate(expires) || isNaN(expires.valueOf())) {
+            throw new TypeError("option expires is invalid");
+        }
+        str += "; Expires=" + expires.toUTCString();
+    }
+    if (opt.httpOnly) {
+        str += "; HttpOnly";
+    }
+    if (opt.secure) {
+        str += "; Secure";
+    }
+    if (opt.priority) {
+        var priority = typeof opt.priority === "string" ? opt.priority.toLowerCase() : opt.priority;
+        switch(priority){
+            case "low":
+                str += "; Priority=Low";
+                break;
+            case "medium":
+                str += "; Priority=Medium";
+                break;
+            case "high":
+                str += "; Priority=High";
+                break;
+            default:
+                throw new TypeError("option priority is invalid");
+        }
+    }
+    if (opt.sameSite) {
+        var sameSite = typeof opt.sameSite === "string" ? opt.sameSite.toLowerCase() : opt.sameSite;
+        switch(sameSite){
+            case true:
+                str += "; SameSite=Strict";
+                break;
+            case "lax":
+                str += "; SameSite=Lax";
+                break;
+            case "strict":
+                str += "; SameSite=Strict";
+                break;
+            case "none":
+                str += "; SameSite=None";
+                break;
+            default:
+                throw new TypeError("option sameSite is invalid");
+        }
+    }
+    return str;
+}
+/**
+ * URL-decode string value. Optimized to skip native call when no %.
+ *
+ * @param {string} str
+ * @returns {string}
+ */ function decode(str) {
+    return str.indexOf("%") !== -1 ? decodeURIComponent(str) : str;
+}
+/**
+ * URL-encode value.
+ *
+ * @param {string} str
+ * @returns {string}
+ */ function encode(val) {
+    return encodeURIComponent(val);
+}
+/**
+ * Determine if value is a Date.
+ *
+ * @param {*} val
+ * @private
+ */ function isDate(val) {
+    return __toString.call(val) === "[object Date]" || val instanceof Date;
+}
+/**
+ * Try decoding a string using a decoding function.
+ *
+ * @param {string} str
+ * @param {function} decode
+ * @private
+ */ function tryDecode(str, decode) {
+    try {
+        return decode(str);
+    } catch (e) {
+        return str;
+    }
+}
+
+
+/***/ }),
+
+/***/ 23464:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.cryptoRuntime = exports.base64url = exports.generateSecret = exports.generateKeyPair = exports.errors = exports.decodeJwt = exports.decodeProtectedHeader = exports.importJWK = exports.importX509 = exports.importPKCS8 = exports.importSPKI = exports.exportJWK = exports.exportSPKI = exports.exportPKCS8 = exports.UnsecuredJWT = exports.createRemoteJWKSet = exports.createLocalJWKSet = exports.EmbeddedJWK = exports.calculateJwkThumbprintUri = exports.calculateJwkThumbprint = exports.EncryptJWT = exports.SignJWT = exports.GeneralSign = exports.FlattenedSign = exports.CompactSign = exports.FlattenedEncrypt = exports.CompactEncrypt = exports.jwtDecrypt = exports.jwtVerify = exports.generalVerify = exports.flattenedVerify = exports.compactVerify = exports.GeneralEncrypt = exports.generalDecrypt = exports.flattenedDecrypt = exports.compactDecrypt = void 0;
+var decrypt_js_1 = __webpack_require__(16709);
+Object.defineProperty(exports, "compactDecrypt", ({
+    enumerable: true,
+    get: function() {
+        return decrypt_js_1.compactDecrypt;
+    }
+}));
+var decrypt_js_2 = __webpack_require__(5065);
+Object.defineProperty(exports, "flattenedDecrypt", ({
+    enumerable: true,
+    get: function() {
+        return decrypt_js_2.flattenedDecrypt;
+    }
+}));
+var decrypt_js_3 = __webpack_require__(11619);
+Object.defineProperty(exports, "generalDecrypt", ({
+    enumerable: true,
+    get: function() {
+        return decrypt_js_3.generalDecrypt;
+    }
+}));
+var encrypt_js_1 = __webpack_require__(36540);
+Object.defineProperty(exports, "GeneralEncrypt", ({
+    enumerable: true,
+    get: function() {
+        return encrypt_js_1.GeneralEncrypt;
+    }
+}));
+var verify_js_1 = __webpack_require__(72432);
+Object.defineProperty(exports, "compactVerify", ({
+    enumerable: true,
+    get: function() {
+        return verify_js_1.compactVerify;
+    }
+}));
+var verify_js_2 = __webpack_require__(7549);
+Object.defineProperty(exports, "flattenedVerify", ({
+    enumerable: true,
+    get: function() {
+        return verify_js_2.flattenedVerify;
+    }
+}));
+var verify_js_3 = __webpack_require__(3493);
+Object.defineProperty(exports, "generalVerify", ({
+    enumerable: true,
+    get: function() {
+        return verify_js_3.generalVerify;
+    }
+}));
+var verify_js_4 = __webpack_require__(51296);
+Object.defineProperty(exports, "jwtVerify", ({
+    enumerable: true,
+    get: function() {
+        return verify_js_4.jwtVerify;
+    }
+}));
+var decrypt_js_4 = __webpack_require__(74761);
+Object.defineProperty(exports, "jwtDecrypt", ({
+    enumerable: true,
+    get: function() {
+        return decrypt_js_4.jwtDecrypt;
+    }
+}));
+var encrypt_js_2 = __webpack_require__(26869);
+Object.defineProperty(exports, "CompactEncrypt", ({
+    enumerable: true,
+    get: function() {
+        return encrypt_js_2.CompactEncrypt;
+    }
+}));
+var encrypt_js_3 = __webpack_require__(10636);
+Object.defineProperty(exports, "FlattenedEncrypt", ({
+    enumerable: true,
+    get: function() {
+        return encrypt_js_3.FlattenedEncrypt;
+    }
+}));
+var sign_js_1 = __webpack_require__(39656);
+Object.defineProperty(exports, "CompactSign", ({
+    enumerable: true,
+    get: function() {
+        return sign_js_1.CompactSign;
+    }
+}));
+var sign_js_2 = __webpack_require__(56459);
+Object.defineProperty(exports, "FlattenedSign", ({
+    enumerable: true,
+    get: function() {
+        return sign_js_2.FlattenedSign;
+    }
+}));
+var sign_js_3 = __webpack_require__(70024);
+Object.defineProperty(exports, "GeneralSign", ({
+    enumerable: true,
+    get: function() {
+        return sign_js_3.GeneralSign;
+    }
+}));
+var sign_js_4 = __webpack_require__(80342);
+Object.defineProperty(exports, "SignJWT", ({
+    enumerable: true,
+    get: function() {
+        return sign_js_4.SignJWT;
+    }
+}));
+var encrypt_js_4 = __webpack_require__(67046);
+Object.defineProperty(exports, "EncryptJWT", ({
+    enumerable: true,
+    get: function() {
+        return encrypt_js_4.EncryptJWT;
+    }
+}));
+var thumbprint_js_1 = __webpack_require__(55770);
+Object.defineProperty(exports, "calculateJwkThumbprint", ({
+    enumerable: true,
+    get: function() {
+        return thumbprint_js_1.calculateJwkThumbprint;
+    }
+}));
+Object.defineProperty(exports, "calculateJwkThumbprintUri", ({
+    enumerable: true,
+    get: function() {
+        return thumbprint_js_1.calculateJwkThumbprintUri;
+    }
+}));
+var embedded_js_1 = __webpack_require__(23798);
+Object.defineProperty(exports, "EmbeddedJWK", ({
+    enumerable: true,
+    get: function() {
+        return embedded_js_1.EmbeddedJWK;
+    }
+}));
+var local_js_1 = __webpack_require__(69063);
+Object.defineProperty(exports, "createLocalJWKSet", ({
+    enumerable: true,
+    get: function() {
+        return local_js_1.createLocalJWKSet;
+    }
+}));
+var remote_js_1 = __webpack_require__(17514);
+Object.defineProperty(exports, "createRemoteJWKSet", ({
+    enumerable: true,
+    get: function() {
+        return remote_js_1.createRemoteJWKSet;
+    }
+}));
+var unsecured_js_1 = __webpack_require__(59134);
+Object.defineProperty(exports, "UnsecuredJWT", ({
+    enumerable: true,
+    get: function() {
+        return unsecured_js_1.UnsecuredJWT;
+    }
+}));
+var export_js_1 = __webpack_require__(30107);
+Object.defineProperty(exports, "exportPKCS8", ({
+    enumerable: true,
+    get: function() {
+        return export_js_1.exportPKCS8;
+    }
+}));
+Object.defineProperty(exports, "exportSPKI", ({
+    enumerable: true,
+    get: function() {
+        return export_js_1.exportSPKI;
+    }
+}));
+Object.defineProperty(exports, "exportJWK", ({
+    enumerable: true,
+    get: function() {
+        return export_js_1.exportJWK;
+    }
+}));
+var import_js_1 = __webpack_require__(53844);
+Object.defineProperty(exports, "importSPKI", ({
+    enumerable: true,
+    get: function() {
+        return import_js_1.importSPKI;
+    }
+}));
+Object.defineProperty(exports, "importPKCS8", ({
+    enumerable: true,
+    get: function() {
+        return import_js_1.importPKCS8;
+    }
+}));
+Object.defineProperty(exports, "importX509", ({
+    enumerable: true,
+    get: function() {
+        return import_js_1.importX509;
+    }
+}));
+Object.defineProperty(exports, "importJWK", ({
+    enumerable: true,
+    get: function() {
+        return import_js_1.importJWK;
+    }
+}));
+var decode_protected_header_js_1 = __webpack_require__(67412);
+Object.defineProperty(exports, "decodeProtectedHeader", ({
+    enumerable: true,
+    get: function() {
+        return decode_protected_header_js_1.decodeProtectedHeader;
+    }
+}));
+var decode_jwt_js_1 = __webpack_require__(34316);
+Object.defineProperty(exports, "decodeJwt", ({
+    enumerable: true,
+    get: function() {
+        return decode_jwt_js_1.decodeJwt;
+    }
+}));
+exports.errors = __webpack_require__(79927);
+var generate_key_pair_js_1 = __webpack_require__(81570);
+Object.defineProperty(exports, "generateKeyPair", ({
+    enumerable: true,
+    get: function() {
+        return generate_key_pair_js_1.generateKeyPair;
+    }
+}));
+var generate_secret_js_1 = __webpack_require__(15845);
+Object.defineProperty(exports, "generateSecret", ({
+    enumerable: true,
+    get: function() {
+        return generate_secret_js_1.generateSecret;
+    }
+}));
+exports.base64url = __webpack_require__(68686);
+var runtime_js_1 = __webpack_require__(36796);
+Object.defineProperty(exports, "cryptoRuntime", ({
+    enumerable: true,
+    get: function() {
+        return runtime_js_1.default;
+    }
+}));
+
+
+/***/ }),
+
+/***/ 16709:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.compactDecrypt = void 0;
+const decrypt_js_1 = __webpack_require__(5065);
+const errors_js_1 = __webpack_require__(79927);
+const buffer_utils_js_1 = __webpack_require__(43807);
+async function compactDecrypt(jwe, key, options) {
+    if (jwe instanceof Uint8Array) {
+        jwe = buffer_utils_js_1.decoder.decode(jwe);
+    }
+    if (typeof jwe !== "string") {
+        throw new errors_js_1.JWEInvalid("Compact JWE must be a string or Uint8Array");
+    }
+    const { 0: protectedHeader, 1: encryptedKey, 2: iv, 3: ciphertext, 4: tag, length } = jwe.split(".");
+    if (length !== 5) {
+        throw new errors_js_1.JWEInvalid("Invalid Compact JWE");
+    }
+    const decrypted = await (0, decrypt_js_1.flattenedDecrypt)({
+        ciphertext,
+        iv: iv || undefined,
+        protected: protectedHeader || undefined,
+        tag: tag || undefined,
+        encrypted_key: encryptedKey || undefined
+    }, key, options);
+    const result = {
+        plaintext: decrypted.plaintext,
+        protectedHeader: decrypted.protectedHeader
+    };
+    if (typeof key === "function") {
+        return {
+            ...result,
+            key: decrypted.key
+        };
+    }
+    return result;
+}
+exports.compactDecrypt = compactDecrypt;
+
+
+/***/ }),
+
+/***/ 26869:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.CompactEncrypt = void 0;
+const encrypt_js_1 = __webpack_require__(10636);
+class CompactEncrypt {
+    constructor(plaintext){
+        this._flattened = new encrypt_js_1.FlattenedEncrypt(plaintext);
+    }
+    setContentEncryptionKey(cek) {
+        this._flattened.setContentEncryptionKey(cek);
+        return this;
+    }
+    setInitializationVector(iv) {
+        this._flattened.setInitializationVector(iv);
+        return this;
+    }
+    setProtectedHeader(protectedHeader) {
+        this._flattened.setProtectedHeader(protectedHeader);
+        return this;
+    }
+    setKeyManagementParameters(parameters) {
+        this._flattened.setKeyManagementParameters(parameters);
+        return this;
+    }
+    async encrypt(key, options) {
+        const jwe = await this._flattened.encrypt(key, options);
+        return [
+            jwe.protected,
+            jwe.encrypted_key,
+            jwe.iv,
+            jwe.ciphertext,
+            jwe.tag
+        ].join(".");
+    }
+}
+exports.CompactEncrypt = CompactEncrypt;
+
+
+/***/ }),
+
+/***/ 5065:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.flattenedDecrypt = void 0;
+const base64url_js_1 = __webpack_require__(37244);
+const decrypt_js_1 = __webpack_require__(44225);
+const zlib_js_1 = __webpack_require__(49786);
+const errors_js_1 = __webpack_require__(79927);
+const is_disjoint_js_1 = __webpack_require__(1223);
+const is_object_js_1 = __webpack_require__(50281);
+const decrypt_key_management_js_1 = __webpack_require__(92078);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const cek_js_1 = __webpack_require__(87744);
+const validate_crit_js_1 = __webpack_require__(51534);
+const validate_algorithms_js_1 = __webpack_require__(1524);
+async function flattenedDecrypt(jwe, key, options) {
+    var _a;
+    if (!(0, is_object_js_1.default)(jwe)) {
+        throw new errors_js_1.JWEInvalid("Flattened JWE must be an object");
+    }
+    if (jwe.protected === undefined && jwe.header === undefined && jwe.unprotected === undefined) {
+        throw new errors_js_1.JWEInvalid("JOSE Header missing");
+    }
+    if (typeof jwe.iv !== "string") {
+        throw new errors_js_1.JWEInvalid("JWE Initialization Vector missing or incorrect type");
+    }
+    if (typeof jwe.ciphertext !== "string") {
+        throw new errors_js_1.JWEInvalid("JWE Ciphertext missing or incorrect type");
+    }
+    if (typeof jwe.tag !== "string") {
+        throw new errors_js_1.JWEInvalid("JWE Authentication Tag missing or incorrect type");
+    }
+    if (jwe.protected !== undefined && typeof jwe.protected !== "string") {
+        throw new errors_js_1.JWEInvalid("JWE Protected Header incorrect type");
+    }
+    if (jwe.encrypted_key !== undefined && typeof jwe.encrypted_key !== "string") {
+        throw new errors_js_1.JWEInvalid("JWE Encrypted Key incorrect type");
+    }
+    if (jwe.aad !== undefined && typeof jwe.aad !== "string") {
+        throw new errors_js_1.JWEInvalid("JWE AAD incorrect type");
+    }
+    if (jwe.header !== undefined && !(0, is_object_js_1.default)(jwe.header)) {
+        throw new errors_js_1.JWEInvalid("JWE Shared Unprotected Header incorrect type");
+    }
+    if (jwe.unprotected !== undefined && !(0, is_object_js_1.default)(jwe.unprotected)) {
+        throw new errors_js_1.JWEInvalid("JWE Per-Recipient Unprotected Header incorrect type");
+    }
+    let parsedProt;
+    if (jwe.protected) {
+        try {
+            const protectedHeader = (0, base64url_js_1.decode)(jwe.protected);
+            parsedProt = JSON.parse(buffer_utils_js_1.decoder.decode(protectedHeader));
+        } catch  {
+            throw new errors_js_1.JWEInvalid("JWE Protected Header is invalid");
+        }
+    }
+    if (!(0, is_disjoint_js_1.default)(parsedProt, jwe.header, jwe.unprotected)) {
+        throw new errors_js_1.JWEInvalid("JWE Protected, JWE Unprotected Header, and JWE Per-Recipient Unprotected Header Parameter names must be disjoint");
+    }
+    const joseHeader = {
+        ...parsedProt,
+        ...jwe.header,
+        ...jwe.unprotected
+    };
+    (0, validate_crit_js_1.default)(errors_js_1.JWEInvalid, new Map(), options === null || options === void 0 ? void 0 : options.crit, parsedProt, joseHeader);
+    if (joseHeader.zip !== undefined) {
+        if (!parsedProt || !parsedProt.zip) {
+            throw new errors_js_1.JWEInvalid('JWE "zip" (Compression Algorithm) Header MUST be integrity protected');
+        }
+        if (joseHeader.zip !== "DEF") {
+            throw new errors_js_1.JOSENotSupported('Unsupported JWE "zip" (Compression Algorithm) Header Parameter value');
+        }
+    }
+    const { alg, enc } = joseHeader;
+    if (typeof alg !== "string" || !alg) {
+        throw new errors_js_1.JWEInvalid("missing JWE Algorithm (alg) in JWE Header");
+    }
+    if (typeof enc !== "string" || !enc) {
+        throw new errors_js_1.JWEInvalid("missing JWE Encryption Algorithm (enc) in JWE Header");
+    }
+    const keyManagementAlgorithms = options && (0, validate_algorithms_js_1.default)("keyManagementAlgorithms", options.keyManagementAlgorithms);
+    const contentEncryptionAlgorithms = options && (0, validate_algorithms_js_1.default)("contentEncryptionAlgorithms", options.contentEncryptionAlgorithms);
+    if (keyManagementAlgorithms && !keyManagementAlgorithms.has(alg)) {
+        throw new errors_js_1.JOSEAlgNotAllowed('"alg" (Algorithm) Header Parameter not allowed');
+    }
+    if (contentEncryptionAlgorithms && !contentEncryptionAlgorithms.has(enc)) {
+        throw new errors_js_1.JOSEAlgNotAllowed('"enc" (Encryption Algorithm) Header Parameter not allowed');
+    }
+    let encryptedKey;
+    if (jwe.encrypted_key !== undefined) {
+        try {
+            encryptedKey = (0, base64url_js_1.decode)(jwe.encrypted_key);
+        } catch  {
+            throw new errors_js_1.JWEInvalid("Failed to base64url decode the encrypted_key");
+        }
+    }
+    let resolvedKey = false;
+    if (typeof key === "function") {
+        key = await key(parsedProt, jwe);
+        resolvedKey = true;
+    }
+    let cek;
+    try {
+        cek = await (0, decrypt_key_management_js_1.default)(alg, key, encryptedKey, joseHeader, options);
+    } catch (err) {
+        if (err instanceof TypeError || err instanceof errors_js_1.JWEInvalid || err instanceof errors_js_1.JOSENotSupported) {
+            throw err;
+        }
+        cek = (0, cek_js_1.default)(enc);
+    }
+    let iv;
+    let tag;
+    try {
+        iv = (0, base64url_js_1.decode)(jwe.iv);
+    } catch  {
+        throw new errors_js_1.JWEInvalid("Failed to base64url decode the iv");
+    }
+    try {
+        tag = (0, base64url_js_1.decode)(jwe.tag);
+    } catch  {
+        throw new errors_js_1.JWEInvalid("Failed to base64url decode the tag");
+    }
+    const protectedHeader = buffer_utils_js_1.encoder.encode((_a = jwe.protected) !== null && _a !== void 0 ? _a : "");
+    let additionalData;
+    if (jwe.aad !== undefined) {
+        additionalData = (0, buffer_utils_js_1.concat)(protectedHeader, buffer_utils_js_1.encoder.encode("."), buffer_utils_js_1.encoder.encode(jwe.aad));
+    } else {
+        additionalData = protectedHeader;
+    }
+    let ciphertext;
+    try {
+        ciphertext = (0, base64url_js_1.decode)(jwe.ciphertext);
+    } catch  {
+        throw new errors_js_1.JWEInvalid("Failed to base64url decode the ciphertext");
+    }
+    let plaintext = await (0, decrypt_js_1.default)(enc, cek, ciphertext, iv, tag, additionalData);
+    if (joseHeader.zip === "DEF") {
+        plaintext = await ((options === null || options === void 0 ? void 0 : options.inflateRaw) || zlib_js_1.inflate)(plaintext);
+    }
+    const result = {
+        plaintext
+    };
+    if (jwe.protected !== undefined) {
+        result.protectedHeader = parsedProt;
+    }
+    if (jwe.aad !== undefined) {
+        try {
+            result.additionalAuthenticatedData = (0, base64url_js_1.decode)(jwe.aad);
+        } catch  {
+            throw new errors_js_1.JWEInvalid("Failed to base64url decode the aad");
+        }
+    }
+    if (jwe.unprotected !== undefined) {
+        result.sharedUnprotectedHeader = jwe.unprotected;
+    }
+    if (jwe.header !== undefined) {
+        result.unprotectedHeader = jwe.header;
+    }
+    if (resolvedKey) {
+        return {
+            ...result,
+            key
+        };
+    }
+    return result;
+}
+exports.flattenedDecrypt = flattenedDecrypt;
+
+
+/***/ }),
+
+/***/ 10636:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.FlattenedEncrypt = exports.unprotected = void 0;
+const base64url_js_1 = __webpack_require__(37244);
+const encrypt_js_1 = __webpack_require__(30734);
+const zlib_js_1 = __webpack_require__(49786);
+const iv_js_1 = __webpack_require__(1093);
+const encrypt_key_management_js_1 = __webpack_require__(35255);
+const errors_js_1 = __webpack_require__(79927);
+const is_disjoint_js_1 = __webpack_require__(1223);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const validate_crit_js_1 = __webpack_require__(51534);
+exports.unprotected = Symbol();
+class FlattenedEncrypt {
+    constructor(plaintext){
+        if (!(plaintext instanceof Uint8Array)) {
+            throw new TypeError("plaintext must be an instance of Uint8Array");
+        }
+        this._plaintext = plaintext;
+    }
+    setKeyManagementParameters(parameters) {
+        if (this._keyManagementParameters) {
+            throw new TypeError("setKeyManagementParameters can only be called once");
+        }
+        this._keyManagementParameters = parameters;
+        return this;
+    }
+    setProtectedHeader(protectedHeader) {
+        if (this._protectedHeader) {
+            throw new TypeError("setProtectedHeader can only be called once");
+        }
+        this._protectedHeader = protectedHeader;
+        return this;
+    }
+    setSharedUnprotectedHeader(sharedUnprotectedHeader) {
+        if (this._sharedUnprotectedHeader) {
+            throw new TypeError("setSharedUnprotectedHeader can only be called once");
+        }
+        this._sharedUnprotectedHeader = sharedUnprotectedHeader;
+        return this;
+    }
+    setUnprotectedHeader(unprotectedHeader) {
+        if (this._unprotectedHeader) {
+            throw new TypeError("setUnprotectedHeader can only be called once");
+        }
+        this._unprotectedHeader = unprotectedHeader;
+        return this;
+    }
+    setAdditionalAuthenticatedData(aad) {
+        this._aad = aad;
+        return this;
+    }
+    setContentEncryptionKey(cek) {
+        if (this._cek) {
+            throw new TypeError("setContentEncryptionKey can only be called once");
+        }
+        this._cek = cek;
+        return this;
+    }
+    setInitializationVector(iv) {
+        if (this._iv) {
+            throw new TypeError("setInitializationVector can only be called once");
+        }
+        this._iv = iv;
+        return this;
+    }
+    async encrypt(key, options) {
+        if (!this._protectedHeader && !this._unprotectedHeader && !this._sharedUnprotectedHeader) {
+            throw new errors_js_1.JWEInvalid("either setProtectedHeader, setUnprotectedHeader, or sharedUnprotectedHeader must be called before #encrypt()");
+        }
+        if (!(0, is_disjoint_js_1.default)(this._protectedHeader, this._unprotectedHeader, this._sharedUnprotectedHeader)) {
+            throw new errors_js_1.JWEInvalid("JWE Protected, JWE Shared Unprotected and JWE Per-Recipient Header Parameter names must be disjoint");
+        }
+        const joseHeader = {
+            ...this._protectedHeader,
+            ...this._unprotectedHeader,
+            ...this._sharedUnprotectedHeader
+        };
+        (0, validate_crit_js_1.default)(errors_js_1.JWEInvalid, new Map(), options === null || options === void 0 ? void 0 : options.crit, this._protectedHeader, joseHeader);
+        if (joseHeader.zip !== undefined) {
+            if (!this._protectedHeader || !this._protectedHeader.zip) {
+                throw new errors_js_1.JWEInvalid('JWE "zip" (Compression Algorithm) Header MUST be integrity protected');
+            }
+            if (joseHeader.zip !== "DEF") {
+                throw new errors_js_1.JOSENotSupported('Unsupported JWE "zip" (Compression Algorithm) Header Parameter value');
+            }
+        }
+        const { alg, enc } = joseHeader;
+        if (typeof alg !== "string" || !alg) {
+            throw new errors_js_1.JWEInvalid('JWE "alg" (Algorithm) Header Parameter missing or invalid');
+        }
+        if (typeof enc !== "string" || !enc) {
+            throw new errors_js_1.JWEInvalid('JWE "enc" (Encryption Algorithm) Header Parameter missing or invalid');
+        }
+        let encryptedKey;
+        if (alg === "dir") {
+            if (this._cek) {
+                throw new TypeError("setContentEncryptionKey cannot be called when using Direct Encryption");
+            }
+        } else if (alg === "ECDH-ES") {
+            if (this._cek) {
+                throw new TypeError("setContentEncryptionKey cannot be called when using Direct Key Agreement");
+            }
+        }
+        let cek;
+        {
+            let parameters;
+            ({ cek, encryptedKey, parameters } = await (0, encrypt_key_management_js_1.default)(alg, enc, key, this._cek, this._keyManagementParameters));
+            if (parameters) {
+                if (options && exports.unprotected in options) {
+                    if (!this._unprotectedHeader) {
+                        this.setUnprotectedHeader(parameters);
+                    } else {
+                        this._unprotectedHeader = {
+                            ...this._unprotectedHeader,
+                            ...parameters
+                        };
+                    }
+                } else {
+                    if (!this._protectedHeader) {
+                        this.setProtectedHeader(parameters);
+                    } else {
+                        this._protectedHeader = {
+                            ...this._protectedHeader,
+                            ...parameters
+                        };
+                    }
+                }
+            }
+        }
+        this._iv || (this._iv = (0, iv_js_1.default)(enc));
+        let additionalData;
+        let protectedHeader;
+        let aadMember;
+        if (this._protectedHeader) {
+            protectedHeader = buffer_utils_js_1.encoder.encode((0, base64url_js_1.encode)(JSON.stringify(this._protectedHeader)));
+        } else {
+            protectedHeader = buffer_utils_js_1.encoder.encode("");
+        }
+        if (this._aad) {
+            aadMember = (0, base64url_js_1.encode)(this._aad);
+            additionalData = (0, buffer_utils_js_1.concat)(protectedHeader, buffer_utils_js_1.encoder.encode("."), buffer_utils_js_1.encoder.encode(aadMember));
+        } else {
+            additionalData = protectedHeader;
+        }
+        let ciphertext;
+        let tag;
+        if (joseHeader.zip === "DEF") {
+            const deflated = await ((options === null || options === void 0 ? void 0 : options.deflateRaw) || zlib_js_1.deflate)(this._plaintext);
+            ({ ciphertext, tag } = await (0, encrypt_js_1.default)(enc, deflated, cek, this._iv, additionalData));
+        } else {
+            ;
+            ({ ciphertext, tag } = await (0, encrypt_js_1.default)(enc, this._plaintext, cek, this._iv, additionalData));
+        }
+        const jwe = {
+            ciphertext: (0, base64url_js_1.encode)(ciphertext),
+            iv: (0, base64url_js_1.encode)(this._iv),
+            tag: (0, base64url_js_1.encode)(tag)
+        };
+        if (encryptedKey) {
+            jwe.encrypted_key = (0, base64url_js_1.encode)(encryptedKey);
+        }
+        if (aadMember) {
+            jwe.aad = aadMember;
+        }
+        if (this._protectedHeader) {
+            jwe.protected = buffer_utils_js_1.decoder.decode(protectedHeader);
+        }
+        if (this._sharedUnprotectedHeader) {
+            jwe.unprotected = this._sharedUnprotectedHeader;
+        }
+        if (this._unprotectedHeader) {
+            jwe.header = this._unprotectedHeader;
+        }
+        return jwe;
+    }
+}
+exports.FlattenedEncrypt = FlattenedEncrypt;
+
+
+/***/ }),
+
+/***/ 11619:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.generalDecrypt = void 0;
+const decrypt_js_1 = __webpack_require__(5065);
+const errors_js_1 = __webpack_require__(79927);
+const is_object_js_1 = __webpack_require__(50281);
+async function generalDecrypt(jwe, key, options) {
+    if (!(0, is_object_js_1.default)(jwe)) {
+        throw new errors_js_1.JWEInvalid("General JWE must be an object");
+    }
+    if (!Array.isArray(jwe.recipients) || !jwe.recipients.every(is_object_js_1.default)) {
+        throw new errors_js_1.JWEInvalid("JWE Recipients missing or incorrect type");
+    }
+    if (!jwe.recipients.length) {
+        throw new errors_js_1.JWEInvalid("JWE Recipients has no members");
+    }
+    for (const recipient of jwe.recipients){
+        try {
+            return await (0, decrypt_js_1.flattenedDecrypt)({
+                aad: jwe.aad,
+                ciphertext: jwe.ciphertext,
+                encrypted_key: recipient.encrypted_key,
+                header: recipient.header,
+                iv: jwe.iv,
+                protected: jwe.protected,
+                tag: jwe.tag,
+                unprotected: jwe.unprotected
+            }, key, options);
+        } catch  {}
+    }
+    throw new errors_js_1.JWEDecryptionFailed();
+}
+exports.generalDecrypt = generalDecrypt;
+
+
+/***/ }),
+
+/***/ 36540:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.GeneralEncrypt = void 0;
+const encrypt_js_1 = __webpack_require__(10636);
+const errors_js_1 = __webpack_require__(79927);
+const cek_js_1 = __webpack_require__(87744);
+const is_disjoint_js_1 = __webpack_require__(1223);
+const encrypt_key_management_js_1 = __webpack_require__(35255);
+const base64url_js_1 = __webpack_require__(37244);
+const validate_crit_js_1 = __webpack_require__(51534);
+class IndividualRecipient {
+    constructor(enc, key, options){
+        this.parent = enc;
+        this.key = key;
+        this.options = options;
+    }
+    setUnprotectedHeader(unprotectedHeader) {
+        if (this.unprotectedHeader) {
+            throw new TypeError("setUnprotectedHeader can only be called once");
+        }
+        this.unprotectedHeader = unprotectedHeader;
+        return this;
+    }
+    addRecipient(...args) {
+        return this.parent.addRecipient(...args);
+    }
+    encrypt(...args) {
+        return this.parent.encrypt(...args);
+    }
+    done() {
+        return this.parent;
+    }
+}
+class GeneralEncrypt {
+    constructor(plaintext){
+        this._recipients = [];
+        this._plaintext = plaintext;
+    }
+    addRecipient(key, options) {
+        const recipient = new IndividualRecipient(this, key, {
+            crit: options === null || options === void 0 ? void 0 : options.crit
+        });
+        this._recipients.push(recipient);
+        return recipient;
+    }
+    setProtectedHeader(protectedHeader) {
+        if (this._protectedHeader) {
+            throw new TypeError("setProtectedHeader can only be called once");
+        }
+        this._protectedHeader = protectedHeader;
+        return this;
+    }
+    setSharedUnprotectedHeader(sharedUnprotectedHeader) {
+        if (this._unprotectedHeader) {
+            throw new TypeError("setSharedUnprotectedHeader can only be called once");
+        }
+        this._unprotectedHeader = sharedUnprotectedHeader;
+        return this;
+    }
+    setAdditionalAuthenticatedData(aad) {
+        this._aad = aad;
+        return this;
+    }
+    async encrypt(options) {
+        var _a, _b, _c;
+        if (!this._recipients.length) {
+            throw new errors_js_1.JWEInvalid("at least one recipient must be added");
+        }
+        options = {
+            deflateRaw: options === null || options === void 0 ? void 0 : options.deflateRaw
+        };
+        if (this._recipients.length === 1) {
+            const [recipient] = this._recipients;
+            const flattened = await new encrypt_js_1.FlattenedEncrypt(this._plaintext).setAdditionalAuthenticatedData(this._aad).setProtectedHeader(this._protectedHeader).setSharedUnprotectedHeader(this._unprotectedHeader).setUnprotectedHeader(recipient.unprotectedHeader).encrypt(recipient.key, {
+                ...recipient.options,
+                ...options
+            });
+            let jwe = {
+                ciphertext: flattened.ciphertext,
+                iv: flattened.iv,
+                recipients: [
+                    {}
+                ],
+                tag: flattened.tag
+            };
+            if (flattened.aad) jwe.aad = flattened.aad;
+            if (flattened.protected) jwe.protected = flattened.protected;
+            if (flattened.unprotected) jwe.unprotected = flattened.unprotected;
+            if (flattened.encrypted_key) jwe.recipients[0].encrypted_key = flattened.encrypted_key;
+            if (flattened.header) jwe.recipients[0].header = flattened.header;
+            return jwe;
+        }
+        let enc;
+        for(let i = 0; i < this._recipients.length; i++){
+            const recipient = this._recipients[i];
+            if (!(0, is_disjoint_js_1.default)(this._protectedHeader, this._unprotectedHeader, recipient.unprotectedHeader)) {
+                throw new errors_js_1.JWEInvalid("JWE Protected, JWE Shared Unprotected and JWE Per-Recipient Header Parameter names must be disjoint");
+            }
+            const joseHeader = {
+                ...this._protectedHeader,
+                ...this._unprotectedHeader,
+                ...recipient.unprotectedHeader
+            };
+            const { alg } = joseHeader;
+            if (typeof alg !== "string" || !alg) {
+                throw new errors_js_1.JWEInvalid('JWE "alg" (Algorithm) Header Parameter missing or invalid');
+            }
+            if (alg === "dir" || alg === "ECDH-ES") {
+                throw new errors_js_1.JWEInvalid('"dir" and "ECDH-ES" alg may only be used with a single recipient');
+            }
+            if (typeof joseHeader.enc !== "string" || !joseHeader.enc) {
+                throw new errors_js_1.JWEInvalid('JWE "enc" (Encryption Algorithm) Header Parameter missing or invalid');
+            }
+            if (!enc) {
+                enc = joseHeader.enc;
+            } else if (enc !== joseHeader.enc) {
+                throw new errors_js_1.JWEInvalid('JWE "enc" (Encryption Algorithm) Header Parameter must be the same for all recipients');
+            }
+            (0, validate_crit_js_1.default)(errors_js_1.JWEInvalid, new Map(), recipient.options.crit, this._protectedHeader, joseHeader);
+            if (joseHeader.zip !== undefined) {
+                if (!this._protectedHeader || !this._protectedHeader.zip) {
+                    throw new errors_js_1.JWEInvalid('JWE "zip" (Compression Algorithm) Header MUST be integrity protected');
+                }
+            }
+        }
+        const cek = (0, cek_js_1.default)(enc);
+        let jwe = {
+            ciphertext: "",
+            iv: "",
+            recipients: [],
+            tag: ""
+        };
+        for(let i = 0; i < this._recipients.length; i++){
+            const recipient = this._recipients[i];
+            const target = {};
+            jwe.recipients.push(target);
+            const joseHeader = {
+                ...this._protectedHeader,
+                ...this._unprotectedHeader,
+                ...recipient.unprotectedHeader
+            };
+            const p2c = joseHeader.alg.startsWith("PBES2") ? 2048 + i : undefined;
+            if (i === 0) {
+                const flattened = await new encrypt_js_1.FlattenedEncrypt(this._plaintext).setAdditionalAuthenticatedData(this._aad).setContentEncryptionKey(cek).setProtectedHeader(this._protectedHeader).setSharedUnprotectedHeader(this._unprotectedHeader).setUnprotectedHeader(recipient.unprotectedHeader).setKeyManagementParameters({
+                    p2c
+                }).encrypt(recipient.key, {
+                    ...recipient.options,
+                    ...options,
+                    [encrypt_js_1.unprotected]: true
+                });
+                jwe.ciphertext = flattened.ciphertext;
+                jwe.iv = flattened.iv;
+                jwe.tag = flattened.tag;
+                if (flattened.aad) jwe.aad = flattened.aad;
+                if (flattened.protected) jwe.protected = flattened.protected;
+                if (flattened.unprotected) jwe.unprotected = flattened.unprotected;
+                target.encrypted_key = flattened.encrypted_key;
+                if (flattened.header) target.header = flattened.header;
+                continue;
+            }
+            const { encryptedKey, parameters } = await (0, encrypt_key_management_js_1.default)(((_a = recipient.unprotectedHeader) === null || _a === void 0 ? void 0 : _a.alg) || ((_b = this._protectedHeader) === null || _b === void 0 ? void 0 : _b.alg) || ((_c = this._unprotectedHeader) === null || _c === void 0 ? void 0 : _c.alg), enc, recipient.key, cek, {
+                p2c
+            });
+            target.encrypted_key = (0, base64url_js_1.encode)(encryptedKey);
+            if (recipient.unprotectedHeader || parameters) target.header = {
+                ...recipient.unprotectedHeader,
+                ...parameters
+            };
+        }
+        return jwe;
+    }
+}
+exports.GeneralEncrypt = GeneralEncrypt;
+
+
+/***/ }),
+
+/***/ 23798:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.EmbeddedJWK = void 0;
+const import_js_1 = __webpack_require__(53844);
+const is_object_js_1 = __webpack_require__(50281);
+const errors_js_1 = __webpack_require__(79927);
+async function EmbeddedJWK(protectedHeader, token) {
+    const joseHeader = {
+        ...protectedHeader,
+        ...token === null || token === void 0 ? void 0 : token.header
+    };
+    if (!(0, is_object_js_1.default)(joseHeader.jwk)) {
+        throw new errors_js_1.JWSInvalid('"jwk" (JSON Web Key) Header Parameter must be a JSON object');
+    }
+    const key = await (0, import_js_1.importJWK)({
+        ...joseHeader.jwk,
+        ext: true
+    }, joseHeader.alg, true);
+    if (key instanceof Uint8Array || key.type !== "public") {
+        throw new errors_js_1.JWSInvalid('"jwk" (JSON Web Key) Header Parameter must be a public key');
+    }
+    return key;
+}
+exports.EmbeddedJWK = EmbeddedJWK;
+
+
+/***/ }),
+
+/***/ 55770:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.calculateJwkThumbprintUri = exports.calculateJwkThumbprint = void 0;
+const digest_js_1 = __webpack_require__(68096);
+const base64url_js_1 = __webpack_require__(37244);
+const errors_js_1 = __webpack_require__(79927);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const is_object_js_1 = __webpack_require__(50281);
+const check = (value, description)=>{
+    if (typeof value !== "string" || !value) {
+        throw new errors_js_1.JWKInvalid(`${description} missing or invalid`);
+    }
+};
+async function calculateJwkThumbprint(jwk, digestAlgorithm) {
+    if (!(0, is_object_js_1.default)(jwk)) {
+        throw new TypeError("JWK must be an object");
+    }
+    digestAlgorithm !== null && digestAlgorithm !== void 0 ? digestAlgorithm : digestAlgorithm = "sha256";
+    if (digestAlgorithm !== "sha256" && digestAlgorithm !== "sha384" && digestAlgorithm !== "sha512") {
+        throw new TypeError('digestAlgorithm must one of "sha256", "sha384", or "sha512"');
+    }
+    let components;
+    switch(jwk.kty){
+        case "EC":
+            check(jwk.crv, '"crv" (Curve) Parameter');
+            check(jwk.x, '"x" (X Coordinate) Parameter');
+            check(jwk.y, '"y" (Y Coordinate) Parameter');
+            components = {
+                crv: jwk.crv,
+                kty: jwk.kty,
+                x: jwk.x,
+                y: jwk.y
+            };
+            break;
+        case "OKP":
+            check(jwk.crv, '"crv" (Subtype of Key Pair) Parameter');
+            check(jwk.x, '"x" (Public Key) Parameter');
+            components = {
+                crv: jwk.crv,
+                kty: jwk.kty,
+                x: jwk.x
+            };
+            break;
+        case "RSA":
+            check(jwk.e, '"e" (Exponent) Parameter');
+            check(jwk.n, '"n" (Modulus) Parameter');
+            components = {
+                e: jwk.e,
+                kty: jwk.kty,
+                n: jwk.n
+            };
+            break;
+        case "oct":
+            check(jwk.k, '"k" (Key Value) Parameter');
+            components = {
+                k: jwk.k,
+                kty: jwk.kty
+            };
+            break;
+        default:
+            throw new errors_js_1.JOSENotSupported('"kty" (Key Type) Parameter missing or unsupported');
+    }
+    const data = buffer_utils_js_1.encoder.encode(JSON.stringify(components));
+    return (0, base64url_js_1.encode)(await (0, digest_js_1.default)(digestAlgorithm, data));
+}
+exports.calculateJwkThumbprint = calculateJwkThumbprint;
+async function calculateJwkThumbprintUri(jwk, digestAlgorithm) {
+    digestAlgorithm !== null && digestAlgorithm !== void 0 ? digestAlgorithm : digestAlgorithm = "sha256";
+    const thumbprint = await calculateJwkThumbprint(jwk, digestAlgorithm);
+    return `urn:ietf:params:oauth:jwk-thumbprint:sha-${digestAlgorithm.slice(-3)}:${thumbprint}`;
+}
+exports.calculateJwkThumbprintUri = calculateJwkThumbprintUri;
+
+
+/***/ }),
+
+/***/ 69063:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.createLocalJWKSet = exports.LocalJWKSet = exports.isJWKSLike = void 0;
+const import_js_1 = __webpack_require__(53844);
+const errors_js_1 = __webpack_require__(79927);
+const is_object_js_1 = __webpack_require__(50281);
+function getKtyFromAlg(alg) {
+    switch(typeof alg === "string" && alg.slice(0, 2)){
+        case "RS":
+        case "PS":
+            return "RSA";
+        case "ES":
+            return "EC";
+        case "Ed":
+            return "OKP";
+        default:
+            throw new errors_js_1.JOSENotSupported('Unsupported "alg" value for a JSON Web Key Set');
+    }
+}
+function isJWKSLike(jwks) {
+    return jwks && typeof jwks === "object" && Array.isArray(jwks.keys) && jwks.keys.every(isJWKLike);
+}
+exports.isJWKSLike = isJWKSLike;
+function isJWKLike(key) {
+    return (0, is_object_js_1.default)(key);
+}
+function clone(obj) {
+    if (typeof structuredClone === "function") {
+        return structuredClone(obj);
+    }
+    return JSON.parse(JSON.stringify(obj));
+}
+class LocalJWKSet {
+    constructor(jwks){
+        this._cached = new WeakMap();
+        if (!isJWKSLike(jwks)) {
+            throw new errors_js_1.JWKSInvalid("JSON Web Key Set malformed");
+        }
+        this._jwks = clone(jwks);
+    }
+    async getKey(protectedHeader, token) {
+        const { alg, kid } = {
+            ...protectedHeader,
+            ...token === null || token === void 0 ? void 0 : token.header
+        };
+        const kty = getKtyFromAlg(alg);
+        const candidates = this._jwks.keys.filter((jwk)=>{
+            let candidate = kty === jwk.kty;
+            if (candidate && typeof kid === "string") {
+                candidate = kid === jwk.kid;
+            }
+            if (candidate && typeof jwk.alg === "string") {
+                candidate = alg === jwk.alg;
+            }
+            if (candidate && typeof jwk.use === "string") {
+                candidate = jwk.use === "sig";
+            }
+            if (candidate && Array.isArray(jwk.key_ops)) {
+                candidate = jwk.key_ops.includes("verify");
+            }
+            if (candidate && alg === "EdDSA") {
+                candidate = jwk.crv === "Ed25519" || jwk.crv === "Ed448";
+            }
+            if (candidate) {
+                switch(alg){
+                    case "ES256":
+                        candidate = jwk.crv === "P-256";
+                        break;
+                    case "ES256K":
+                        candidate = jwk.crv === "secp256k1";
+                        break;
+                    case "ES384":
+                        candidate = jwk.crv === "P-384";
+                        break;
+                    case "ES512":
+                        candidate = jwk.crv === "P-521";
+                        break;
+                }
+            }
+            return candidate;
+        });
+        const { 0: jwk, length } = candidates;
+        if (length === 0) {
+            throw new errors_js_1.JWKSNoMatchingKey();
+        } else if (length !== 1) {
+            const error = new errors_js_1.JWKSMultipleMatchingKeys();
+            const { _cached } = this;
+            error[Symbol.asyncIterator] = async function*() {
+                for (const jwk of candidates){
+                    try {
+                        yield await importWithAlgCache(_cached, jwk, alg);
+                    } catch  {
+                        continue;
+                    }
+                }
+            };
+            throw error;
+        }
+        return importWithAlgCache(this._cached, jwk, alg);
+    }
+}
+exports.LocalJWKSet = LocalJWKSet;
+async function importWithAlgCache(cache, jwk, alg) {
+    const cached = cache.get(jwk) || cache.set(jwk, {}).get(jwk);
+    if (cached[alg] === undefined) {
+        const key = await (0, import_js_1.importJWK)({
+            ...jwk,
+            ext: true
+        }, alg);
+        if (key instanceof Uint8Array || key.type !== "public") {
+            throw new errors_js_1.JWKSInvalid("JSON Web Key Set members must be public keys");
+        }
+        cached[alg] = key;
+    }
+    return cached[alg];
+}
+function createLocalJWKSet(jwks) {
+    const set = new LocalJWKSet(jwks);
+    return async function(protectedHeader, token) {
+        return set.getKey(protectedHeader, token);
+    };
+}
+exports.createLocalJWKSet = createLocalJWKSet;
+
+
+/***/ }),
+
+/***/ 17514:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.createRemoteJWKSet = void 0;
+const fetch_jwks_js_1 = __webpack_require__(86581);
+const errors_js_1 = __webpack_require__(79927);
+const local_js_1 = __webpack_require__(69063);
+function isCloudflareWorkers() {
+    return typeof WebSocketPair !== "undefined" || typeof navigator !== "undefined" && navigator.userAgent === "Cloudflare-Workers" || typeof EdgeRuntime !== "undefined" && EdgeRuntime === "vercel";
+}
+class RemoteJWKSet extends local_js_1.LocalJWKSet {
+    constructor(url, options){
+        super({
+            keys: []
+        });
+        this._jwks = undefined;
+        if (!(url instanceof URL)) {
+            throw new TypeError("url must be an instance of URL");
+        }
+        this._url = new URL(url.href);
+        this._options = {
+            agent: options === null || options === void 0 ? void 0 : options.agent,
+            headers: options === null || options === void 0 ? void 0 : options.headers
+        };
+        this._timeoutDuration = typeof (options === null || options === void 0 ? void 0 : options.timeoutDuration) === "number" ? options === null || options === void 0 ? void 0 : options.timeoutDuration : 5000;
+        this._cooldownDuration = typeof (options === null || options === void 0 ? void 0 : options.cooldownDuration) === "number" ? options === null || options === void 0 ? void 0 : options.cooldownDuration : 30000;
+        this._cacheMaxAge = typeof (options === null || options === void 0 ? void 0 : options.cacheMaxAge) === "number" ? options === null || options === void 0 ? void 0 : options.cacheMaxAge : 600000;
+    }
+    coolingDown() {
+        return typeof this._jwksTimestamp === "number" ? Date.now() < this._jwksTimestamp + this._cooldownDuration : false;
+    }
+    fresh() {
+        return typeof this._jwksTimestamp === "number" ? Date.now() < this._jwksTimestamp + this._cacheMaxAge : false;
+    }
+    async getKey(protectedHeader, token) {
+        if (!this._jwks || !this.fresh()) {
+            await this.reload();
+        }
+        try {
+            return await super.getKey(protectedHeader, token);
+        } catch (err) {
+            if (err instanceof errors_js_1.JWKSNoMatchingKey) {
+                if (this.coolingDown() === false) {
+                    await this.reload();
+                    return super.getKey(protectedHeader, token);
+                }
+            }
+            throw err;
+        }
+    }
+    async reload() {
+        if (this._pendingFetch && isCloudflareWorkers()) {
+            this._pendingFetch = undefined;
+        }
+        this._pendingFetch || (this._pendingFetch = (0, fetch_jwks_js_1.default)(this._url, this._timeoutDuration, this._options).then((json)=>{
+            if (!(0, local_js_1.isJWKSLike)(json)) {
+                throw new errors_js_1.JWKSInvalid("JSON Web Key Set malformed");
+            }
+            this._jwks = {
+                keys: json.keys
+            };
+            this._jwksTimestamp = Date.now();
+            this._pendingFetch = undefined;
+        }).catch((err)=>{
+            this._pendingFetch = undefined;
+            throw err;
+        }));
+        await this._pendingFetch;
+    }
+}
+function createRemoteJWKSet(url, options) {
+    const set = new RemoteJWKSet(url, options);
+    return async function(protectedHeader, token) {
+        return set.getKey(protectedHeader, token);
+    };
+}
+exports.createRemoteJWKSet = createRemoteJWKSet;
+
+
+/***/ }),
+
+/***/ 39656:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.CompactSign = void 0;
+const sign_js_1 = __webpack_require__(56459);
+class CompactSign {
+    constructor(payload){
+        this._flattened = new sign_js_1.FlattenedSign(payload);
+    }
+    setProtectedHeader(protectedHeader) {
+        this._flattened.setProtectedHeader(protectedHeader);
+        return this;
+    }
+    async sign(key, options) {
+        const jws = await this._flattened.sign(key, options);
+        if (jws.payload === undefined) {
+            throw new TypeError("use the flattened module for creating JWS with b64: false");
+        }
+        return `${jws.protected}.${jws.payload}.${jws.signature}`;
+    }
+}
+exports.CompactSign = CompactSign;
+
+
+/***/ }),
+
+/***/ 72432:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.compactVerify = void 0;
+const verify_js_1 = __webpack_require__(7549);
+const errors_js_1 = __webpack_require__(79927);
+const buffer_utils_js_1 = __webpack_require__(43807);
+async function compactVerify(jws, key, options) {
+    if (jws instanceof Uint8Array) {
+        jws = buffer_utils_js_1.decoder.decode(jws);
+    }
+    if (typeof jws !== "string") {
+        throw new errors_js_1.JWSInvalid("Compact JWS must be a string or Uint8Array");
+    }
+    const { 0: protectedHeader, 1: payload, 2: signature, length } = jws.split(".");
+    if (length !== 3) {
+        throw new errors_js_1.JWSInvalid("Invalid Compact JWS");
+    }
+    const verified = await (0, verify_js_1.flattenedVerify)({
+        payload,
+        protected: protectedHeader,
+        signature
+    }, key, options);
+    const result = {
+        payload: verified.payload,
+        protectedHeader: verified.protectedHeader
+    };
+    if (typeof key === "function") {
+        return {
+            ...result,
+            key: verified.key
+        };
+    }
+    return result;
+}
+exports.compactVerify = compactVerify;
+
+
+/***/ }),
+
+/***/ 56459:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.FlattenedSign = void 0;
+const base64url_js_1 = __webpack_require__(37244);
+const sign_js_1 = __webpack_require__(98242);
+const is_disjoint_js_1 = __webpack_require__(1223);
+const errors_js_1 = __webpack_require__(79927);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const check_key_type_js_1 = __webpack_require__(47234);
+const validate_crit_js_1 = __webpack_require__(51534);
+class FlattenedSign {
+    constructor(payload){
+        if (!(payload instanceof Uint8Array)) {
+            throw new TypeError("payload must be an instance of Uint8Array");
+        }
+        this._payload = payload;
+    }
+    setProtectedHeader(protectedHeader) {
+        if (this._protectedHeader) {
+            throw new TypeError("setProtectedHeader can only be called once");
+        }
+        this._protectedHeader = protectedHeader;
+        return this;
+    }
+    setUnprotectedHeader(unprotectedHeader) {
+        if (this._unprotectedHeader) {
+            throw new TypeError("setUnprotectedHeader can only be called once");
+        }
+        this._unprotectedHeader = unprotectedHeader;
+        return this;
+    }
+    async sign(key, options) {
+        if (!this._protectedHeader && !this._unprotectedHeader) {
+            throw new errors_js_1.JWSInvalid("either setProtectedHeader or setUnprotectedHeader must be called before #sign()");
+        }
+        if (!(0, is_disjoint_js_1.default)(this._protectedHeader, this._unprotectedHeader)) {
+            throw new errors_js_1.JWSInvalid("JWS Protected and JWS Unprotected Header Parameter names must be disjoint");
+        }
+        const joseHeader = {
+            ...this._protectedHeader,
+            ...this._unprotectedHeader
+        };
+        const extensions = (0, validate_crit_js_1.default)(errors_js_1.JWSInvalid, new Map([
+            [
+                "b64",
+                true
+            ]
+        ]), options === null || options === void 0 ? void 0 : options.crit, this._protectedHeader, joseHeader);
+        let b64 = true;
+        if (extensions.has("b64")) {
+            b64 = this._protectedHeader.b64;
+            if (typeof b64 !== "boolean") {
+                throw new errors_js_1.JWSInvalid('The "b64" (base64url-encode payload) Header Parameter must be a boolean');
+            }
+        }
+        const { alg } = joseHeader;
+        if (typeof alg !== "string" || !alg) {
+            throw new errors_js_1.JWSInvalid('JWS "alg" (Algorithm) Header Parameter missing or invalid');
+        }
+        (0, check_key_type_js_1.default)(alg, key, "sign");
+        let payload = this._payload;
+        if (b64) {
+            payload = buffer_utils_js_1.encoder.encode((0, base64url_js_1.encode)(payload));
+        }
+        let protectedHeader;
+        if (this._protectedHeader) {
+            protectedHeader = buffer_utils_js_1.encoder.encode((0, base64url_js_1.encode)(JSON.stringify(this._protectedHeader)));
+        } else {
+            protectedHeader = buffer_utils_js_1.encoder.encode("");
+        }
+        const data = (0, buffer_utils_js_1.concat)(protectedHeader, buffer_utils_js_1.encoder.encode("."), payload);
+        const signature = await (0, sign_js_1.default)(alg, key, data);
+        const jws = {
+            signature: (0, base64url_js_1.encode)(signature),
+            payload: ""
+        };
+        if (b64) {
+            jws.payload = buffer_utils_js_1.decoder.decode(payload);
+        }
+        if (this._unprotectedHeader) {
+            jws.header = this._unprotectedHeader;
+        }
+        if (this._protectedHeader) {
+            jws.protected = buffer_utils_js_1.decoder.decode(protectedHeader);
+        }
+        return jws;
+    }
+}
+exports.FlattenedSign = FlattenedSign;
+
+
+/***/ }),
+
+/***/ 7549:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.flattenedVerify = void 0;
+const base64url_js_1 = __webpack_require__(37244);
+const verify_js_1 = __webpack_require__(17872);
+const errors_js_1 = __webpack_require__(79927);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const is_disjoint_js_1 = __webpack_require__(1223);
+const is_object_js_1 = __webpack_require__(50281);
+const check_key_type_js_1 = __webpack_require__(47234);
+const validate_crit_js_1 = __webpack_require__(51534);
+const validate_algorithms_js_1 = __webpack_require__(1524);
+async function flattenedVerify(jws, key, options) {
+    var _a;
+    if (!(0, is_object_js_1.default)(jws)) {
+        throw new errors_js_1.JWSInvalid("Flattened JWS must be an object");
+    }
+    if (jws.protected === undefined && jws.header === undefined) {
+        throw new errors_js_1.JWSInvalid('Flattened JWS must have either of the "protected" or "header" members');
+    }
+    if (jws.protected !== undefined && typeof jws.protected !== "string") {
+        throw new errors_js_1.JWSInvalid("JWS Protected Header incorrect type");
+    }
+    if (jws.payload === undefined) {
+        throw new errors_js_1.JWSInvalid("JWS Payload missing");
+    }
+    if (typeof jws.signature !== "string") {
+        throw new errors_js_1.JWSInvalid("JWS Signature missing or incorrect type");
+    }
+    if (jws.header !== undefined && !(0, is_object_js_1.default)(jws.header)) {
+        throw new errors_js_1.JWSInvalid("JWS Unprotected Header incorrect type");
+    }
+    let parsedProt = {};
+    if (jws.protected) {
+        try {
+            const protectedHeader = (0, base64url_js_1.decode)(jws.protected);
+            parsedProt = JSON.parse(buffer_utils_js_1.decoder.decode(protectedHeader));
+        } catch  {
+            throw new errors_js_1.JWSInvalid("JWS Protected Header is invalid");
+        }
+    }
+    if (!(0, is_disjoint_js_1.default)(parsedProt, jws.header)) {
+        throw new errors_js_1.JWSInvalid("JWS Protected and JWS Unprotected Header Parameter names must be disjoint");
+    }
+    const joseHeader = {
+        ...parsedProt,
+        ...jws.header
+    };
+    const extensions = (0, validate_crit_js_1.default)(errors_js_1.JWSInvalid, new Map([
+        [
+            "b64",
+            true
+        ]
+    ]), options === null || options === void 0 ? void 0 : options.crit, parsedProt, joseHeader);
+    let b64 = true;
+    if (extensions.has("b64")) {
+        b64 = parsedProt.b64;
+        if (typeof b64 !== "boolean") {
+            throw new errors_js_1.JWSInvalid('The "b64" (base64url-encode payload) Header Parameter must be a boolean');
+        }
+    }
+    const { alg } = joseHeader;
+    if (typeof alg !== "string" || !alg) {
+        throw new errors_js_1.JWSInvalid('JWS "alg" (Algorithm) Header Parameter missing or invalid');
+    }
+    const algorithms = options && (0, validate_algorithms_js_1.default)("algorithms", options.algorithms);
+    if (algorithms && !algorithms.has(alg)) {
+        throw new errors_js_1.JOSEAlgNotAllowed('"alg" (Algorithm) Header Parameter not allowed');
+    }
+    if (b64) {
+        if (typeof jws.payload !== "string") {
+            throw new errors_js_1.JWSInvalid("JWS Payload must be a string");
+        }
+    } else if (typeof jws.payload !== "string" && !(jws.payload instanceof Uint8Array)) {
+        throw new errors_js_1.JWSInvalid("JWS Payload must be a string or an Uint8Array instance");
+    }
+    let resolvedKey = false;
+    if (typeof key === "function") {
+        key = await key(parsedProt, jws);
+        resolvedKey = true;
+    }
+    (0, check_key_type_js_1.default)(alg, key, "verify");
+    const data = (0, buffer_utils_js_1.concat)(buffer_utils_js_1.encoder.encode((_a = jws.protected) !== null && _a !== void 0 ? _a : ""), buffer_utils_js_1.encoder.encode("."), typeof jws.payload === "string" ? buffer_utils_js_1.encoder.encode(jws.payload) : jws.payload);
+    let signature;
+    try {
+        signature = (0, base64url_js_1.decode)(jws.signature);
+    } catch  {
+        throw new errors_js_1.JWSInvalid("Failed to base64url decode the signature");
+    }
+    const verified = await (0, verify_js_1.default)(alg, key, signature, data);
+    if (!verified) {
+        throw new errors_js_1.JWSSignatureVerificationFailed();
+    }
+    let payload;
+    if (b64) {
+        try {
+            payload = (0, base64url_js_1.decode)(jws.payload);
+        } catch  {
+            throw new errors_js_1.JWSInvalid("Failed to base64url decode the payload");
+        }
+    } else if (typeof jws.payload === "string") {
+        payload = buffer_utils_js_1.encoder.encode(jws.payload);
+    } else {
+        payload = jws.payload;
+    }
+    const result = {
+        payload
+    };
+    if (jws.protected !== undefined) {
+        result.protectedHeader = parsedProt;
+    }
+    if (jws.header !== undefined) {
+        result.unprotectedHeader = jws.header;
+    }
+    if (resolvedKey) {
+        return {
+            ...result,
+            key
+        };
+    }
+    return result;
+}
+exports.flattenedVerify = flattenedVerify;
+
+
+/***/ }),
+
+/***/ 70024:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.GeneralSign = void 0;
+const sign_js_1 = __webpack_require__(56459);
+const errors_js_1 = __webpack_require__(79927);
+class IndividualSignature {
+    constructor(sig, key, options){
+        this.parent = sig;
+        this.key = key;
+        this.options = options;
+    }
+    setProtectedHeader(protectedHeader) {
+        if (this.protectedHeader) {
+            throw new TypeError("setProtectedHeader can only be called once");
+        }
+        this.protectedHeader = protectedHeader;
+        return this;
+    }
+    setUnprotectedHeader(unprotectedHeader) {
+        if (this.unprotectedHeader) {
+            throw new TypeError("setUnprotectedHeader can only be called once");
+        }
+        this.unprotectedHeader = unprotectedHeader;
+        return this;
+    }
+    addSignature(...args) {
+        return this.parent.addSignature(...args);
+    }
+    sign(...args) {
+        return this.parent.sign(...args);
+    }
+    done() {
+        return this.parent;
+    }
+}
+class GeneralSign {
+    constructor(payload){
+        this._signatures = [];
+        this._payload = payload;
+    }
+    addSignature(key, options) {
+        const signature = new IndividualSignature(this, key, options);
+        this._signatures.push(signature);
+        return signature;
+    }
+    async sign() {
+        if (!this._signatures.length) {
+            throw new errors_js_1.JWSInvalid("at least one signature must be added");
+        }
+        const jws = {
+            signatures: [],
+            payload: ""
+        };
+        for(let i = 0; i < this._signatures.length; i++){
+            const signature = this._signatures[i];
+            const flattened = new sign_js_1.FlattenedSign(this._payload);
+            flattened.setProtectedHeader(signature.protectedHeader);
+            flattened.setUnprotectedHeader(signature.unprotectedHeader);
+            const { payload, ...rest } = await flattened.sign(signature.key, signature.options);
+            if (i === 0) {
+                jws.payload = payload;
+            } else if (jws.payload !== payload) {
+                throw new errors_js_1.JWSInvalid("inconsistent use of JWS Unencoded Payload (RFC7797)");
+            }
+            jws.signatures.push(rest);
+        }
+        return jws;
+    }
+}
+exports.GeneralSign = GeneralSign;
+
+
+/***/ }),
+
+/***/ 3493:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.generalVerify = void 0;
+const verify_js_1 = __webpack_require__(7549);
+const errors_js_1 = __webpack_require__(79927);
+const is_object_js_1 = __webpack_require__(50281);
+async function generalVerify(jws, key, options) {
+    if (!(0, is_object_js_1.default)(jws)) {
+        throw new errors_js_1.JWSInvalid("General JWS must be an object");
+    }
+    if (!Array.isArray(jws.signatures) || !jws.signatures.every(is_object_js_1.default)) {
+        throw new errors_js_1.JWSInvalid("JWS Signatures missing or incorrect type");
+    }
+    for (const signature of jws.signatures){
+        try {
+            return await (0, verify_js_1.flattenedVerify)({
+                header: signature.header,
+                payload: jws.payload,
+                protected: signature.protected,
+                signature: signature.signature
+            }, key, options);
+        } catch  {}
+    }
+    throw new errors_js_1.JWSSignatureVerificationFailed();
+}
+exports.generalVerify = generalVerify;
+
+
+/***/ }),
+
+/***/ 74761:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.jwtDecrypt = void 0;
+const decrypt_js_1 = __webpack_require__(16709);
+const jwt_claims_set_js_1 = __webpack_require__(65455);
+const errors_js_1 = __webpack_require__(79927);
+async function jwtDecrypt(jwt, key, options) {
+    const decrypted = await (0, decrypt_js_1.compactDecrypt)(jwt, key, options);
+    const payload = (0, jwt_claims_set_js_1.default)(decrypted.protectedHeader, decrypted.plaintext, options);
+    const { protectedHeader } = decrypted;
+    if (protectedHeader.iss !== undefined && protectedHeader.iss !== payload.iss) {
+        throw new errors_js_1.JWTClaimValidationFailed('replicated "iss" claim header parameter mismatch', "iss", "mismatch");
+    }
+    if (protectedHeader.sub !== undefined && protectedHeader.sub !== payload.sub) {
+        throw new errors_js_1.JWTClaimValidationFailed('replicated "sub" claim header parameter mismatch', "sub", "mismatch");
+    }
+    if (protectedHeader.aud !== undefined && JSON.stringify(protectedHeader.aud) !== JSON.stringify(payload.aud)) {
+        throw new errors_js_1.JWTClaimValidationFailed('replicated "aud" claim header parameter mismatch', "aud", "mismatch");
+    }
+    const result = {
+        payload,
+        protectedHeader
+    };
+    if (typeof key === "function") {
+        return {
+            ...result,
+            key: decrypted.key
+        };
+    }
+    return result;
+}
+exports.jwtDecrypt = jwtDecrypt;
+
+
+/***/ }),
+
+/***/ 67046:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.EncryptJWT = void 0;
+const encrypt_js_1 = __webpack_require__(26869);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const produce_js_1 = __webpack_require__(21637);
+class EncryptJWT extends produce_js_1.ProduceJWT {
+    setProtectedHeader(protectedHeader) {
+        if (this._protectedHeader) {
+            throw new TypeError("setProtectedHeader can only be called once");
+        }
+        this._protectedHeader = protectedHeader;
+        return this;
+    }
+    setKeyManagementParameters(parameters) {
+        if (this._keyManagementParameters) {
+            throw new TypeError("setKeyManagementParameters can only be called once");
+        }
+        this._keyManagementParameters = parameters;
+        return this;
+    }
+    setContentEncryptionKey(cek) {
+        if (this._cek) {
+            throw new TypeError("setContentEncryptionKey can only be called once");
+        }
+        this._cek = cek;
+        return this;
+    }
+    setInitializationVector(iv) {
+        if (this._iv) {
+            throw new TypeError("setInitializationVector can only be called once");
+        }
+        this._iv = iv;
+        return this;
+    }
+    replicateIssuerAsHeader() {
+        this._replicateIssuerAsHeader = true;
+        return this;
+    }
+    replicateSubjectAsHeader() {
+        this._replicateSubjectAsHeader = true;
+        return this;
+    }
+    replicateAudienceAsHeader() {
+        this._replicateAudienceAsHeader = true;
+        return this;
+    }
+    async encrypt(key, options) {
+        const enc = new encrypt_js_1.CompactEncrypt(buffer_utils_js_1.encoder.encode(JSON.stringify(this._payload)));
+        if (this._replicateIssuerAsHeader) {
+            this._protectedHeader = {
+                ...this._protectedHeader,
+                iss: this._payload.iss
+            };
+        }
+        if (this._replicateSubjectAsHeader) {
+            this._protectedHeader = {
+                ...this._protectedHeader,
+                sub: this._payload.sub
+            };
+        }
+        if (this._replicateAudienceAsHeader) {
+            this._protectedHeader = {
+                ...this._protectedHeader,
+                aud: this._payload.aud
+            };
+        }
+        enc.setProtectedHeader(this._protectedHeader);
+        if (this._iv) {
+            enc.setInitializationVector(this._iv);
+        }
+        if (this._cek) {
+            enc.setContentEncryptionKey(this._cek);
+        }
+        if (this._keyManagementParameters) {
+            enc.setKeyManagementParameters(this._keyManagementParameters);
+        }
+        return enc.encrypt(key, options);
+    }
+}
+exports.EncryptJWT = EncryptJWT;
+
+
+/***/ }),
+
+/***/ 21637:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.ProduceJWT = void 0;
+const epoch_js_1 = __webpack_require__(92155);
+const is_object_js_1 = __webpack_require__(50281);
+const secs_js_1 = __webpack_require__(91540);
+class ProduceJWT {
+    constructor(payload){
+        if (!(0, is_object_js_1.default)(payload)) {
+            throw new TypeError("JWT Claims Set MUST be an object");
+        }
+        this._payload = payload;
+    }
+    setIssuer(issuer) {
+        this._payload = {
+            ...this._payload,
+            iss: issuer
+        };
+        return this;
+    }
+    setSubject(subject) {
+        this._payload = {
+            ...this._payload,
+            sub: subject
+        };
+        return this;
+    }
+    setAudience(audience) {
+        this._payload = {
+            ...this._payload,
+            aud: audience
+        };
+        return this;
+    }
+    setJti(jwtId) {
+        this._payload = {
+            ...this._payload,
+            jti: jwtId
+        };
+        return this;
+    }
+    setNotBefore(input) {
+        if (typeof input === "number") {
+            this._payload = {
+                ...this._payload,
+                nbf: input
+            };
+        } else {
+            this._payload = {
+                ...this._payload,
+                nbf: (0, epoch_js_1.default)(new Date()) + (0, secs_js_1.default)(input)
+            };
+        }
+        return this;
+    }
+    setExpirationTime(input) {
+        if (typeof input === "number") {
+            this._payload = {
+                ...this._payload,
+                exp: input
+            };
+        } else {
+            this._payload = {
+                ...this._payload,
+                exp: (0, epoch_js_1.default)(new Date()) + (0, secs_js_1.default)(input)
+            };
+        }
+        return this;
+    }
+    setIssuedAt(input) {
+        if (typeof input === "undefined") {
+            this._payload = {
+                ...this._payload,
+                iat: (0, epoch_js_1.default)(new Date())
+            };
+        } else {
+            this._payload = {
+                ...this._payload,
+                iat: input
+            };
+        }
+        return this;
+    }
+}
+exports.ProduceJWT = ProduceJWT;
+
+
+/***/ }),
+
+/***/ 80342:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.SignJWT = void 0;
+const sign_js_1 = __webpack_require__(39656);
+const errors_js_1 = __webpack_require__(79927);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const produce_js_1 = __webpack_require__(21637);
+class SignJWT extends produce_js_1.ProduceJWT {
+    setProtectedHeader(protectedHeader) {
+        this._protectedHeader = protectedHeader;
+        return this;
+    }
+    async sign(key, options) {
+        var _a;
+        const sig = new sign_js_1.CompactSign(buffer_utils_js_1.encoder.encode(JSON.stringify(this._payload)));
+        sig.setProtectedHeader(this._protectedHeader);
+        if (Array.isArray((_a = this._protectedHeader) === null || _a === void 0 ? void 0 : _a.crit) && this._protectedHeader.crit.includes("b64") && this._protectedHeader.b64 === false) {
+            throw new errors_js_1.JWTInvalid("JWTs MUST NOT use unencoded payload");
+        }
+        return sig.sign(key, options);
+    }
+}
+exports.SignJWT = SignJWT;
+
+
+/***/ }),
+
+/***/ 59134:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.UnsecuredJWT = void 0;
+const base64url = __webpack_require__(37244);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const errors_js_1 = __webpack_require__(79927);
+const jwt_claims_set_js_1 = __webpack_require__(65455);
+const produce_js_1 = __webpack_require__(21637);
+class UnsecuredJWT extends produce_js_1.ProduceJWT {
+    encode() {
+        const header = base64url.encode(JSON.stringify({
+            alg: "none"
+        }));
+        const payload = base64url.encode(JSON.stringify(this._payload));
+        return `${header}.${payload}.`;
+    }
+    static decode(jwt, options) {
+        if (typeof jwt !== "string") {
+            throw new errors_js_1.JWTInvalid("Unsecured JWT must be a string");
+        }
+        const { 0: encodedHeader, 1: encodedPayload, 2: signature, length } = jwt.split(".");
+        if (length !== 3 || signature !== "") {
+            throw new errors_js_1.JWTInvalid("Invalid Unsecured JWT");
+        }
+        let header;
+        try {
+            header = JSON.parse(buffer_utils_js_1.decoder.decode(base64url.decode(encodedHeader)));
+            if (header.alg !== "none") throw new Error();
+        } catch  {
+            throw new errors_js_1.JWTInvalid("Invalid Unsecured JWT");
+        }
+        const payload = (0, jwt_claims_set_js_1.default)(header, base64url.decode(encodedPayload), options);
+        return {
+            payload,
+            header
+        };
+    }
+}
+exports.UnsecuredJWT = UnsecuredJWT;
+
+
+/***/ }),
+
+/***/ 51296:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.jwtVerify = void 0;
+const verify_js_1 = __webpack_require__(72432);
+const jwt_claims_set_js_1 = __webpack_require__(65455);
+const errors_js_1 = __webpack_require__(79927);
+async function jwtVerify(jwt, key, options) {
+    var _a;
+    const verified = await (0, verify_js_1.compactVerify)(jwt, key, options);
+    if (((_a = verified.protectedHeader.crit) === null || _a === void 0 ? void 0 : _a.includes("b64")) && verified.protectedHeader.b64 === false) {
+        throw new errors_js_1.JWTInvalid("JWTs MUST NOT use unencoded payload");
+    }
+    const payload = (0, jwt_claims_set_js_1.default)(verified.protectedHeader, verified.payload, options);
+    const result = {
+        payload,
+        protectedHeader: verified.protectedHeader
+    };
+    if (typeof key === "function") {
+        return {
+            ...result,
+            key: verified.key
+        };
+    }
+    return result;
+}
+exports.jwtVerify = jwtVerify;
+
+
+/***/ }),
+
+/***/ 30107:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.exportJWK = exports.exportPKCS8 = exports.exportSPKI = void 0;
+const asn1_js_1 = __webpack_require__(23794);
+const asn1_js_2 = __webpack_require__(23794);
+const key_to_jwk_js_1 = __webpack_require__(12177);
+async function exportSPKI(key) {
+    return (0, asn1_js_1.toSPKI)(key);
+}
+exports.exportSPKI = exportSPKI;
+async function exportPKCS8(key) {
+    return (0, asn1_js_2.toPKCS8)(key);
+}
+exports.exportPKCS8 = exportPKCS8;
+async function exportJWK(key) {
+    return (0, key_to_jwk_js_1.default)(key);
+}
+exports.exportJWK = exportJWK;
+
+
+/***/ }),
+
+/***/ 81570:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.generateKeyPair = void 0;
+const generate_js_1 = __webpack_require__(37072);
+async function generateKeyPair(alg, options) {
+    return (0, generate_js_1.generateKeyPair)(alg, options);
+}
+exports.generateKeyPair = generateKeyPair;
+
+
+/***/ }),
+
+/***/ 15845:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.generateSecret = void 0;
+const generate_js_1 = __webpack_require__(37072);
+async function generateSecret(alg, options) {
+    return (0, generate_js_1.generateSecret)(alg, options);
+}
+exports.generateSecret = generateSecret;
+
+
+/***/ }),
+
+/***/ 53844:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.importJWK = exports.importPKCS8 = exports.importX509 = exports.importSPKI = void 0;
+const base64url_js_1 = __webpack_require__(37244);
+const asn1_js_1 = __webpack_require__(23794);
+const jwk_to_key_js_1 = __webpack_require__(98544);
+const errors_js_1 = __webpack_require__(79927);
+const is_object_js_1 = __webpack_require__(50281);
+async function importSPKI(spki, alg, options) {
+    if (typeof spki !== "string" || spki.indexOf("-----BEGIN PUBLIC KEY-----") !== 0) {
+        throw new TypeError('"spki" must be SPKI formatted string');
+    }
+    return (0, asn1_js_1.fromSPKI)(spki, alg, options);
+}
+exports.importSPKI = importSPKI;
+async function importX509(x509, alg, options) {
+    if (typeof x509 !== "string" || x509.indexOf("-----BEGIN CERTIFICATE-----") !== 0) {
+        throw new TypeError('"x509" must be X.509 formatted string');
+    }
+    return (0, asn1_js_1.fromX509)(x509, alg, options);
+}
+exports.importX509 = importX509;
+async function importPKCS8(pkcs8, alg, options) {
+    if (typeof pkcs8 !== "string" || pkcs8.indexOf("-----BEGIN PRIVATE KEY-----") !== 0) {
+        throw new TypeError('"pkcs8" must be PKCS#8 formatted string');
+    }
+    return (0, asn1_js_1.fromPKCS8)(pkcs8, alg, options);
+}
+exports.importPKCS8 = importPKCS8;
+async function importJWK(jwk, alg, octAsKeyObject) {
+    var _a;
+    if (!(0, is_object_js_1.default)(jwk)) {
+        throw new TypeError("JWK must be an object");
+    }
+    alg || (alg = jwk.alg);
+    switch(jwk.kty){
+        case "oct":
+            if (typeof jwk.k !== "string" || !jwk.k) {
+                throw new TypeError('missing "k" (Key Value) Parameter value');
+            }
+            octAsKeyObject !== null && octAsKeyObject !== void 0 ? octAsKeyObject : octAsKeyObject = jwk.ext !== true;
+            if (octAsKeyObject) {
+                return (0, jwk_to_key_js_1.default)({
+                    ...jwk,
+                    alg,
+                    ext: (_a = jwk.ext) !== null && _a !== void 0 ? _a : false
+                });
+            }
+            return (0, base64url_js_1.decode)(jwk.k);
+        case "RSA":
+            if (jwk.oth !== undefined) {
+                throw new errors_js_1.JOSENotSupported('RSA JWK "oth" (Other Primes Info) Parameter value is not supported');
+            }
+        case "EC":
+        case "OKP":
+            return (0, jwk_to_key_js_1.default)({
+                ...jwk,
+                alg
+            });
+        default:
+            throw new errors_js_1.JOSENotSupported('Unsupported "kty" (Key Type) Parameter value');
+    }
+}
+exports.importJWK = importJWK;
+
+
+/***/ }),
+
+/***/ 50751:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.unwrap = exports.wrap = void 0;
+const encrypt_js_1 = __webpack_require__(30734);
+const decrypt_js_1 = __webpack_require__(44225);
+const iv_js_1 = __webpack_require__(1093);
+const base64url_js_1 = __webpack_require__(37244);
+async function wrap(alg, key, cek, iv) {
+    const jweAlgorithm = alg.slice(0, 7);
+    iv || (iv = (0, iv_js_1.default)(jweAlgorithm));
+    const { ciphertext: encryptedKey, tag } = await (0, encrypt_js_1.default)(jweAlgorithm, cek, key, iv, new Uint8Array(0));
+    return {
+        encryptedKey,
+        iv: (0, base64url_js_1.encode)(iv),
+        tag: (0, base64url_js_1.encode)(tag)
+    };
+}
+exports.wrap = wrap;
+async function unwrap(alg, key, encryptedKey, iv, tag) {
+    const jweAlgorithm = alg.slice(0, 7);
+    return (0, decrypt_js_1.default)(jweAlgorithm, key, encryptedKey, iv, tag, new Uint8Array(0));
+}
+exports.unwrap = unwrap;
+
+
+/***/ }),
+
+/***/ 43807:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.concatKdf = exports.lengthAndInput = exports.uint32be = exports.uint64be = exports.p2s = exports.concat = exports.decoder = exports.encoder = void 0;
+const digest_js_1 = __webpack_require__(68096);
+exports.encoder = new TextEncoder();
+exports.decoder = new TextDecoder();
+const MAX_INT32 = 2 ** 32;
+function concat(...buffers) {
+    const size = buffers.reduce((acc, { length })=>acc + length, 0);
+    const buf = new Uint8Array(size);
+    let i = 0;
+    buffers.forEach((buffer)=>{
+        buf.set(buffer, i);
+        i += buffer.length;
+    });
+    return buf;
+}
+exports.concat = concat;
+function p2s(alg, p2sInput) {
+    return concat(exports.encoder.encode(alg), new Uint8Array([
+        0
+    ]), p2sInput);
+}
+exports.p2s = p2s;
+function writeUInt32BE(buf, value, offset) {
+    if (value < 0 || value >= MAX_INT32) {
+        throw new RangeError(`value must be >= 0 and <= ${MAX_INT32 - 1}. Received ${value}`);
+    }
+    buf.set([
+        value >>> 24,
+        value >>> 16,
+        value >>> 8,
+        value & 0xff
+    ], offset);
+}
+function uint64be(value) {
+    const high = Math.floor(value / MAX_INT32);
+    const low = value % MAX_INT32;
+    const buf = new Uint8Array(8);
+    writeUInt32BE(buf, high, 0);
+    writeUInt32BE(buf, low, 4);
+    return buf;
+}
+exports.uint64be = uint64be;
+function uint32be(value) {
+    const buf = new Uint8Array(4);
+    writeUInt32BE(buf, value);
+    return buf;
+}
+exports.uint32be = uint32be;
+function lengthAndInput(input) {
+    return concat(uint32be(input.length), input);
+}
+exports.lengthAndInput = lengthAndInput;
+async function concatKdf(secret, bits, value) {
+    const iterations = Math.ceil((bits >> 3) / 32);
+    const res = new Uint8Array(iterations * 32);
+    for(let iter = 0; iter < iterations; iter++){
+        const buf = new Uint8Array(4 + secret.length + value.length);
+        buf.set(uint32be(iter + 1));
+        buf.set(secret, 4);
+        buf.set(value, 4 + secret.length);
+        res.set(await (0, digest_js_1.default)("sha256", buf), iter * 32);
+    }
+    return res.slice(0, bits >> 3);
+}
+exports.concatKdf = concatKdf;
+
+
+/***/ }),
+
+/***/ 87744:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.bitLength = void 0;
+const errors_js_1 = __webpack_require__(79927);
+const random_js_1 = __webpack_require__(58595);
+function bitLength(alg) {
+    switch(alg){
+        case "A128GCM":
+            return 128;
+        case "A192GCM":
+            return 192;
+        case "A256GCM":
+        case "A128CBC-HS256":
+            return 256;
+        case "A192CBC-HS384":
+            return 384;
+        case "A256CBC-HS512":
+            return 512;
+        default:
+            throw new errors_js_1.JOSENotSupported(`Unsupported JWE Algorithm: ${alg}`);
+    }
+}
+exports.bitLength = bitLength;
+exports["default"] = (alg)=>(0, random_js_1.default)(new Uint8Array(bitLength(alg) >> 3));
+
+
+/***/ }),
+
+/***/ 40798:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const errors_js_1 = __webpack_require__(79927);
+const iv_js_1 = __webpack_require__(1093);
+const checkIvLength = (enc, iv)=>{
+    if (iv.length << 3 !== (0, iv_js_1.bitLength)(enc)) {
+        throw new errors_js_1.JWEInvalid("Invalid Initialization Vector length");
+    }
+};
+exports["default"] = checkIvLength;
+
+
+/***/ }),
+
+/***/ 47234:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const is_key_like_js_1 = __webpack_require__(74283);
+const symmetricTypeCheck = (alg, key)=>{
+    if (key instanceof Uint8Array) return;
+    if (!(0, is_key_like_js_1.default)(key)) {
+        throw new TypeError((0, invalid_key_input_js_1.withAlg)(alg, key, ...is_key_like_js_1.types, "Uint8Array"));
+    }
+    if (key.type !== "secret") {
+        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for symmetric algorithms must be of type "secret"`);
+    }
+};
+const asymmetricTypeCheck = (alg, key, usage)=>{
+    if (!(0, is_key_like_js_1.default)(key)) {
+        throw new TypeError((0, invalid_key_input_js_1.withAlg)(alg, key, ...is_key_like_js_1.types));
+    }
+    if (key.type === "secret") {
+        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithms must not be of type "secret"`);
+    }
+    if (usage === "sign" && key.type === "public") {
+        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm signing must be of type "private"`);
+    }
+    if (usage === "decrypt" && key.type === "public") {
+        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm decryption must be of type "private"`);
+    }
+    if (key.algorithm && usage === "verify" && key.type === "private") {
+        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm verifying must be of type "public"`);
+    }
+    if (key.algorithm && usage === "encrypt" && key.type === "private") {
+        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm encryption must be of type "public"`);
+    }
+};
+const checkKeyType = (alg, key, usage)=>{
+    const symmetric = alg.startsWith("HS") || alg === "dir" || alg.startsWith("PBES2") || /^A\d{3}(?:GCM)?KW$/.test(alg);
+    if (symmetric) {
+        symmetricTypeCheck(alg, key);
+    } else {
+        asymmetricTypeCheck(alg, key, usage);
+    }
+};
+exports["default"] = checkKeyType;
+
+
+/***/ }),
+
+/***/ 31643:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const errors_js_1 = __webpack_require__(79927);
+function checkP2s(p2s) {
+    if (!(p2s instanceof Uint8Array) || p2s.length < 8) {
+        throw new errors_js_1.JWEInvalid("PBES2 Salt Input must be 8 or more octets");
+    }
+}
+exports["default"] = checkP2s;
+
+
+/***/ }),
+
+/***/ 54004:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.checkEncCryptoKey = exports.checkSigCryptoKey = void 0;
+function unusable(name, prop = "algorithm.name") {
+    return new TypeError(`CryptoKey does not support this operation, its ${prop} must be ${name}`);
+}
+function isAlgorithm(algorithm, name) {
+    return algorithm.name === name;
+}
+function getHashLength(hash) {
+    return parseInt(hash.name.slice(4), 10);
+}
+function getNamedCurve(alg) {
+    switch(alg){
+        case "ES256":
+            return "P-256";
+        case "ES384":
+            return "P-384";
+        case "ES512":
+            return "P-521";
+        default:
+            throw new Error("unreachable");
+    }
+}
+function checkUsage(key, usages) {
+    if (usages.length && !usages.some((expected)=>key.usages.includes(expected))) {
+        let msg = "CryptoKey does not support this operation, its usages must include ";
+        if (usages.length > 2) {
+            const last = usages.pop();
+            msg += `one of ${usages.join(", ")}, or ${last}.`;
+        } else if (usages.length === 2) {
+            msg += `one of ${usages[0]} or ${usages[1]}.`;
+        } else {
+            msg += `${usages[0]}.`;
+        }
+        throw new TypeError(msg);
+    }
+}
+function checkSigCryptoKey(key, alg, ...usages) {
+    switch(alg){
+        case "HS256":
+        case "HS384":
+        case "HS512":
+            {
+                if (!isAlgorithm(key.algorithm, "HMAC")) throw unusable("HMAC");
+                const expected = parseInt(alg.slice(2), 10);
+                const actual = getHashLength(key.algorithm.hash);
+                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
+                break;
+            }
+        case "RS256":
+        case "RS384":
+        case "RS512":
+            {
+                if (!isAlgorithm(key.algorithm, "RSASSA-PKCS1-v1_5")) throw unusable("RSASSA-PKCS1-v1_5");
+                const expected = parseInt(alg.slice(2), 10);
+                const actual = getHashLength(key.algorithm.hash);
+                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
+                break;
+            }
+        case "PS256":
+        case "PS384":
+        case "PS512":
+            {
+                if (!isAlgorithm(key.algorithm, "RSA-PSS")) throw unusable("RSA-PSS");
+                const expected = parseInt(alg.slice(2), 10);
+                const actual = getHashLength(key.algorithm.hash);
+                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
+                break;
+            }
+        case "EdDSA":
+            {
+                if (key.algorithm.name !== "Ed25519" && key.algorithm.name !== "Ed448") {
+                    throw unusable("Ed25519 or Ed448");
+                }
+                break;
+            }
+        case "ES256":
+        case "ES384":
+        case "ES512":
+            {
+                if (!isAlgorithm(key.algorithm, "ECDSA")) throw unusable("ECDSA");
+                const expected = getNamedCurve(alg);
+                const actual = key.algorithm.namedCurve;
+                if (actual !== expected) throw unusable(expected, "algorithm.namedCurve");
+                break;
+            }
+        default:
+            throw new TypeError("CryptoKey does not support this operation");
+    }
+    checkUsage(key, usages);
+}
+exports.checkSigCryptoKey = checkSigCryptoKey;
+function checkEncCryptoKey(key, alg, ...usages) {
+    switch(alg){
+        case "A128GCM":
+        case "A192GCM":
+        case "A256GCM":
+            {
+                if (!isAlgorithm(key.algorithm, "AES-GCM")) throw unusable("AES-GCM");
+                const expected = parseInt(alg.slice(1, 4), 10);
+                const actual = key.algorithm.length;
+                if (actual !== expected) throw unusable(expected, "algorithm.length");
+                break;
+            }
+        case "A128KW":
+        case "A192KW":
+        case "A256KW":
+            {
+                if (!isAlgorithm(key.algorithm, "AES-KW")) throw unusable("AES-KW");
+                const expected = parseInt(alg.slice(1, 4), 10);
+                const actual = key.algorithm.length;
+                if (actual !== expected) throw unusable(expected, "algorithm.length");
+                break;
+            }
+        case "ECDH":
+            {
+                switch(key.algorithm.name){
+                    case "ECDH":
+                    case "X25519":
+                    case "X448":
+                        break;
+                    default:
+                        throw unusable("ECDH, X25519, or X448");
+                }
+                break;
+            }
+        case "PBES2-HS256+A128KW":
+        case "PBES2-HS384+A192KW":
+        case "PBES2-HS512+A256KW":
+            if (!isAlgorithm(key.algorithm, "PBKDF2")) throw unusable("PBKDF2");
+            break;
+        case "RSA-OAEP":
+        case "RSA-OAEP-256":
+        case "RSA-OAEP-384":
+        case "RSA-OAEP-512":
+            {
+                if (!isAlgorithm(key.algorithm, "RSA-OAEP")) throw unusable("RSA-OAEP");
+                const expected = parseInt(alg.slice(9), 10) || 1;
+                const actual = getHashLength(key.algorithm.hash);
+                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
+                break;
+            }
+        default:
+            throw new TypeError("CryptoKey does not support this operation");
+    }
+    checkUsage(key, usages);
+}
+exports.checkEncCryptoKey = checkEncCryptoKey;
+
+
+/***/ }),
+
+/***/ 92078:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const aeskw_js_1 = __webpack_require__(81132);
+const ECDH = __webpack_require__(2183);
+const pbes2kw_js_1 = __webpack_require__(32121);
+const rsaes_js_1 = __webpack_require__(98745);
+const base64url_js_1 = __webpack_require__(37244);
+const errors_js_1 = __webpack_require__(79927);
+const cek_js_1 = __webpack_require__(87744);
+const import_js_1 = __webpack_require__(53844);
+const check_key_type_js_1 = __webpack_require__(47234);
+const is_object_js_1 = __webpack_require__(50281);
+const aesgcmkw_js_1 = __webpack_require__(50751);
+async function decryptKeyManagement(alg, key, encryptedKey, joseHeader, options) {
+    (0, check_key_type_js_1.default)(alg, key, "decrypt");
+    switch(alg){
+        case "dir":
+            {
+                if (encryptedKey !== undefined) throw new errors_js_1.JWEInvalid("Encountered unexpected JWE Encrypted Key");
+                return key;
+            }
+        case "ECDH-ES":
+            if (encryptedKey !== undefined) throw new errors_js_1.JWEInvalid("Encountered unexpected JWE Encrypted Key");
+        case "ECDH-ES+A128KW":
+        case "ECDH-ES+A192KW":
+        case "ECDH-ES+A256KW":
+            {
+                if (!(0, is_object_js_1.default)(joseHeader.epk)) throw new errors_js_1.JWEInvalid(`JOSE Header "epk" (Ephemeral Public Key) missing or invalid`);
+                if (!ECDH.ecdhAllowed(key)) throw new errors_js_1.JOSENotSupported("ECDH with the provided key is not allowed or not supported by your javascript runtime");
+                const epk = await (0, import_js_1.importJWK)(joseHeader.epk, alg);
+                let partyUInfo;
+                let partyVInfo;
+                if (joseHeader.apu !== undefined) {
+                    if (typeof joseHeader.apu !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "apu" (Agreement PartyUInfo) invalid`);
+                    try {
+                        partyUInfo = (0, base64url_js_1.decode)(joseHeader.apu);
+                    } catch  {
+                        throw new errors_js_1.JWEInvalid("Failed to base64url decode the apu");
+                    }
+                }
+                if (joseHeader.apv !== undefined) {
+                    if (typeof joseHeader.apv !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "apv" (Agreement PartyVInfo) invalid`);
+                    try {
+                        partyVInfo = (0, base64url_js_1.decode)(joseHeader.apv);
+                    } catch  {
+                        throw new errors_js_1.JWEInvalid("Failed to base64url decode the apv");
+                    }
+                }
+                const sharedSecret = await ECDH.deriveKey(epk, key, alg === "ECDH-ES" ? joseHeader.enc : alg, alg === "ECDH-ES" ? (0, cek_js_1.bitLength)(joseHeader.enc) : parseInt(alg.slice(-5, -2), 10), partyUInfo, partyVInfo);
+                if (alg === "ECDH-ES") return sharedSecret;
+                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
+                return (0, aeskw_js_1.unwrap)(alg.slice(-6), sharedSecret, encryptedKey);
+            }
+        case "RSA1_5":
+        case "RSA-OAEP":
+        case "RSA-OAEP-256":
+        case "RSA-OAEP-384":
+        case "RSA-OAEP-512":
+            {
+                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
+                return (0, rsaes_js_1.decrypt)(alg, key, encryptedKey);
+            }
+        case "PBES2-HS256+A128KW":
+        case "PBES2-HS384+A192KW":
+        case "PBES2-HS512+A256KW":
+            {
+                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
+                if (typeof joseHeader.p2c !== "number") throw new errors_js_1.JWEInvalid(`JOSE Header "p2c" (PBES2 Count) missing or invalid`);
+                const p2cLimit = (options === null || options === void 0 ? void 0 : options.maxPBES2Count) || 10000;
+                if (joseHeader.p2c > p2cLimit) throw new errors_js_1.JWEInvalid(`JOSE Header "p2c" (PBES2 Count) out is of acceptable bounds`);
+                if (typeof joseHeader.p2s !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "p2s" (PBES2 Salt) missing or invalid`);
+                let p2s;
+                try {
+                    p2s = (0, base64url_js_1.decode)(joseHeader.p2s);
+                } catch  {
+                    throw new errors_js_1.JWEInvalid("Failed to base64url decode the p2s");
+                }
+                return (0, pbes2kw_js_1.decrypt)(alg, key, encryptedKey, joseHeader.p2c, p2s);
+            }
+        case "A128KW":
+        case "A192KW":
+        case "A256KW":
+            {
+                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
+                return (0, aeskw_js_1.unwrap)(alg, key, encryptedKey);
+            }
+        case "A128GCMKW":
+        case "A192GCMKW":
+        case "A256GCMKW":
+            {
+                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
+                if (typeof joseHeader.iv !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "iv" (Initialization Vector) missing or invalid`);
+                if (typeof joseHeader.tag !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "tag" (Authentication Tag) missing or invalid`);
+                let iv;
+                try {
+                    iv = (0, base64url_js_1.decode)(joseHeader.iv);
+                } catch  {
+                    throw new errors_js_1.JWEInvalid("Failed to base64url decode the iv");
+                }
+                let tag;
+                try {
+                    tag = (0, base64url_js_1.decode)(joseHeader.tag);
+                } catch  {
+                    throw new errors_js_1.JWEInvalid("Failed to base64url decode the tag");
+                }
+                return (0, aesgcmkw_js_1.unwrap)(alg, key, encryptedKey, iv, tag);
+            }
+        default:
+            {
+                throw new errors_js_1.JOSENotSupported('Invalid or unsupported "alg" (JWE Algorithm) header value');
+            }
+    }
+}
+exports["default"] = decryptKeyManagement;
+
+
+/***/ }),
+
+/***/ 35255:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const aeskw_js_1 = __webpack_require__(81132);
+const ECDH = __webpack_require__(2183);
+const pbes2kw_js_1 = __webpack_require__(32121);
+const rsaes_js_1 = __webpack_require__(98745);
+const base64url_js_1 = __webpack_require__(37244);
+const cek_js_1 = __webpack_require__(87744);
+const errors_js_1 = __webpack_require__(79927);
+const export_js_1 = __webpack_require__(30107);
+const check_key_type_js_1 = __webpack_require__(47234);
+const aesgcmkw_js_1 = __webpack_require__(50751);
+async function encryptKeyManagement(alg, enc, key, providedCek, providedParameters = {}) {
+    let encryptedKey;
+    let parameters;
+    let cek;
+    (0, check_key_type_js_1.default)(alg, key, "encrypt");
+    switch(alg){
+        case "dir":
+            {
+                cek = key;
+                break;
+            }
+        case "ECDH-ES":
+        case "ECDH-ES+A128KW":
+        case "ECDH-ES+A192KW":
+        case "ECDH-ES+A256KW":
+            {
+                if (!ECDH.ecdhAllowed(key)) {
+                    throw new errors_js_1.JOSENotSupported("ECDH with the provided key is not allowed or not supported by your javascript runtime");
+                }
+                const { apu, apv } = providedParameters;
+                let { epk: ephemeralKey } = providedParameters;
+                ephemeralKey || (ephemeralKey = (await ECDH.generateEpk(key)).privateKey);
+                const { x, y, crv, kty } = await (0, export_js_1.exportJWK)(ephemeralKey);
+                const sharedSecret = await ECDH.deriveKey(key, ephemeralKey, alg === "ECDH-ES" ? enc : alg, alg === "ECDH-ES" ? (0, cek_js_1.bitLength)(enc) : parseInt(alg.slice(-5, -2), 10), apu, apv);
+                parameters = {
+                    epk: {
+                        x,
+                        crv,
+                        kty
+                    }
+                };
+                if (kty === "EC") parameters.epk.y = y;
+                if (apu) parameters.apu = (0, base64url_js_1.encode)(apu);
+                if (apv) parameters.apv = (0, base64url_js_1.encode)(apv);
+                if (alg === "ECDH-ES") {
+                    cek = sharedSecret;
+                    break;
+                }
+                cek = providedCek || (0, cek_js_1.default)(enc);
+                const kwAlg = alg.slice(-6);
+                encryptedKey = await (0, aeskw_js_1.wrap)(kwAlg, sharedSecret, cek);
+                break;
+            }
+        case "RSA1_5":
+        case "RSA-OAEP":
+        case "RSA-OAEP-256":
+        case "RSA-OAEP-384":
+        case "RSA-OAEP-512":
+            {
+                cek = providedCek || (0, cek_js_1.default)(enc);
+                encryptedKey = await (0, rsaes_js_1.encrypt)(alg, key, cek);
+                break;
+            }
+        case "PBES2-HS256+A128KW":
+        case "PBES2-HS384+A192KW":
+        case "PBES2-HS512+A256KW":
+            {
+                cek = providedCek || (0, cek_js_1.default)(enc);
+                const { p2c, p2s } = providedParameters;
+                ({ encryptedKey, ...parameters } = await (0, pbes2kw_js_1.encrypt)(alg, key, cek, p2c, p2s));
+                break;
+            }
+        case "A128KW":
+        case "A192KW":
+        case "A256KW":
+            {
+                cek = providedCek || (0, cek_js_1.default)(enc);
+                encryptedKey = await (0, aeskw_js_1.wrap)(alg, key, cek);
+                break;
+            }
+        case "A128GCMKW":
+        case "A192GCMKW":
+        case "A256GCMKW":
+            {
+                cek = providedCek || (0, cek_js_1.default)(enc);
+                const { iv } = providedParameters;
+                ({ encryptedKey, ...parameters } = await (0, aesgcmkw_js_1.wrap)(alg, key, cek, iv));
+                break;
+            }
+        default:
+            {
+                throw new errors_js_1.JOSENotSupported('Invalid or unsupported "alg" (JWE Algorithm) header value');
+            }
+    }
+    return {
+        cek,
+        encryptedKey,
+        parameters
+    };
+}
+exports["default"] = encryptKeyManagement;
+
+
+/***/ }),
+
+/***/ 92155:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports["default"] = (date)=>Math.floor(date.getTime() / 1000);
+
+
+/***/ }),
+
+/***/ 77909:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.withAlg = void 0;
+function message(msg, actual, ...types) {
+    if (types.length > 2) {
+        const last = types.pop();
+        msg += `one of type ${types.join(", ")}, or ${last}.`;
+    } else if (types.length === 2) {
+        msg += `one of type ${types[0]} or ${types[1]}.`;
+    } else {
+        msg += `of type ${types[0]}.`;
+    }
+    if (actual == null) {
+        msg += ` Received ${actual}`;
+    } else if (typeof actual === "function" && actual.name) {
+        msg += ` Received function ${actual.name}`;
+    } else if (typeof actual === "object" && actual != null) {
+        if (actual.constructor && actual.constructor.name) {
+            msg += ` Received an instance of ${actual.constructor.name}`;
+        }
+    }
+    return msg;
+}
+exports["default"] = (actual, ...types)=>{
+    return message("Key must be ", actual, ...types);
+};
+function withAlg(alg, actual, ...types) {
+    return message(`Key for the ${alg} algorithm must be `, actual, ...types);
+}
+exports.withAlg = withAlg;
+
+
+/***/ }),
+
+/***/ 1223:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const isDisjoint = (...headers)=>{
+    const sources = headers.filter(Boolean);
+    if (sources.length === 0 || sources.length === 1) {
+        return true;
+    }
+    let acc;
+    for (const header of sources){
+        const parameters = Object.keys(header);
+        if (!acc || acc.size === 0) {
+            acc = new Set(parameters);
+            continue;
+        }
+        for (const parameter of parameters){
+            if (acc.has(parameter)) {
+                return false;
+            }
+            acc.add(parameter);
+        }
+    }
+    return true;
+};
+exports["default"] = isDisjoint;
+
+
+/***/ }),
+
+/***/ 50281:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+function isObjectLike(value) {
+    return typeof value === "object" && value !== null;
+}
+function isObject(input) {
+    if (!isObjectLike(input) || Object.prototype.toString.call(input) !== "[object Object]") {
+        return false;
+    }
+    if (Object.getPrototypeOf(input) === null) {
+        return true;
+    }
+    let proto = input;
+    while(Object.getPrototypeOf(proto) !== null){
+        proto = Object.getPrototypeOf(proto);
+    }
+    return Object.getPrototypeOf(input) === proto;
+}
+exports["default"] = isObject;
+
+
+/***/ }),
+
+/***/ 1093:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.bitLength = void 0;
+const errors_js_1 = __webpack_require__(79927);
+const random_js_1 = __webpack_require__(58595);
+function bitLength(alg) {
+    switch(alg){
+        case "A128GCM":
+        case "A128GCMKW":
+        case "A192GCM":
+        case "A192GCMKW":
+        case "A256GCM":
+        case "A256GCMKW":
+            return 96;
+        case "A128CBC-HS256":
+        case "A192CBC-HS384":
+        case "A256CBC-HS512":
+            return 128;
+        default:
+            throw new errors_js_1.JOSENotSupported(`Unsupported JWE Algorithm: ${alg}`);
+    }
+}
+exports.bitLength = bitLength;
+exports["default"] = (alg)=>(0, random_js_1.default)(new Uint8Array(bitLength(alg) >> 3));
+
+
+/***/ }),
+
+/***/ 65455:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const errors_js_1 = __webpack_require__(79927);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const epoch_js_1 = __webpack_require__(92155);
+const secs_js_1 = __webpack_require__(91540);
+const is_object_js_1 = __webpack_require__(50281);
+const normalizeTyp = (value)=>value.toLowerCase().replace(/^application\//, "");
+const checkAudiencePresence = (audPayload, audOption)=>{
+    if (typeof audPayload === "string") {
+        return audOption.includes(audPayload);
+    }
+    if (Array.isArray(audPayload)) {
+        return audOption.some(Set.prototype.has.bind(new Set(audPayload)));
+    }
+    return false;
+};
+exports["default"] = (protectedHeader, encodedPayload, options = {})=>{
+    const { typ } = options;
+    if (typ && (typeof protectedHeader.typ !== "string" || normalizeTyp(protectedHeader.typ) !== normalizeTyp(typ))) {
+        throw new errors_js_1.JWTClaimValidationFailed('unexpected "typ" JWT header value', "typ", "check_failed");
+    }
+    let payload;
+    try {
+        payload = JSON.parse(buffer_utils_js_1.decoder.decode(encodedPayload));
+    } catch  {}
+    if (!(0, is_object_js_1.default)(payload)) {
+        throw new errors_js_1.JWTInvalid("JWT Claims Set must be a top-level JSON object");
+    }
+    const { requiredClaims = [], issuer, subject, audience, maxTokenAge } = options;
+    if (maxTokenAge !== undefined) requiredClaims.push("iat");
+    if (audience !== undefined) requiredClaims.push("aud");
+    if (subject !== undefined) requiredClaims.push("sub");
+    if (issuer !== undefined) requiredClaims.push("iss");
+    for (const claim of new Set(requiredClaims.reverse())){
+        if (!(claim in payload)) {
+            throw new errors_js_1.JWTClaimValidationFailed(`missing required "${claim}" claim`, claim, "missing");
+        }
+    }
+    if (issuer && !(Array.isArray(issuer) ? issuer : [
+        issuer
+    ]).includes(payload.iss)) {
+        throw new errors_js_1.JWTClaimValidationFailed('unexpected "iss" claim value', "iss", "check_failed");
+    }
+    if (subject && payload.sub !== subject) {
+        throw new errors_js_1.JWTClaimValidationFailed('unexpected "sub" claim value', "sub", "check_failed");
+    }
+    if (audience && !checkAudiencePresence(payload.aud, typeof audience === "string" ? [
+        audience
+    ] : audience)) {
+        throw new errors_js_1.JWTClaimValidationFailed('unexpected "aud" claim value', "aud", "check_failed");
+    }
+    let tolerance;
+    switch(typeof options.clockTolerance){
+        case "string":
+            tolerance = (0, secs_js_1.default)(options.clockTolerance);
+            break;
+        case "number":
+            tolerance = options.clockTolerance;
+            break;
+        case "undefined":
+            tolerance = 0;
+            break;
+        default:
+            throw new TypeError("Invalid clockTolerance option type");
+    }
+    const { currentDate } = options;
+    const now = (0, epoch_js_1.default)(currentDate || new Date());
+    if ((payload.iat !== undefined || maxTokenAge) && typeof payload.iat !== "number") {
+        throw new errors_js_1.JWTClaimValidationFailed('"iat" claim must be a number', "iat", "invalid");
+    }
+    if (payload.nbf !== undefined) {
+        if (typeof payload.nbf !== "number") {
+            throw new errors_js_1.JWTClaimValidationFailed('"nbf" claim must be a number', "nbf", "invalid");
+        }
+        if (payload.nbf > now + tolerance) {
+            throw new errors_js_1.JWTClaimValidationFailed('"nbf" claim timestamp check failed', "nbf", "check_failed");
+        }
+    }
+    if (payload.exp !== undefined) {
+        if (typeof payload.exp !== "number") {
+            throw new errors_js_1.JWTClaimValidationFailed('"exp" claim must be a number', "exp", "invalid");
+        }
+        if (payload.exp <= now - tolerance) {
+            throw new errors_js_1.JWTExpired('"exp" claim timestamp check failed', "exp", "check_failed");
+        }
+    }
+    if (maxTokenAge) {
+        const age = now - payload.iat;
+        const max = typeof maxTokenAge === "number" ? maxTokenAge : (0, secs_js_1.default)(maxTokenAge);
+        if (age - tolerance > max) {
+            throw new errors_js_1.JWTExpired('"iat" claim timestamp check failed (too far in the past)', "iat", "check_failed");
+        }
+        if (age < 0 - tolerance) {
+            throw new errors_js_1.JWTClaimValidationFailed('"iat" claim timestamp check failed (it should be in the past)', "iat", "check_failed");
+        }
+    }
+    return payload;
+};
+
+
+/***/ }),
+
+/***/ 91540:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const minute = 60;
+const hour = minute * 60;
+const day = hour * 24;
+const week = day * 7;
+const year = day * 365.25;
+const REGEX = /^(\d+|\d+\.\d+) ?(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)$/i;
+exports["default"] = (str)=>{
+    const matched = REGEX.exec(str);
+    if (!matched) {
+        throw new TypeError("Invalid time period format");
+    }
+    const value = parseFloat(matched[1]);
+    const unit = matched[2].toLowerCase();
+    switch(unit){
+        case "sec":
+        case "secs":
+        case "second":
+        case "seconds":
+        case "s":
+            return Math.round(value);
+        case "minute":
+        case "minutes":
+        case "min":
+        case "mins":
+        case "m":
+            return Math.round(value * minute);
+        case "hour":
+        case "hours":
+        case "hr":
+        case "hrs":
+        case "h":
+            return Math.round(value * hour);
+        case "day":
+        case "days":
+        case "d":
+            return Math.round(value * day);
+        case "week":
+        case "weeks":
+        case "w":
+            return Math.round(value * week);
+        default:
+            return Math.round(value * year);
+    }
+};
+
+
+/***/ }),
+
+/***/ 1524:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const validateAlgorithms = (option, algorithms)=>{
+    if (algorithms !== undefined && (!Array.isArray(algorithms) || algorithms.some((s)=>typeof s !== "string"))) {
+        throw new TypeError(`"${option}" option must be an array of strings`);
+    }
+    if (!algorithms) {
+        return undefined;
+    }
+    return new Set(algorithms);
+};
+exports["default"] = validateAlgorithms;
+
+
+/***/ }),
+
+/***/ 51534:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const errors_js_1 = __webpack_require__(79927);
+function validateCrit(Err, recognizedDefault, recognizedOption, protectedHeader, joseHeader) {
+    if (joseHeader.crit !== undefined && protectedHeader.crit === undefined) {
+        throw new Err('"crit" (Critical) Header Parameter MUST be integrity protected');
+    }
+    if (!protectedHeader || protectedHeader.crit === undefined) {
+        return new Set();
+    }
+    if (!Array.isArray(protectedHeader.crit) || protectedHeader.crit.length === 0 || protectedHeader.crit.some((input)=>typeof input !== "string" || input.length === 0)) {
+        throw new Err('"crit" (Critical) Header Parameter MUST be an array of non-empty strings when present');
+    }
+    let recognized;
+    if (recognizedOption !== undefined) {
+        recognized = new Map([
+            ...Object.entries(recognizedOption),
+            ...recognizedDefault.entries()
+        ]);
+    } else {
+        recognized = recognizedDefault;
+    }
+    for (const parameter of protectedHeader.crit){
+        if (!recognized.has(parameter)) {
+            throw new errors_js_1.JOSENotSupported(`Extension Header Parameter "${parameter}" is not recognized`);
+        }
+        if (joseHeader[parameter] === undefined) {
+            throw new Err(`Extension Header Parameter "${parameter}" is missing`);
+        } else if (recognized.get(parameter) && protectedHeader[parameter] === undefined) {
+            throw new Err(`Extension Header Parameter "${parameter}" MUST be integrity protected`);
+        }
+    }
+    return new Set(protectedHeader.crit);
+}
+exports["default"] = validateCrit;
+
+
+/***/ }),
+
+/***/ 81132:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.unwrap = exports.wrap = void 0;
+const buffer_1 = __webpack_require__(14300);
+const crypto_1 = __webpack_require__(6113);
+const errors_js_1 = __webpack_require__(79927);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const webcrypto_js_1 = __webpack_require__(10557);
+const crypto_key_js_1 = __webpack_require__(54004);
+const is_key_object_js_1 = __webpack_require__(19205);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const ciphers_js_1 = __webpack_require__(88419);
+const is_key_like_js_1 = __webpack_require__(74283);
+function checkKeySize(key, alg) {
+    if (key.symmetricKeySize << 3 !== parseInt(alg.slice(1, 4), 10)) {
+        throw new TypeError(`Invalid key size for alg: ${alg}`);
+    }
+}
+function ensureKeyObject(key, alg, usage) {
+    if ((0, is_key_object_js_1.default)(key)) {
+        return key;
+    }
+    if (key instanceof Uint8Array) {
+        return (0, crypto_1.createSecretKey)(key);
+    }
+    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
+        (0, crypto_key_js_1.checkEncCryptoKey)(key, alg, usage);
+        return crypto_1.KeyObject.from(key);
+    }
+    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
+}
+const wrap = (alg, key, cek)=>{
+    const size = parseInt(alg.slice(1, 4), 10);
+    const algorithm = `aes${size}-wrap`;
+    if (!(0, ciphers_js_1.default)(algorithm)) {
+        throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
+    }
+    const keyObject = ensureKeyObject(key, alg, "wrapKey");
+    checkKeySize(keyObject, alg);
+    const cipher = (0, crypto_1.createCipheriv)(algorithm, keyObject, buffer_1.Buffer.alloc(8, 0xa6));
+    return (0, buffer_utils_js_1.concat)(cipher.update(cek), cipher.final());
+};
+exports.wrap = wrap;
+const unwrap = (alg, key, encryptedKey)=>{
+    const size = parseInt(alg.slice(1, 4), 10);
+    const algorithm = `aes${size}-wrap`;
+    if (!(0, ciphers_js_1.default)(algorithm)) {
+        throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
+    }
+    const keyObject = ensureKeyObject(key, alg, "unwrapKey");
+    checkKeySize(keyObject, alg);
+    const cipher = (0, crypto_1.createDecipheriv)(algorithm, keyObject, buffer_1.Buffer.alloc(8, 0xa6));
+    return (0, buffer_utils_js_1.concat)(cipher.update(encryptedKey), cipher.final());
+};
+exports.unwrap = unwrap;
+
+
+/***/ }),
+
+/***/ 23794:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.fromX509 = exports.fromSPKI = exports.fromPKCS8 = exports.toPKCS8 = exports.toSPKI = void 0;
+const crypto_1 = __webpack_require__(6113);
+const buffer_1 = __webpack_require__(14300);
+const webcrypto_js_1 = __webpack_require__(10557);
+const is_key_object_js_1 = __webpack_require__(19205);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const is_key_like_js_1 = __webpack_require__(74283);
+const genericExport = (keyType, keyFormat, key)=>{
+    let keyObject;
+    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
+        if (!key.extractable) {
+            throw new TypeError("CryptoKey is not extractable");
+        }
+        keyObject = crypto_1.KeyObject.from(key);
+    } else if ((0, is_key_object_js_1.default)(key)) {
+        keyObject = key;
+    } else {
+        throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types));
+    }
+    if (keyObject.type !== keyType) {
+        throw new TypeError(`key is not a ${keyType} key`);
+    }
+    return keyObject.export({
+        format: "pem",
+        type: keyFormat
+    });
+};
+const toSPKI = (key)=>{
+    return genericExport("public", "spki", key);
+};
+exports.toSPKI = toSPKI;
+const toPKCS8 = (key)=>{
+    return genericExport("private", "pkcs8", key);
+};
+exports.toPKCS8 = toPKCS8;
+const fromPKCS8 = (pem)=>(0, crypto_1.createPrivateKey)({
+        key: buffer_1.Buffer.from(pem.replace(/(?:-----(?:BEGIN|END) PRIVATE KEY-----|\s)/g, ""), "base64"),
+        type: "pkcs8",
+        format: "der"
+    });
+exports.fromPKCS8 = fromPKCS8;
+const fromSPKI = (pem)=>(0, crypto_1.createPublicKey)({
+        key: buffer_1.Buffer.from(pem.replace(/(?:-----(?:BEGIN|END) PUBLIC KEY-----|\s)/g, ""), "base64"),
+        type: "spki",
+        format: "der"
+    });
+exports.fromSPKI = fromSPKI;
+const fromX509 = (pem)=>(0, crypto_1.createPublicKey)({
+        key: pem,
+        type: "spki",
+        format: "pem"
+    });
+exports.fromX509 = fromX509;
+
+
+/***/ }),
+
+/***/ 25812:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const tagInteger = 0x02;
+const tagSequence = 0x30;
+class Asn1SequenceDecoder {
+    constructor(buffer){
+        if (buffer[0] !== tagSequence) {
+            throw new TypeError();
+        }
+        this.buffer = buffer;
+        this.offset = 1;
+        const len = this.decodeLength();
+        if (len !== buffer.length - this.offset) {
+            throw new TypeError();
+        }
+    }
+    decodeLength() {
+        let length = this.buffer[this.offset++];
+        if (length & 0x80) {
+            const nBytes = length & ~0x80;
+            length = 0;
+            for(let i = 0; i < nBytes; i++)length = length << 8 | this.buffer[this.offset + i];
+            this.offset += nBytes;
+        }
+        return length;
+    }
+    unsignedInteger() {
+        if (this.buffer[this.offset++] !== tagInteger) {
+            throw new TypeError();
+        }
+        let length = this.decodeLength();
+        if (this.buffer[this.offset] === 0) {
+            this.offset++;
+            length--;
+        }
+        const result = this.buffer.slice(this.offset, this.offset + length);
+        this.offset += length;
+        return result;
+    }
+    end() {
+        if (this.offset !== this.buffer.length) {
+            throw new TypeError();
+        }
+    }
+}
+exports["default"] = Asn1SequenceDecoder;
+
+
+/***/ }),
+
+/***/ 56879:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const buffer_1 = __webpack_require__(14300);
+const errors_js_1 = __webpack_require__(79927);
+const tagInteger = 0x02;
+const tagBitStr = 0x03;
+const tagOctStr = 0x04;
+const tagSequence = 0x30;
+const bZero = buffer_1.Buffer.from([
+    0x00
+]);
+const bTagInteger = buffer_1.Buffer.from([
+    tagInteger
+]);
+const bTagBitStr = buffer_1.Buffer.from([
+    tagBitStr
+]);
+const bTagSequence = buffer_1.Buffer.from([
+    tagSequence
+]);
+const bTagOctStr = buffer_1.Buffer.from([
+    tagOctStr
+]);
+const encodeLength = (len)=>{
+    if (len < 128) return buffer_1.Buffer.from([
+        len
+    ]);
+    const buffer = buffer_1.Buffer.alloc(5);
+    buffer.writeUInt32BE(len, 1);
+    let offset = 1;
+    while(buffer[offset] === 0)offset++;
+    buffer[offset - 1] = 0x80 | 5 - offset;
+    return buffer.slice(offset - 1);
+};
+const oids = new Map([
+    [
+        "P-256",
+        buffer_1.Buffer.from("06 08 2A 86 48 CE 3D 03 01 07".replace(/ /g, ""), "hex")
+    ],
+    [
+        "secp256k1",
+        buffer_1.Buffer.from("06 05 2B 81 04 00 0A".replace(/ /g, ""), "hex")
+    ],
+    [
+        "P-384",
+        buffer_1.Buffer.from("06 05 2B 81 04 00 22".replace(/ /g, ""), "hex")
+    ],
+    [
+        "P-521",
+        buffer_1.Buffer.from("06 05 2B 81 04 00 23".replace(/ /g, ""), "hex")
+    ],
+    [
+        "ecPublicKey",
+        buffer_1.Buffer.from("06 07 2A 86 48 CE 3D 02 01".replace(/ /g, ""), "hex")
+    ],
+    [
+        "X25519",
+        buffer_1.Buffer.from("06 03 2B 65 6E".replace(/ /g, ""), "hex")
+    ],
+    [
+        "X448",
+        buffer_1.Buffer.from("06 03 2B 65 6F".replace(/ /g, ""), "hex")
+    ],
+    [
+        "Ed25519",
+        buffer_1.Buffer.from("06 03 2B 65 70".replace(/ /g, ""), "hex")
+    ],
+    [
+        "Ed448",
+        buffer_1.Buffer.from("06 03 2B 65 71".replace(/ /g, ""), "hex")
+    ]
+]);
+class DumbAsn1Encoder {
+    constructor(){
+        this.length = 0;
+        this.elements = [];
+    }
+    oidFor(oid) {
+        const bOid = oids.get(oid);
+        if (!bOid) {
+            throw new errors_js_1.JOSENotSupported("Invalid or unsupported OID");
+        }
+        this.elements.push(bOid);
+        this.length += bOid.length;
+    }
+    zero() {
+        this.elements.push(bTagInteger, buffer_1.Buffer.from([
+            0x01
+        ]), bZero);
+        this.length += 3;
+    }
+    one() {
+        this.elements.push(bTagInteger, buffer_1.Buffer.from([
+            0x01
+        ]), buffer_1.Buffer.from([
+            0x01
+        ]));
+        this.length += 3;
+    }
+    unsignedInteger(integer) {
+        if (integer[0] & 0x80) {
+            const len = encodeLength(integer.length + 1);
+            this.elements.push(bTagInteger, len, bZero, integer);
+            this.length += 2 + len.length + integer.length;
+        } else {
+            let i = 0;
+            while(integer[i] === 0 && (integer[i + 1] & 0x80) === 0)i++;
+            const len = encodeLength(integer.length - i);
+            this.elements.push(bTagInteger, encodeLength(integer.length - i), integer.slice(i));
+            this.length += 1 + len.length + integer.length - i;
+        }
+    }
+    octStr(octStr) {
+        const len = encodeLength(octStr.length);
+        this.elements.push(bTagOctStr, encodeLength(octStr.length), octStr);
+        this.length += 1 + len.length + octStr.length;
+    }
+    bitStr(bitS) {
+        const len = encodeLength(bitS.length + 1);
+        this.elements.push(bTagBitStr, encodeLength(bitS.length + 1), bZero, bitS);
+        this.length += 1 + len.length + bitS.length + 1;
+    }
+    add(seq) {
+        this.elements.push(seq);
+        this.length += seq.length;
+    }
+    end(tag = bTagSequence) {
+        const len = encodeLength(this.length);
+        return buffer_1.Buffer.concat([
+            tag,
+            len,
+            ...this.elements
+        ], 1 + len.length + this.length);
+    }
+}
+exports["default"] = DumbAsn1Encoder;
+
+
+/***/ }),
+
+/***/ 37244:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.decode = exports.encode = exports.encodeBase64 = exports.decodeBase64 = void 0;
+const buffer_1 = __webpack_require__(14300);
+const buffer_utils_js_1 = __webpack_require__(43807);
+let encode;
+function normalize(input) {
+    let encoded = input;
+    if (encoded instanceof Uint8Array) {
+        encoded = buffer_utils_js_1.decoder.decode(encoded);
+    }
+    return encoded;
+}
+if (buffer_1.Buffer.isEncoding("base64url")) {
+    exports.encode = encode = (input)=>buffer_1.Buffer.from(input).toString("base64url");
+} else {
+    exports.encode = encode = (input)=>buffer_1.Buffer.from(input).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+}
+const decodeBase64 = (input)=>buffer_1.Buffer.from(input, "base64");
+exports.decodeBase64 = decodeBase64;
+const encodeBase64 = (input)=>buffer_1.Buffer.from(input).toString("base64");
+exports.encodeBase64 = encodeBase64;
+const decode = (input)=>buffer_1.Buffer.from(normalize(input), "base64");
+exports.decode = decode;
+
+
+/***/ }),
+
+/***/ 16872:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+const buffer_utils_js_1 = __webpack_require__(43807);
+function cbcTag(aad, iv, ciphertext, macSize, macKey, keySize) {
+    const macData = (0, buffer_utils_js_1.concat)(aad, iv, ciphertext, (0, buffer_utils_js_1.uint64be)(aad.length << 3));
+    const hmac = (0, crypto_1.createHmac)(`sha${macSize}`, macKey);
+    hmac.update(macData);
+    return hmac.digest().slice(0, keySize >> 3);
+}
+exports["default"] = cbcTag;
+
+
+/***/ }),
+
+/***/ 54901:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const errors_js_1 = __webpack_require__(79927);
+const is_key_object_js_1 = __webpack_require__(19205);
+const checkCekLength = (enc, cek)=>{
+    let expected;
+    switch(enc){
+        case "A128CBC-HS256":
+        case "A192CBC-HS384":
+        case "A256CBC-HS512":
+            expected = parseInt(enc.slice(-3), 10);
+            break;
+        case "A128GCM":
+        case "A192GCM":
+        case "A256GCM":
+            expected = parseInt(enc.slice(1, 4), 10);
+            break;
+        default:
+            throw new errors_js_1.JOSENotSupported(`Content Encryption Algorithm ${enc} is not supported either by JOSE or your javascript runtime`);
+    }
+    if (cek instanceof Uint8Array) {
+        const actual = cek.byteLength << 3;
+        if (actual !== expected) {
+            throw new errors_js_1.JWEInvalid(`Invalid Content Encryption Key length. Expected ${expected} bits, got ${actual} bits`);
+        }
+        return;
+    }
+    if ((0, is_key_object_js_1.default)(cek) && cek.type === "secret") {
+        const actual = cek.symmetricKeySize << 3;
+        if (actual !== expected) {
+            throw new errors_js_1.JWEInvalid(`Invalid Content Encryption Key length. Expected ${expected} bits, got ${actual} bits`);
+        }
+        return;
+    }
+    throw new TypeError("Invalid Content Encryption Key type");
+};
+exports["default"] = checkCekLength;
+
+
+/***/ }),
+
+/***/ 80409:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.setModulusLength = exports.weakMap = void 0;
+exports.weakMap = new WeakMap();
+const getLength = (buf, index)=>{
+    let len = buf.readUInt8(1);
+    if ((len & 0x80) === 0) {
+        if (index === 0) {
+            return len;
+        }
+        return getLength(buf.subarray(2 + len), index - 1);
+    }
+    const num = len & 0x7f;
+    len = 0;
+    for(let i = 0; i < num; i++){
+        len <<= 8;
+        const j = buf.readUInt8(2 + i);
+        len |= j;
+    }
+    if (index === 0) {
+        return len;
+    }
+    return getLength(buf.subarray(2 + len), index - 1);
+};
+const getLengthOfSeqIndex = (sequence, index)=>{
+    const len = sequence.readUInt8(1);
+    if ((len & 0x80) === 0) {
+        return getLength(sequence.subarray(2), index);
+    }
+    const num = len & 0x7f;
+    return getLength(sequence.subarray(2 + num), index);
+};
+const getModulusLength = (key)=>{
+    var _a, _b;
+    if (exports.weakMap.has(key)) {
+        return exports.weakMap.get(key);
+    }
+    const modulusLength = (_b = (_a = key.asymmetricKeyDetails) === null || _a === void 0 ? void 0 : _a.modulusLength) !== null && _b !== void 0 ? _b : getLengthOfSeqIndex(key.export({
+        format: "der",
+        type: "pkcs1"
+    }), key.type === "private" ? 1 : 0) - 1 << 3;
+    exports.weakMap.set(key, modulusLength);
+    return modulusLength;
+};
+const setModulusLength = (keyObject, modulusLength)=>{
+    exports.weakMap.set(keyObject, modulusLength);
+};
+exports.setModulusLength = setModulusLength;
+exports["default"] = (key, alg)=>{
+    if (getModulusLength(key) < 2048) {
+        throw new TypeError(`${alg} requires key modulusLength to be 2048 bits or larger`);
+    }
+};
+
+
+/***/ }),
+
+/***/ 88419:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+let ciphers;
+exports["default"] = (algorithm)=>{
+    ciphers || (ciphers = new Set((0, crypto_1.getCiphers)()));
+    return ciphers.has(algorithm);
+};
+
+
+/***/ }),
+
+/***/ 44225:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+const check_iv_length_js_1 = __webpack_require__(40798);
+const check_cek_length_js_1 = __webpack_require__(54901);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const errors_js_1 = __webpack_require__(79927);
+const timing_safe_equal_js_1 = __webpack_require__(80601);
+const cbc_tag_js_1 = __webpack_require__(16872);
+const webcrypto_js_1 = __webpack_require__(10557);
+const crypto_key_js_1 = __webpack_require__(54004);
+const is_key_object_js_1 = __webpack_require__(19205);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const ciphers_js_1 = __webpack_require__(88419);
+const is_key_like_js_1 = __webpack_require__(74283);
+function cbcDecrypt(enc, cek, ciphertext, iv, tag, aad) {
+    const keySize = parseInt(enc.slice(1, 4), 10);
+    if ((0, is_key_object_js_1.default)(cek)) {
+        cek = cek.export();
+    }
+    const encKey = cek.subarray(keySize >> 3);
+    const macKey = cek.subarray(0, keySize >> 3);
+    const macSize = parseInt(enc.slice(-3), 10);
+    const algorithm = `aes-${keySize}-cbc`;
+    if (!(0, ciphers_js_1.default)(algorithm)) {
+        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
+    }
+    const expectedTag = (0, cbc_tag_js_1.default)(aad, iv, ciphertext, macSize, macKey, keySize);
+    let macCheckPassed;
+    try {
+        macCheckPassed = (0, timing_safe_equal_js_1.default)(tag, expectedTag);
+    } catch  {}
+    if (!macCheckPassed) {
+        throw new errors_js_1.JWEDecryptionFailed();
+    }
+    let plaintext;
+    try {
+        const decipher = (0, crypto_1.createDecipheriv)(algorithm, encKey, iv);
+        plaintext = (0, buffer_utils_js_1.concat)(decipher.update(ciphertext), decipher.final());
+    } catch  {}
+    if (!plaintext) {
+        throw new errors_js_1.JWEDecryptionFailed();
+    }
+    return plaintext;
+}
+function gcmDecrypt(enc, cek, ciphertext, iv, tag, aad) {
+    const keySize = parseInt(enc.slice(1, 4), 10);
+    const algorithm = `aes-${keySize}-gcm`;
+    if (!(0, ciphers_js_1.default)(algorithm)) {
+        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
+    }
+    try {
+        const decipher = (0, crypto_1.createDecipheriv)(algorithm, cek, iv, {
+            authTagLength: 16
+        });
+        decipher.setAuthTag(tag);
+        if (aad.byteLength) {
+            decipher.setAAD(aad, {
+                plaintextLength: ciphertext.length
+            });
+        }
+        const plaintext = decipher.update(ciphertext);
+        decipher.final();
+        return plaintext;
+    } catch  {
+        throw new errors_js_1.JWEDecryptionFailed();
+    }
+}
+const decrypt = (enc, cek, ciphertext, iv, tag, aad)=>{
+    let key;
+    if ((0, webcrypto_js_1.isCryptoKey)(cek)) {
+        (0, crypto_key_js_1.checkEncCryptoKey)(cek, enc, "decrypt");
+        key = crypto_1.KeyObject.from(cek);
+    } else if (cek instanceof Uint8Array || (0, is_key_object_js_1.default)(cek)) {
+        key = cek;
+    } else {
+        throw new TypeError((0, invalid_key_input_js_1.default)(cek, ...is_key_like_js_1.types, "Uint8Array"));
+    }
+    (0, check_cek_length_js_1.default)(enc, key);
+    (0, check_iv_length_js_1.default)(enc, iv);
+    switch(enc){
+        case "A128CBC-HS256":
+        case "A192CBC-HS384":
+        case "A256CBC-HS512":
+            return cbcDecrypt(enc, key, ciphertext, iv, tag, aad);
+        case "A128GCM":
+        case "A192GCM":
+        case "A256GCM":
+            return gcmDecrypt(enc, key, ciphertext, iv, tag, aad);
+        default:
+            throw new errors_js_1.JOSENotSupported("Unsupported JWE Content Encryption Algorithm");
+    }
+};
+exports["default"] = decrypt;
+
+
+/***/ }),
+
+/***/ 68096:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+const digest = (algorithm, data)=>(0, crypto_1.createHash)(algorithm).update(data).digest();
+exports["default"] = digest;
+
+
+/***/ }),
+
+/***/ 52150:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const errors_js_1 = __webpack_require__(79927);
+function dsaDigest(alg) {
+    switch(alg){
+        case "PS256":
+        case "RS256":
+        case "ES256":
+        case "ES256K":
+            return "sha256";
+        case "PS384":
+        case "RS384":
+        case "ES384":
+            return "sha384";
+        case "PS512":
+        case "RS512":
+        case "ES512":
+            return "sha512";
+        case "EdDSA":
+            return undefined;
+        default:
+            throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
+    }
+}
+exports["default"] = dsaDigest;
+
+
+/***/ }),
+
+/***/ 2183:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.ecdhAllowed = exports.generateEpk = exports.deriveKey = void 0;
+const crypto_1 = __webpack_require__(6113);
+const util_1 = __webpack_require__(73837);
+const get_named_curve_js_1 = __webpack_require__(23520);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const errors_js_1 = __webpack_require__(79927);
+const webcrypto_js_1 = __webpack_require__(10557);
+const crypto_key_js_1 = __webpack_require__(54004);
+const is_key_object_js_1 = __webpack_require__(19205);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const is_key_like_js_1 = __webpack_require__(74283);
+const generateKeyPair = (0, util_1.promisify)(crypto_1.generateKeyPair);
+async function deriveKey(publicKee, privateKee, algorithm, keyLength, apu = new Uint8Array(0), apv = new Uint8Array(0)) {
+    let publicKey;
+    if ((0, webcrypto_js_1.isCryptoKey)(publicKee)) {
+        (0, crypto_key_js_1.checkEncCryptoKey)(publicKee, "ECDH");
+        publicKey = crypto_1.KeyObject.from(publicKee);
+    } else if ((0, is_key_object_js_1.default)(publicKee)) {
+        publicKey = publicKee;
+    } else {
+        throw new TypeError((0, invalid_key_input_js_1.default)(publicKee, ...is_key_like_js_1.types));
+    }
+    let privateKey;
+    if ((0, webcrypto_js_1.isCryptoKey)(privateKee)) {
+        (0, crypto_key_js_1.checkEncCryptoKey)(privateKee, "ECDH", "deriveBits");
+        privateKey = crypto_1.KeyObject.from(privateKee);
+    } else if ((0, is_key_object_js_1.default)(privateKee)) {
+        privateKey = privateKee;
+    } else {
+        throw new TypeError((0, invalid_key_input_js_1.default)(privateKee, ...is_key_like_js_1.types));
+    }
+    const value = (0, buffer_utils_js_1.concat)((0, buffer_utils_js_1.lengthAndInput)(buffer_utils_js_1.encoder.encode(algorithm)), (0, buffer_utils_js_1.lengthAndInput)(apu), (0, buffer_utils_js_1.lengthAndInput)(apv), (0, buffer_utils_js_1.uint32be)(keyLength));
+    const sharedSecret = (0, crypto_1.diffieHellman)({
+        privateKey,
+        publicKey
+    });
+    return (0, buffer_utils_js_1.concatKdf)(sharedSecret, keyLength, value);
+}
+exports.deriveKey = deriveKey;
+async function generateEpk(kee) {
+    let key;
+    if ((0, webcrypto_js_1.isCryptoKey)(kee)) {
+        key = crypto_1.KeyObject.from(kee);
+    } else if ((0, is_key_object_js_1.default)(kee)) {
+        key = kee;
+    } else {
+        throw new TypeError((0, invalid_key_input_js_1.default)(kee, ...is_key_like_js_1.types));
+    }
+    switch(key.asymmetricKeyType){
+        case "x25519":
+            return generateKeyPair("x25519");
+        case "x448":
+            {
+                return generateKeyPair("x448");
+            }
+        case "ec":
+            {
+                const namedCurve = (0, get_named_curve_js_1.default)(key);
+                return generateKeyPair("ec", {
+                    namedCurve
+                });
+            }
+        default:
+            throw new errors_js_1.JOSENotSupported("Invalid or unsupported EPK");
+    }
+}
+exports.generateEpk = generateEpk;
+const ecdhAllowed = (key)=>[
+        "P-256",
+        "P-384",
+        "P-521",
+        "X25519",
+        "X448"
+    ].includes((0, get_named_curve_js_1.default)(key));
+exports.ecdhAllowed = ecdhAllowed;
+
+
+/***/ }),
+
+/***/ 30734:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+const check_iv_length_js_1 = __webpack_require__(40798);
+const check_cek_length_js_1 = __webpack_require__(54901);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const cbc_tag_js_1 = __webpack_require__(16872);
+const webcrypto_js_1 = __webpack_require__(10557);
+const crypto_key_js_1 = __webpack_require__(54004);
+const is_key_object_js_1 = __webpack_require__(19205);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const errors_js_1 = __webpack_require__(79927);
+const ciphers_js_1 = __webpack_require__(88419);
+const is_key_like_js_1 = __webpack_require__(74283);
+function cbcEncrypt(enc, plaintext, cek, iv, aad) {
+    const keySize = parseInt(enc.slice(1, 4), 10);
+    if ((0, is_key_object_js_1.default)(cek)) {
+        cek = cek.export();
+    }
+    const encKey = cek.subarray(keySize >> 3);
+    const macKey = cek.subarray(0, keySize >> 3);
+    const algorithm = `aes-${keySize}-cbc`;
+    if (!(0, ciphers_js_1.default)(algorithm)) {
+        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
+    }
+    const cipher = (0, crypto_1.createCipheriv)(algorithm, encKey, iv);
+    const ciphertext = (0, buffer_utils_js_1.concat)(cipher.update(plaintext), cipher.final());
+    const macSize = parseInt(enc.slice(-3), 10);
+    const tag = (0, cbc_tag_js_1.default)(aad, iv, ciphertext, macSize, macKey, keySize);
+    return {
+        ciphertext,
+        tag
+    };
+}
+function gcmEncrypt(enc, plaintext, cek, iv, aad) {
+    const keySize = parseInt(enc.slice(1, 4), 10);
+    const algorithm = `aes-${keySize}-gcm`;
+    if (!(0, ciphers_js_1.default)(algorithm)) {
+        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
+    }
+    const cipher = (0, crypto_1.createCipheriv)(algorithm, cek, iv, {
+        authTagLength: 16
+    });
+    if (aad.byteLength) {
+        cipher.setAAD(aad, {
+            plaintextLength: plaintext.length
+        });
+    }
+    const ciphertext = cipher.update(plaintext);
+    cipher.final();
+    const tag = cipher.getAuthTag();
+    return {
+        ciphertext,
+        tag
+    };
+}
+const encrypt = (enc, plaintext, cek, iv, aad)=>{
+    let key;
+    if ((0, webcrypto_js_1.isCryptoKey)(cek)) {
+        (0, crypto_key_js_1.checkEncCryptoKey)(cek, enc, "encrypt");
+        key = crypto_1.KeyObject.from(cek);
+    } else if (cek instanceof Uint8Array || (0, is_key_object_js_1.default)(cek)) {
+        key = cek;
+    } else {
+        throw new TypeError((0, invalid_key_input_js_1.default)(cek, ...is_key_like_js_1.types, "Uint8Array"));
+    }
+    (0, check_cek_length_js_1.default)(enc, key);
+    (0, check_iv_length_js_1.default)(enc, iv);
+    switch(enc){
+        case "A128CBC-HS256":
+        case "A192CBC-HS384":
+        case "A256CBC-HS512":
+            return cbcEncrypt(enc, plaintext, key, iv, aad);
+        case "A128GCM":
+        case "A192GCM":
+        case "A256GCM":
+            return gcmEncrypt(enc, plaintext, key, iv, aad);
+        default:
+            throw new errors_js_1.JOSENotSupported("Unsupported JWE Content Encryption Algorithm");
+    }
+};
+exports["default"] = encrypt;
+
+
+/***/ }),
+
+/***/ 86581:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const http = __webpack_require__(13685);
+const https = __webpack_require__(95687);
+const events_1 = __webpack_require__(82361);
+const errors_js_1 = __webpack_require__(79927);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const fetchJwks = async (url, timeout, options)=>{
+    let get;
+    switch(url.protocol){
+        case "https:":
+            get = https.get;
+            break;
+        case "http:":
+            get = http.get;
+            break;
+        default:
+            throw new TypeError("Unsupported URL protocol.");
+    }
+    const { agent, headers } = options;
+    const req = get(url.href, {
+        agent,
+        timeout,
+        headers
+    });
+    const [response] = await Promise.race([
+        (0, events_1.once)(req, "response"),
+        (0, events_1.once)(req, "timeout")
+    ]);
+    if (!response) {
+        req.destroy();
+        throw new errors_js_1.JWKSTimeout();
+    }
+    if (response.statusCode !== 200) {
+        throw new errors_js_1.JOSEError("Expected 200 OK from the JSON Web Key Set HTTP response");
+    }
+    const parts = [];
+    for await (const part of response){
+        parts.push(part);
+    }
+    try {
+        return JSON.parse(buffer_utils_js_1.decoder.decode((0, buffer_utils_js_1.concat)(...parts)));
+    } catch  {
+        throw new errors_js_1.JOSEError("Failed to parse the JSON Web Key Set HTTP response as JSON");
+    }
+};
+exports["default"] = fetchJwks;
+
+
+/***/ }),
+
+/***/ 16943:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.jwkImport = exports.jwkExport = exports.rsaPssParams = exports.oneShotCallback = void 0;
+const [major, minor] = process.versions.node.split(".").map((str)=>parseInt(str, 10));
+exports.oneShotCallback = major >= 16 || major === 15 && minor >= 13;
+exports.rsaPssParams = !("electron" in process.versions) && (major >= 17 || major === 16 && minor >= 9);
+exports.jwkExport = major >= 16 || major === 15 && minor >= 9;
+exports.jwkImport = major >= 16 || major === 15 && minor >= 12;
+
+
+/***/ }),
+
+/***/ 37072:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.generateKeyPair = exports.generateSecret = void 0;
+const crypto_1 = __webpack_require__(6113);
+const util_1 = __webpack_require__(73837);
+const random_js_1 = __webpack_require__(58595);
+const check_modulus_length_js_1 = __webpack_require__(80409);
+const errors_js_1 = __webpack_require__(79927);
+const generate = (0, util_1.promisify)(crypto_1.generateKeyPair);
+async function generateSecret(alg, options) {
+    let length;
+    switch(alg){
+        case "HS256":
+        case "HS384":
+        case "HS512":
+        case "A128CBC-HS256":
+        case "A192CBC-HS384":
+        case "A256CBC-HS512":
+            length = parseInt(alg.slice(-3), 10);
+            break;
+        case "A128KW":
+        case "A192KW":
+        case "A256KW":
+        case "A128GCMKW":
+        case "A192GCMKW":
+        case "A256GCMKW":
+        case "A128GCM":
+        case "A192GCM":
+        case "A256GCM":
+            length = parseInt(alg.slice(1, 4), 10);
+            break;
+        default:
+            throw new errors_js_1.JOSENotSupported('Invalid or unsupported JWK "alg" (Algorithm) Parameter value');
+    }
+    return (0, crypto_1.createSecretKey)((0, random_js_1.default)(new Uint8Array(length >> 3)));
+}
+exports.generateSecret = generateSecret;
+async function generateKeyPair(alg, options) {
+    var _a, _b;
+    switch(alg){
+        case "RS256":
+        case "RS384":
+        case "RS512":
+        case "PS256":
+        case "PS384":
+        case "PS512":
+        case "RSA-OAEP":
+        case "RSA-OAEP-256":
+        case "RSA-OAEP-384":
+        case "RSA-OAEP-512":
+        case "RSA1_5":
+            {
+                const modulusLength = (_a = options === null || options === void 0 ? void 0 : options.modulusLength) !== null && _a !== void 0 ? _a : 2048;
+                if (typeof modulusLength !== "number" || modulusLength < 2048) {
+                    throw new errors_js_1.JOSENotSupported("Invalid or unsupported modulusLength option provided, 2048 bits or larger keys must be used");
+                }
+                const keypair = await generate("rsa", {
+                    modulusLength,
+                    publicExponent: 0x10001
+                });
+                (0, check_modulus_length_js_1.setModulusLength)(keypair.privateKey, modulusLength);
+                (0, check_modulus_length_js_1.setModulusLength)(keypair.publicKey, modulusLength);
+                return keypair;
+            }
+        case "ES256":
+            return generate("ec", {
+                namedCurve: "P-256"
+            });
+        case "ES256K":
+            return generate("ec", {
+                namedCurve: "secp256k1"
+            });
+        case "ES384":
+            return generate("ec", {
+                namedCurve: "P-384"
+            });
+        case "ES512":
+            return generate("ec", {
+                namedCurve: "P-521"
+            });
+        case "EdDSA":
+            {
+                switch(options === null || options === void 0 ? void 0 : options.crv){
+                    case undefined:
+                    case "Ed25519":
+                        return generate("ed25519");
+                    case "Ed448":
+                        return generate("ed448");
+                    default:
+                        throw new errors_js_1.JOSENotSupported("Invalid or unsupported crv option provided, supported values are Ed25519 and Ed448");
+                }
+            }
+        case "ECDH-ES":
+        case "ECDH-ES+A128KW":
+        case "ECDH-ES+A192KW":
+        case "ECDH-ES+A256KW":
+            const crv = (_b = options === null || options === void 0 ? void 0 : options.crv) !== null && _b !== void 0 ? _b : "P-256";
+            switch(crv){
+                case undefined:
+                case "P-256":
+                case "P-384":
+                case "P-521":
+                    return generate("ec", {
+                        namedCurve: crv
+                    });
+                case "X25519":
+                    return generate("x25519");
+                case "X448":
+                    return generate("x448");
+                default:
+                    throw new errors_js_1.JOSENotSupported("Invalid or unsupported crv option provided, supported values are P-256, P-384, P-521, X25519, and X448");
+            }
+        default:
+            throw new errors_js_1.JOSENotSupported('Invalid or unsupported JWK "alg" (Algorithm) Parameter value');
+    }
+}
+exports.generateKeyPair = generateKeyPair;
+
+
+/***/ }),
+
+/***/ 23520:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.setCurve = exports.weakMap = void 0;
+const buffer_1 = __webpack_require__(14300);
+const crypto_1 = __webpack_require__(6113);
+const errors_js_1 = __webpack_require__(79927);
+const webcrypto_js_1 = __webpack_require__(10557);
+const is_key_object_js_1 = __webpack_require__(19205);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const is_key_like_js_1 = __webpack_require__(74283);
+const p256 = buffer_1.Buffer.from([
+    42,
+    134,
+    72,
+    206,
+    61,
+    3,
+    1,
+    7
+]);
+const p384 = buffer_1.Buffer.from([
+    43,
+    129,
+    4,
+    0,
+    34
+]);
+const p521 = buffer_1.Buffer.from([
+    43,
+    129,
+    4,
+    0,
+    35
+]);
+const secp256k1 = buffer_1.Buffer.from([
+    43,
+    129,
+    4,
+    0,
+    10
+]);
+exports.weakMap = new WeakMap();
+const namedCurveToJOSE = (namedCurve)=>{
+    switch(namedCurve){
+        case "prime256v1":
+            return "P-256";
+        case "secp384r1":
+            return "P-384";
+        case "secp521r1":
+            return "P-521";
+        case "secp256k1":
+            return "secp256k1";
+        default:
+            throw new errors_js_1.JOSENotSupported("Unsupported key curve for this operation");
+    }
+};
+const getNamedCurve = (kee, raw)=>{
+    var _a;
+    let key;
+    if ((0, webcrypto_js_1.isCryptoKey)(kee)) {
+        key = crypto_1.KeyObject.from(kee);
+    } else if ((0, is_key_object_js_1.default)(kee)) {
+        key = kee;
+    } else {
+        throw new TypeError((0, invalid_key_input_js_1.default)(kee, ...is_key_like_js_1.types));
+    }
+    if (key.type === "secret") {
+        throw new TypeError('only "private" or "public" type keys can be used for this operation');
+    }
+    switch(key.asymmetricKeyType){
+        case "ed25519":
+        case "ed448":
+            return `Ed${key.asymmetricKeyType.slice(2)}`;
+        case "x25519":
+        case "x448":
+            return `X${key.asymmetricKeyType.slice(1)}`;
+        case "ec":
+            {
+                if (exports.weakMap.has(key)) {
+                    return exports.weakMap.get(key);
+                }
+                let namedCurve = (_a = key.asymmetricKeyDetails) === null || _a === void 0 ? void 0 : _a.namedCurve;
+                if (!namedCurve && key.type === "private") {
+                    namedCurve = getNamedCurve((0, crypto_1.createPublicKey)(key), true);
+                } else if (!namedCurve) {
+                    const buf = key.export({
+                        format: "der",
+                        type: "spki"
+                    });
+                    const i = buf[1] < 128 ? 14 : 15;
+                    const len = buf[i];
+                    const curveOid = buf.slice(i + 1, i + 1 + len);
+                    if (curveOid.equals(p256)) {
+                        namedCurve = "prime256v1";
+                    } else if (curveOid.equals(p384)) {
+                        namedCurve = "secp384r1";
+                    } else if (curveOid.equals(p521)) {
+                        namedCurve = "secp521r1";
+                    } else if (curveOid.equals(secp256k1)) {
+                        namedCurve = "secp256k1";
+                    } else {
+                        throw new errors_js_1.JOSENotSupported("Unsupported key curve for this operation");
+                    }
+                }
+                if (raw) return namedCurve;
+                const curve = namedCurveToJOSE(namedCurve);
+                exports.weakMap.set(key, curve);
+                return curve;
+            }
+        default:
+            throw new TypeError("Invalid asymmetric key type for this operation");
+    }
+};
+function setCurve(keyObject, curve) {
+    exports.weakMap.set(keyObject, curve);
+}
+exports.setCurve = setCurve;
+exports["default"] = getNamedCurve;
+
+
+/***/ }),
+
+/***/ 77640:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+const webcrypto_js_1 = __webpack_require__(10557);
+const crypto_key_js_1 = __webpack_require__(54004);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const is_key_like_js_1 = __webpack_require__(74283);
+function getSignVerifyKey(alg, key, usage) {
+    if (key instanceof Uint8Array) {
+        if (!alg.startsWith("HS")) {
+            throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types));
+        }
+        return (0, crypto_1.createSecretKey)(key);
+    }
+    if (key instanceof crypto_1.KeyObject) {
+        return key;
+    }
+    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
+        (0, crypto_key_js_1.checkSigCryptoKey)(key, alg, usage);
+        return crypto_1.KeyObject.from(key);
+    }
+    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
+}
+exports["default"] = getSignVerifyKey;
+
+
+/***/ }),
+
+/***/ 90389:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const errors_js_1 = __webpack_require__(79927);
+function hmacDigest(alg) {
+    switch(alg){
+        case "HS256":
+            return "sha256";
+        case "HS384":
+            return "sha384";
+        case "HS512":
+            return "sha512";
+        default:
+            throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
+    }
+}
+exports["default"] = hmacDigest;
+
+
+/***/ }),
+
+/***/ 74283:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.types = void 0;
+const webcrypto_js_1 = __webpack_require__(10557);
+const is_key_object_js_1 = __webpack_require__(19205);
+exports["default"] = (key)=>(0, is_key_object_js_1.default)(key) || (0, webcrypto_js_1.isCryptoKey)(key);
+const types = [
+    "KeyObject"
+];
+exports.types = types;
+if (globalThis.CryptoKey || (webcrypto_js_1.default === null || webcrypto_js_1.default === void 0 ? void 0 : webcrypto_js_1.default.CryptoKey)) {
+    types.push("CryptoKey");
+}
+
+
+/***/ }),
+
+/***/ 19205:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+const util = __webpack_require__(73837);
+exports["default"] = util.types.isKeyObject ? (obj)=>util.types.isKeyObject(obj) : (obj)=>obj != null && obj instanceof crypto_1.KeyObject;
+
+
+/***/ }),
+
+/***/ 98544:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const buffer_1 = __webpack_require__(14300);
+const crypto_1 = __webpack_require__(6113);
+const base64url_js_1 = __webpack_require__(37244);
+const errors_js_1 = __webpack_require__(79927);
+const get_named_curve_js_1 = __webpack_require__(23520);
+const check_modulus_length_js_1 = __webpack_require__(80409);
+const asn1_sequence_encoder_js_1 = __webpack_require__(56879);
+const flags_js_1 = __webpack_require__(16943);
+const parse = (jwk)=>{
+    if (flags_js_1.jwkImport && jwk.kty !== "oct") {
+        return jwk.d ? (0, crypto_1.createPrivateKey)({
+            format: "jwk",
+            key: jwk
+        }) : (0, crypto_1.createPublicKey)({
+            format: "jwk",
+            key: jwk
+        });
+    }
+    switch(jwk.kty){
+        case "oct":
+            {
+                return (0, crypto_1.createSecretKey)((0, base64url_js_1.decode)(jwk.k));
+            }
+        case "RSA":
+            {
+                const enc = new asn1_sequence_encoder_js_1.default();
+                const isPrivate = jwk.d !== undefined;
+                const modulus = buffer_1.Buffer.from(jwk.n, "base64");
+                const exponent = buffer_1.Buffer.from(jwk.e, "base64");
+                if (isPrivate) {
+                    enc.zero();
+                    enc.unsignedInteger(modulus);
+                    enc.unsignedInteger(exponent);
+                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.d, "base64"));
+                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.p, "base64"));
+                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.q, "base64"));
+                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.dp, "base64"));
+                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.dq, "base64"));
+                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.qi, "base64"));
+                } else {
+                    enc.unsignedInteger(modulus);
+                    enc.unsignedInteger(exponent);
+                }
+                const der = enc.end();
+                const createInput = {
+                    key: der,
+                    format: "der",
+                    type: "pkcs1"
+                };
+                const keyObject = isPrivate ? (0, crypto_1.createPrivateKey)(createInput) : (0, crypto_1.createPublicKey)(createInput);
+                (0, check_modulus_length_js_1.setModulusLength)(keyObject, modulus.length << 3);
+                return keyObject;
+            }
+        case "EC":
+            {
+                const enc = new asn1_sequence_encoder_js_1.default();
+                const isPrivate = jwk.d !== undefined;
+                const pub = buffer_1.Buffer.concat([
+                    buffer_1.Buffer.alloc(1, 4),
+                    buffer_1.Buffer.from(jwk.x, "base64"),
+                    buffer_1.Buffer.from(jwk.y, "base64")
+                ]);
+                if (isPrivate) {
+                    enc.zero();
+                    const enc$1 = new asn1_sequence_encoder_js_1.default();
+                    enc$1.oidFor("ecPublicKey");
+                    enc$1.oidFor(jwk.crv);
+                    enc.add(enc$1.end());
+                    const enc$2 = new asn1_sequence_encoder_js_1.default();
+                    enc$2.one();
+                    enc$2.octStr(buffer_1.Buffer.from(jwk.d, "base64"));
+                    const enc$3 = new asn1_sequence_encoder_js_1.default();
+                    enc$3.bitStr(pub);
+                    const f2 = enc$3.end(buffer_1.Buffer.from([
+                        0xa1
+                    ]));
+                    enc$2.add(f2);
+                    const f = enc$2.end();
+                    const enc$4 = new asn1_sequence_encoder_js_1.default();
+                    enc$4.add(f);
+                    const f3 = enc$4.end(buffer_1.Buffer.from([
+                        0x04
+                    ]));
+                    enc.add(f3);
+                    const der = enc.end();
+                    const keyObject = (0, crypto_1.createPrivateKey)({
+                        key: der,
+                        format: "der",
+                        type: "pkcs8"
+                    });
+                    (0, get_named_curve_js_1.setCurve)(keyObject, jwk.crv);
+                    return keyObject;
+                }
+                const enc$1 = new asn1_sequence_encoder_js_1.default();
+                enc$1.oidFor("ecPublicKey");
+                enc$1.oidFor(jwk.crv);
+                enc.add(enc$1.end());
+                enc.bitStr(pub);
+                const der = enc.end();
+                const keyObject = (0, crypto_1.createPublicKey)({
+                    key: der,
+                    format: "der",
+                    type: "spki"
+                });
+                (0, get_named_curve_js_1.setCurve)(keyObject, jwk.crv);
+                return keyObject;
+            }
+        case "OKP":
+            {
+                const enc = new asn1_sequence_encoder_js_1.default();
+                const isPrivate = jwk.d !== undefined;
+                if (isPrivate) {
+                    enc.zero();
+                    const enc$1 = new asn1_sequence_encoder_js_1.default();
+                    enc$1.oidFor(jwk.crv);
+                    enc.add(enc$1.end());
+                    const enc$2 = new asn1_sequence_encoder_js_1.default();
+                    enc$2.octStr(buffer_1.Buffer.from(jwk.d, "base64"));
+                    const f = enc$2.end(buffer_1.Buffer.from([
+                        0x04
+                    ]));
+                    enc.add(f);
+                    const der = enc.end();
+                    return (0, crypto_1.createPrivateKey)({
+                        key: der,
+                        format: "der",
+                        type: "pkcs8"
+                    });
+                }
+                const enc$1 = new asn1_sequence_encoder_js_1.default();
+                enc$1.oidFor(jwk.crv);
+                enc.add(enc$1.end());
+                enc.bitStr(buffer_1.Buffer.from(jwk.x, "base64"));
+                const der = enc.end();
+                return (0, crypto_1.createPublicKey)({
+                    key: der,
+                    format: "der",
+                    type: "spki"
+                });
+            }
+        default:
+            throw new errors_js_1.JOSENotSupported('Invalid or unsupported JWK "kty" (Key Type) Parameter value');
+    }
+};
+exports["default"] = parse;
+
+
+/***/ }),
+
+/***/ 12177:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+const base64url_js_1 = __webpack_require__(37244);
+const asn1_sequence_decoder_js_1 = __webpack_require__(25812);
+const errors_js_1 = __webpack_require__(79927);
+const get_named_curve_js_1 = __webpack_require__(23520);
+const webcrypto_js_1 = __webpack_require__(10557);
+const is_key_object_js_1 = __webpack_require__(19205);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const is_key_like_js_1 = __webpack_require__(74283);
+const flags_js_1 = __webpack_require__(16943);
+const keyToJWK = (key)=>{
+    let keyObject;
+    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
+        if (!key.extractable) {
+            throw new TypeError("CryptoKey is not extractable");
+        }
+        keyObject = crypto_1.KeyObject.from(key);
+    } else if ((0, is_key_object_js_1.default)(key)) {
+        keyObject = key;
+    } else if (key instanceof Uint8Array) {
+        return {
+            kty: "oct",
+            k: (0, base64url_js_1.encode)(key)
+        };
+    } else {
+        throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
+    }
+    if (flags_js_1.jwkExport) {
+        if (keyObject.type !== "secret" && ![
+            "rsa",
+            "ec",
+            "ed25519",
+            "x25519",
+            "ed448",
+            "x448"
+        ].includes(keyObject.asymmetricKeyType)) {
+            throw new errors_js_1.JOSENotSupported("Unsupported key asymmetricKeyType");
+        }
+        return keyObject.export({
+            format: "jwk"
+        });
+    }
+    switch(keyObject.type){
+        case "secret":
+            return {
+                kty: "oct",
+                k: (0, base64url_js_1.encode)(keyObject.export())
+            };
+        case "private":
+        case "public":
+            {
+                switch(keyObject.asymmetricKeyType){
+                    case "rsa":
+                        {
+                            const der = keyObject.export({
+                                format: "der",
+                                type: "pkcs1"
+                            });
+                            const dec = new asn1_sequence_decoder_js_1.default(der);
+                            if (keyObject.type === "private") {
+                                dec.unsignedInteger();
+                            }
+                            const n = (0, base64url_js_1.encode)(dec.unsignedInteger());
+                            const e = (0, base64url_js_1.encode)(dec.unsignedInteger());
+                            let jwk;
+                            if (keyObject.type === "private") {
+                                jwk = {
+                                    d: (0, base64url_js_1.encode)(dec.unsignedInteger()),
+                                    p: (0, base64url_js_1.encode)(dec.unsignedInteger()),
+                                    q: (0, base64url_js_1.encode)(dec.unsignedInteger()),
+                                    dp: (0, base64url_js_1.encode)(dec.unsignedInteger()),
+                                    dq: (0, base64url_js_1.encode)(dec.unsignedInteger()),
+                                    qi: (0, base64url_js_1.encode)(dec.unsignedInteger())
+                                };
+                            }
+                            dec.end();
+                            return {
+                                kty: "RSA",
+                                n,
+                                e,
+                                ...jwk
+                            };
+                        }
+                    case "ec":
+                        {
+                            const crv = (0, get_named_curve_js_1.default)(keyObject);
+                            let len;
+                            let offset;
+                            let correction;
+                            switch(crv){
+                                case "secp256k1":
+                                    len = 64;
+                                    offset = 31 + 2;
+                                    correction = -1;
+                                    break;
+                                case "P-256":
+                                    len = 64;
+                                    offset = 34 + 2;
+                                    correction = -1;
+                                    break;
+                                case "P-384":
+                                    len = 96;
+                                    offset = 33 + 2;
+                                    correction = -3;
+                                    break;
+                                case "P-521":
+                                    len = 132;
+                                    offset = 33 + 2;
+                                    correction = -3;
+                                    break;
+                                default:
+                                    throw new errors_js_1.JOSENotSupported("Unsupported curve");
+                            }
+                            if (keyObject.type === "public") {
+                                const der = keyObject.export({
+                                    type: "spki",
+                                    format: "der"
+                                });
+                                return {
+                                    kty: "EC",
+                                    crv,
+                                    x: (0, base64url_js_1.encode)(der.subarray(-len, -len / 2)),
+                                    y: (0, base64url_js_1.encode)(der.subarray(-len / 2))
+                                };
+                            }
+                            const der = keyObject.export({
+                                type: "pkcs8",
+                                format: "der"
+                            });
+                            if (der.length < 100) {
+                                offset += correction;
+                            }
+                            return {
+                                ...keyToJWK((0, crypto_1.createPublicKey)(keyObject)),
+                                d: (0, base64url_js_1.encode)(der.subarray(offset, offset + len / 2))
+                            };
+                        }
+                    case "ed25519":
+                    case "x25519":
+                        {
+                            const crv = (0, get_named_curve_js_1.default)(keyObject);
+                            if (keyObject.type === "public") {
+                                const der = keyObject.export({
+                                    type: "spki",
+                                    format: "der"
+                                });
+                                return {
+                                    kty: "OKP",
+                                    crv,
+                                    x: (0, base64url_js_1.encode)(der.subarray(-32))
+                                };
+                            }
+                            const der = keyObject.export({
+                                type: "pkcs8",
+                                format: "der"
+                            });
+                            return {
+                                ...keyToJWK((0, crypto_1.createPublicKey)(keyObject)),
+                                d: (0, base64url_js_1.encode)(der.subarray(-32))
+                            };
+                        }
+                    case "ed448":
+                    case "x448":
+                        {
+                            const crv = (0, get_named_curve_js_1.default)(keyObject);
+                            if (keyObject.type === "public") {
+                                const der = keyObject.export({
+                                    type: "spki",
+                                    format: "der"
+                                });
+                                return {
+                                    kty: "OKP",
+                                    crv,
+                                    x: (0, base64url_js_1.encode)(der.subarray(crv === "Ed448" ? -57 : -56))
+                                };
+                            }
+                            const der = keyObject.export({
+                                type: "pkcs8",
+                                format: "der"
+                            });
+                            return {
+                                ...keyToJWK((0, crypto_1.createPublicKey)(keyObject)),
+                                d: (0, base64url_js_1.encode)(der.subarray(crv === "Ed448" ? -57 : -56))
+                            };
+                        }
+                    default:
+                        throw new errors_js_1.JOSENotSupported("Unsupported key asymmetricKeyType");
+                }
+            }
+        default:
+            throw new errors_js_1.JOSENotSupported("Unsupported key type");
+    }
+};
+exports["default"] = keyToJWK;
+
+
+/***/ }),
+
+/***/ 96281:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+const get_named_curve_js_1 = __webpack_require__(23520);
+const errors_js_1 = __webpack_require__(79927);
+const check_modulus_length_js_1 = __webpack_require__(80409);
+const flags_js_1 = __webpack_require__(16943);
+const PSS = {
+    padding: crypto_1.constants.RSA_PKCS1_PSS_PADDING,
+    saltLength: crypto_1.constants.RSA_PSS_SALTLEN_DIGEST
+};
+const ecCurveAlgMap = new Map([
+    [
+        "ES256",
+        "P-256"
+    ],
+    [
+        "ES256K",
+        "secp256k1"
+    ],
+    [
+        "ES384",
+        "P-384"
+    ],
+    [
+        "ES512",
+        "P-521"
+    ]
+]);
+function keyForCrypto(alg, key) {
+    switch(alg){
+        case "EdDSA":
+            if (![
+                "ed25519",
+                "ed448"
+            ].includes(key.asymmetricKeyType)) {
+                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be ed25519 or ed448");
+            }
+            return key;
+        case "RS256":
+        case "RS384":
+        case "RS512":
+            if (key.asymmetricKeyType !== "rsa") {
+                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa");
+            }
+            (0, check_modulus_length_js_1.default)(key, alg);
+            return key;
+        case flags_js_1.rsaPssParams && "PS256":
+        case flags_js_1.rsaPssParams && "PS384":
+        case flags_js_1.rsaPssParams && "PS512":
+            if (key.asymmetricKeyType === "rsa-pss") {
+                const { hashAlgorithm, mgf1HashAlgorithm, saltLength } = key.asymmetricKeyDetails;
+                const length = parseInt(alg.slice(-3), 10);
+                if (hashAlgorithm !== undefined && (hashAlgorithm !== `sha${length}` || mgf1HashAlgorithm !== hashAlgorithm)) {
+                    throw new TypeError(`Invalid key for this operation, its RSA-PSS parameters do not meet the requirements of "alg" ${alg}`);
+                }
+                if (saltLength !== undefined && saltLength > length >> 3) {
+                    throw new TypeError(`Invalid key for this operation, its RSA-PSS parameter saltLength does not meet the requirements of "alg" ${alg}`);
+                }
+            } else if (key.asymmetricKeyType !== "rsa") {
+                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa or rsa-pss");
+            }
+            (0, check_modulus_length_js_1.default)(key, alg);
+            return {
+                key,
+                ...PSS
+            };
+        case !flags_js_1.rsaPssParams && "PS256":
+        case !flags_js_1.rsaPssParams && "PS384":
+        case !flags_js_1.rsaPssParams && "PS512":
+            if (key.asymmetricKeyType !== "rsa") {
+                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa");
+            }
+            (0, check_modulus_length_js_1.default)(key, alg);
+            return {
+                key,
+                ...PSS
+            };
+        case "ES256":
+        case "ES256K":
+        case "ES384":
+        case "ES512":
+            {
+                if (key.asymmetricKeyType !== "ec") {
+                    throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be ec");
+                }
+                const actual = (0, get_named_curve_js_1.default)(key);
+                const expected = ecCurveAlgMap.get(alg);
+                if (actual !== expected) {
+                    throw new TypeError(`Invalid key curve for the algorithm, its curve must be ${expected}, got ${actual}`);
+                }
+                return {
+                    dsaEncoding: "ieee-p1363",
+                    key
+                };
+            }
+        default:
+            throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
+    }
+}
+exports["default"] = keyForCrypto;
+
+
+/***/ }),
+
+/***/ 32121:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.decrypt = exports.encrypt = void 0;
+const util_1 = __webpack_require__(73837);
+const crypto_1 = __webpack_require__(6113);
+const random_js_1 = __webpack_require__(58595);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const base64url_js_1 = __webpack_require__(37244);
+const aeskw_js_1 = __webpack_require__(81132);
+const check_p2s_js_1 = __webpack_require__(31643);
+const webcrypto_js_1 = __webpack_require__(10557);
+const crypto_key_js_1 = __webpack_require__(54004);
+const is_key_object_js_1 = __webpack_require__(19205);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const is_key_like_js_1 = __webpack_require__(74283);
+const pbkdf2 = (0, util_1.promisify)(crypto_1.pbkdf2);
+function getPassword(key, alg) {
+    if ((0, is_key_object_js_1.default)(key)) {
+        return key.export();
+    }
+    if (key instanceof Uint8Array) {
+        return key;
+    }
+    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
+        (0, crypto_key_js_1.checkEncCryptoKey)(key, alg, "deriveBits", "deriveKey");
+        return crypto_1.KeyObject.from(key).export();
+    }
+    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
+}
+const encrypt = async (alg, key, cek, p2c = 2048, p2s = (0, random_js_1.default)(new Uint8Array(16)))=>{
+    (0, check_p2s_js_1.default)(p2s);
+    const salt = (0, buffer_utils_js_1.p2s)(alg, p2s);
+    const keylen = parseInt(alg.slice(13, 16), 10) >> 3;
+    const password = getPassword(key, alg);
+    const derivedKey = await pbkdf2(password, salt, p2c, keylen, `sha${alg.slice(8, 11)}`);
+    const encryptedKey = await (0, aeskw_js_1.wrap)(alg.slice(-6), derivedKey, cek);
+    return {
+        encryptedKey,
+        p2c,
+        p2s: (0, base64url_js_1.encode)(p2s)
+    };
+};
+exports.encrypt = encrypt;
+const decrypt = async (alg, key, encryptedKey, p2c, p2s)=>{
+    (0, check_p2s_js_1.default)(p2s);
+    const salt = (0, buffer_utils_js_1.p2s)(alg, p2s);
+    const keylen = parseInt(alg.slice(13, 16), 10) >> 3;
+    const password = getPassword(key, alg);
+    const derivedKey = await pbkdf2(password, salt, p2c, keylen, `sha${alg.slice(8, 11)}`);
+    return (0, aeskw_js_1.unwrap)(alg.slice(-6), derivedKey, encryptedKey);
+};
+exports.decrypt = decrypt;
+
+
+/***/ }),
+
+/***/ 58595:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports["default"] = void 0;
+var crypto_1 = __webpack_require__(6113);
+Object.defineProperty(exports, "default", ({
+    enumerable: true,
+    get: function() {
+        return crypto_1.randomFillSync;
+    }
+}));
+
+
+/***/ }),
+
+/***/ 98745:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.decrypt = exports.encrypt = void 0;
+const crypto_1 = __webpack_require__(6113);
+const check_modulus_length_js_1 = __webpack_require__(80409);
+const webcrypto_js_1 = __webpack_require__(10557);
+const crypto_key_js_1 = __webpack_require__(54004);
+const is_key_object_js_1 = __webpack_require__(19205);
+const invalid_key_input_js_1 = __webpack_require__(77909);
+const is_key_like_js_1 = __webpack_require__(74283);
+const checkKey = (key, alg)=>{
+    if (key.asymmetricKeyType !== "rsa") {
+        throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa");
+    }
+    (0, check_modulus_length_js_1.default)(key, alg);
+};
+const resolvePadding = (alg)=>{
+    switch(alg){
+        case "RSA-OAEP":
+        case "RSA-OAEP-256":
+        case "RSA-OAEP-384":
+        case "RSA-OAEP-512":
+            return crypto_1.constants.RSA_PKCS1_OAEP_PADDING;
+        case "RSA1_5":
+            return crypto_1.constants.RSA_PKCS1_PADDING;
+        default:
+            return undefined;
+    }
+};
+const resolveOaepHash = (alg)=>{
+    switch(alg){
+        case "RSA-OAEP":
+            return "sha1";
+        case "RSA-OAEP-256":
+            return "sha256";
+        case "RSA-OAEP-384":
+            return "sha384";
+        case "RSA-OAEP-512":
+            return "sha512";
+        default:
+            return undefined;
+    }
+};
+function ensureKeyObject(key, alg, ...usages) {
+    if ((0, is_key_object_js_1.default)(key)) {
+        return key;
+    }
+    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
+        (0, crypto_key_js_1.checkEncCryptoKey)(key, alg, ...usages);
+        return crypto_1.KeyObject.from(key);
+    }
+    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types));
+}
+const encrypt = (alg, key, cek)=>{
+    const padding = resolvePadding(alg);
+    const oaepHash = resolveOaepHash(alg);
+    const keyObject = ensureKeyObject(key, alg, "wrapKey", "encrypt");
+    checkKey(keyObject, alg);
+    return (0, crypto_1.publicEncrypt)({
+        key: keyObject,
+        oaepHash,
+        padding
+    }, cek);
+};
+exports.encrypt = encrypt;
+const decrypt = (alg, key, encryptedKey)=>{
+    const padding = resolvePadding(alg);
+    const oaepHash = resolveOaepHash(alg);
+    const keyObject = ensureKeyObject(key, alg, "unwrapKey", "decrypt");
+    checkKey(keyObject, alg);
+    return (0, crypto_1.privateDecrypt)({
+        key: keyObject,
+        oaepHash,
+        padding
+    }, encryptedKey);
+};
+exports.decrypt = decrypt;
+
+
+/***/ }),
+
+/***/ 29758:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports["default"] = "node:crypto";
+
+
+/***/ }),
+
+/***/ 98242:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto = __webpack_require__(6113);
+const util_1 = __webpack_require__(73837);
+const dsa_digest_js_1 = __webpack_require__(52150);
+const hmac_digest_js_1 = __webpack_require__(90389);
+const node_key_js_1 = __webpack_require__(96281);
+const get_sign_verify_key_js_1 = __webpack_require__(77640);
+let oneShotSign;
+if (crypto.sign.length > 3) {
+    oneShotSign = (0, util_1.promisify)(crypto.sign);
+} else {
+    oneShotSign = crypto.sign;
+}
+const sign = async (alg, key, data)=>{
+    const keyObject = (0, get_sign_verify_key_js_1.default)(alg, key, "sign");
+    if (alg.startsWith("HS")) {
+        const hmac = crypto.createHmac((0, hmac_digest_js_1.default)(alg), keyObject);
+        hmac.update(data);
+        return hmac.digest();
+    }
+    return oneShotSign((0, dsa_digest_js_1.default)(alg), data, (0, node_key_js_1.default)(alg, keyObject));
+};
+exports["default"] = sign;
+
+
+/***/ }),
+
+/***/ 80601:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto_1 = __webpack_require__(6113);
+const timingSafeEqual = crypto_1.timingSafeEqual;
+exports["default"] = timingSafeEqual;
+
+
+/***/ }),
+
+/***/ 17872:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const crypto = __webpack_require__(6113);
+const util_1 = __webpack_require__(73837);
+const dsa_digest_js_1 = __webpack_require__(52150);
+const node_key_js_1 = __webpack_require__(96281);
+const sign_js_1 = __webpack_require__(98242);
+const get_sign_verify_key_js_1 = __webpack_require__(77640);
+const flags_js_1 = __webpack_require__(16943);
+let oneShotVerify;
+if (crypto.verify.length > 4 && flags_js_1.oneShotCallback) {
+    oneShotVerify = (0, util_1.promisify)(crypto.verify);
+} else {
+    oneShotVerify = crypto.verify;
+}
+const verify = async (alg, key, signature, data)=>{
+    const keyObject = (0, get_sign_verify_key_js_1.default)(alg, key, "verify");
+    if (alg.startsWith("HS")) {
+        const expected = await (0, sign_js_1.default)(alg, keyObject, data);
+        const actual = signature;
+        try {
+            return crypto.timingSafeEqual(actual, expected);
+        } catch  {
+            return false;
+        }
+    }
+    const algorithm = (0, dsa_digest_js_1.default)(alg);
+    const keyInput = (0, node_key_js_1.default)(alg, keyObject);
+    try {
+        return await oneShotVerify(algorithm, data, keyInput, signature);
+    } catch  {
+        return false;
+    }
+};
+exports["default"] = verify;
+
+
+/***/ }),
+
+/***/ 10557:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.isCryptoKey = void 0;
+const crypto = __webpack_require__(6113);
+const util = __webpack_require__(73837);
+const webcrypto = crypto.webcrypto;
+exports["default"] = webcrypto;
+exports.isCryptoKey = util.types.isCryptoKey ? (key)=>util.types.isCryptoKey(key) : (key)=>false;
+
+
+/***/ }),
+
+/***/ 49786:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.deflate = exports.inflate = void 0;
+const util_1 = __webpack_require__(73837);
+const zlib_1 = __webpack_require__(59796);
+const inflateRaw = (0, util_1.promisify)(zlib_1.inflateRaw);
+const deflateRaw = (0, util_1.promisify)(zlib_1.deflateRaw);
+const inflate = (input)=>inflateRaw(input);
+exports.inflate = inflate;
+const deflate = (input)=>deflateRaw(input);
+exports.deflate = deflate;
+
+
+/***/ }),
+
+/***/ 68686:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.decode = exports.encode = void 0;
+const base64url = __webpack_require__(37244);
+exports.encode = base64url.encode;
+exports.decode = base64url.decode;
+
+
+/***/ }),
+
+/***/ 34316:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.decodeJwt = void 0;
+const base64url_js_1 = __webpack_require__(68686);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const is_object_js_1 = __webpack_require__(50281);
+const errors_js_1 = __webpack_require__(79927);
+function decodeJwt(jwt) {
+    if (typeof jwt !== "string") throw new errors_js_1.JWTInvalid("JWTs must use Compact JWS serialization, JWT must be a string");
+    const { 1: payload, length } = jwt.split(".");
+    if (length === 5) throw new errors_js_1.JWTInvalid("Only JWTs using Compact JWS serialization can be decoded");
+    if (length !== 3) throw new errors_js_1.JWTInvalid("Invalid JWT");
+    if (!payload) throw new errors_js_1.JWTInvalid("JWTs must contain a payload");
+    let decoded;
+    try {
+        decoded = (0, base64url_js_1.decode)(payload);
+    } catch  {
+        throw new errors_js_1.JWTInvalid("Failed to base64url decode the payload");
+    }
+    let result;
+    try {
+        result = JSON.parse(buffer_utils_js_1.decoder.decode(decoded));
+    } catch  {
+        throw new errors_js_1.JWTInvalid("Failed to parse the decoded payload as JSON");
+    }
+    if (!(0, is_object_js_1.default)(result)) throw new errors_js_1.JWTInvalid("Invalid JWT Claims Set");
+    return result;
+}
+exports.decodeJwt = decodeJwt;
+
+
+/***/ }),
+
+/***/ 67412:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.decodeProtectedHeader = void 0;
+const base64url_js_1 = __webpack_require__(68686);
+const buffer_utils_js_1 = __webpack_require__(43807);
+const is_object_js_1 = __webpack_require__(50281);
+function decodeProtectedHeader(token) {
+    let protectedB64u;
+    if (typeof token === "string") {
+        const parts = token.split(".");
+        if (parts.length === 3 || parts.length === 5) {
+            ;
+            [protectedB64u] = parts;
+        }
+    } else if (typeof token === "object" && token) {
+        if ("protected" in token) {
+            protectedB64u = token.protected;
+        } else {
+            throw new TypeError("Token does not contain a Protected Header");
+        }
+    }
+    try {
+        if (typeof protectedB64u !== "string" || !protectedB64u) {
+            throw new Error();
+        }
+        const result = JSON.parse(buffer_utils_js_1.decoder.decode((0, base64url_js_1.decode)(protectedB64u)));
+        if (!(0, is_object_js_1.default)(result)) {
+            throw new Error();
+        }
+        return result;
+    } catch  {
+        throw new TypeError("Invalid Token or Protected Header formatting");
+    }
+}
+exports.decodeProtectedHeader = decodeProtectedHeader;
+
+
+/***/ }),
+
+/***/ 79927:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+exports.JWSSignatureVerificationFailed = exports.JWKSTimeout = exports.JWKSMultipleMatchingKeys = exports.JWKSNoMatchingKey = exports.JWKSInvalid = exports.JWKInvalid = exports.JWTInvalid = exports.JWSInvalid = exports.JWEInvalid = exports.JWEDecryptionFailed = exports.JOSENotSupported = exports.JOSEAlgNotAllowed = exports.JWTExpired = exports.JWTClaimValidationFailed = exports.JOSEError = void 0;
+class JOSEError extends Error {
+    static get code() {
+        return "ERR_JOSE_GENERIC";
+    }
+    constructor(message){
+        var _a;
+        super(message);
+        this.code = "ERR_JOSE_GENERIC";
+        this.name = this.constructor.name;
+        (_a = Error.captureStackTrace) === null || _a === void 0 ? void 0 : _a.call(Error, this, this.constructor);
+    }
+}
+exports.JOSEError = JOSEError;
+class JWTClaimValidationFailed extends JOSEError {
+    static get code() {
+        return "ERR_JWT_CLAIM_VALIDATION_FAILED";
+    }
+    constructor(message, claim = "unspecified", reason = "unspecified"){
+        super(message);
+        this.code = "ERR_JWT_CLAIM_VALIDATION_FAILED";
+        this.claim = claim;
+        this.reason = reason;
+    }
+}
+exports.JWTClaimValidationFailed = JWTClaimValidationFailed;
+class JWTExpired extends JOSEError {
+    static get code() {
+        return "ERR_JWT_EXPIRED";
+    }
+    constructor(message, claim = "unspecified", reason = "unspecified"){
+        super(message);
+        this.code = "ERR_JWT_EXPIRED";
+        this.claim = claim;
+        this.reason = reason;
+    }
+}
+exports.JWTExpired = JWTExpired;
+class JOSEAlgNotAllowed extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JOSE_ALG_NOT_ALLOWED";
+    }
+    static get code() {
+        return "ERR_JOSE_ALG_NOT_ALLOWED";
+    }
+}
+exports.JOSEAlgNotAllowed = JOSEAlgNotAllowed;
+class JOSENotSupported extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JOSE_NOT_SUPPORTED";
+    }
+    static get code() {
+        return "ERR_JOSE_NOT_SUPPORTED";
+    }
+}
+exports.JOSENotSupported = JOSENotSupported;
+class JWEDecryptionFailed extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWE_DECRYPTION_FAILED";
+        this.message = "decryption operation failed";
+    }
+    static get code() {
+        return "ERR_JWE_DECRYPTION_FAILED";
+    }
+}
+exports.JWEDecryptionFailed = JWEDecryptionFailed;
+class JWEInvalid extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWE_INVALID";
+    }
+    static get code() {
+        return "ERR_JWE_INVALID";
+    }
+}
+exports.JWEInvalid = JWEInvalid;
+class JWSInvalid extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWS_INVALID";
+    }
+    static get code() {
+        return "ERR_JWS_INVALID";
+    }
+}
+exports.JWSInvalid = JWSInvalid;
+class JWTInvalid extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWT_INVALID";
+    }
+    static get code() {
+        return "ERR_JWT_INVALID";
+    }
+}
+exports.JWTInvalid = JWTInvalid;
+class JWKInvalid extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWK_INVALID";
+    }
+    static get code() {
+        return "ERR_JWK_INVALID";
+    }
+}
+exports.JWKInvalid = JWKInvalid;
+class JWKSInvalid extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWKS_INVALID";
+    }
+    static get code() {
+        return "ERR_JWKS_INVALID";
+    }
+}
+exports.JWKSInvalid = JWKSInvalid;
+class JWKSNoMatchingKey extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWKS_NO_MATCHING_KEY";
+        this.message = "no applicable key found in the JSON Web Key Set";
+    }
+    static get code() {
+        return "ERR_JWKS_NO_MATCHING_KEY";
+    }
+}
+exports.JWKSNoMatchingKey = JWKSNoMatchingKey;
+class JWKSMultipleMatchingKeys extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWKS_MULTIPLE_MATCHING_KEYS";
+        this.message = "multiple matching keys found in the JSON Web Key Set";
+    }
+    static get code() {
+        return "ERR_JWKS_MULTIPLE_MATCHING_KEYS";
+    }
+}
+exports.JWKSMultipleMatchingKeys = JWKSMultipleMatchingKeys;
+Symbol.asyncIterator;
+class JWKSTimeout extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWKS_TIMEOUT";
+        this.message = "request timed out";
+    }
+    static get code() {
+        return "ERR_JWKS_TIMEOUT";
+    }
+}
+exports.JWKSTimeout = JWKSTimeout;
+class JWSSignatureVerificationFailed extends JOSEError {
+    constructor(){
+        super(...arguments);
+        this.code = "ERR_JWS_SIGNATURE_VERIFICATION_FAILED";
+        this.message = "signature verification failed";
+    }
+    static get code() {
+        return "ERR_JWS_SIGNATURE_VERIFICATION_FAILED";
+    }
+}
+exports.JWSSignatureVerificationFailed = JWSSignatureVerificationFailed;
+
+
+/***/ }),
+
+/***/ 36796:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({
+    value: true
+}));
+const runtime_js_1 = __webpack_require__(29758);
+exports["default"] = runtime_js_1.default;
+
+
+/***/ }),
+
 /***/ 94710:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -2871,7 +8622,7 @@ var _pages = _interopRequireDefault(__webpack_require__(4424));
 var _init = __webpack_require__(72914);
 var _assert = __webpack_require__(55648);
 var _cookie = __webpack_require__(18689);
-var _cookie2 = __webpack_require__(80284);
+var _cookie2 = __webpack_require__(21024);
 function _getRequireWildcardCache(nodeInterop) {
     if (typeof WeakMap !== "function") return null;
     var cacheBabelInterop = new WeakMap();
@@ -4719,7 +10470,7 @@ Object.defineProperty(exports, "__esModule", ({
     value: true
 }));
 exports["default"] = ErrorPage;
-var _preact = __webpack_require__(97804);
+var _preact = __webpack_require__(42550);
 function ErrorPage(props) {
     var _errors$error$toLower;
     const { url, error = "default", theme } = props;
@@ -4794,7 +10545,7 @@ Object.defineProperty(exports, "__esModule", ({
     value: true
 }));
 exports["default"] = renderPage;
-var _preactRenderToString = _interopRequireDefault(__webpack_require__(16829));
+var _preactRenderToString = _interopRequireDefault(__webpack_require__(33537));
 var _signin = _interopRequireDefault(__webpack_require__(54101));
 var _signout = _interopRequireDefault(__webpack_require__(25247));
 var _verifyRequest = _interopRequireDefault(__webpack_require__(6792));
@@ -4877,7 +10628,7 @@ Object.defineProperty(exports, "__esModule", ({
     value: true
 }));
 exports["default"] = SigninPage;
-var _preact = __webpack_require__(97804);
+var _preact = __webpack_require__(42550);
 var _extends2 = _interopRequireDefault(__webpack_require__(67842));
 function hexToRgba(hex, alpha = 1) {
     if (!hex) {
@@ -5059,7 +10810,7 @@ Object.defineProperty(exports, "__esModule", ({
     value: true
 }));
 exports["default"] = SignoutPage;
-var _preact = __webpack_require__(97804);
+var _preact = __webpack_require__(42550);
 function SignoutPage(props) {
     const { url, csrfToken, theme } = props;
     return (0, _preact.h)("div", {
@@ -5111,7 +10862,7 @@ Object.defineProperty(exports, "__esModule", ({
     value: true
 }));
 exports["default"] = VerifyRequestPage;
-var _preact = __webpack_require__(97804);
+var _preact = __webpack_require__(42550);
 function VerifyRequestPage(props) {
     const { url, theme } = props;
     return (0, _preact.h)("div", {
@@ -5938,7 +11689,7 @@ var _exportNames = {
 exports.decode = decode;
 exports.encode = encode;
 exports.getToken = getToken;
-var _jose = __webpack_require__(24109);
+var _jose = __webpack_require__(23464);
 var _hkdf = _interopRequireDefault(__webpack_require__(211));
 var _uuid = __webpack_require__(32629);
 var _cookie = __webpack_require__(18689);
@@ -6191,7 +11942,7 @@ Object.defineProperty(exports, "__esModule", ({
 exports.getBody = getBody;
 exports.setCookie = setCookie;
 exports.toResponse = toResponse;
-var _cookie = __webpack_require__(80284);
+var _cookie = __webpack_require__(21024);
 function setCookie(res, cookie) {
     var _res$getHeader;
     let setCookieHeader = (_res$getHeader = res.getHeader("Set-Cookie")) !== null && _res$getHeader !== void 0 ? _res$getHeader : [];
@@ -6242,5753 +11993,588 @@ function toResponse(res) {
 
 /***/ }),
 
-/***/ 80284:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ 71503:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
-/*!
- * cookie
- * Copyright(c) 2012-2014 Roman Shtylman
- * Copyright(c) 2015 Douglas Christopher Wilson
- * MIT Licensed
- */ 
-/**
- * Module exports.
- * @public
- */ exports.parse = parse;
-exports.serialize = serialize;
-/**
- * Module variables.
- * @private
- */ var __toString = Object.prototype.toString;
-/**
- * RegExp to match field-content in RFC 7230 sec 3.2
- *
- * field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
- * field-vchar   = VCHAR / obs-text
- * obs-text      = %x80-FF
- */ var fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
-/**
- * Parse a cookie header.
- *
- * Parse the given cookie header string into an object
- * The object has the various cookies as keys(names) => values
- *
- * @param {string} str
- * @param {object} [options]
- * @return {object}
- * @public
- */ function parse(str, options) {
-    if (typeof str !== "string") {
-        throw new TypeError("argument str must be a string");
-    }
-    var obj = {};
-    var opt = options || {};
-    var dec = opt.decode || decode;
-    var index = 0;
-    while(index < str.length){
-        var eqIdx = str.indexOf("=", index);
-        // no more cookie pairs
-        if (eqIdx === -1) {
-            break;
-        }
-        var endIdx = str.indexOf(";", index);
-        if (endIdx === -1) {
-            endIdx = str.length;
-        } else if (endIdx < eqIdx) {
-            // backtrack on prior semicolon
-            index = str.lastIndexOf(";", eqIdx - 1) + 1;
-            continue;
-        }
-        var key = str.slice(index, eqIdx).trim();
-        // only assign once
-        if (undefined === obj[key]) {
-            var val = str.slice(eqIdx + 1, endIdx).trim();
-            // quoted values
-            if (val.charCodeAt(0) === 0x22) {
-                val = val.slice(1, -1);
+!function(e, t) {
+     true ? t(exports, __webpack_require__(42550)) : 0;
+}(this, function(e, t) {
+    var n = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|^--/i, r = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/, o = /[\s\n\\/='"\0<>]/, i = /^xlink:?./, s = /["&<]/;
+    function a(e) {
+        if (!1 === s.test(e += "")) return e;
+        for(var t = 0, n = 0, r = "", o = ""; n < e.length; n++){
+            switch(e.charCodeAt(n)){
+                case 34:
+                    o = "&quot;";
+                    break;
+                case 38:
+                    o = "&amp;";
+                    break;
+                case 60:
+                    o = "&lt;";
+                    break;
+                default:
+                    continue;
             }
-            obj[key] = tryDecode(val, dec);
+            n !== t && (r += e.slice(t, n)), r += o, t = n + 1;
         }
-        index = endIdx + 1;
+        return n !== t && (r += e.slice(t, n)), r;
     }
-    return obj;
-}
-/**
- * Serialize data into a cookie header.
- *
- * Serialize the a name value pair into a cookie string suitable for
- * http headers. An optional options object specified cookie parameters.
- *
- * serialize('foo', 'bar', { httpOnly: true })
- *   => "foo=bar; httpOnly"
- *
- * @param {string} name
- * @param {string} val
- * @param {object} [options]
- * @return {string}
- * @public
- */ function serialize(name, val, options) {
-    var opt = options || {};
-    var enc = opt.encode || encode;
-    if (typeof enc !== "function") {
-        throw new TypeError("option encode is invalid");
-    }
-    if (!fieldContentRegExp.test(name)) {
-        throw new TypeError("argument name is invalid");
-    }
-    var value = enc(val);
-    if (value && !fieldContentRegExp.test(value)) {
-        throw new TypeError("argument val is invalid");
-    }
-    var str = name + "=" + value;
-    if (null != opt.maxAge) {
-        var maxAge = opt.maxAge - 0;
-        if (isNaN(maxAge) || !isFinite(maxAge)) {
-            throw new TypeError("option maxAge is invalid");
+    var l = function(e, t) {
+        return String(e).replace(/(\n+)/g, "$1" + (t || "	"));
+    }, f = function(e, t, n) {
+        return String(e).length > (t || 40) || !n && -1 !== String(e).indexOf("\n") || -1 !== String(e).indexOf("<");
+    }, u = {}, p = /([A-Z])/g;
+    function c(e) {
+        var t = "";
+        for(var r in e){
+            var o = e[r];
+            null != o && "" !== o && (t && (t += " "), t += "-" == r[0] ? r : u[r] || (u[r] = r.replace(p, "-$1").toLowerCase()), t = "number" == typeof o && !1 === n.test(r) ? t + ": " + o + "px;" : t + ": " + o + ";");
         }
-        str += "; Max-Age=" + Math.floor(maxAge);
+        return t || void 0;
     }
-    if (opt.domain) {
-        if (!fieldContentRegExp.test(opt.domain)) {
-            throw new TypeError("option domain is invalid");
-        }
-        str += "; Domain=" + opt.domain;
+    function _(e, t) {
+        return Array.isArray(t) ? t.reduce(_, e) : null != t && !1 !== t && e.push(t), e;
     }
-    if (opt.path) {
-        if (!fieldContentRegExp.test(opt.path)) {
-            throw new TypeError("option path is invalid");
-        }
-        str += "; Path=" + opt.path;
+    function d() {
+        this.__d = !0;
     }
-    if (opt.expires) {
-        var expires = opt.expires;
-        if (!isDate(expires) || isNaN(expires.valueOf())) {
-            throw new TypeError("option expires is invalid");
-        }
-        str += "; Expires=" + expires.toUTCString();
-    }
-    if (opt.httpOnly) {
-        str += "; HttpOnly";
-    }
-    if (opt.secure) {
-        str += "; Secure";
-    }
-    if (opt.priority) {
-        var priority = typeof opt.priority === "string" ? opt.priority.toLowerCase() : opt.priority;
-        switch(priority){
-            case "low":
-                str += "; Priority=Low";
-                break;
-            case "medium":
-                str += "; Priority=Medium";
-                break;
-            case "high":
-                str += "; Priority=High";
-                break;
-            default:
-                throw new TypeError("option priority is invalid");
-        }
-    }
-    if (opt.sameSite) {
-        var sameSite = typeof opt.sameSite === "string" ? opt.sameSite.toLowerCase() : opt.sameSite;
-        switch(sameSite){
-            case true:
-                str += "; SameSite=Strict";
-                break;
-            case "lax":
-                str += "; SameSite=Lax";
-                break;
-            case "strict":
-                str += "; SameSite=Strict";
-                break;
-            case "none":
-                str += "; SameSite=None";
-                break;
-            default:
-                throw new TypeError("option sameSite is invalid");
-        }
-    }
-    return str;
-}
-/**
- * URL-decode string value. Optimized to skip native call when no %.
- *
- * @param {string} str
- * @returns {string}
- */ function decode(str) {
-    return str.indexOf("%") !== -1 ? decodeURIComponent(str) : str;
-}
-/**
- * URL-encode value.
- *
- * @param {string} str
- * @returns {string}
- */ function encode(val) {
-    return encodeURIComponent(val);
-}
-/**
- * Determine if value is a Date.
- *
- * @param {*} val
- * @private
- */ function isDate(val) {
-    return __toString.call(val) === "[object Date]" || val instanceof Date;
-}
-/**
- * Try decoding a string using a decoding function.
- *
- * @param {string} str
- * @param {function} decode
- * @private
- */ function tryDecode(str, decode) {
-    try {
-        return decode(str);
-    } catch (e) {
-        return str;
-    }
-}
-
-
-/***/ }),
-
-/***/ 24109:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.cryptoRuntime = exports.base64url = exports.generateSecret = exports.generateKeyPair = exports.errors = exports.decodeJwt = exports.decodeProtectedHeader = exports.importJWK = exports.importX509 = exports.importPKCS8 = exports.importSPKI = exports.exportJWK = exports.exportSPKI = exports.exportPKCS8 = exports.UnsecuredJWT = exports.createRemoteJWKSet = exports.createLocalJWKSet = exports.EmbeddedJWK = exports.calculateJwkThumbprintUri = exports.calculateJwkThumbprint = exports.EncryptJWT = exports.SignJWT = exports.GeneralSign = exports.FlattenedSign = exports.CompactSign = exports.FlattenedEncrypt = exports.CompactEncrypt = exports.jwtDecrypt = exports.jwtVerify = exports.generalVerify = exports.flattenedVerify = exports.compactVerify = exports.GeneralEncrypt = exports.generalDecrypt = exports.flattenedDecrypt = exports.compactDecrypt = void 0;
-var decrypt_js_1 = __webpack_require__(9787);
-Object.defineProperty(exports, "compactDecrypt", ({
-    enumerable: true,
-    get: function() {
-        return decrypt_js_1.compactDecrypt;
-    }
-}));
-var decrypt_js_2 = __webpack_require__(78188);
-Object.defineProperty(exports, "flattenedDecrypt", ({
-    enumerable: true,
-    get: function() {
-        return decrypt_js_2.flattenedDecrypt;
-    }
-}));
-var decrypt_js_3 = __webpack_require__(96237);
-Object.defineProperty(exports, "generalDecrypt", ({
-    enumerable: true,
-    get: function() {
-        return decrypt_js_3.generalDecrypt;
-    }
-}));
-var encrypt_js_1 = __webpack_require__(6171);
-Object.defineProperty(exports, "GeneralEncrypt", ({
-    enumerable: true,
-    get: function() {
-        return encrypt_js_1.GeneralEncrypt;
-    }
-}));
-var verify_js_1 = __webpack_require__(85309);
-Object.defineProperty(exports, "compactVerify", ({
-    enumerable: true,
-    get: function() {
-        return verify_js_1.compactVerify;
-    }
-}));
-var verify_js_2 = __webpack_require__(39624);
-Object.defineProperty(exports, "flattenedVerify", ({
-    enumerable: true,
-    get: function() {
-        return verify_js_2.flattenedVerify;
-    }
-}));
-var verify_js_3 = __webpack_require__(4759);
-Object.defineProperty(exports, "generalVerify", ({
-    enumerable: true,
-    get: function() {
-        return verify_js_3.generalVerify;
-    }
-}));
-var verify_js_4 = __webpack_require__(98625);
-Object.defineProperty(exports, "jwtVerify", ({
-    enumerable: true,
-    get: function() {
-        return verify_js_4.jwtVerify;
-    }
-}));
-var decrypt_js_4 = __webpack_require__(8873);
-Object.defineProperty(exports, "jwtDecrypt", ({
-    enumerable: true,
-    get: function() {
-        return decrypt_js_4.jwtDecrypt;
-    }
-}));
-var encrypt_js_2 = __webpack_require__(88064);
-Object.defineProperty(exports, "CompactEncrypt", ({
-    enumerable: true,
-    get: function() {
-        return encrypt_js_2.CompactEncrypt;
-    }
-}));
-var encrypt_js_3 = __webpack_require__(44746);
-Object.defineProperty(exports, "FlattenedEncrypt", ({
-    enumerable: true,
-    get: function() {
-        return encrypt_js_3.FlattenedEncrypt;
-    }
-}));
-var sign_js_1 = __webpack_require__(12654);
-Object.defineProperty(exports, "CompactSign", ({
-    enumerable: true,
-    get: function() {
-        return sign_js_1.CompactSign;
-    }
-}));
-var sign_js_2 = __webpack_require__(91434);
-Object.defineProperty(exports, "FlattenedSign", ({
-    enumerable: true,
-    get: function() {
-        return sign_js_2.FlattenedSign;
-    }
-}));
-var sign_js_3 = __webpack_require__(98462);
-Object.defineProperty(exports, "GeneralSign", ({
-    enumerable: true,
-    get: function() {
-        return sign_js_3.GeneralSign;
-    }
-}));
-var sign_js_4 = __webpack_require__(83329);
-Object.defineProperty(exports, "SignJWT", ({
-    enumerable: true,
-    get: function() {
-        return sign_js_4.SignJWT;
-    }
-}));
-var encrypt_js_4 = __webpack_require__(6187);
-Object.defineProperty(exports, "EncryptJWT", ({
-    enumerable: true,
-    get: function() {
-        return encrypt_js_4.EncryptJWT;
-    }
-}));
-var thumbprint_js_1 = __webpack_require__(74978);
-Object.defineProperty(exports, "calculateJwkThumbprint", ({
-    enumerable: true,
-    get: function() {
-        return thumbprint_js_1.calculateJwkThumbprint;
-    }
-}));
-Object.defineProperty(exports, "calculateJwkThumbprintUri", ({
-    enumerable: true,
-    get: function() {
-        return thumbprint_js_1.calculateJwkThumbprintUri;
-    }
-}));
-var embedded_js_1 = __webpack_require__(67408);
-Object.defineProperty(exports, "EmbeddedJWK", ({
-    enumerable: true,
-    get: function() {
-        return embedded_js_1.EmbeddedJWK;
-    }
-}));
-var local_js_1 = __webpack_require__(26033);
-Object.defineProperty(exports, "createLocalJWKSet", ({
-    enumerable: true,
-    get: function() {
-        return local_js_1.createLocalJWKSet;
-    }
-}));
-var remote_js_1 = __webpack_require__(84329);
-Object.defineProperty(exports, "createRemoteJWKSet", ({
-    enumerable: true,
-    get: function() {
-        return remote_js_1.createRemoteJWKSet;
-    }
-}));
-var unsecured_js_1 = __webpack_require__(11340);
-Object.defineProperty(exports, "UnsecuredJWT", ({
-    enumerable: true,
-    get: function() {
-        return unsecured_js_1.UnsecuredJWT;
-    }
-}));
-var export_js_1 = __webpack_require__(64689);
-Object.defineProperty(exports, "exportPKCS8", ({
-    enumerable: true,
-    get: function() {
-        return export_js_1.exportPKCS8;
-    }
-}));
-Object.defineProperty(exports, "exportSPKI", ({
-    enumerable: true,
-    get: function() {
-        return export_js_1.exportSPKI;
-    }
-}));
-Object.defineProperty(exports, "exportJWK", ({
-    enumerable: true,
-    get: function() {
-        return export_js_1.exportJWK;
-    }
-}));
-var import_js_1 = __webpack_require__(35185);
-Object.defineProperty(exports, "importSPKI", ({
-    enumerable: true,
-    get: function() {
-        return import_js_1.importSPKI;
-    }
-}));
-Object.defineProperty(exports, "importPKCS8", ({
-    enumerable: true,
-    get: function() {
-        return import_js_1.importPKCS8;
-    }
-}));
-Object.defineProperty(exports, "importX509", ({
-    enumerable: true,
-    get: function() {
-        return import_js_1.importX509;
-    }
-}));
-Object.defineProperty(exports, "importJWK", ({
-    enumerable: true,
-    get: function() {
-        return import_js_1.importJWK;
-    }
-}));
-var decode_protected_header_js_1 = __webpack_require__(65283);
-Object.defineProperty(exports, "decodeProtectedHeader", ({
-    enumerable: true,
-    get: function() {
-        return decode_protected_header_js_1.decodeProtectedHeader;
-    }
-}));
-var decode_jwt_js_1 = __webpack_require__(5109);
-Object.defineProperty(exports, "decodeJwt", ({
-    enumerable: true,
-    get: function() {
-        return decode_jwt_js_1.decodeJwt;
-    }
-}));
-exports.errors = __webpack_require__(56460);
-var generate_key_pair_js_1 = __webpack_require__(21544);
-Object.defineProperty(exports, "generateKeyPair", ({
-    enumerable: true,
-    get: function() {
-        return generate_key_pair_js_1.generateKeyPair;
-    }
-}));
-var generate_secret_js_1 = __webpack_require__(73727);
-Object.defineProperty(exports, "generateSecret", ({
-    enumerable: true,
-    get: function() {
-        return generate_secret_js_1.generateSecret;
-    }
-}));
-exports.base64url = __webpack_require__(44732);
-var runtime_js_1 = __webpack_require__(48643);
-Object.defineProperty(exports, "cryptoRuntime", ({
-    enumerable: true,
-    get: function() {
-        return runtime_js_1.default;
-    }
-}));
-
-
-/***/ }),
-
-/***/ 9787:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.compactDecrypt = void 0;
-const decrypt_js_1 = __webpack_require__(78188);
-const errors_js_1 = __webpack_require__(56460);
-const buffer_utils_js_1 = __webpack_require__(51495);
-async function compactDecrypt(jwe, key, options) {
-    if (jwe instanceof Uint8Array) {
-        jwe = buffer_utils_js_1.decoder.decode(jwe);
-    }
-    if (typeof jwe !== "string") {
-        throw new errors_js_1.JWEInvalid("Compact JWE must be a string or Uint8Array");
-    }
-    const { 0: protectedHeader, 1: encryptedKey, 2: iv, 3: ciphertext, 4: tag, length } = jwe.split(".");
-    if (length !== 5) {
-        throw new errors_js_1.JWEInvalid("Invalid Compact JWE");
-    }
-    const decrypted = await (0, decrypt_js_1.flattenedDecrypt)({
-        ciphertext,
-        iv: iv || undefined,
-        protected: protectedHeader || undefined,
-        tag: tag || undefined,
-        encrypted_key: encryptedKey || undefined
-    }, key, options);
-    const result = {
-        plaintext: decrypted.plaintext,
-        protectedHeader: decrypted.protectedHeader
-    };
-    if (typeof key === "function") {
+    function v(e, t) {
         return {
-            ...result,
-            key: decrypted.key
+            __v: e,
+            context: t,
+            props: e.props,
+            setState: d,
+            forceUpdate: d,
+            __d: !0,
+            __h: []
         };
     }
-    return result;
-}
-exports.compactDecrypt = compactDecrypt;
-
-
-/***/ }),
-
-/***/ 88064:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.CompactEncrypt = void 0;
-const encrypt_js_1 = __webpack_require__(44746);
-class CompactEncrypt {
-    constructor(plaintext){
-        this._flattened = new encrypt_js_1.FlattenedEncrypt(plaintext);
+    function g(e, t) {
+        var n = e.contextType, r = n && t[n.__c];
+        return null != n ? r ? r.props.value : n.__ : t;
     }
-    setContentEncryptionKey(cek) {
-        this._flattened.setContentEncryptionKey(cek);
-        return this;
-    }
-    setInitializationVector(iv) {
-        this._flattened.setInitializationVector(iv);
-        return this;
-    }
-    setProtectedHeader(protectedHeader) {
-        this._flattened.setProtectedHeader(protectedHeader);
-        return this;
-    }
-    setKeyManagementParameters(parameters) {
-        this._flattened.setKeyManagementParameters(parameters);
-        return this;
-    }
-    async encrypt(key, options) {
-        const jwe = await this._flattened.encrypt(key, options);
-        return [
-            jwe.protected,
-            jwe.encrypted_key,
-            jwe.iv,
-            jwe.ciphertext,
-            jwe.tag
-        ].join(".");
-    }
-}
-exports.CompactEncrypt = CompactEncrypt;
-
-
-/***/ }),
-
-/***/ 78188:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.flattenedDecrypt = void 0;
-const base64url_js_1 = __webpack_require__(32362);
-const decrypt_js_1 = __webpack_require__(62839);
-const zlib_js_1 = __webpack_require__(93087);
-const errors_js_1 = __webpack_require__(56460);
-const is_disjoint_js_1 = __webpack_require__(96390);
-const is_object_js_1 = __webpack_require__(13951);
-const decrypt_key_management_js_1 = __webpack_require__(82523);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const cek_js_1 = __webpack_require__(88241);
-const validate_crit_js_1 = __webpack_require__(33927);
-const validate_algorithms_js_1 = __webpack_require__(35277);
-async function flattenedDecrypt(jwe, key, options) {
-    var _a;
-    if (!(0, is_object_js_1.default)(jwe)) {
-        throw new errors_js_1.JWEInvalid("Flattened JWE must be an object");
-    }
-    if (jwe.protected === undefined && jwe.header === undefined && jwe.unprotected === undefined) {
-        throw new errors_js_1.JWEInvalid("JOSE Header missing");
-    }
-    if (typeof jwe.iv !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Initialization Vector missing or incorrect type");
-    }
-    if (typeof jwe.ciphertext !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Ciphertext missing or incorrect type");
-    }
-    if (typeof jwe.tag !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Authentication Tag missing or incorrect type");
-    }
-    if (jwe.protected !== undefined && typeof jwe.protected !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Protected Header incorrect type");
-    }
-    if (jwe.encrypted_key !== undefined && typeof jwe.encrypted_key !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Encrypted Key incorrect type");
-    }
-    if (jwe.aad !== undefined && typeof jwe.aad !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE AAD incorrect type");
-    }
-    if (jwe.header !== undefined && !(0, is_object_js_1.default)(jwe.header)) {
-        throw new errors_js_1.JWEInvalid("JWE Shared Unprotected Header incorrect type");
-    }
-    if (jwe.unprotected !== undefined && !(0, is_object_js_1.default)(jwe.unprotected)) {
-        throw new errors_js_1.JWEInvalid("JWE Per-Recipient Unprotected Header incorrect type");
-    }
-    let parsedProt;
-    if (jwe.protected) {
-        try {
-            const protectedHeader = (0, base64url_js_1.decode)(jwe.protected);
-            parsedProt = JSON.parse(buffer_utils_js_1.decoder.decode(protectedHeader));
-        } catch  {
-            throw new errors_js_1.JWEInvalid("JWE Protected Header is invalid");
+    var h = [];
+    function y(e, n, s, u, p, d) {
+        if (null == e || "boolean" == typeof e) return "";
+        if ("object" != typeof e) return "function" == typeof e ? "" : a(e);
+        var m = s.pretty, b = m && "string" == typeof m ? m : "	";
+        if (Array.isArray(e)) {
+            for(var x = "", k = 0; k < e.length; k++)m && k > 0 && (x += "\n"), x += y(e[k], n, s, u, p, d);
+            return x;
         }
-    }
-    if (!(0, is_disjoint_js_1.default)(parsedProt, jwe.header, jwe.unprotected)) {
-        throw new errors_js_1.JWEInvalid("JWE Protected, JWE Unprotected Header, and JWE Per-Recipient Unprotected Header Parameter names must be disjoint");
-    }
-    const joseHeader = {
-        ...parsedProt,
-        ...jwe.header,
-        ...jwe.unprotected
-    };
-    (0, validate_crit_js_1.default)(errors_js_1.JWEInvalid, new Map(), options === null || options === void 0 ? void 0 : options.crit, parsedProt, joseHeader);
-    if (joseHeader.zip !== undefined) {
-        if (!parsedProt || !parsedProt.zip) {
-            throw new errors_js_1.JWEInvalid('JWE "zip" (Compression Algorithm) Header MUST be integrity protected');
-        }
-        if (joseHeader.zip !== "DEF") {
-            throw new errors_js_1.JOSENotSupported('Unsupported JWE "zip" (Compression Algorithm) Header Parameter value');
-        }
-    }
-    const { alg, enc } = joseHeader;
-    if (typeof alg !== "string" || !alg) {
-        throw new errors_js_1.JWEInvalid("missing JWE Algorithm (alg) in JWE Header");
-    }
-    if (typeof enc !== "string" || !enc) {
-        throw new errors_js_1.JWEInvalid("missing JWE Encryption Algorithm (enc) in JWE Header");
-    }
-    const keyManagementAlgorithms = options && (0, validate_algorithms_js_1.default)("keyManagementAlgorithms", options.keyManagementAlgorithms);
-    const contentEncryptionAlgorithms = options && (0, validate_algorithms_js_1.default)("contentEncryptionAlgorithms", options.contentEncryptionAlgorithms);
-    if (keyManagementAlgorithms && !keyManagementAlgorithms.has(alg)) {
-        throw new errors_js_1.JOSEAlgNotAllowed('"alg" (Algorithm) Header Parameter not allowed');
-    }
-    if (contentEncryptionAlgorithms && !contentEncryptionAlgorithms.has(enc)) {
-        throw new errors_js_1.JOSEAlgNotAllowed('"enc" (Encryption Algorithm) Header Parameter not allowed');
-    }
-    let encryptedKey;
-    if (jwe.encrypted_key !== undefined) {
-        try {
-            encryptedKey = (0, base64url_js_1.decode)(jwe.encrypted_key);
-        } catch  {
-            throw new errors_js_1.JWEInvalid("Failed to base64url decode the encrypted_key");
-        }
-    }
-    let resolvedKey = false;
-    if (typeof key === "function") {
-        key = await key(parsedProt, jwe);
-        resolvedKey = true;
-    }
-    let cek;
-    try {
-        cek = await (0, decrypt_key_management_js_1.default)(alg, key, encryptedKey, joseHeader, options);
-    } catch (err) {
-        if (err instanceof TypeError || err instanceof errors_js_1.JWEInvalid || err instanceof errors_js_1.JOSENotSupported) {
-            throw err;
-        }
-        cek = (0, cek_js_1.default)(enc);
-    }
-    let iv;
-    let tag;
-    try {
-        iv = (0, base64url_js_1.decode)(jwe.iv);
-    } catch  {
-        throw new errors_js_1.JWEInvalid("Failed to base64url decode the iv");
-    }
-    try {
-        tag = (0, base64url_js_1.decode)(jwe.tag);
-    } catch  {
-        throw new errors_js_1.JWEInvalid("Failed to base64url decode the tag");
-    }
-    const protectedHeader = buffer_utils_js_1.encoder.encode((_a = jwe.protected) !== null && _a !== void 0 ? _a : "");
-    let additionalData;
-    if (jwe.aad !== undefined) {
-        additionalData = (0, buffer_utils_js_1.concat)(protectedHeader, buffer_utils_js_1.encoder.encode("."), buffer_utils_js_1.encoder.encode(jwe.aad));
-    } else {
-        additionalData = protectedHeader;
-    }
-    let ciphertext;
-    try {
-        ciphertext = (0, base64url_js_1.decode)(jwe.ciphertext);
-    } catch  {
-        throw new errors_js_1.JWEInvalid("Failed to base64url decode the ciphertext");
-    }
-    let plaintext = await (0, decrypt_js_1.default)(enc, cek, ciphertext, iv, tag, additionalData);
-    if (joseHeader.zip === "DEF") {
-        plaintext = await ((options === null || options === void 0 ? void 0 : options.inflateRaw) || zlib_js_1.inflate)(plaintext);
-    }
-    const result = {
-        plaintext
-    };
-    if (jwe.protected !== undefined) {
-        result.protectedHeader = parsedProt;
-    }
-    if (jwe.aad !== undefined) {
-        try {
-            result.additionalAuthenticatedData = (0, base64url_js_1.decode)(jwe.aad);
-        } catch  {
-            throw new errors_js_1.JWEInvalid("Failed to base64url decode the aad");
-        }
-    }
-    if (jwe.unprotected !== undefined) {
-        result.sharedUnprotectedHeader = jwe.unprotected;
-    }
-    if (jwe.header !== undefined) {
-        result.unprotectedHeader = jwe.header;
-    }
-    if (resolvedKey) {
-        return {
-            ...result,
-            key
-        };
-    }
-    return result;
-}
-exports.flattenedDecrypt = flattenedDecrypt;
-
-
-/***/ }),
-
-/***/ 44746:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.FlattenedEncrypt = exports.unprotected = void 0;
-const base64url_js_1 = __webpack_require__(32362);
-const encrypt_js_1 = __webpack_require__(57701);
-const zlib_js_1 = __webpack_require__(93087);
-const iv_js_1 = __webpack_require__(59337);
-const encrypt_key_management_js_1 = __webpack_require__(92255);
-const errors_js_1 = __webpack_require__(56460);
-const is_disjoint_js_1 = __webpack_require__(96390);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const validate_crit_js_1 = __webpack_require__(33927);
-exports.unprotected = Symbol();
-class FlattenedEncrypt {
-    constructor(plaintext){
-        if (!(plaintext instanceof Uint8Array)) {
-            throw new TypeError("plaintext must be an instance of Uint8Array");
-        }
-        this._plaintext = plaintext;
-    }
-    setKeyManagementParameters(parameters) {
-        if (this._keyManagementParameters) {
-            throw new TypeError("setKeyManagementParameters can only be called once");
-        }
-        this._keyManagementParameters = parameters;
-        return this;
-    }
-    setProtectedHeader(protectedHeader) {
-        if (this._protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    setSharedUnprotectedHeader(sharedUnprotectedHeader) {
-        if (this._sharedUnprotectedHeader) {
-            throw new TypeError("setSharedUnprotectedHeader can only be called once");
-        }
-        this._sharedUnprotectedHeader = sharedUnprotectedHeader;
-        return this;
-    }
-    setUnprotectedHeader(unprotectedHeader) {
-        if (this._unprotectedHeader) {
-            throw new TypeError("setUnprotectedHeader can only be called once");
-        }
-        this._unprotectedHeader = unprotectedHeader;
-        return this;
-    }
-    setAdditionalAuthenticatedData(aad) {
-        this._aad = aad;
-        return this;
-    }
-    setContentEncryptionKey(cek) {
-        if (this._cek) {
-            throw new TypeError("setContentEncryptionKey can only be called once");
-        }
-        this._cek = cek;
-        return this;
-    }
-    setInitializationVector(iv) {
-        if (this._iv) {
-            throw new TypeError("setInitializationVector can only be called once");
-        }
-        this._iv = iv;
-        return this;
-    }
-    async encrypt(key, options) {
-        if (!this._protectedHeader && !this._unprotectedHeader && !this._sharedUnprotectedHeader) {
-            throw new errors_js_1.JWEInvalid("either setProtectedHeader, setUnprotectedHeader, or sharedUnprotectedHeader must be called before #encrypt()");
-        }
-        if (!(0, is_disjoint_js_1.default)(this._protectedHeader, this._unprotectedHeader, this._sharedUnprotectedHeader)) {
-            throw new errors_js_1.JWEInvalid("JWE Protected, JWE Shared Unprotected and JWE Per-Recipient Header Parameter names must be disjoint");
-        }
-        const joseHeader = {
-            ...this._protectedHeader,
-            ...this._unprotectedHeader,
-            ...this._sharedUnprotectedHeader
-        };
-        (0, validate_crit_js_1.default)(errors_js_1.JWEInvalid, new Map(), options === null || options === void 0 ? void 0 : options.crit, this._protectedHeader, joseHeader);
-        if (joseHeader.zip !== undefined) {
-            if (!this._protectedHeader || !this._protectedHeader.zip) {
-                throw new errors_js_1.JWEInvalid('JWE "zip" (Compression Algorithm) Header MUST be integrity protected');
+        if (void 0 !== e.constructor) return "";
+        var S, w = e.type, C = e.props, O = !1;
+        if ("function" == typeof w) {
+            if (O = !0, !s.shallow || !u && !1 !== s.renderRootComponent) {
+                if (w === t.Fragment) {
+                    var j = [];
+                    return _(j, e.props.children), y(j, n, s, !1 !== s.shallowHighOrder, p, d);
+                }
+                var F, A = e.__c = v(e, n);
+                t.options.__b && t.options.__b(e);
+                var T = t.options.__r;
+                if (w.prototype && "function" == typeof w.prototype.render) {
+                    var H = g(w, n);
+                    (A = e.__c = new w(C, H)).__v = e, A._dirty = A.__d = !0, A.props = C, null == A.state && (A.state = {}), null == A._nextState && null == A.__s && (A._nextState = A.__s = A.state), A.context = H, w.getDerivedStateFromProps ? A.state = Object.assign({}, A.state, w.getDerivedStateFromProps(A.props, A.state)) : A.componentWillMount && (A.componentWillMount(), A.state = A._nextState !== A.state ? A._nextState : A.__s !== A.state ? A.__s : A.state), T && T(e), F = A.render(A.props, A.state, A.context);
+                } else for(var M = g(w, n), L = 0; A.__d && L++ < 25;)A.__d = !1, T && T(e), F = w.call(e.__c, C, M);
+                return A.getChildContext && (n = Object.assign({}, n, A.getChildContext())), t.options.diffed && t.options.diffed(e), y(F, n, s, !1 !== s.shallowHighOrder, p, d);
             }
-            if (joseHeader.zip !== "DEF") {
-                throw new errors_js_1.JOSENotSupported('Unsupported JWE "zip" (Compression Algorithm) Header Parameter value');
-            }
-        }
-        const { alg, enc } = joseHeader;
-        if (typeof alg !== "string" || !alg) {
-            throw new errors_js_1.JWEInvalid('JWE "alg" (Algorithm) Header Parameter missing or invalid');
-        }
-        if (typeof enc !== "string" || !enc) {
-            throw new errors_js_1.JWEInvalid('JWE "enc" (Encryption Algorithm) Header Parameter missing or invalid');
-        }
-        let encryptedKey;
-        if (alg === "dir") {
-            if (this._cek) {
-                throw new TypeError("setContentEncryptionKey cannot be called when using Direct Encryption");
-            }
-        } else if (alg === "ECDH-ES") {
-            if (this._cek) {
-                throw new TypeError("setContentEncryptionKey cannot be called when using Direct Key Agreement");
-            }
-        }
-        let cek;
-        {
-            let parameters;
-            ({ cek, encryptedKey, parameters } = await (0, encrypt_key_management_js_1.default)(alg, enc, key, this._cek, this._keyManagementParameters));
-            if (parameters) {
-                if (options && exports.unprotected in options) {
-                    if (!this._unprotectedHeader) {
-                        this.setUnprotectedHeader(parameters);
-                    } else {
-                        this._unprotectedHeader = {
-                            ...this._unprotectedHeader,
-                            ...parameters
-                        };
+            w = (S = w).displayName || S !== Function && S.name || function(e) {
+                var t = (Function.prototype.toString.call(e).match(/^\s*function\s+([^( ]+)/) || "")[1];
+                if (!t) {
+                    for(var n = -1, r = h.length; r--;)if (h[r] === e) {
+                        n = r;
+                        break;
                     }
-                } else {
-                    if (!this._protectedHeader) {
-                        this.setProtectedHeader(parameters);
-                    } else {
-                        this._protectedHeader = {
-                            ...this._protectedHeader,
-                            ...parameters
-                        };
+                    n < 0 && (n = h.push(e) - 1), t = "UnnamedComponent" + n;
+                }
+                return t;
+            }(S);
+        }
+        var E, $, D = "<" + w;
+        if (C) {
+            var N = Object.keys(C);
+            s && !0 === s.sortAttributes && N.sort();
+            for(var P = 0; P < N.length; P++){
+                var R = N[P], W = C[R];
+                if ("children" !== R) {
+                    if (!o.test(R) && (s && s.allAttributes || "key" !== R && "ref" !== R && "__self" !== R && "__source" !== R)) {
+                        if ("defaultValue" === R) R = "value";
+                        else if ("defaultChecked" === R) R = "checked";
+                        else if ("defaultSelected" === R) R = "selected";
+                        else if ("className" === R) {
+                            if (void 0 !== C.class) continue;
+                            R = "class";
+                        } else p && i.test(R) && (R = R.toLowerCase().replace(/^xlink:?/, "xlink:"));
+                        if ("htmlFor" === R) {
+                            if (C.for) continue;
+                            R = "for";
+                        }
+                        "style" === R && W && "object" == typeof W && (W = c(W)), "a" === R[0] && "r" === R[1] && "boolean" == typeof W && (W = String(W));
+                        var q = s.attributeHook && s.attributeHook(R, W, n, s, O);
+                        if (q || "" === q) D += q;
+                        else if ("dangerouslySetInnerHTML" === R) $ = W && W.__html;
+                        else if ("textarea" === w && "value" === R) E = W;
+                        else if ((W || 0 === W || "" === W) && "function" != typeof W) {
+                            if (!(!0 !== W && "" !== W || (W = R, s && s.xml))) {
+                                D = D + " " + R;
+                                continue;
+                            }
+                            if ("value" === R) {
+                                if ("select" === w) {
+                                    d = W;
+                                    continue;
+                                }
+                                "option" === w && d == W && void 0 === C.selected && (D += " selected");
+                            }
+                            D = D + " " + R + '="' + a(W) + '"';
+                        }
                     }
+                } else E = W;
+            }
+        }
+        if (m) {
+            var I = D.replace(/\n\s*/, " ");
+            I === D || ~I.indexOf("\n") ? m && ~D.indexOf("\n") && (D += "\n") : D = I;
+        }
+        if (D += ">", o.test(w)) throw new Error(w + " is not a valid HTML tag name in " + D);
+        var U, V = r.test(w) || s.voidElements && s.voidElements.test(w), z = [];
+        if ($) m && f($) && ($ = "\n" + b + l($, b)), D += $;
+        else if (null != E && _(U = [], E).length) {
+            for(var Z = m && ~D.indexOf("\n"), B = !1, G = 0; G < U.length; G++){
+                var J = U[G];
+                if (null != J && !1 !== J) {
+                    var K = y(J, n, s, !0, "svg" === w || "foreignObject" !== w && p, d);
+                    if (m && !Z && f(K) && (Z = !0), K) if (m) {
+                        var Q = K.length > 0 && "<" != K[0];
+                        B && Q ? z[z.length - 1] += K : z.push(K), B = Q;
+                    } else z.push(K);
                 }
             }
+            if (m && Z) for(var X = z.length; X--;)z[X] = "\n" + b + l(z[X], b);
         }
-        this._iv || (this._iv = (0, iv_js_1.default)(enc));
-        let additionalData;
-        let protectedHeader;
-        let aadMember;
-        if (this._protectedHeader) {
-            protectedHeader = buffer_utils_js_1.encoder.encode((0, base64url_js_1.encode)(JSON.stringify(this._protectedHeader)));
-        } else {
-            protectedHeader = buffer_utils_js_1.encoder.encode("");
-        }
-        if (this._aad) {
-            aadMember = (0, base64url_js_1.encode)(this._aad);
-            additionalData = (0, buffer_utils_js_1.concat)(protectedHeader, buffer_utils_js_1.encoder.encode("."), buffer_utils_js_1.encoder.encode(aadMember));
-        } else {
-            additionalData = protectedHeader;
-        }
-        let ciphertext;
-        let tag;
-        if (joseHeader.zip === "DEF") {
-            const deflated = await ((options === null || options === void 0 ? void 0 : options.deflateRaw) || zlib_js_1.deflate)(this._plaintext);
-            ({ ciphertext, tag } = await (0, encrypt_js_1.default)(enc, deflated, cek, this._iv, additionalData));
-        } else {
-            ;
-            ({ ciphertext, tag } = await (0, encrypt_js_1.default)(enc, this._plaintext, cek, this._iv, additionalData));
-        }
-        const jwe = {
-            ciphertext: (0, base64url_js_1.encode)(ciphertext),
-            iv: (0, base64url_js_1.encode)(this._iv),
-            tag: (0, base64url_js_1.encode)(tag)
-        };
-        if (encryptedKey) {
-            jwe.encrypted_key = (0, base64url_js_1.encode)(encryptedKey);
-        }
-        if (aadMember) {
-            jwe.aad = aadMember;
-        }
-        if (this._protectedHeader) {
-            jwe.protected = buffer_utils_js_1.decoder.decode(protectedHeader);
-        }
-        if (this._sharedUnprotectedHeader) {
-            jwe.unprotected = this._sharedUnprotectedHeader;
-        }
-        if (this._unprotectedHeader) {
-            jwe.header = this._unprotectedHeader;
-        }
-        return jwe;
+        if (z.length || $) D += z.join("");
+        else if (s && s.xml) return D.substring(0, D.length - 1) + " />";
+        return !V || U || $ ? (m && ~D.indexOf("\n") && (D += "\n"), D = D + "</" + w + ">") : D = D.replace(/>$/, " />"), D;
     }
-}
-exports.FlattenedEncrypt = FlattenedEncrypt;
-
-
-/***/ }),
-
-/***/ 96237:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generalDecrypt = void 0;
-const decrypt_js_1 = __webpack_require__(78188);
-const errors_js_1 = __webpack_require__(56460);
-const is_object_js_1 = __webpack_require__(13951);
-async function generalDecrypt(jwe, key, options) {
-    if (!(0, is_object_js_1.default)(jwe)) {
-        throw new errors_js_1.JWEInvalid("General JWE must be an object");
-    }
-    if (!Array.isArray(jwe.recipients) || !jwe.recipients.every(is_object_js_1.default)) {
-        throw new errors_js_1.JWEInvalid("JWE Recipients missing or incorrect type");
-    }
-    if (!jwe.recipients.length) {
-        throw new errors_js_1.JWEInvalid("JWE Recipients has no members");
-    }
-    for (const recipient of jwe.recipients){
-        try {
-            return await (0, decrypt_js_1.flattenedDecrypt)({
-                aad: jwe.aad,
-                ciphertext: jwe.ciphertext,
-                encrypted_key: recipient.encrypted_key,
-                header: recipient.header,
-                iv: jwe.iv,
-                protected: jwe.protected,
-                tag: jwe.tag,
-                unprotected: jwe.unprotected
-            }, key, options);
-        } catch  {}
-    }
-    throw new errors_js_1.JWEDecryptionFailed();
-}
-exports.generalDecrypt = generalDecrypt;
-
-
-/***/ }),
-
-/***/ 6171:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.GeneralEncrypt = void 0;
-const encrypt_js_1 = __webpack_require__(44746);
-const errors_js_1 = __webpack_require__(56460);
-const cek_js_1 = __webpack_require__(88241);
-const is_disjoint_js_1 = __webpack_require__(96390);
-const encrypt_key_management_js_1 = __webpack_require__(92255);
-const base64url_js_1 = __webpack_require__(32362);
-const validate_crit_js_1 = __webpack_require__(33927);
-class IndividualRecipient {
-    constructor(enc, key, options){
-        this.parent = enc;
-        this.key = key;
-        this.options = options;
-    }
-    setUnprotectedHeader(unprotectedHeader) {
-        if (this.unprotectedHeader) {
-            throw new TypeError("setUnprotectedHeader can only be called once");
-        }
-        this.unprotectedHeader = unprotectedHeader;
-        return this;
-    }
-    addRecipient(...args) {
-        return this.parent.addRecipient(...args);
-    }
-    encrypt(...args) {
-        return this.parent.encrypt(...args);
-    }
-    done() {
-        return this.parent;
-    }
-}
-class GeneralEncrypt {
-    constructor(plaintext){
-        this._recipients = [];
-        this._plaintext = plaintext;
-    }
-    addRecipient(key, options) {
-        const recipient = new IndividualRecipient(this, key, {
-            crit: options === null || options === void 0 ? void 0 : options.crit
-        });
-        this._recipients.push(recipient);
-        return recipient;
-    }
-    setProtectedHeader(protectedHeader) {
-        if (this._protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    setSharedUnprotectedHeader(sharedUnprotectedHeader) {
-        if (this._unprotectedHeader) {
-            throw new TypeError("setSharedUnprotectedHeader can only be called once");
-        }
-        this._unprotectedHeader = sharedUnprotectedHeader;
-        return this;
-    }
-    setAdditionalAuthenticatedData(aad) {
-        this._aad = aad;
-        return this;
-    }
-    async encrypt(options) {
-        var _a, _b, _c;
-        if (!this._recipients.length) {
-            throw new errors_js_1.JWEInvalid("at least one recipient must be added");
-        }
-        options = {
-            deflateRaw: options === null || options === void 0 ? void 0 : options.deflateRaw
-        };
-        if (this._recipients.length === 1) {
-            const [recipient] = this._recipients;
-            const flattened = await new encrypt_js_1.FlattenedEncrypt(this._plaintext).setAdditionalAuthenticatedData(this._aad).setProtectedHeader(this._protectedHeader).setSharedUnprotectedHeader(this._unprotectedHeader).setUnprotectedHeader(recipient.unprotectedHeader).encrypt(recipient.key, {
-                ...recipient.options,
-                ...options
-            });
-            let jwe = {
-                ciphertext: flattened.ciphertext,
-                iv: flattened.iv,
-                recipients: [
-                    {}
-                ],
-                tag: flattened.tag
-            };
-            if (flattened.aad) jwe.aad = flattened.aad;
-            if (flattened.protected) jwe.protected = flattened.protected;
-            if (flattened.unprotected) jwe.unprotected = flattened.unprotected;
-            if (flattened.encrypted_key) jwe.recipients[0].encrypted_key = flattened.encrypted_key;
-            if (flattened.header) jwe.recipients[0].header = flattened.header;
-            return jwe;
-        }
-        let enc;
-        for(let i = 0; i < this._recipients.length; i++){
-            const recipient = this._recipients[i];
-            if (!(0, is_disjoint_js_1.default)(this._protectedHeader, this._unprotectedHeader, recipient.unprotectedHeader)) {
-                throw new errors_js_1.JWEInvalid("JWE Protected, JWE Shared Unprotected and JWE Per-Recipient Header Parameter names must be disjoint");
-            }
-            const joseHeader = {
-                ...this._protectedHeader,
-                ...this._unprotectedHeader,
-                ...recipient.unprotectedHeader
-            };
-            const { alg } = joseHeader;
-            if (typeof alg !== "string" || !alg) {
-                throw new errors_js_1.JWEInvalid('JWE "alg" (Algorithm) Header Parameter missing or invalid');
-            }
-            if (alg === "dir" || alg === "ECDH-ES") {
-                throw new errors_js_1.JWEInvalid('"dir" and "ECDH-ES" alg may only be used with a single recipient');
-            }
-            if (typeof joseHeader.enc !== "string" || !joseHeader.enc) {
-                throw new errors_js_1.JWEInvalid('JWE "enc" (Encryption Algorithm) Header Parameter missing or invalid');
-            }
-            if (!enc) {
-                enc = joseHeader.enc;
-            } else if (enc !== joseHeader.enc) {
-                throw new errors_js_1.JWEInvalid('JWE "enc" (Encryption Algorithm) Header Parameter must be the same for all recipients');
-            }
-            (0, validate_crit_js_1.default)(errors_js_1.JWEInvalid, new Map(), recipient.options.crit, this._protectedHeader, joseHeader);
-            if (joseHeader.zip !== undefined) {
-                if (!this._protectedHeader || !this._protectedHeader.zip) {
-                    throw new errors_js_1.JWEInvalid('JWE "zip" (Compression Algorithm) Header MUST be integrity protected');
-                }
-            }
-        }
-        const cek = (0, cek_js_1.default)(enc);
-        let jwe = {
-            ciphertext: "",
-            iv: "",
-            recipients: [],
-            tag: ""
-        };
-        for(let i = 0; i < this._recipients.length; i++){
-            const recipient = this._recipients[i];
-            const target = {};
-            jwe.recipients.push(target);
-            const joseHeader = {
-                ...this._protectedHeader,
-                ...this._unprotectedHeader,
-                ...recipient.unprotectedHeader
-            };
-            const p2c = joseHeader.alg.startsWith("PBES2") ? 2048 + i : undefined;
-            if (i === 0) {
-                const flattened = await new encrypt_js_1.FlattenedEncrypt(this._plaintext).setAdditionalAuthenticatedData(this._aad).setContentEncryptionKey(cek).setProtectedHeader(this._protectedHeader).setSharedUnprotectedHeader(this._unprotectedHeader).setUnprotectedHeader(recipient.unprotectedHeader).setKeyManagementParameters({
-                    p2c
-                }).encrypt(recipient.key, {
-                    ...recipient.options,
-                    ...options,
-                    [encrypt_js_1.unprotected]: true
-                });
-                jwe.ciphertext = flattened.ciphertext;
-                jwe.iv = flattened.iv;
-                jwe.tag = flattened.tag;
-                if (flattened.aad) jwe.aad = flattened.aad;
-                if (flattened.protected) jwe.protected = flattened.protected;
-                if (flattened.unprotected) jwe.unprotected = flattened.unprotected;
-                target.encrypted_key = flattened.encrypted_key;
-                if (flattened.header) target.header = flattened.header;
-                continue;
-            }
-            const { encryptedKey, parameters } = await (0, encrypt_key_management_js_1.default)(((_a = recipient.unprotectedHeader) === null || _a === void 0 ? void 0 : _a.alg) || ((_b = this._protectedHeader) === null || _b === void 0 ? void 0 : _b.alg) || ((_c = this._unprotectedHeader) === null || _c === void 0 ? void 0 : _c.alg), enc, recipient.key, cek, {
-                p2c
-            });
-            target.encrypted_key = (0, base64url_js_1.encode)(encryptedKey);
-            if (recipient.unprotectedHeader || parameters) target.header = {
-                ...recipient.unprotectedHeader,
-                ...parameters
-            };
-        }
-        return jwe;
-    }
-}
-exports.GeneralEncrypt = GeneralEncrypt;
-
-
-/***/ }),
-
-/***/ 67408:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.EmbeddedJWK = void 0;
-const import_js_1 = __webpack_require__(35185);
-const is_object_js_1 = __webpack_require__(13951);
-const errors_js_1 = __webpack_require__(56460);
-async function EmbeddedJWK(protectedHeader, token) {
-    const joseHeader = {
-        ...protectedHeader,
-        ...token === null || token === void 0 ? void 0 : token.header
+    var m = {
+        shallow: !0
     };
-    if (!(0, is_object_js_1.default)(joseHeader.jwk)) {
-        throw new errors_js_1.JWSInvalid('"jwk" (JSON Web Key) Header Parameter must be a JSON object');
+    k.render = k;
+    var b = function(e, t) {
+        return k(e, t, m);
+    }, x = [];
+    function k(e, n, r) {
+        n = n || {};
+        var o = t.options.__s;
+        t.options.__s = !0;
+        var i, s = t.h(t.Fragment, null);
+        return s.__k = [
+            e
+        ], i = r && (r.pretty || r.voidElements || r.sortAttributes || r.shallow || r.allAttributes || r.xml || r.attributeHook) ? y(e, n, r) : F(e, n, !1, void 0, s), t.options.__c && t.options.__c(e, x), t.options.__s = o, x.length = 0, i;
     }
-    const key = await (0, import_js_1.importJWK)({
-        ...joseHeader.jwk,
-        ext: true
-    }, joseHeader.alg, true);
-    if (key instanceof Uint8Array || key.type !== "public") {
-        throw new errors_js_1.JWSInvalid('"jwk" (JSON Web Key) Header Parameter must be a public key');
+    function S(e) {
+        return null == e || "boolean" == typeof e ? null : "string" == typeof e || "number" == typeof e || "bigint" == typeof e ? t.h(null, null, e) : e;
     }
-    return key;
-}
-exports.EmbeddedJWK = EmbeddedJWK;
-
-
-/***/ }),
-
-/***/ 74978:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.calculateJwkThumbprintUri = exports.calculateJwkThumbprint = void 0;
-const digest_js_1 = __webpack_require__(1553);
-const base64url_js_1 = __webpack_require__(32362);
-const errors_js_1 = __webpack_require__(56460);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const is_object_js_1 = __webpack_require__(13951);
-const check = (value, description)=>{
-    if (typeof value !== "string" || !value) {
-        throw new errors_js_1.JWKInvalid(`${description} missing or invalid`);
+    function w(e, t) {
+        return "className" === e ? "class" : "htmlFor" === e ? "for" : "defaultValue" === e ? "value" : "defaultChecked" === e ? "checked" : "defaultSelected" === e ? "selected" : t && i.test(e) ? e.toLowerCase().replace(/^xlink:?/, "xlink:") : e;
     }
-};
-async function calculateJwkThumbprint(jwk, digestAlgorithm) {
-    if (!(0, is_object_js_1.default)(jwk)) {
-        throw new TypeError("JWK must be an object");
+    function C(e, t) {
+        return "style" === e && null != t && "object" == typeof t ? c(t) : "a" === e[0] && "r" === e[1] && "boolean" == typeof t ? String(t) : t;
     }
-    digestAlgorithm !== null && digestAlgorithm !== void 0 ? digestAlgorithm : digestAlgorithm = "sha256";
-    if (digestAlgorithm !== "sha256" && digestAlgorithm !== "sha384" && digestAlgorithm !== "sha512") {
-        throw new TypeError('digestAlgorithm must one of "sha256", "sha384", or "sha512"');
-    }
-    let components;
-    switch(jwk.kty){
-        case "EC":
-            check(jwk.crv, '"crv" (Curve) Parameter');
-            check(jwk.x, '"x" (X Coordinate) Parameter');
-            check(jwk.y, '"y" (Y Coordinate) Parameter');
-            components = {
-                crv: jwk.crv,
-                kty: jwk.kty,
-                x: jwk.x,
-                y: jwk.y
-            };
-            break;
-        case "OKP":
-            check(jwk.crv, '"crv" (Subtype of Key Pair) Parameter');
-            check(jwk.x, '"x" (Public Key) Parameter');
-            components = {
-                crv: jwk.crv,
-                kty: jwk.kty,
-                x: jwk.x
-            };
-            break;
-        case "RSA":
-            check(jwk.e, '"e" (Exponent) Parameter');
-            check(jwk.n, '"n" (Modulus) Parameter');
-            components = {
-                e: jwk.e,
-                kty: jwk.kty,
-                n: jwk.n
-            };
-            break;
-        case "oct":
-            check(jwk.k, '"k" (Key Value) Parameter');
-            components = {
-                k: jwk.k,
-                kty: jwk.kty
-            };
-            break;
-        default:
-            throw new errors_js_1.JOSENotSupported('"kty" (Key Type) Parameter missing or unsupported');
-    }
-    const data = buffer_utils_js_1.encoder.encode(JSON.stringify(components));
-    return (0, base64url_js_1.encode)(await (0, digest_js_1.default)(digestAlgorithm, data));
-}
-exports.calculateJwkThumbprint = calculateJwkThumbprint;
-async function calculateJwkThumbprintUri(jwk, digestAlgorithm) {
-    digestAlgorithm !== null && digestAlgorithm !== void 0 ? digestAlgorithm : digestAlgorithm = "sha256";
-    const thumbprint = await calculateJwkThumbprint(jwk, digestAlgorithm);
-    return `urn:ietf:params:oauth:jwk-thumbprint:sha-${digestAlgorithm.slice(-3)}:${thumbprint}`;
-}
-exports.calculateJwkThumbprintUri = calculateJwkThumbprintUri;
-
-
-/***/ }),
-
-/***/ 26033:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.createLocalJWKSet = exports.LocalJWKSet = exports.isJWKSLike = void 0;
-const import_js_1 = __webpack_require__(35185);
-const errors_js_1 = __webpack_require__(56460);
-const is_object_js_1 = __webpack_require__(13951);
-function getKtyFromAlg(alg) {
-    switch(typeof alg === "string" && alg.slice(0, 2)){
-        case "RS":
-        case "PS":
-            return "RSA";
-        case "ES":
-            return "EC";
-        case "Ed":
-            return "OKP";
-        default:
-            throw new errors_js_1.JOSENotSupported('Unsupported "alg" value for a JSON Web Key Set');
-    }
-}
-function isJWKSLike(jwks) {
-    return jwks && typeof jwks === "object" && Array.isArray(jwks.keys) && jwks.keys.every(isJWKLike);
-}
-exports.isJWKSLike = isJWKSLike;
-function isJWKLike(key) {
-    return (0, is_object_js_1.default)(key);
-}
-function clone(obj) {
-    if (typeof structuredClone === "function") {
-        return structuredClone(obj);
-    }
-    return JSON.parse(JSON.stringify(obj));
-}
-class LocalJWKSet {
-    constructor(jwks){
-        this._cached = new WeakMap();
-        if (!isJWKSLike(jwks)) {
-            throw new errors_js_1.JWKSInvalid("JSON Web Key Set malformed");
+    var O = Array.isArray, j = Object.assign;
+    function F(e, n, i, s, l) {
+        if (null == e || !0 === e || !1 === e || "" === e) return "";
+        if ("object" != typeof e) return "function" == typeof e ? "" : a(e);
+        if (O(e)) {
+            var f = "";
+            l.__k = e;
+            for(var u = 0; u < e.length; u++)f += F(e[u], n, i, s, l), e[u] = S(e[u]);
+            return f;
         }
-        this._jwks = clone(jwks);
-    }
-    async getKey(protectedHeader, token) {
-        const { alg, kid } = {
-            ...protectedHeader,
-            ...token === null || token === void 0 ? void 0 : token.header
-        };
-        const kty = getKtyFromAlg(alg);
-        const candidates = this._jwks.keys.filter((jwk)=>{
-            let candidate = kty === jwk.kty;
-            if (candidate && typeof kid === "string") {
-                candidate = kid === jwk.kid;
+        if (void 0 !== e.constructor) return "";
+        e.__ = l, t.options.__b && t.options.__b(e);
+        var p = e.type, c = e.props;
+        if ("function" == typeof p) {
+            var _;
+            if (p === t.Fragment) _ = c.children;
+            else {
+                _ = p.prototype && "function" == typeof p.prototype.render ? function(e, n) {
+                    var r = e.type, o = g(r, n), i = new r(e.props, o);
+                    e.__c = i, i.__v = e, i.__d = !0, i.props = e.props, null == i.state && (i.state = {}), null == i.__s && (i.__s = i.state), i.context = o, r.getDerivedStateFromProps ? i.state = j({}, i.state, r.getDerivedStateFromProps(i.props, i.state)) : i.componentWillMount && (i.componentWillMount(), i.state = i.__s !== i.state ? i.__s : i.state);
+                    var s = t.options.__r;
+                    return s && s(e), i.render(i.props, i.state, i.context);
+                }(e, n) : function(e, n) {
+                    var r, o = v(e, n), i = g(e.type, n);
+                    e.__c = o;
+                    for(var s = t.options.__r, a = 0; o.__d && a++ < 25;)o.__d = !1, s && s(e), r = e.type.call(o, e.props, i);
+                    return r;
+                }(e, n);
+                var d = e.__c;
+                d.getChildContext && (n = j({}, n, d.getChildContext()));
             }
-            if (candidate && typeof jwk.alg === "string") {
-                candidate = alg === jwk.alg;
-            }
-            if (candidate && typeof jwk.use === "string") {
-                candidate = jwk.use === "sig";
-            }
-            if (candidate && Array.isArray(jwk.key_ops)) {
-                candidate = jwk.key_ops.includes("verify");
-            }
-            if (candidate && alg === "EdDSA") {
-                candidate = jwk.crv === "Ed25519" || jwk.crv === "Ed448";
-            }
-            if (candidate) {
-                switch(alg){
-                    case "ES256":
-                        candidate = jwk.crv === "P-256";
-                        break;
-                    case "ES256K":
-                        candidate = jwk.crv === "secp256k1";
-                        break;
-                    case "ES384":
-                        candidate = jwk.crv === "P-384";
-                        break;
-                    case "ES512":
-                        candidate = jwk.crv === "P-521";
-                        break;
-                }
-            }
-            return candidate;
-        });
-        const { 0: jwk, length } = candidates;
-        if (length === 0) {
-            throw new errors_js_1.JWKSNoMatchingKey();
-        } else if (length !== 1) {
-            const error = new errors_js_1.JWKSMultipleMatchingKeys();
-            const { _cached } = this;
-            error[Symbol.asyncIterator] = async function*() {
-                for (const jwk of candidates){
-                    try {
-                        yield await importWithAlgCache(_cached, jwk, alg);
-                    } catch  {
+            var h = F(_ = null != _ && _.type === t.Fragment && null == _.key ? _.props.children : _, n, i, s, e);
+            return t.options.diffed && t.options.diffed(e), e.__ = void 0, t.options.unmount && t.options.unmount(e), h;
+        }
+        var y, m, b = "<";
+        if (b += p, c) for(var x in y = c.children, c){
+            var k = c[x];
+            if (!("key" === x || "ref" === x || "__self" === x || "__source" === x || "children" === x || "className" === x && "class" in c || "htmlFor" === x && "for" in c || o.test(x))) {
+                if (k = C(x = w(x, i), k), "dangerouslySetInnerHTML" === x) m = k && k.__html;
+                else if ("textarea" === p && "value" === x) y = k;
+                else if ((k || 0 === k || "" === k) && "function" != typeof k) {
+                    if (!0 === k || "" === k) {
+                        k = x, b = b + " " + x;
                         continue;
                     }
-                }
-            };
-            throw error;
-        }
-        return importWithAlgCache(this._cached, jwk, alg);
-    }
-}
-exports.LocalJWKSet = LocalJWKSet;
-async function importWithAlgCache(cache, jwk, alg) {
-    const cached = cache.get(jwk) || cache.set(jwk, {}).get(jwk);
-    if (cached[alg] === undefined) {
-        const key = await (0, import_js_1.importJWK)({
-            ...jwk,
-            ext: true
-        }, alg);
-        if (key instanceof Uint8Array || key.type !== "public") {
-            throw new errors_js_1.JWKSInvalid("JSON Web Key Set members must be public keys");
-        }
-        cached[alg] = key;
-    }
-    return cached[alg];
-}
-function createLocalJWKSet(jwks) {
-    const set = new LocalJWKSet(jwks);
-    return async function(protectedHeader, token) {
-        return set.getKey(protectedHeader, token);
-    };
-}
-exports.createLocalJWKSet = createLocalJWKSet;
-
-
-/***/ }),
-
-/***/ 84329:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.createRemoteJWKSet = void 0;
-const fetch_jwks_js_1 = __webpack_require__(93781);
-const errors_js_1 = __webpack_require__(56460);
-const local_js_1 = __webpack_require__(26033);
-function isCloudflareWorkers() {
-    return typeof WebSocketPair !== "undefined" || typeof navigator !== "undefined" && navigator.userAgent === "Cloudflare-Workers" || typeof EdgeRuntime !== "undefined" && EdgeRuntime === "vercel";
-}
-class RemoteJWKSet extends local_js_1.LocalJWKSet {
-    constructor(url, options){
-        super({
-            keys: []
-        });
-        this._jwks = undefined;
-        if (!(url instanceof URL)) {
-            throw new TypeError("url must be an instance of URL");
-        }
-        this._url = new URL(url.href);
-        this._options = {
-            agent: options === null || options === void 0 ? void 0 : options.agent,
-            headers: options === null || options === void 0 ? void 0 : options.headers
-        };
-        this._timeoutDuration = typeof (options === null || options === void 0 ? void 0 : options.timeoutDuration) === "number" ? options === null || options === void 0 ? void 0 : options.timeoutDuration : 5000;
-        this._cooldownDuration = typeof (options === null || options === void 0 ? void 0 : options.cooldownDuration) === "number" ? options === null || options === void 0 ? void 0 : options.cooldownDuration : 30000;
-        this._cacheMaxAge = typeof (options === null || options === void 0 ? void 0 : options.cacheMaxAge) === "number" ? options === null || options === void 0 ? void 0 : options.cacheMaxAge : 600000;
-    }
-    coolingDown() {
-        return typeof this._jwksTimestamp === "number" ? Date.now() < this._jwksTimestamp + this._cooldownDuration : false;
-    }
-    fresh() {
-        return typeof this._jwksTimestamp === "number" ? Date.now() < this._jwksTimestamp + this._cacheMaxAge : false;
-    }
-    async getKey(protectedHeader, token) {
-        if (!this._jwks || !this.fresh()) {
-            await this.reload();
-        }
-        try {
-            return await super.getKey(protectedHeader, token);
-        } catch (err) {
-            if (err instanceof errors_js_1.JWKSNoMatchingKey) {
-                if (this.coolingDown() === false) {
-                    await this.reload();
-                    return super.getKey(protectedHeader, token);
+                    if ("value" === x) {
+                        if ("select" === p) {
+                            s = k;
+                            continue;
+                        }
+                        "option" !== p || s != k || "selected" in c || (b += " selected");
+                    }
+                    b = b + " " + x + '="' + a(k) + '"';
                 }
             }
-            throw err;
         }
-    }
-    async reload() {
-        if (this._pendingFetch && isCloudflareWorkers()) {
-            this._pendingFetch = undefined;
-        }
-        this._pendingFetch || (this._pendingFetch = (0, fetch_jwks_js_1.default)(this._url, this._timeoutDuration, this._options).then((json)=>{
-            if (!(0, local_js_1.isJWKSLike)(json)) {
-                throw new errors_js_1.JWKSInvalid("JSON Web Key Set malformed");
+        var A = b;
+        if (b += ">", o.test(p)) throw new Error(p + " is not a valid HTML tag name in " + b);
+        var T = "", H = !1;
+        if (m) T += m, H = !0;
+        else if ("string" == typeof y) T += a(y), H = !0;
+        else if (O(y)) {
+            e.__k = y;
+            for(var M = 0; M < y.length; M++){
+                var L = y[M];
+                if (y[M] = S(L), null != L && !1 !== L) {
+                    var E = F(L, n, "svg" === p || "foreignObject" !== p && i, s, e);
+                    E && (T += E, H = !0);
+                }
             }
-            this._jwks = {
-                keys: json.keys
-            };
-            this._jwksTimestamp = Date.now();
-            this._pendingFetch = undefined;
-        }).catch((err)=>{
-            this._pendingFetch = undefined;
-            throw err;
-        }));
-        await this._pendingFetch;
+        } else if (null != y && !1 !== y && !0 !== y) {
+            e.__k = [
+                S(y)
+            ];
+            var $ = F(y, n, "svg" === p || "foreignObject" !== p && i, s, e);
+            $ && (T += $, H = !0);
+        }
+        if (t.options.diffed && t.options.diffed(e), e.__ = void 0, t.options.unmount && t.options.unmount(e), H) b += T;
+        else if (r.test(p)) return A + " />";
+        return b + "</" + p + ">";
     }
-}
-function createRemoteJWKSet(url, options) {
-    const set = new RemoteJWKSet(url, options);
-    return async function(protectedHeader, token) {
-        return set.getKey(protectedHeader, token);
-    };
-}
-exports.createRemoteJWKSet = createRemoteJWKSet;
+    k.shallowRender = b, e.default = k, e.render = k, e.renderToStaticMarkup = k, e.renderToString = k, e.shallowRender = b;
+}); //# sourceMappingURL=index.js.map
 
 
 /***/ }),
 
-/***/ 12654:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ 33537:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.CompactSign = void 0;
-const sign_js_1 = __webpack_require__(91434);
-class CompactSign {
-    constructor(payload){
-        this._flattened = new sign_js_1.FlattenedSign(payload);
-    }
-    setProtectedHeader(protectedHeader) {
-        this._flattened.setProtectedHeader(protectedHeader);
-        return this;
-    }
-    async sign(key, options) {
-        const jws = await this._flattened.sign(key, options);
-        if (jws.payload === undefined) {
-            throw new TypeError("use the flattened module for creating JWS with b64: false");
-        }
-        return `${jws.protected}.${jws.payload}.${jws.signature}`;
-    }
-}
-exports.CompactSign = CompactSign;
+module.exports = __webpack_require__(71503)["default"];
 
 
 /***/ }),
 
-/***/ 85309:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.compactVerify = void 0;
-const verify_js_1 = __webpack_require__(39624);
-const errors_js_1 = __webpack_require__(56460);
-const buffer_utils_js_1 = __webpack_require__(51495);
-async function compactVerify(jws, key, options) {
-    if (jws instanceof Uint8Array) {
-        jws = buffer_utils_js_1.decoder.decode(jws);
-    }
-    if (typeof jws !== "string") {
-        throw new errors_js_1.JWSInvalid("Compact JWS must be a string or Uint8Array");
-    }
-    const { 0: protectedHeader, 1: payload, 2: signature, length } = jws.split(".");
-    if (length !== 3) {
-        throw new errors_js_1.JWSInvalid("Invalid Compact JWS");
-    }
-    const verified = await (0, verify_js_1.flattenedVerify)({
-        payload,
-        protected: protectedHeader,
-        signature
-    }, key, options);
-    const result = {
-        payload: verified.payload,
-        protectedHeader: verified.protectedHeader
-    };
-    if (typeof key === "function") {
-        return {
-            ...result,
-            key: verified.key
-        };
-    }
-    return result;
-}
-exports.compactVerify = compactVerify;
-
-
-/***/ }),
-
-/***/ 91434:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.FlattenedSign = void 0;
-const base64url_js_1 = __webpack_require__(32362);
-const sign_js_1 = __webpack_require__(19544);
-const is_disjoint_js_1 = __webpack_require__(96390);
-const errors_js_1 = __webpack_require__(56460);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const check_key_type_js_1 = __webpack_require__(34849);
-const validate_crit_js_1 = __webpack_require__(33927);
-class FlattenedSign {
-    constructor(payload){
-        if (!(payload instanceof Uint8Array)) {
-            throw new TypeError("payload must be an instance of Uint8Array");
-        }
-        this._payload = payload;
-    }
-    setProtectedHeader(protectedHeader) {
-        if (this._protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    setUnprotectedHeader(unprotectedHeader) {
-        if (this._unprotectedHeader) {
-            throw new TypeError("setUnprotectedHeader can only be called once");
-        }
-        this._unprotectedHeader = unprotectedHeader;
-        return this;
-    }
-    async sign(key, options) {
-        if (!this._protectedHeader && !this._unprotectedHeader) {
-            throw new errors_js_1.JWSInvalid("either setProtectedHeader or setUnprotectedHeader must be called before #sign()");
-        }
-        if (!(0, is_disjoint_js_1.default)(this._protectedHeader, this._unprotectedHeader)) {
-            throw new errors_js_1.JWSInvalid("JWS Protected and JWS Unprotected Header Parameter names must be disjoint");
-        }
-        const joseHeader = {
-            ...this._protectedHeader,
-            ...this._unprotectedHeader
-        };
-        const extensions = (0, validate_crit_js_1.default)(errors_js_1.JWSInvalid, new Map([
-            [
-                "b64",
-                true
-            ]
-        ]), options === null || options === void 0 ? void 0 : options.crit, this._protectedHeader, joseHeader);
-        let b64 = true;
-        if (extensions.has("b64")) {
-            b64 = this._protectedHeader.b64;
-            if (typeof b64 !== "boolean") {
-                throw new errors_js_1.JWSInvalid('The "b64" (base64url-encode payload) Header Parameter must be a boolean');
-            }
-        }
-        const { alg } = joseHeader;
-        if (typeof alg !== "string" || !alg) {
-            throw new errors_js_1.JWSInvalid('JWS "alg" (Algorithm) Header Parameter missing or invalid');
-        }
-        (0, check_key_type_js_1.default)(alg, key, "sign");
-        let payload = this._payload;
-        if (b64) {
-            payload = buffer_utils_js_1.encoder.encode((0, base64url_js_1.encode)(payload));
-        }
-        let protectedHeader;
-        if (this._protectedHeader) {
-            protectedHeader = buffer_utils_js_1.encoder.encode((0, base64url_js_1.encode)(JSON.stringify(this._protectedHeader)));
-        } else {
-            protectedHeader = buffer_utils_js_1.encoder.encode("");
-        }
-        const data = (0, buffer_utils_js_1.concat)(protectedHeader, buffer_utils_js_1.encoder.encode("."), payload);
-        const signature = await (0, sign_js_1.default)(alg, key, data);
-        const jws = {
-            signature: (0, base64url_js_1.encode)(signature),
-            payload: ""
-        };
-        if (b64) {
-            jws.payload = buffer_utils_js_1.decoder.decode(payload);
-        }
-        if (this._unprotectedHeader) {
-            jws.header = this._unprotectedHeader;
-        }
-        if (this._protectedHeader) {
-            jws.protected = buffer_utils_js_1.decoder.decode(protectedHeader);
-        }
-        return jws;
-    }
-}
-exports.FlattenedSign = FlattenedSign;
-
-
-/***/ }),
-
-/***/ 39624:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.flattenedVerify = void 0;
-const base64url_js_1 = __webpack_require__(32362);
-const verify_js_1 = __webpack_require__(93833);
-const errors_js_1 = __webpack_require__(56460);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const is_disjoint_js_1 = __webpack_require__(96390);
-const is_object_js_1 = __webpack_require__(13951);
-const check_key_type_js_1 = __webpack_require__(34849);
-const validate_crit_js_1 = __webpack_require__(33927);
-const validate_algorithms_js_1 = __webpack_require__(35277);
-async function flattenedVerify(jws, key, options) {
-    var _a;
-    if (!(0, is_object_js_1.default)(jws)) {
-        throw new errors_js_1.JWSInvalid("Flattened JWS must be an object");
-    }
-    if (jws.protected === undefined && jws.header === undefined) {
-        throw new errors_js_1.JWSInvalid('Flattened JWS must have either of the "protected" or "header" members');
-    }
-    if (jws.protected !== undefined && typeof jws.protected !== "string") {
-        throw new errors_js_1.JWSInvalid("JWS Protected Header incorrect type");
-    }
-    if (jws.payload === undefined) {
-        throw new errors_js_1.JWSInvalid("JWS Payload missing");
-    }
-    if (typeof jws.signature !== "string") {
-        throw new errors_js_1.JWSInvalid("JWS Signature missing or incorrect type");
-    }
-    if (jws.header !== undefined && !(0, is_object_js_1.default)(jws.header)) {
-        throw new errors_js_1.JWSInvalid("JWS Unprotected Header incorrect type");
-    }
-    let parsedProt = {};
-    if (jws.protected) {
-        try {
-            const protectedHeader = (0, base64url_js_1.decode)(jws.protected);
-            parsedProt = JSON.parse(buffer_utils_js_1.decoder.decode(protectedHeader));
-        } catch  {
-            throw new errors_js_1.JWSInvalid("JWS Protected Header is invalid");
-        }
-    }
-    if (!(0, is_disjoint_js_1.default)(parsedProt, jws.header)) {
-        throw new errors_js_1.JWSInvalid("JWS Protected and JWS Unprotected Header Parameter names must be disjoint");
-    }
-    const joseHeader = {
-        ...parsedProt,
-        ...jws.header
-    };
-    const extensions = (0, validate_crit_js_1.default)(errors_js_1.JWSInvalid, new Map([
-        [
-            "b64",
-            true
-        ]
-    ]), options === null || options === void 0 ? void 0 : options.crit, parsedProt, joseHeader);
-    let b64 = true;
-    if (extensions.has("b64")) {
-        b64 = parsedProt.b64;
-        if (typeof b64 !== "boolean") {
-            throw new errors_js_1.JWSInvalid('The "b64" (base64url-encode payload) Header Parameter must be a boolean');
-        }
-    }
-    const { alg } = joseHeader;
-    if (typeof alg !== "string" || !alg) {
-        throw new errors_js_1.JWSInvalid('JWS "alg" (Algorithm) Header Parameter missing or invalid');
-    }
-    const algorithms = options && (0, validate_algorithms_js_1.default)("algorithms", options.algorithms);
-    if (algorithms && !algorithms.has(alg)) {
-        throw new errors_js_1.JOSEAlgNotAllowed('"alg" (Algorithm) Header Parameter not allowed');
-    }
-    if (b64) {
-        if (typeof jws.payload !== "string") {
-            throw new errors_js_1.JWSInvalid("JWS Payload must be a string");
-        }
-    } else if (typeof jws.payload !== "string" && !(jws.payload instanceof Uint8Array)) {
-        throw new errors_js_1.JWSInvalid("JWS Payload must be a string or an Uint8Array instance");
-    }
-    let resolvedKey = false;
-    if (typeof key === "function") {
-        key = await key(parsedProt, jws);
-        resolvedKey = true;
-    }
-    (0, check_key_type_js_1.default)(alg, key, "verify");
-    const data = (0, buffer_utils_js_1.concat)(buffer_utils_js_1.encoder.encode((_a = jws.protected) !== null && _a !== void 0 ? _a : ""), buffer_utils_js_1.encoder.encode("."), typeof jws.payload === "string" ? buffer_utils_js_1.encoder.encode(jws.payload) : jws.payload);
-    let signature;
-    try {
-        signature = (0, base64url_js_1.decode)(jws.signature);
-    } catch  {
-        throw new errors_js_1.JWSInvalid("Failed to base64url decode the signature");
-    }
-    const verified = await (0, verify_js_1.default)(alg, key, signature, data);
-    if (!verified) {
-        throw new errors_js_1.JWSSignatureVerificationFailed();
-    }
-    let payload;
-    if (b64) {
-        try {
-            payload = (0, base64url_js_1.decode)(jws.payload);
-        } catch  {
-            throw new errors_js_1.JWSInvalid("Failed to base64url decode the payload");
-        }
-    } else if (typeof jws.payload === "string") {
-        payload = buffer_utils_js_1.encoder.encode(jws.payload);
-    } else {
-        payload = jws.payload;
-    }
-    const result = {
-        payload
-    };
-    if (jws.protected !== undefined) {
-        result.protectedHeader = parsedProt;
-    }
-    if (jws.header !== undefined) {
-        result.unprotectedHeader = jws.header;
-    }
-    if (resolvedKey) {
-        return {
-            ...result,
-            key
-        };
-    }
-    return result;
-}
-exports.flattenedVerify = flattenedVerify;
-
-
-/***/ }),
-
-/***/ 98462:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.GeneralSign = void 0;
-const sign_js_1 = __webpack_require__(91434);
-const errors_js_1 = __webpack_require__(56460);
-class IndividualSignature {
-    constructor(sig, key, options){
-        this.parent = sig;
-        this.key = key;
-        this.options = options;
-    }
-    setProtectedHeader(protectedHeader) {
-        if (this.protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this.protectedHeader = protectedHeader;
-        return this;
-    }
-    setUnprotectedHeader(unprotectedHeader) {
-        if (this.unprotectedHeader) {
-            throw new TypeError("setUnprotectedHeader can only be called once");
-        }
-        this.unprotectedHeader = unprotectedHeader;
-        return this;
-    }
-    addSignature(...args) {
-        return this.parent.addSignature(...args);
-    }
-    sign(...args) {
-        return this.parent.sign(...args);
-    }
-    done() {
-        return this.parent;
-    }
-}
-class GeneralSign {
-    constructor(payload){
-        this._signatures = [];
-        this._payload = payload;
-    }
-    addSignature(key, options) {
-        const signature = new IndividualSignature(this, key, options);
-        this._signatures.push(signature);
-        return signature;
-    }
-    async sign() {
-        if (!this._signatures.length) {
-            throw new errors_js_1.JWSInvalid("at least one signature must be added");
-        }
-        const jws = {
-            signatures: [],
-            payload: ""
-        };
-        for(let i = 0; i < this._signatures.length; i++){
-            const signature = this._signatures[i];
-            const flattened = new sign_js_1.FlattenedSign(this._payload);
-            flattened.setProtectedHeader(signature.protectedHeader);
-            flattened.setUnprotectedHeader(signature.unprotectedHeader);
-            const { payload, ...rest } = await flattened.sign(signature.key, signature.options);
-            if (i === 0) {
-                jws.payload = payload;
-            } else if (jws.payload !== payload) {
-                throw new errors_js_1.JWSInvalid("inconsistent use of JWS Unencoded Payload (RFC7797)");
-            }
-            jws.signatures.push(rest);
-        }
-        return jws;
-    }
-}
-exports.GeneralSign = GeneralSign;
-
-
-/***/ }),
-
-/***/ 4759:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generalVerify = void 0;
-const verify_js_1 = __webpack_require__(39624);
-const errors_js_1 = __webpack_require__(56460);
-const is_object_js_1 = __webpack_require__(13951);
-async function generalVerify(jws, key, options) {
-    if (!(0, is_object_js_1.default)(jws)) {
-        throw new errors_js_1.JWSInvalid("General JWS must be an object");
-    }
-    if (!Array.isArray(jws.signatures) || !jws.signatures.every(is_object_js_1.default)) {
-        throw new errors_js_1.JWSInvalid("JWS Signatures missing or incorrect type");
-    }
-    for (const signature of jws.signatures){
-        try {
-            return await (0, verify_js_1.flattenedVerify)({
-                header: signature.header,
-                payload: jws.payload,
-                protected: signature.protected,
-                signature: signature.signature
-            }, key, options);
-        } catch  {}
-    }
-    throw new errors_js_1.JWSSignatureVerificationFailed();
-}
-exports.generalVerify = generalVerify;
-
-
-/***/ }),
-
-/***/ 8873:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.jwtDecrypt = void 0;
-const decrypt_js_1 = __webpack_require__(9787);
-const jwt_claims_set_js_1 = __webpack_require__(90641);
-const errors_js_1 = __webpack_require__(56460);
-async function jwtDecrypt(jwt, key, options) {
-    const decrypted = await (0, decrypt_js_1.compactDecrypt)(jwt, key, options);
-    const payload = (0, jwt_claims_set_js_1.default)(decrypted.protectedHeader, decrypted.plaintext, options);
-    const { protectedHeader } = decrypted;
-    if (protectedHeader.iss !== undefined && protectedHeader.iss !== payload.iss) {
-        throw new errors_js_1.JWTClaimValidationFailed('replicated "iss" claim header parameter mismatch', "iss", "mismatch");
-    }
-    if (protectedHeader.sub !== undefined && protectedHeader.sub !== payload.sub) {
-        throw new errors_js_1.JWTClaimValidationFailed('replicated "sub" claim header parameter mismatch', "sub", "mismatch");
-    }
-    if (protectedHeader.aud !== undefined && JSON.stringify(protectedHeader.aud) !== JSON.stringify(payload.aud)) {
-        throw new errors_js_1.JWTClaimValidationFailed('replicated "aud" claim header parameter mismatch', "aud", "mismatch");
-    }
-    const result = {
-        payload,
-        protectedHeader
-    };
-    if (typeof key === "function") {
-        return {
-            ...result,
-            key: decrypted.key
-        };
-    }
-    return result;
-}
-exports.jwtDecrypt = jwtDecrypt;
-
-
-/***/ }),
-
-/***/ 6187:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.EncryptJWT = void 0;
-const encrypt_js_1 = __webpack_require__(88064);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const produce_js_1 = __webpack_require__(17738);
-class EncryptJWT extends produce_js_1.ProduceJWT {
-    setProtectedHeader(protectedHeader) {
-        if (this._protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    setKeyManagementParameters(parameters) {
-        if (this._keyManagementParameters) {
-            throw new TypeError("setKeyManagementParameters can only be called once");
-        }
-        this._keyManagementParameters = parameters;
-        return this;
-    }
-    setContentEncryptionKey(cek) {
-        if (this._cek) {
-            throw new TypeError("setContentEncryptionKey can only be called once");
-        }
-        this._cek = cek;
-        return this;
-    }
-    setInitializationVector(iv) {
-        if (this._iv) {
-            throw new TypeError("setInitializationVector can only be called once");
-        }
-        this._iv = iv;
-        return this;
-    }
-    replicateIssuerAsHeader() {
-        this._replicateIssuerAsHeader = true;
-        return this;
-    }
-    replicateSubjectAsHeader() {
-        this._replicateSubjectAsHeader = true;
-        return this;
-    }
-    replicateAudienceAsHeader() {
-        this._replicateAudienceAsHeader = true;
-        return this;
-    }
-    async encrypt(key, options) {
-        const enc = new encrypt_js_1.CompactEncrypt(buffer_utils_js_1.encoder.encode(JSON.stringify(this._payload)));
-        if (this._replicateIssuerAsHeader) {
-            this._protectedHeader = {
-                ...this._protectedHeader,
-                iss: this._payload.iss
-            };
-        }
-        if (this._replicateSubjectAsHeader) {
-            this._protectedHeader = {
-                ...this._protectedHeader,
-                sub: this._payload.sub
-            };
-        }
-        if (this._replicateAudienceAsHeader) {
-            this._protectedHeader = {
-                ...this._protectedHeader,
-                aud: this._payload.aud
-            };
-        }
-        enc.setProtectedHeader(this._protectedHeader);
-        if (this._iv) {
-            enc.setInitializationVector(this._iv);
-        }
-        if (this._cek) {
-            enc.setContentEncryptionKey(this._cek);
-        }
-        if (this._keyManagementParameters) {
-            enc.setKeyManagementParameters(this._keyManagementParameters);
-        }
-        return enc.encrypt(key, options);
-    }
-}
-exports.EncryptJWT = EncryptJWT;
-
-
-/***/ }),
-
-/***/ 17738:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.ProduceJWT = void 0;
-const epoch_js_1 = __webpack_require__(27081);
-const is_object_js_1 = __webpack_require__(13951);
-const secs_js_1 = __webpack_require__(6315);
-class ProduceJWT {
-    constructor(payload){
-        if (!(0, is_object_js_1.default)(payload)) {
-            throw new TypeError("JWT Claims Set MUST be an object");
-        }
-        this._payload = payload;
-    }
-    setIssuer(issuer) {
-        this._payload = {
-            ...this._payload,
-            iss: issuer
-        };
-        return this;
-    }
-    setSubject(subject) {
-        this._payload = {
-            ...this._payload,
-            sub: subject
-        };
-        return this;
-    }
-    setAudience(audience) {
-        this._payload = {
-            ...this._payload,
-            aud: audience
-        };
-        return this;
-    }
-    setJti(jwtId) {
-        this._payload = {
-            ...this._payload,
-            jti: jwtId
-        };
-        return this;
-    }
-    setNotBefore(input) {
-        if (typeof input === "number") {
-            this._payload = {
-                ...this._payload,
-                nbf: input
-            };
-        } else {
-            this._payload = {
-                ...this._payload,
-                nbf: (0, epoch_js_1.default)(new Date()) + (0, secs_js_1.default)(input)
-            };
-        }
-        return this;
-    }
-    setExpirationTime(input) {
-        if (typeof input === "number") {
-            this._payload = {
-                ...this._payload,
-                exp: input
-            };
-        } else {
-            this._payload = {
-                ...this._payload,
-                exp: (0, epoch_js_1.default)(new Date()) + (0, secs_js_1.default)(input)
-            };
-        }
-        return this;
-    }
-    setIssuedAt(input) {
-        if (typeof input === "undefined") {
-            this._payload = {
-                ...this._payload,
-                iat: (0, epoch_js_1.default)(new Date())
-            };
-        } else {
-            this._payload = {
-                ...this._payload,
-                iat: input
-            };
-        }
-        return this;
-    }
-}
-exports.ProduceJWT = ProduceJWT;
-
-
-/***/ }),
-
-/***/ 83329:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.SignJWT = void 0;
-const sign_js_1 = __webpack_require__(12654);
-const errors_js_1 = __webpack_require__(56460);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const produce_js_1 = __webpack_require__(17738);
-class SignJWT extends produce_js_1.ProduceJWT {
-    setProtectedHeader(protectedHeader) {
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    async sign(key, options) {
-        var _a;
-        const sig = new sign_js_1.CompactSign(buffer_utils_js_1.encoder.encode(JSON.stringify(this._payload)));
-        sig.setProtectedHeader(this._protectedHeader);
-        if (Array.isArray((_a = this._protectedHeader) === null || _a === void 0 ? void 0 : _a.crit) && this._protectedHeader.crit.includes("b64") && this._protectedHeader.b64 === false) {
-            throw new errors_js_1.JWTInvalid("JWTs MUST NOT use unencoded payload");
-        }
-        return sig.sign(key, options);
-    }
-}
-exports.SignJWT = SignJWT;
-
-
-/***/ }),
-
-/***/ 11340:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.UnsecuredJWT = void 0;
-const base64url = __webpack_require__(32362);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const errors_js_1 = __webpack_require__(56460);
-const jwt_claims_set_js_1 = __webpack_require__(90641);
-const produce_js_1 = __webpack_require__(17738);
-class UnsecuredJWT extends produce_js_1.ProduceJWT {
-    encode() {
-        const header = base64url.encode(JSON.stringify({
-            alg: "none"
-        }));
-        const payload = base64url.encode(JSON.stringify(this._payload));
-        return `${header}.${payload}.`;
-    }
-    static decode(jwt, options) {
-        if (typeof jwt !== "string") {
-            throw new errors_js_1.JWTInvalid("Unsecured JWT must be a string");
-        }
-        const { 0: encodedHeader, 1: encodedPayload, 2: signature, length } = jwt.split(".");
-        if (length !== 3 || signature !== "") {
-            throw new errors_js_1.JWTInvalid("Invalid Unsecured JWT");
-        }
-        let header;
-        try {
-            header = JSON.parse(buffer_utils_js_1.decoder.decode(base64url.decode(encodedHeader)));
-            if (header.alg !== "none") throw new Error();
-        } catch  {
-            throw new errors_js_1.JWTInvalid("Invalid Unsecured JWT");
-        }
-        const payload = (0, jwt_claims_set_js_1.default)(header, base64url.decode(encodedPayload), options);
-        return {
-            payload,
-            header
-        };
-    }
-}
-exports.UnsecuredJWT = UnsecuredJWT;
-
-
-/***/ }),
-
-/***/ 98625:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.jwtVerify = void 0;
-const verify_js_1 = __webpack_require__(85309);
-const jwt_claims_set_js_1 = __webpack_require__(90641);
-const errors_js_1 = __webpack_require__(56460);
-async function jwtVerify(jwt, key, options) {
-    var _a;
-    const verified = await (0, verify_js_1.compactVerify)(jwt, key, options);
-    if (((_a = verified.protectedHeader.crit) === null || _a === void 0 ? void 0 : _a.includes("b64")) && verified.protectedHeader.b64 === false) {
-        throw new errors_js_1.JWTInvalid("JWTs MUST NOT use unencoded payload");
-    }
-    const payload = (0, jwt_claims_set_js_1.default)(verified.protectedHeader, verified.payload, options);
-    const result = {
-        payload,
-        protectedHeader: verified.protectedHeader
-    };
-    if (typeof key === "function") {
-        return {
-            ...result,
-            key: verified.key
-        };
-    }
-    return result;
-}
-exports.jwtVerify = jwtVerify;
-
-
-/***/ }),
-
-/***/ 64689:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.exportJWK = exports.exportPKCS8 = exports.exportSPKI = void 0;
-const asn1_js_1 = __webpack_require__(6888);
-const asn1_js_2 = __webpack_require__(6888);
-const key_to_jwk_js_1 = __webpack_require__(60995);
-async function exportSPKI(key) {
-    return (0, asn1_js_1.toSPKI)(key);
-}
-exports.exportSPKI = exportSPKI;
-async function exportPKCS8(key) {
-    return (0, asn1_js_2.toPKCS8)(key);
-}
-exports.exportPKCS8 = exportPKCS8;
-async function exportJWK(key) {
-    return (0, key_to_jwk_js_1.default)(key);
-}
-exports.exportJWK = exportJWK;
-
-
-/***/ }),
-
-/***/ 21544:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generateKeyPair = void 0;
-const generate_js_1 = __webpack_require__(77573);
-async function generateKeyPair(alg, options) {
-    return (0, generate_js_1.generateKeyPair)(alg, options);
-}
-exports.generateKeyPair = generateKeyPair;
-
-
-/***/ }),
-
-/***/ 73727:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generateSecret = void 0;
-const generate_js_1 = __webpack_require__(77573);
-async function generateSecret(alg, options) {
-    return (0, generate_js_1.generateSecret)(alg, options);
-}
-exports.generateSecret = generateSecret;
-
-
-/***/ }),
-
-/***/ 35185:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.importJWK = exports.importPKCS8 = exports.importX509 = exports.importSPKI = void 0;
-const base64url_js_1 = __webpack_require__(32362);
-const asn1_js_1 = __webpack_require__(6888);
-const jwk_to_key_js_1 = __webpack_require__(56238);
-const errors_js_1 = __webpack_require__(56460);
-const is_object_js_1 = __webpack_require__(13951);
-async function importSPKI(spki, alg, options) {
-    if (typeof spki !== "string" || spki.indexOf("-----BEGIN PUBLIC KEY-----") !== 0) {
-        throw new TypeError('"spki" must be SPKI formatted string');
-    }
-    return (0, asn1_js_1.fromSPKI)(spki, alg, options);
-}
-exports.importSPKI = importSPKI;
-async function importX509(x509, alg, options) {
-    if (typeof x509 !== "string" || x509.indexOf("-----BEGIN CERTIFICATE-----") !== 0) {
-        throw new TypeError('"x509" must be X.509 formatted string');
-    }
-    return (0, asn1_js_1.fromX509)(x509, alg, options);
-}
-exports.importX509 = importX509;
-async function importPKCS8(pkcs8, alg, options) {
-    if (typeof pkcs8 !== "string" || pkcs8.indexOf("-----BEGIN PRIVATE KEY-----") !== 0) {
-        throw new TypeError('"pkcs8" must be PKCS#8 formatted string');
-    }
-    return (0, asn1_js_1.fromPKCS8)(pkcs8, alg, options);
-}
-exports.importPKCS8 = importPKCS8;
-async function importJWK(jwk, alg, octAsKeyObject) {
-    var _a;
-    if (!(0, is_object_js_1.default)(jwk)) {
-        throw new TypeError("JWK must be an object");
-    }
-    alg || (alg = jwk.alg);
-    switch(jwk.kty){
-        case "oct":
-            if (typeof jwk.k !== "string" || !jwk.k) {
-                throw new TypeError('missing "k" (Key Value) Parameter value');
-            }
-            octAsKeyObject !== null && octAsKeyObject !== void 0 ? octAsKeyObject : octAsKeyObject = jwk.ext !== true;
-            if (octAsKeyObject) {
-                return (0, jwk_to_key_js_1.default)({
-                    ...jwk,
-                    alg,
-                    ext: (_a = jwk.ext) !== null && _a !== void 0 ? _a : false
-                });
-            }
-            return (0, base64url_js_1.decode)(jwk.k);
-        case "RSA":
-            if (jwk.oth !== undefined) {
-                throw new errors_js_1.JOSENotSupported('RSA JWK "oth" (Other Primes Info) Parameter value is not supported');
-            }
-        case "EC":
-        case "OKP":
-            return (0, jwk_to_key_js_1.default)({
-                ...jwk,
-                alg
-            });
-        default:
-            throw new errors_js_1.JOSENotSupported('Unsupported "kty" (Key Type) Parameter value');
-    }
-}
-exports.importJWK = importJWK;
-
-
-/***/ }),
-
-/***/ 32718:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.unwrap = exports.wrap = void 0;
-const encrypt_js_1 = __webpack_require__(57701);
-const decrypt_js_1 = __webpack_require__(62839);
-const iv_js_1 = __webpack_require__(59337);
-const base64url_js_1 = __webpack_require__(32362);
-async function wrap(alg, key, cek, iv) {
-    const jweAlgorithm = alg.slice(0, 7);
-    iv || (iv = (0, iv_js_1.default)(jweAlgorithm));
-    const { ciphertext: encryptedKey, tag } = await (0, encrypt_js_1.default)(jweAlgorithm, cek, key, iv, new Uint8Array(0));
-    return {
-        encryptedKey,
-        iv: (0, base64url_js_1.encode)(iv),
-        tag: (0, base64url_js_1.encode)(tag)
-    };
-}
-exports.wrap = wrap;
-async function unwrap(alg, key, encryptedKey, iv, tag) {
-    const jweAlgorithm = alg.slice(0, 7);
-    return (0, decrypt_js_1.default)(jweAlgorithm, key, encryptedKey, iv, tag, new Uint8Array(0));
-}
-exports.unwrap = unwrap;
-
-
-/***/ }),
-
-/***/ 51495:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.concatKdf = exports.lengthAndInput = exports.uint32be = exports.uint64be = exports.p2s = exports.concat = exports.decoder = exports.encoder = void 0;
-const digest_js_1 = __webpack_require__(1553);
-exports.encoder = new TextEncoder();
-exports.decoder = new TextDecoder();
-const MAX_INT32 = 2 ** 32;
-function concat(...buffers) {
-    const size = buffers.reduce((acc, { length })=>acc + length, 0);
-    const buf = new Uint8Array(size);
-    let i = 0;
-    buffers.forEach((buffer)=>{
-        buf.set(buffer, i);
-        i += buffer.length;
-    });
-    return buf;
-}
-exports.concat = concat;
-function p2s(alg, p2sInput) {
-    return concat(exports.encoder.encode(alg), new Uint8Array([
-        0
-    ]), p2sInput);
-}
-exports.p2s = p2s;
-function writeUInt32BE(buf, value, offset) {
-    if (value < 0 || value >= MAX_INT32) {
-        throw new RangeError(`value must be >= 0 and <= ${MAX_INT32 - 1}. Received ${value}`);
-    }
-    buf.set([
-        value >>> 24,
-        value >>> 16,
-        value >>> 8,
-        value & 0xff
-    ], offset);
-}
-function uint64be(value) {
-    const high = Math.floor(value / MAX_INT32);
-    const low = value % MAX_INT32;
-    const buf = new Uint8Array(8);
-    writeUInt32BE(buf, high, 0);
-    writeUInt32BE(buf, low, 4);
-    return buf;
-}
-exports.uint64be = uint64be;
-function uint32be(value) {
-    const buf = new Uint8Array(4);
-    writeUInt32BE(buf, value);
-    return buf;
-}
-exports.uint32be = uint32be;
-function lengthAndInput(input) {
-    return concat(uint32be(input.length), input);
-}
-exports.lengthAndInput = lengthAndInput;
-async function concatKdf(secret, bits, value) {
-    const iterations = Math.ceil((bits >> 3) / 32);
-    const res = new Uint8Array(iterations * 32);
-    for(let iter = 0; iter < iterations; iter++){
-        const buf = new Uint8Array(4 + secret.length + value.length);
-        buf.set(uint32be(iter + 1));
-        buf.set(secret, 4);
-        buf.set(value, 4 + secret.length);
-        res.set(await (0, digest_js_1.default)("sha256", buf), iter * 32);
-    }
-    return res.slice(0, bits >> 3);
-}
-exports.concatKdf = concatKdf;
-
-
-/***/ }),
-
-/***/ 88241:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.bitLength = void 0;
-const errors_js_1 = __webpack_require__(56460);
-const random_js_1 = __webpack_require__(29748);
-function bitLength(alg) {
-    switch(alg){
-        case "A128GCM":
-            return 128;
-        case "A192GCM":
-            return 192;
-        case "A256GCM":
-        case "A128CBC-HS256":
-            return 256;
-        case "A192CBC-HS384":
-            return 384;
-        case "A256CBC-HS512":
-            return 512;
-        default:
-            throw new errors_js_1.JOSENotSupported(`Unsupported JWE Algorithm: ${alg}`);
-    }
-}
-exports.bitLength = bitLength;
-exports["default"] = (alg)=>(0, random_js_1.default)(new Uint8Array(bitLength(alg) >> 3));
-
-
-/***/ }),
-
-/***/ 29243:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(56460);
-const iv_js_1 = __webpack_require__(59337);
-const checkIvLength = (enc, iv)=>{
-    if (iv.length << 3 !== (0, iv_js_1.bitLength)(enc)) {
-        throw new errors_js_1.JWEInvalid("Invalid Initialization Vector length");
-    }
-};
-exports["default"] = checkIvLength;
-
-
-/***/ }),
-
-/***/ 34849:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const is_key_like_js_1 = __webpack_require__(25186);
-const symmetricTypeCheck = (alg, key)=>{
-    if (key instanceof Uint8Array) return;
-    if (!(0, is_key_like_js_1.default)(key)) {
-        throw new TypeError((0, invalid_key_input_js_1.withAlg)(alg, key, ...is_key_like_js_1.types, "Uint8Array"));
-    }
-    if (key.type !== "secret") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for symmetric algorithms must be of type "secret"`);
-    }
-};
-const asymmetricTypeCheck = (alg, key, usage)=>{
-    if (!(0, is_key_like_js_1.default)(key)) {
-        throw new TypeError((0, invalid_key_input_js_1.withAlg)(alg, key, ...is_key_like_js_1.types));
-    }
-    if (key.type === "secret") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithms must not be of type "secret"`);
-    }
-    if (usage === "sign" && key.type === "public") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm signing must be of type "private"`);
-    }
-    if (usage === "decrypt" && key.type === "public") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm decryption must be of type "private"`);
-    }
-    if (key.algorithm && usage === "verify" && key.type === "private") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm verifying must be of type "public"`);
-    }
-    if (key.algorithm && usage === "encrypt" && key.type === "private") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm encryption must be of type "public"`);
-    }
-};
-const checkKeyType = (alg, key, usage)=>{
-    const symmetric = alg.startsWith("HS") || alg === "dir" || alg.startsWith("PBES2") || /^A\d{3}(?:GCM)?KW$/.test(alg);
-    if (symmetric) {
-        symmetricTypeCheck(alg, key);
-    } else {
-        asymmetricTypeCheck(alg, key, usage);
-    }
-};
-exports["default"] = checkKeyType;
-
-
-/***/ }),
-
-/***/ 26432:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(56460);
-function checkP2s(p2s) {
-    if (!(p2s instanceof Uint8Array) || p2s.length < 8) {
-        throw new errors_js_1.JWEInvalid("PBES2 Salt Input must be 8 or more octets");
-    }
-}
-exports["default"] = checkP2s;
-
-
-/***/ }),
-
-/***/ 85841:
+/***/ 42550:
 /***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.checkEncCryptoKey = exports.checkSigCryptoKey = void 0;
-function unusable(name, prop = "algorithm.name") {
-    return new TypeError(`CryptoKey does not support this operation, its ${prop} must be ${name}`);
+var n, l, t, u, i, o, r, e, f, c = {}, s = [], a = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i, p = Array.isArray;
+function v(n, l) {
+    for(var t in l)n[t] = l[t];
+    return n;
 }
-function isAlgorithm(algorithm, name) {
-    return algorithm.name === name;
+function h(n) {
+    var l = n.parentNode;
+    l && l.removeChild(n);
 }
-function getHashLength(hash) {
-    return parseInt(hash.name.slice(4), 10);
+function y(l, t, u) {
+    var i, o, r, e = {};
+    for(r in t)"key" == r ? i = t[r] : "ref" == r ? o = t[r] : e[r] = t[r];
+    if (arguments.length > 2 && (e.children = arguments.length > 3 ? n.call(arguments, 2) : u), "function" == typeof l && null != l.defaultProps) for(r in l.defaultProps)void 0 === e[r] && (e[r] = l.defaultProps[r]);
+    return d(l, e, i, o, null);
 }
-function getNamedCurve(alg) {
-    switch(alg){
-        case "ES256":
-            return "P-256";
-        case "ES384":
-            return "P-384";
-        case "ES512":
-            return "P-521";
-        default:
-            throw new Error("unreachable");
-    }
+function d(n, u, i, o, r) {
+    var e = {
+        type: n,
+        props: u,
+        key: i,
+        ref: o,
+        __k: null,
+        __: null,
+        __b: 0,
+        __e: null,
+        __d: void 0,
+        __c: null,
+        constructor: void 0,
+        __v: null == r ? ++t : r,
+        __i: -1,
+        __u: 0
+    };
+    return null == r && null != l.vnode && l.vnode(e), e;
 }
-function checkUsage(key, usages) {
-    if (usages.length && !usages.some((expected)=>key.usages.includes(expected))) {
-        let msg = "CryptoKey does not support this operation, its usages must include ";
-        if (usages.length > 2) {
-            const last = usages.pop();
-            msg += `one of ${usages.join(", ")}, or ${last}.`;
-        } else if (usages.length === 2) {
-            msg += `one of ${usages[0]} or ${usages[1]}.`;
-        } else {
-            msg += `${usages[0]}.`;
-        }
-        throw new TypeError(msg);
-    }
+function _(n) {
+    return n.children;
 }
-function checkSigCryptoKey(key, alg, ...usages) {
-    switch(alg){
-        case "HS256":
-        case "HS384":
-        case "HS512":
-            {
-                if (!isAlgorithm(key.algorithm, "HMAC")) throw unusable("HMAC");
-                const expected = parseInt(alg.slice(2), 10);
-                const actual = getHashLength(key.algorithm.hash);
-                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
-                break;
-            }
-        case "RS256":
-        case "RS384":
-        case "RS512":
-            {
-                if (!isAlgorithm(key.algorithm, "RSASSA-PKCS1-v1_5")) throw unusable("RSASSA-PKCS1-v1_5");
-                const expected = parseInt(alg.slice(2), 10);
-                const actual = getHashLength(key.algorithm.hash);
-                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
-                break;
-            }
-        case "PS256":
-        case "PS384":
-        case "PS512":
-            {
-                if (!isAlgorithm(key.algorithm, "RSA-PSS")) throw unusable("RSA-PSS");
-                const expected = parseInt(alg.slice(2), 10);
-                const actual = getHashLength(key.algorithm.hash);
-                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
-                break;
-            }
-        case "EdDSA":
-            {
-                if (key.algorithm.name !== "Ed25519" && key.algorithm.name !== "Ed448") {
-                    throw unusable("Ed25519 or Ed448");
-                }
-                break;
-            }
-        case "ES256":
-        case "ES384":
-        case "ES512":
-            {
-                if (!isAlgorithm(key.algorithm, "ECDSA")) throw unusable("ECDSA");
-                const expected = getNamedCurve(alg);
-                const actual = key.algorithm.namedCurve;
-                if (actual !== expected) throw unusable(expected, "algorithm.namedCurve");
-                break;
-            }
-        default:
-            throw new TypeError("CryptoKey does not support this operation");
-    }
-    checkUsage(key, usages);
+function x(n, l) {
+    this.props = n, this.context = l;
 }
-exports.checkSigCryptoKey = checkSigCryptoKey;
-function checkEncCryptoKey(key, alg, ...usages) {
-    switch(alg){
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            {
-                if (!isAlgorithm(key.algorithm, "AES-GCM")) throw unusable("AES-GCM");
-                const expected = parseInt(alg.slice(1, 4), 10);
-                const actual = key.algorithm.length;
-                if (actual !== expected) throw unusable(expected, "algorithm.length");
-                break;
-            }
-        case "A128KW":
-        case "A192KW":
-        case "A256KW":
-            {
-                if (!isAlgorithm(key.algorithm, "AES-KW")) throw unusable("AES-KW");
-                const expected = parseInt(alg.slice(1, 4), 10);
-                const actual = key.algorithm.length;
-                if (actual !== expected) throw unusable(expected, "algorithm.length");
-                break;
-            }
-        case "ECDH":
-            {
-                switch(key.algorithm.name){
-                    case "ECDH":
-                    case "X25519":
-                    case "X448":
-                        break;
-                    default:
-                        throw unusable("ECDH, X25519, or X448");
-                }
-                break;
-            }
-        case "PBES2-HS256+A128KW":
-        case "PBES2-HS384+A192KW":
-        case "PBES2-HS512+A256KW":
-            if (!isAlgorithm(key.algorithm, "PBKDF2")) throw unusable("PBKDF2");
+function g(n, l) {
+    if (null == l) return n.__ ? g(n.__, n.__i + 1) : null;
+    for(var t; l < n.__k.length; l++)if (null != (t = n.__k[l]) && null != t.__e) return t.__e;
+    return "function" == typeof n.type ? g(n) : null;
+}
+function b(n) {
+    var l, t;
+    if (null != (n = n.__) && null != n.__c) {
+        for(n.__e = n.__c.base = null, l = 0; l < n.__k.length; l++)if (null != (t = n.__k[l]) && null != t.__e) {
+            n.__e = n.__c.base = t.__e;
             break;
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-            {
-                if (!isAlgorithm(key.algorithm, "RSA-OAEP")) throw unusable("RSA-OAEP");
-                const expected = parseInt(alg.slice(9), 10) || 1;
-                const actual = getHashLength(key.algorithm.hash);
-                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
-                break;
-            }
-        default:
-            throw new TypeError("CryptoKey does not support this operation");
-    }
-    checkUsage(key, usages);
-}
-exports.checkEncCryptoKey = checkEncCryptoKey;
-
-
-/***/ }),
-
-/***/ 82523:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const aeskw_js_1 = __webpack_require__(70052);
-const ECDH = __webpack_require__(48860);
-const pbes2kw_js_1 = __webpack_require__(11898);
-const rsaes_js_1 = __webpack_require__(64330);
-const base64url_js_1 = __webpack_require__(32362);
-const errors_js_1 = __webpack_require__(56460);
-const cek_js_1 = __webpack_require__(88241);
-const import_js_1 = __webpack_require__(35185);
-const check_key_type_js_1 = __webpack_require__(34849);
-const is_object_js_1 = __webpack_require__(13951);
-const aesgcmkw_js_1 = __webpack_require__(32718);
-async function decryptKeyManagement(alg, key, encryptedKey, joseHeader, options) {
-    (0, check_key_type_js_1.default)(alg, key, "decrypt");
-    switch(alg){
-        case "dir":
-            {
-                if (encryptedKey !== undefined) throw new errors_js_1.JWEInvalid("Encountered unexpected JWE Encrypted Key");
-                return key;
-            }
-        case "ECDH-ES":
-            if (encryptedKey !== undefined) throw new errors_js_1.JWEInvalid("Encountered unexpected JWE Encrypted Key");
-        case "ECDH-ES+A128KW":
-        case "ECDH-ES+A192KW":
-        case "ECDH-ES+A256KW":
-            {
-                if (!(0, is_object_js_1.default)(joseHeader.epk)) throw new errors_js_1.JWEInvalid(`JOSE Header "epk" (Ephemeral Public Key) missing or invalid`);
-                if (!ECDH.ecdhAllowed(key)) throw new errors_js_1.JOSENotSupported("ECDH with the provided key is not allowed or not supported by your javascript runtime");
-                const epk = await (0, import_js_1.importJWK)(joseHeader.epk, alg);
-                let partyUInfo;
-                let partyVInfo;
-                if (joseHeader.apu !== undefined) {
-                    if (typeof joseHeader.apu !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "apu" (Agreement PartyUInfo) invalid`);
-                    try {
-                        partyUInfo = (0, base64url_js_1.decode)(joseHeader.apu);
-                    } catch  {
-                        throw new errors_js_1.JWEInvalid("Failed to base64url decode the apu");
-                    }
-                }
-                if (joseHeader.apv !== undefined) {
-                    if (typeof joseHeader.apv !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "apv" (Agreement PartyVInfo) invalid`);
-                    try {
-                        partyVInfo = (0, base64url_js_1.decode)(joseHeader.apv);
-                    } catch  {
-                        throw new errors_js_1.JWEInvalid("Failed to base64url decode the apv");
-                    }
-                }
-                const sharedSecret = await ECDH.deriveKey(epk, key, alg === "ECDH-ES" ? joseHeader.enc : alg, alg === "ECDH-ES" ? (0, cek_js_1.bitLength)(joseHeader.enc) : parseInt(alg.slice(-5, -2), 10), partyUInfo, partyVInfo);
-                if (alg === "ECDH-ES") return sharedSecret;
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                return (0, aeskw_js_1.unwrap)(alg.slice(-6), sharedSecret, encryptedKey);
-            }
-        case "RSA1_5":
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-            {
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                return (0, rsaes_js_1.decrypt)(alg, key, encryptedKey);
-            }
-        case "PBES2-HS256+A128KW":
-        case "PBES2-HS384+A192KW":
-        case "PBES2-HS512+A256KW":
-            {
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                if (typeof joseHeader.p2c !== "number") throw new errors_js_1.JWEInvalid(`JOSE Header "p2c" (PBES2 Count) missing or invalid`);
-                const p2cLimit = (options === null || options === void 0 ? void 0 : options.maxPBES2Count) || 10000;
-                if (joseHeader.p2c > p2cLimit) throw new errors_js_1.JWEInvalid(`JOSE Header "p2c" (PBES2 Count) out is of acceptable bounds`);
-                if (typeof joseHeader.p2s !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "p2s" (PBES2 Salt) missing or invalid`);
-                let p2s;
-                try {
-                    p2s = (0, base64url_js_1.decode)(joseHeader.p2s);
-                } catch  {
-                    throw new errors_js_1.JWEInvalid("Failed to base64url decode the p2s");
-                }
-                return (0, pbes2kw_js_1.decrypt)(alg, key, encryptedKey, joseHeader.p2c, p2s);
-            }
-        case "A128KW":
-        case "A192KW":
-        case "A256KW":
-            {
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                return (0, aeskw_js_1.unwrap)(alg, key, encryptedKey);
-            }
-        case "A128GCMKW":
-        case "A192GCMKW":
-        case "A256GCMKW":
-            {
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                if (typeof joseHeader.iv !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "iv" (Initialization Vector) missing or invalid`);
-                if (typeof joseHeader.tag !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "tag" (Authentication Tag) missing or invalid`);
-                let iv;
-                try {
-                    iv = (0, base64url_js_1.decode)(joseHeader.iv);
-                } catch  {
-                    throw new errors_js_1.JWEInvalid("Failed to base64url decode the iv");
-                }
-                let tag;
-                try {
-                    tag = (0, base64url_js_1.decode)(joseHeader.tag);
-                } catch  {
-                    throw new errors_js_1.JWEInvalid("Failed to base64url decode the tag");
-                }
-                return (0, aesgcmkw_js_1.unwrap)(alg, key, encryptedKey, iv, tag);
-            }
-        default:
-            {
-                throw new errors_js_1.JOSENotSupported('Invalid or unsupported "alg" (JWE Algorithm) header value');
-            }
+        }
+        return b(n);
     }
 }
-exports["default"] = decryptKeyManagement;
-
-
-/***/ }),
-
-/***/ 92255:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const aeskw_js_1 = __webpack_require__(70052);
-const ECDH = __webpack_require__(48860);
-const pbes2kw_js_1 = __webpack_require__(11898);
-const rsaes_js_1 = __webpack_require__(64330);
-const base64url_js_1 = __webpack_require__(32362);
-const cek_js_1 = __webpack_require__(88241);
-const errors_js_1 = __webpack_require__(56460);
-const export_js_1 = __webpack_require__(64689);
-const check_key_type_js_1 = __webpack_require__(34849);
-const aesgcmkw_js_1 = __webpack_require__(32718);
-async function encryptKeyManagement(alg, enc, key, providedCek, providedParameters = {}) {
-    let encryptedKey;
-    let parameters;
-    let cek;
-    (0, check_key_type_js_1.default)(alg, key, "encrypt");
-    switch(alg){
-        case "dir":
-            {
-                cek = key;
-                break;
+function k(n) {
+    (!n.__d && (n.__d = !0) && i.push(n) && !m.__r++ || o !== l.debounceRendering) && ((o = l.debounceRendering) || r)(m);
+}
+function m() {
+    var n, t, u, o, r, f, c, s, a;
+    for(i.sort(e); n = i.shift();)n.__d && (t = i.length, o = void 0, f = (r = (u = n).__v).__e, s = [], a = [], (c = u.__P) && ((o = v({}, r)).__v = r.__v + 1, l.vnode && l.vnode(o), A(c, o, r, u.__n, void 0 !== c.ownerSVGElement, 32 & r.__u ? [
+        f
+    ] : null, s, null == f ? g(r) : f, !!(32 & r.__u), a), o.__.__k[o.__i] = o, D(s, o, a), o.__e != f && b(o)), i.length > t && i.sort(e));
+    m.__r = 0;
+}
+function w(n, l, t, u, i, o, r, e, f, a, p) {
+    var v, h, y, d, _, x = u && u.__k || s, g = l.length;
+    for(t.__d = f, P(t, l, x), f = t.__d, v = 0; v < g; v++)null != (y = t.__k[v]) && "boolean" != typeof y && "function" != typeof y && (h = -1 === y.__i ? c : x[y.__i] || c, y.__i = v, A(n, y, h, i, o, r, e, f, a, p), d = y.__e, y.ref && h.ref != y.ref && (h.ref && M(h.ref, null, y), p.push(y.ref, y.__c || d, y)), null == _ && null != d && (_ = d), 65536 & y.__u || h.__k === y.__k ? f = S(y, f, n) : "function" == typeof y.type && void 0 !== y.__d ? f = y.__d : d && (f = d.nextSibling), y.__d = void 0, y.__u &= -196609);
+    t.__d = f, t.__e = _;
+}
+function P(n, l, t) {
+    var u, i, o, r, e, f = l.length, c = t.length, s = c, a = 0;
+    for(n.__k = [], u = 0; u < f; u++)null != (i = n.__k[u] = null == (i = l[u]) || "boolean" == typeof i || "function" == typeof i ? null : "string" == typeof i || "number" == typeof i || "bigint" == typeof i || i.constructor == String ? d(null, i, null, null, i) : p(i) ? d(_, {
+        children: i
+    }, null, null, null) : void 0 === i.constructor && i.__b > 0 ? d(i.type, i.props, i.key, i.ref ? i.ref : null, i.__v) : i) ? (i.__ = n, i.__b = n.__b + 1, e = $(i, t, r = u + a, s), i.__i = e, o = null, -1 !== e && (s--, (o = t[e]) && (o.__u |= 131072)), null == o || null === o.__v ? (-1 == e && a--, "function" != typeof i.type && (i.__u |= 65536)) : e !== r && (e === r + 1 ? a++ : e > r ? s > f - r ? a += e - r : a-- : a = e < r && e == r - 1 ? e - r : 0, e !== u + a && (i.__u |= 65536))) : (o = t[u]) && null == o.key && o.__e && (o.__e == n.__d && (n.__d = g(o)), j(o, o, !1), t[u] = null, s--);
+    if (s) for(u = 0; u < c; u++)null != (o = t[u]) && 0 == (131072 & o.__u) && (o.__e == n.__d && (n.__d = g(o)), j(o, o));
+}
+function S(n, l, t) {
+    var u, i;
+    if ("function" == typeof n.type) {
+        for(u = n.__k, i = 0; u && i < u.length; i++)u[i] && (u[i].__ = n, l = S(u[i], l, t));
+        return l;
+    }
+    return n.__e != l && (t.insertBefore(n.__e, l || null), l = n.__e), l && l.nextSibling;
+}
+function $(n, l, t, u) {
+    var i = n.key, o = n.type, r = t - 1, e = t + 1, f = l[t];
+    if (null === f || f && i == f.key && o === f.type) return t;
+    if (u > (null != f && 0 == (131072 & f.__u) ? 1 : 0)) for(; r >= 0 || e < l.length;){
+        if (r >= 0) {
+            if ((f = l[r]) && 0 == (131072 & f.__u) && i == f.key && o === f.type) return r;
+            r--;
+        }
+        if (e < l.length) {
+            if ((f = l[e]) && 0 == (131072 & f.__u) && i == f.key && o === f.type) return e;
+            e++;
+        }
+    }
+    return -1;
+}
+function C(n, l, t) {
+    "-" === l[0] ? n.setProperty(l, null == t ? "" : t) : n[l] = null == t ? "" : "number" != typeof t || a.test(l) ? t : t + "px";
+}
+function H(n, l, t, u, i) {
+    var o;
+    n: if ("style" === l) if ("string" == typeof t) n.style.cssText = t;
+    else {
+        if ("string" == typeof u && (n.style.cssText = u = ""), u) for(l in u)t && l in t || C(n.style, l, "");
+        if (t) for(l in t)u && t[l] === u[l] || C(n.style, l, t[l]);
+    }
+    else if ("o" === l[0] && "n" === l[1]) o = l !== (l = l.replace(/(PointerCapture)$|Capture$/, "$1")), l = l.toLowerCase() in n ? l.toLowerCase().slice(2) : l.slice(2), n.l || (n.l = {}), n.l[l + o] = t, t ? u ? t.t = u.t : (t.t = Date.now(), n.addEventListener(l, o ? T : I, o)) : n.removeEventListener(l, o ? T : I, o);
+    else {
+        if (i) l = l.replace(/xlink(H|:h)/, "h").replace(/sName$/, "s");
+        else if ("width" !== l && "height" !== l && "href" !== l && "list" !== l && "form" !== l && "tabIndex" !== l && "download" !== l && "rowSpan" !== l && "colSpan" !== l && "role" !== l && l in n) try {
+            n[l] = null == t ? "" : t;
+            break n;
+        } catch (n) {}
+        "function" == typeof t || (null == t || !1 === t && "-" !== l[4] ? n.removeAttribute(l) : n.setAttribute(l, t));
+    }
+}
+function I(n) {
+    var t = this.l[n.type + !1];
+    if (n.u) {
+        if (n.u <= t.t) return;
+    } else n.u = Date.now();
+    return t(l.event ? l.event(n) : n);
+}
+function T(n) {
+    return this.l[n.type + !0](l.event ? l.event(n) : n);
+}
+function A(n, t, u, i, o, r, e, f, c, s) {
+    var a, h, y, d, g, b, k, m, P, S, $, C, H, I, T, A = t.type;
+    if (void 0 !== t.constructor) return null;
+    128 & u.__u && (c = !!(32 & u.__u), r = [
+        f = t.__e = u.__e
+    ]), (a = l.__b) && a(t);
+    n: if ("function" == typeof A) try {
+        if (m = t.props, P = (a = A.contextType) && i[a.__c], S = a ? P ? P.props.value : a.__ : i, u.__c ? k = (h = t.__c = u.__c).__ = h.__E : ("prototype" in A && A.prototype.render ? t.__c = h = new A(m, S) : (t.__c = h = new x(m, S), h.constructor = A, h.render = z), P && P.sub(h), h.props = m, h.state || (h.state = {}), h.context = S, h.__n = i, y = h.__d = !0, h.__h = [], h._sb = []), null == h.__s && (h.__s = h.state), null != A.getDerivedStateFromProps && (h.__s == h.state && (h.__s = v({}, h.__s)), v(h.__s, A.getDerivedStateFromProps(m, h.__s))), d = h.props, g = h.state, h.__v = t, y) null == A.getDerivedStateFromProps && null != h.componentWillMount && h.componentWillMount(), null != h.componentDidMount && h.__h.push(h.componentDidMount);
+        else {
+            if (null == A.getDerivedStateFromProps && m !== d && null != h.componentWillReceiveProps && h.componentWillReceiveProps(m, S), !h.__e && (null != h.shouldComponentUpdate && !1 === h.shouldComponentUpdate(m, h.__s, S) || t.__v === u.__v)) {
+                for(t.__v !== u.__v && (h.props = m, h.state = h.__s, h.__d = !1), t.__e = u.__e, t.__k = u.__k, t.__k.forEach(function(n) {
+                    n && (n.__ = t);
+                }), $ = 0; $ < h._sb.length; $++)h.__h.push(h._sb[$]);
+                h._sb = [], h.__h.length && e.push(h);
+                break n;
             }
-        case "ECDH-ES":
-        case "ECDH-ES+A128KW":
-        case "ECDH-ES+A192KW":
-        case "ECDH-ES+A256KW":
-            {
-                if (!ECDH.ecdhAllowed(key)) {
-                    throw new errors_js_1.JOSENotSupported("ECDH with the provided key is not allowed or not supported by your javascript runtime");
-                }
-                const { apu, apv } = providedParameters;
-                let { epk: ephemeralKey } = providedParameters;
-                ephemeralKey || (ephemeralKey = (await ECDH.generateEpk(key)).privateKey);
-                const { x, y, crv, kty } = await (0, export_js_1.exportJWK)(ephemeralKey);
-                const sharedSecret = await ECDH.deriveKey(key, ephemeralKey, alg === "ECDH-ES" ? enc : alg, alg === "ECDH-ES" ? (0, cek_js_1.bitLength)(enc) : parseInt(alg.slice(-5, -2), 10), apu, apv);
-                parameters = {
-                    epk: {
-                        x,
-                        crv,
-                        kty
-                    }
+            null != h.componentWillUpdate && h.componentWillUpdate(m, h.__s, S), null != h.componentDidUpdate && h.__h.push(function() {
+                h.componentDidUpdate(d, g, b);
+            });
+        }
+        if (h.context = S, h.props = m, h.__P = n, h.__e = !1, C = l.__r, H = 0, "prototype" in A && A.prototype.render) {
+            for(h.state = h.__s, h.__d = !1, C && C(t), a = h.render(h.props, h.state, h.context), I = 0; I < h._sb.length; I++)h.__h.push(h._sb[I]);
+            h._sb = [];
+        } else do {
+            h.__d = !1, C && C(t), a = h.render(h.props, h.state, h.context), h.state = h.__s;
+        }while (h.__d && ++H < 25);
+        h.state = h.__s, null != h.getChildContext && (i = v(v({}, i), h.getChildContext())), y || null == h.getSnapshotBeforeUpdate || (b = h.getSnapshotBeforeUpdate(d, g)), w(n, p(T = null != a && a.type === _ && null == a.key ? a.props.children : a) ? T : [
+            T
+        ], t, u, i, o, r, e, f, c, s), h.base = t.__e, t.__u &= -161, h.__h.length && e.push(h), k && (h.__E = h.__ = null);
+    } catch (n) {
+        t.__v = null, c || null != r ? (t.__e = f, t.__u |= c ? 160 : 32, r[r.indexOf(f)] = null) : (t.__e = u.__e, t.__k = u.__k), l.__e(n, t, u);
+    }
+    else null == r && t.__v === u.__v ? (t.__k = u.__k, t.__e = u.__e) : t.__e = L(u.__e, t, u, i, o, r, e, c, s);
+    (a = l.diffed) && a(t);
+}
+function D(n, t, u) {
+    t.__d = void 0;
+    for(var i = 0; i < u.length; i++)M(u[i], u[++i], u[++i]);
+    l.__c && l.__c(t, n), n.some(function(t) {
+        try {
+            n = t.__h, t.__h = [], n.some(function(n) {
+                n.call(t);
+            });
+        } catch (n) {
+            l.__e(n, t.__v);
+        }
+    });
+}
+function L(l, t, u, i, o, r, e, f, s) {
+    var a, v, y, d, _, x, b, k = u.props, m = t.props, P = t.type;
+    if ("svg" === P && (o = !0), null != r) {
+        for(a = 0; a < r.length; a++)if ((_ = r[a]) && "setAttribute" in _ == !!P && (P ? _.localName === P : 3 === _.nodeType)) {
+            l = _, r[a] = null;
+            break;
+        }
+    }
+    if (null == l) {
+        if (null === P) return document.createTextNode(m);
+        l = o ? document.createElementNS("http://www.w3.org/2000/svg", P) : document.createElement(P, m.is && m), r = null, f = !1;
+    }
+    if (null === P) k === m || f && l.data === m || (l.data = m);
+    else {
+        if (r = r && n.call(l.childNodes), k = u.props || c, !f && null != r) for(k = {}, a = 0; a < l.attributes.length; a++)k[(_ = l.attributes[a]).name] = _.value;
+        for(a in k)_ = k[a], "children" == a || ("dangerouslySetInnerHTML" == a ? y = _ : "key" === a || a in m || H(l, a, null, _, o));
+        for(a in m)_ = m[a], "children" == a ? d = _ : "dangerouslySetInnerHTML" == a ? v = _ : "value" == a ? x = _ : "checked" == a ? b = _ : "key" === a || f && "function" != typeof _ || k[a] === _ || H(l, a, _, k[a], o);
+        if (v) f || y && (v.__html === y.__html || v.__html === l.innerHTML) || (l.innerHTML = v.__html), t.__k = [];
+        else if (y && (l.innerHTML = ""), w(l, p(d) ? d : [
+            d
+        ], t, u, i, o && "foreignObject" !== P, r, e, r ? r[0] : u.__k && g(u, 0), f, s), null != r) for(a = r.length; a--;)null != r[a] && h(r[a]);
+        f || (a = "value", void 0 !== x && (x !== l[a] || "progress" === P && !x || "option" === P && x !== k[a]) && H(l, a, x, k[a], !1), a = "checked", void 0 !== b && b !== l[a] && H(l, a, b, k[a], !1));
+    }
+    return l;
+}
+function M(n, t, u) {
+    try {
+        "function" == typeof n ? n(t) : n.current = t;
+    } catch (n) {
+        l.__e(n, u);
+    }
+}
+function j(n, t, u) {
+    var i, o;
+    if (l.unmount && l.unmount(n), (i = n.ref) && (i.current && i.current !== n.__e || M(i, null, t)), null != (i = n.__c)) {
+        if (i.componentWillUnmount) try {
+            i.componentWillUnmount();
+        } catch (n) {
+            l.__e(n, t);
+        }
+        i.base = i.__P = null, n.__c = void 0;
+    }
+    if (i = n.__k) for(o = 0; o < i.length; o++)i[o] && j(i[o], t, u || "function" != typeof n.type);
+    u || null == n.__e || h(n.__e), n.__ = n.__e = n.__d = void 0;
+}
+function z(n, l, t) {
+    return this.constructor(n, t);
+}
+function N(t, u, i) {
+    var o, r, e, f;
+    l.__ && l.__(t, u), r = (o = "function" == typeof i) ? null : i && i.__k || u.__k, e = [], f = [], A(u, t = (!o && i || u).__k = y(_, null, [
+        t
+    ]), r || c, c, void 0 !== u.ownerSVGElement, !o && i ? [
+        i
+    ] : r ? null : u.firstChild ? n.call(u.childNodes) : null, e, !o && i ? i : r ? r.__e : u.firstChild, o, f), D(e, t, f);
+}
+n = s.slice, l = {
+    __e: function(n, l, t, u) {
+        for(var i, o, r; l = l.__;)if ((i = l.__c) && !i.__) try {
+            if ((o = i.constructor) && null != o.getDerivedStateFromError && (i.setState(o.getDerivedStateFromError(n)), r = i.__d), null != i.componentDidCatch && (i.componentDidCatch(n, u || {}), r = i.__d), r) return i.__E = i;
+        } catch (l) {
+            n = l;
+        }
+        throw n;
+    }
+}, t = 0, u = function(n) {
+    return null != n && null == n.constructor;
+}, x.prototype.setState = function(n, l) {
+    var t;
+    t = null != this.__s && this.__s !== this.state ? this.__s : this.__s = v({}, this.state), "function" == typeof n && (n = n(v({}, t), this.props)), n && v(t, n), null != n && this.__v && (l && this._sb.push(l), k(this));
+}, x.prototype.forceUpdate = function(n) {
+    this.__v && (this.__e = !0, n && this.__h.push(n), k(this));
+}, x.prototype.render = _, i = [], r = "function" == typeof Promise ? Promise.prototype.then.bind(Promise.resolve()) : setTimeout, e = function(n, l) {
+    return n.__v.__b - l.__v.__b;
+}, m.__r = 0, f = 0, exports.Component = x, exports.Fragment = _, exports.cloneElement = function(l, t, u) {
+    var i, o, r, e, f = v({}, l.props);
+    for(r in l.type && l.type.defaultProps && (e = l.type.defaultProps), t)"key" == r ? i = t[r] : "ref" == r ? o = t[r] : f[r] = void 0 === t[r] && void 0 !== e ? e[r] : t[r];
+    return arguments.length > 2 && (f.children = arguments.length > 3 ? n.call(arguments, 2) : u), d(l.type, f, i || l.key, o || l.ref, null);
+}, exports.createContext = function(n, l) {
+    var t = {
+        __c: l = "__cC" + f++,
+        __: n,
+        Consumer: function(n, l) {
+            return n.children(l);
+        },
+        Provider: function(n) {
+            var t, u;
+            return this.getChildContext || (t = [], (u = {})[l] = this, this.getChildContext = function() {
+                return u;
+            }, this.shouldComponentUpdate = function(n) {
+                this.props.value !== n.value && t.some(function(n) {
+                    n.__e = !0, k(n);
+                });
+            }, this.sub = function(n) {
+                t.push(n);
+                var l = n.componentWillUnmount;
+                n.componentWillUnmount = function() {
+                    t.splice(t.indexOf(n), 1), l && l.call(n);
                 };
-                if (kty === "EC") parameters.epk.y = y;
-                if (apu) parameters.apu = (0, base64url_js_1.encode)(apu);
-                if (apv) parameters.apv = (0, base64url_js_1.encode)(apv);
-                if (alg === "ECDH-ES") {
-                    cek = sharedSecret;
-                    break;
-                }
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                const kwAlg = alg.slice(-6);
-                encryptedKey = await (0, aeskw_js_1.wrap)(kwAlg, sharedSecret, cek);
-                break;
-            }
-        case "RSA1_5":
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-            {
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                encryptedKey = await (0, rsaes_js_1.encrypt)(alg, key, cek);
-                break;
-            }
-        case "PBES2-HS256+A128KW":
-        case "PBES2-HS384+A192KW":
-        case "PBES2-HS512+A256KW":
-            {
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                const { p2c, p2s } = providedParameters;
-                ({ encryptedKey, ...parameters } = await (0, pbes2kw_js_1.encrypt)(alg, key, cek, p2c, p2s));
-                break;
-            }
-        case "A128KW":
-        case "A192KW":
-        case "A256KW":
-            {
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                encryptedKey = await (0, aeskw_js_1.wrap)(alg, key, cek);
-                break;
-            }
-        case "A128GCMKW":
-        case "A192GCMKW":
-        case "A256GCMKW":
-            {
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                const { iv } = providedParameters;
-                ({ encryptedKey, ...parameters } = await (0, aesgcmkw_js_1.wrap)(alg, key, cek, iv));
-                break;
-            }
-        default:
-            {
-                throw new errors_js_1.JOSENotSupported('Invalid or unsupported "alg" (JWE Algorithm) header value');
-            }
-    }
-    return {
-        cek,
-        encryptedKey,
-        parameters
+            }), n.children;
+        }
     };
-}
-exports["default"] = encryptKeyManagement;
-
-
-/***/ }),
-
-/***/ 27081:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports["default"] = (date)=>Math.floor(date.getTime() / 1000);
-
-
-/***/ }),
-
-/***/ 74216:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.withAlg = void 0;
-function message(msg, actual, ...types) {
-    if (types.length > 2) {
-        const last = types.pop();
-        msg += `one of type ${types.join(", ")}, or ${last}.`;
-    } else if (types.length === 2) {
-        msg += `one of type ${types[0]} or ${types[1]}.`;
-    } else {
-        msg += `of type ${types[0]}.`;
-    }
-    if (actual == null) {
-        msg += ` Received ${actual}`;
-    } else if (typeof actual === "function" && actual.name) {
-        msg += ` Received function ${actual.name}`;
-    } else if (typeof actual === "object" && actual != null) {
-        if (actual.constructor && actual.constructor.name) {
-            msg += ` Received an instance of ${actual.constructor.name}`;
-        }
-    }
-    return msg;
-}
-exports["default"] = (actual, ...types)=>{
-    return message("Key must be ", actual, ...types);
-};
-function withAlg(alg, actual, ...types) {
-    return message(`Key for the ${alg} algorithm must be `, actual, ...types);
-}
-exports.withAlg = withAlg;
-
-
-/***/ }),
-
-/***/ 96390:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const isDisjoint = (...headers)=>{
-    const sources = headers.filter(Boolean);
-    if (sources.length === 0 || sources.length === 1) {
-        return true;
-    }
-    let acc;
-    for (const header of sources){
-        const parameters = Object.keys(header);
-        if (!acc || acc.size === 0) {
-            acc = new Set(parameters);
-            continue;
-        }
-        for (const parameter of parameters){
-            if (acc.has(parameter)) {
-                return false;
-            }
-            acc.add(parameter);
-        }
-    }
-    return true;
-};
-exports["default"] = isDisjoint;
-
-
-/***/ }),
-
-/***/ 13951:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-function isObjectLike(value) {
-    return typeof value === "object" && value !== null;
-}
-function isObject(input) {
-    if (!isObjectLike(input) || Object.prototype.toString.call(input) !== "[object Object]") {
-        return false;
-    }
-    if (Object.getPrototypeOf(input) === null) {
-        return true;
-    }
-    let proto = input;
-    while(Object.getPrototypeOf(proto) !== null){
-        proto = Object.getPrototypeOf(proto);
-    }
-    return Object.getPrototypeOf(input) === proto;
-}
-exports["default"] = isObject;
-
-
-/***/ }),
-
-/***/ 59337:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.bitLength = void 0;
-const errors_js_1 = __webpack_require__(56460);
-const random_js_1 = __webpack_require__(29748);
-function bitLength(alg) {
-    switch(alg){
-        case "A128GCM":
-        case "A128GCMKW":
-        case "A192GCM":
-        case "A192GCMKW":
-        case "A256GCM":
-        case "A256GCMKW":
-            return 96;
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            return 128;
-        default:
-            throw new errors_js_1.JOSENotSupported(`Unsupported JWE Algorithm: ${alg}`);
-    }
-}
-exports.bitLength = bitLength;
-exports["default"] = (alg)=>(0, random_js_1.default)(new Uint8Array(bitLength(alg) >> 3));
-
-
-/***/ }),
-
-/***/ 90641:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(56460);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const epoch_js_1 = __webpack_require__(27081);
-const secs_js_1 = __webpack_require__(6315);
-const is_object_js_1 = __webpack_require__(13951);
-const normalizeTyp = (value)=>value.toLowerCase().replace(/^application\//, "");
-const checkAudiencePresence = (audPayload, audOption)=>{
-    if (typeof audPayload === "string") {
-        return audOption.includes(audPayload);
-    }
-    if (Array.isArray(audPayload)) {
-        return audOption.some(Set.prototype.has.bind(new Set(audPayload)));
-    }
-    return false;
-};
-exports["default"] = (protectedHeader, encodedPayload, options = {})=>{
-    const { typ } = options;
-    if (typ && (typeof protectedHeader.typ !== "string" || normalizeTyp(protectedHeader.typ) !== normalizeTyp(typ))) {
-        throw new errors_js_1.JWTClaimValidationFailed('unexpected "typ" JWT header value', "typ", "check_failed");
-    }
-    let payload;
-    try {
-        payload = JSON.parse(buffer_utils_js_1.decoder.decode(encodedPayload));
-    } catch  {}
-    if (!(0, is_object_js_1.default)(payload)) {
-        throw new errors_js_1.JWTInvalid("JWT Claims Set must be a top-level JSON object");
-    }
-    const { requiredClaims = [], issuer, subject, audience, maxTokenAge } = options;
-    if (maxTokenAge !== undefined) requiredClaims.push("iat");
-    if (audience !== undefined) requiredClaims.push("aud");
-    if (subject !== undefined) requiredClaims.push("sub");
-    if (issuer !== undefined) requiredClaims.push("iss");
-    for (const claim of new Set(requiredClaims.reverse())){
-        if (!(claim in payload)) {
-            throw new errors_js_1.JWTClaimValidationFailed(`missing required "${claim}" claim`, claim, "missing");
-        }
-    }
-    if (issuer && !(Array.isArray(issuer) ? issuer : [
-        issuer
-    ]).includes(payload.iss)) {
-        throw new errors_js_1.JWTClaimValidationFailed('unexpected "iss" claim value', "iss", "check_failed");
-    }
-    if (subject && payload.sub !== subject) {
-        throw new errors_js_1.JWTClaimValidationFailed('unexpected "sub" claim value', "sub", "check_failed");
-    }
-    if (audience && !checkAudiencePresence(payload.aud, typeof audience === "string" ? [
-        audience
-    ] : audience)) {
-        throw new errors_js_1.JWTClaimValidationFailed('unexpected "aud" claim value', "aud", "check_failed");
-    }
-    let tolerance;
-    switch(typeof options.clockTolerance){
-        case "string":
-            tolerance = (0, secs_js_1.default)(options.clockTolerance);
-            break;
-        case "number":
-            tolerance = options.clockTolerance;
-            break;
-        case "undefined":
-            tolerance = 0;
-            break;
-        default:
-            throw new TypeError("Invalid clockTolerance option type");
-    }
-    const { currentDate } = options;
-    const now = (0, epoch_js_1.default)(currentDate || new Date());
-    if ((payload.iat !== undefined || maxTokenAge) && typeof payload.iat !== "number") {
-        throw new errors_js_1.JWTClaimValidationFailed('"iat" claim must be a number', "iat", "invalid");
-    }
-    if (payload.nbf !== undefined) {
-        if (typeof payload.nbf !== "number") {
-            throw new errors_js_1.JWTClaimValidationFailed('"nbf" claim must be a number', "nbf", "invalid");
-        }
-        if (payload.nbf > now + tolerance) {
-            throw new errors_js_1.JWTClaimValidationFailed('"nbf" claim timestamp check failed', "nbf", "check_failed");
-        }
-    }
-    if (payload.exp !== undefined) {
-        if (typeof payload.exp !== "number") {
-            throw new errors_js_1.JWTClaimValidationFailed('"exp" claim must be a number', "exp", "invalid");
-        }
-        if (payload.exp <= now - tolerance) {
-            throw new errors_js_1.JWTExpired('"exp" claim timestamp check failed', "exp", "check_failed");
-        }
-    }
-    if (maxTokenAge) {
-        const age = now - payload.iat;
-        const max = typeof maxTokenAge === "number" ? maxTokenAge : (0, secs_js_1.default)(maxTokenAge);
-        if (age - tolerance > max) {
-            throw new errors_js_1.JWTExpired('"iat" claim timestamp check failed (too far in the past)', "iat", "check_failed");
-        }
-        if (age < 0 - tolerance) {
-            throw new errors_js_1.JWTClaimValidationFailed('"iat" claim timestamp check failed (it should be in the past)', "iat", "check_failed");
-        }
-    }
-    return payload;
-};
-
-
-/***/ }),
-
-/***/ 6315:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const minute = 60;
-const hour = minute * 60;
-const day = hour * 24;
-const week = day * 7;
-const year = day * 365.25;
-const REGEX = /^(\d+|\d+\.\d+) ?(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)$/i;
-exports["default"] = (str)=>{
-    const matched = REGEX.exec(str);
-    if (!matched) {
-        throw new TypeError("Invalid time period format");
-    }
-    const value = parseFloat(matched[1]);
-    const unit = matched[2].toLowerCase();
-    switch(unit){
-        case "sec":
-        case "secs":
-        case "second":
-        case "seconds":
-        case "s":
-            return Math.round(value);
-        case "minute":
-        case "minutes":
-        case "min":
-        case "mins":
-        case "m":
-            return Math.round(value * minute);
-        case "hour":
-        case "hours":
-        case "hr":
-        case "hrs":
-        case "h":
-            return Math.round(value * hour);
-        case "day":
-        case "days":
-        case "d":
-            return Math.round(value * day);
-        case "week":
-        case "weeks":
-        case "w":
-            return Math.round(value * week);
-        default:
-            return Math.round(value * year);
-    }
-};
-
-
-/***/ }),
-
-/***/ 35277:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const validateAlgorithms = (option, algorithms)=>{
-    if (algorithms !== undefined && (!Array.isArray(algorithms) || algorithms.some((s)=>typeof s !== "string"))) {
-        throw new TypeError(`"${option}" option must be an array of strings`);
-    }
-    if (!algorithms) {
-        return undefined;
-    }
-    return new Set(algorithms);
-};
-exports["default"] = validateAlgorithms;
-
-
-/***/ }),
-
-/***/ 33927:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(56460);
-function validateCrit(Err, recognizedDefault, recognizedOption, protectedHeader, joseHeader) {
-    if (joseHeader.crit !== undefined && protectedHeader.crit === undefined) {
-        throw new Err('"crit" (Critical) Header Parameter MUST be integrity protected');
-    }
-    if (!protectedHeader || protectedHeader.crit === undefined) {
-        return new Set();
-    }
-    if (!Array.isArray(protectedHeader.crit) || protectedHeader.crit.length === 0 || protectedHeader.crit.some((input)=>typeof input !== "string" || input.length === 0)) {
-        throw new Err('"crit" (Critical) Header Parameter MUST be an array of non-empty strings when present');
-    }
-    let recognized;
-    if (recognizedOption !== undefined) {
-        recognized = new Map([
-            ...Object.entries(recognizedOption),
-            ...recognizedDefault.entries()
-        ]);
-    } else {
-        recognized = recognizedDefault;
-    }
-    for (const parameter of protectedHeader.crit){
-        if (!recognized.has(parameter)) {
-            throw new errors_js_1.JOSENotSupported(`Extension Header Parameter "${parameter}" is not recognized`);
-        }
-        if (joseHeader[parameter] === undefined) {
-            throw new Err(`Extension Header Parameter "${parameter}" is missing`);
-        } else if (recognized.get(parameter) && protectedHeader[parameter] === undefined) {
-            throw new Err(`Extension Header Parameter "${parameter}" MUST be integrity protected`);
-        }
-    }
-    return new Set(protectedHeader.crit);
-}
-exports["default"] = validateCrit;
-
-
-/***/ }),
-
-/***/ 70052:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.unwrap = exports.wrap = void 0;
-const buffer_1 = __webpack_require__(14300);
-const crypto_1 = __webpack_require__(6113);
-const errors_js_1 = __webpack_require__(56460);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const webcrypto_js_1 = __webpack_require__(32355);
-const crypto_key_js_1 = __webpack_require__(85841);
-const is_key_object_js_1 = __webpack_require__(57378);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const ciphers_js_1 = __webpack_require__(37822);
-const is_key_like_js_1 = __webpack_require__(25186);
-function checkKeySize(key, alg) {
-    if (key.symmetricKeySize << 3 !== parseInt(alg.slice(1, 4), 10)) {
-        throw new TypeError(`Invalid key size for alg: ${alg}`);
-    }
-}
-function ensureKeyObject(key, alg, usage) {
-    if ((0, is_key_object_js_1.default)(key)) {
-        return key;
-    }
-    if (key instanceof Uint8Array) {
-        return (0, crypto_1.createSecretKey)(key);
-    }
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(key, alg, usage);
-        return crypto_1.KeyObject.from(key);
-    }
-    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
-}
-const wrap = (alg, key, cek)=>{
-    const size = parseInt(alg.slice(1, 4), 10);
-    const algorithm = `aes${size}-wrap`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-    const keyObject = ensureKeyObject(key, alg, "wrapKey");
-    checkKeySize(keyObject, alg);
-    const cipher = (0, crypto_1.createCipheriv)(algorithm, keyObject, buffer_1.Buffer.alloc(8, 0xa6));
-    return (0, buffer_utils_js_1.concat)(cipher.update(cek), cipher.final());
-};
-exports.wrap = wrap;
-const unwrap = (alg, key, encryptedKey)=>{
-    const size = parseInt(alg.slice(1, 4), 10);
-    const algorithm = `aes${size}-wrap`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-    const keyObject = ensureKeyObject(key, alg, "unwrapKey");
-    checkKeySize(keyObject, alg);
-    const cipher = (0, crypto_1.createDecipheriv)(algorithm, keyObject, buffer_1.Buffer.alloc(8, 0xa6));
-    return (0, buffer_utils_js_1.concat)(cipher.update(encryptedKey), cipher.final());
-};
-exports.unwrap = unwrap;
-
-
-/***/ }),
-
-/***/ 6888:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.fromX509 = exports.fromSPKI = exports.fromPKCS8 = exports.toPKCS8 = exports.toSPKI = void 0;
-const crypto_1 = __webpack_require__(6113);
-const buffer_1 = __webpack_require__(14300);
-const webcrypto_js_1 = __webpack_require__(32355);
-const is_key_object_js_1 = __webpack_require__(57378);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const is_key_like_js_1 = __webpack_require__(25186);
-const genericExport = (keyType, keyFormat, key)=>{
-    let keyObject;
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        if (!key.extractable) {
-            throw new TypeError("CryptoKey is not extractable");
-        }
-        keyObject = crypto_1.KeyObject.from(key);
-    } else if ((0, is_key_object_js_1.default)(key)) {
-        keyObject = key;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types));
-    }
-    if (keyObject.type !== keyType) {
-        throw new TypeError(`key is not a ${keyType} key`);
-    }
-    return keyObject.export({
-        format: "pem",
-        type: keyFormat
-    });
-};
-const toSPKI = (key)=>{
-    return genericExport("public", "spki", key);
-};
-exports.toSPKI = toSPKI;
-const toPKCS8 = (key)=>{
-    return genericExport("private", "pkcs8", key);
-};
-exports.toPKCS8 = toPKCS8;
-const fromPKCS8 = (pem)=>(0, crypto_1.createPrivateKey)({
-        key: buffer_1.Buffer.from(pem.replace(/(?:-----(?:BEGIN|END) PRIVATE KEY-----|\s)/g, ""), "base64"),
-        type: "pkcs8",
-        format: "der"
-    });
-exports.fromPKCS8 = fromPKCS8;
-const fromSPKI = (pem)=>(0, crypto_1.createPublicKey)({
-        key: buffer_1.Buffer.from(pem.replace(/(?:-----(?:BEGIN|END) PUBLIC KEY-----|\s)/g, ""), "base64"),
-        type: "spki",
-        format: "der"
-    });
-exports.fromSPKI = fromSPKI;
-const fromX509 = (pem)=>(0, crypto_1.createPublicKey)({
-        key: pem,
-        type: "spki",
-        format: "pem"
-    });
-exports.fromX509 = fromX509;
-
-
-/***/ }),
-
-/***/ 64338:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const tagInteger = 0x02;
-const tagSequence = 0x30;
-class Asn1SequenceDecoder {
-    constructor(buffer){
-        if (buffer[0] !== tagSequence) {
-            throw new TypeError();
-        }
-        this.buffer = buffer;
-        this.offset = 1;
-        const len = this.decodeLength();
-        if (len !== buffer.length - this.offset) {
-            throw new TypeError();
-        }
-    }
-    decodeLength() {
-        let length = this.buffer[this.offset++];
-        if (length & 0x80) {
-            const nBytes = length & ~0x80;
-            length = 0;
-            for(let i = 0; i < nBytes; i++)length = length << 8 | this.buffer[this.offset + i];
-            this.offset += nBytes;
-        }
-        return length;
-    }
-    unsignedInteger() {
-        if (this.buffer[this.offset++] !== tagInteger) {
-            throw new TypeError();
-        }
-        let length = this.decodeLength();
-        if (this.buffer[this.offset] === 0) {
-            this.offset++;
-            length--;
-        }
-        const result = this.buffer.slice(this.offset, this.offset + length);
-        this.offset += length;
-        return result;
-    }
-    end() {
-        if (this.offset !== this.buffer.length) {
-            throw new TypeError();
-        }
-    }
-}
-exports["default"] = Asn1SequenceDecoder;
-
-
-/***/ }),
-
-/***/ 78808:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const buffer_1 = __webpack_require__(14300);
-const errors_js_1 = __webpack_require__(56460);
-const tagInteger = 0x02;
-const tagBitStr = 0x03;
-const tagOctStr = 0x04;
-const tagSequence = 0x30;
-const bZero = buffer_1.Buffer.from([
-    0x00
-]);
-const bTagInteger = buffer_1.Buffer.from([
-    tagInteger
-]);
-const bTagBitStr = buffer_1.Buffer.from([
-    tagBitStr
-]);
-const bTagSequence = buffer_1.Buffer.from([
-    tagSequence
-]);
-const bTagOctStr = buffer_1.Buffer.from([
-    tagOctStr
-]);
-const encodeLength = (len)=>{
-    if (len < 128) return buffer_1.Buffer.from([
-        len
-    ]);
-    const buffer = buffer_1.Buffer.alloc(5);
-    buffer.writeUInt32BE(len, 1);
-    let offset = 1;
-    while(buffer[offset] === 0)offset++;
-    buffer[offset - 1] = 0x80 | 5 - offset;
-    return buffer.slice(offset - 1);
-};
-const oids = new Map([
-    [
-        "P-256",
-        buffer_1.Buffer.from("06 08 2A 86 48 CE 3D 03 01 07".replace(/ /g, ""), "hex")
-    ],
-    [
-        "secp256k1",
-        buffer_1.Buffer.from("06 05 2B 81 04 00 0A".replace(/ /g, ""), "hex")
-    ],
-    [
-        "P-384",
-        buffer_1.Buffer.from("06 05 2B 81 04 00 22".replace(/ /g, ""), "hex")
-    ],
-    [
-        "P-521",
-        buffer_1.Buffer.from("06 05 2B 81 04 00 23".replace(/ /g, ""), "hex")
-    ],
-    [
-        "ecPublicKey",
-        buffer_1.Buffer.from("06 07 2A 86 48 CE 3D 02 01".replace(/ /g, ""), "hex")
-    ],
-    [
-        "X25519",
-        buffer_1.Buffer.from("06 03 2B 65 6E".replace(/ /g, ""), "hex")
-    ],
-    [
-        "X448",
-        buffer_1.Buffer.from("06 03 2B 65 6F".replace(/ /g, ""), "hex")
-    ],
-    [
-        "Ed25519",
-        buffer_1.Buffer.from("06 03 2B 65 70".replace(/ /g, ""), "hex")
-    ],
-    [
-        "Ed448",
-        buffer_1.Buffer.from("06 03 2B 65 71".replace(/ /g, ""), "hex")
-    ]
-]);
-class DumbAsn1Encoder {
-    constructor(){
-        this.length = 0;
-        this.elements = [];
-    }
-    oidFor(oid) {
-        const bOid = oids.get(oid);
-        if (!bOid) {
-            throw new errors_js_1.JOSENotSupported("Invalid or unsupported OID");
-        }
-        this.elements.push(bOid);
-        this.length += bOid.length;
-    }
-    zero() {
-        this.elements.push(bTagInteger, buffer_1.Buffer.from([
-            0x01
-        ]), bZero);
-        this.length += 3;
-    }
-    one() {
-        this.elements.push(bTagInteger, buffer_1.Buffer.from([
-            0x01
-        ]), buffer_1.Buffer.from([
-            0x01
-        ]));
-        this.length += 3;
-    }
-    unsignedInteger(integer) {
-        if (integer[0] & 0x80) {
-            const len = encodeLength(integer.length + 1);
-            this.elements.push(bTagInteger, len, bZero, integer);
-            this.length += 2 + len.length + integer.length;
-        } else {
-            let i = 0;
-            while(integer[i] === 0 && (integer[i + 1] & 0x80) === 0)i++;
-            const len = encodeLength(integer.length - i);
-            this.elements.push(bTagInteger, encodeLength(integer.length - i), integer.slice(i));
-            this.length += 1 + len.length + integer.length - i;
-        }
-    }
-    octStr(octStr) {
-        const len = encodeLength(octStr.length);
-        this.elements.push(bTagOctStr, encodeLength(octStr.length), octStr);
-        this.length += 1 + len.length + octStr.length;
-    }
-    bitStr(bitS) {
-        const len = encodeLength(bitS.length + 1);
-        this.elements.push(bTagBitStr, encodeLength(bitS.length + 1), bZero, bitS);
-        this.length += 1 + len.length + bitS.length + 1;
-    }
-    add(seq) {
-        this.elements.push(seq);
-        this.length += seq.length;
-    }
-    end(tag = bTagSequence) {
-        const len = encodeLength(this.length);
-        return buffer_1.Buffer.concat([
-            tag,
-            len,
-            ...this.elements
-        ], 1 + len.length + this.length);
-    }
-}
-exports["default"] = DumbAsn1Encoder;
-
-
-/***/ }),
-
-/***/ 32362:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decode = exports.encode = exports.encodeBase64 = exports.decodeBase64 = void 0;
-const buffer_1 = __webpack_require__(14300);
-const buffer_utils_js_1 = __webpack_require__(51495);
-let encode;
-function normalize(input) {
-    let encoded = input;
-    if (encoded instanceof Uint8Array) {
-        encoded = buffer_utils_js_1.decoder.decode(encoded);
-    }
-    return encoded;
-}
-if (buffer_1.Buffer.isEncoding("base64url")) {
-    exports.encode = encode = (input)=>buffer_1.Buffer.from(input).toString("base64url");
-} else {
-    exports.encode = encode = (input)=>buffer_1.Buffer.from(input).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
-}
-const decodeBase64 = (input)=>buffer_1.Buffer.from(input, "base64");
-exports.decodeBase64 = decodeBase64;
-const encodeBase64 = (input)=>buffer_1.Buffer.from(input).toString("base64");
-exports.encodeBase64 = encodeBase64;
-const decode = (input)=>buffer_1.Buffer.from(normalize(input), "base64");
-exports.decode = decode;
-
-
-/***/ }),
-
-/***/ 10139:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const buffer_utils_js_1 = __webpack_require__(51495);
-function cbcTag(aad, iv, ciphertext, macSize, macKey, keySize) {
-    const macData = (0, buffer_utils_js_1.concat)(aad, iv, ciphertext, (0, buffer_utils_js_1.uint64be)(aad.length << 3));
-    const hmac = (0, crypto_1.createHmac)(`sha${macSize}`, macKey);
-    hmac.update(macData);
-    return hmac.digest().slice(0, keySize >> 3);
-}
-exports["default"] = cbcTag;
-
-
-/***/ }),
-
-/***/ 13421:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(56460);
-const is_key_object_js_1 = __webpack_require__(57378);
-const checkCekLength = (enc, cek)=>{
-    let expected;
-    switch(enc){
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            expected = parseInt(enc.slice(-3), 10);
-            break;
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            expected = parseInt(enc.slice(1, 4), 10);
-            break;
-        default:
-            throw new errors_js_1.JOSENotSupported(`Content Encryption Algorithm ${enc} is not supported either by JOSE or your javascript runtime`);
-    }
-    if (cek instanceof Uint8Array) {
-        const actual = cek.byteLength << 3;
-        if (actual !== expected) {
-            throw new errors_js_1.JWEInvalid(`Invalid Content Encryption Key length. Expected ${expected} bits, got ${actual} bits`);
-        }
-        return;
-    }
-    if ((0, is_key_object_js_1.default)(cek) && cek.type === "secret") {
-        const actual = cek.symmetricKeySize << 3;
-        if (actual !== expected) {
-            throw new errors_js_1.JWEInvalid(`Invalid Content Encryption Key length. Expected ${expected} bits, got ${actual} bits`);
-        }
-        return;
-    }
-    throw new TypeError("Invalid Content Encryption Key type");
-};
-exports["default"] = checkCekLength;
-
-
-/***/ }),
-
-/***/ 16659:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.setModulusLength = exports.weakMap = void 0;
-exports.weakMap = new WeakMap();
-const getLength = (buf, index)=>{
-    let len = buf.readUInt8(1);
-    if ((len & 0x80) === 0) {
-        if (index === 0) {
-            return len;
-        }
-        return getLength(buf.subarray(2 + len), index - 1);
-    }
-    const num = len & 0x7f;
-    len = 0;
-    for(let i = 0; i < num; i++){
-        len <<= 8;
-        const j = buf.readUInt8(2 + i);
-        len |= j;
-    }
-    if (index === 0) {
-        return len;
-    }
-    return getLength(buf.subarray(2 + len), index - 1);
-};
-const getLengthOfSeqIndex = (sequence, index)=>{
-    const len = sequence.readUInt8(1);
-    if ((len & 0x80) === 0) {
-        return getLength(sequence.subarray(2), index);
-    }
-    const num = len & 0x7f;
-    return getLength(sequence.subarray(2 + num), index);
-};
-const getModulusLength = (key)=>{
-    var _a, _b;
-    if (exports.weakMap.has(key)) {
-        return exports.weakMap.get(key);
-    }
-    const modulusLength = (_b = (_a = key.asymmetricKeyDetails) === null || _a === void 0 ? void 0 : _a.modulusLength) !== null && _b !== void 0 ? _b : getLengthOfSeqIndex(key.export({
-        format: "der",
-        type: "pkcs1"
-    }), key.type === "private" ? 1 : 0) - 1 << 3;
-    exports.weakMap.set(key, modulusLength);
-    return modulusLength;
-};
-const setModulusLength = (keyObject, modulusLength)=>{
-    exports.weakMap.set(keyObject, modulusLength);
-};
-exports.setModulusLength = setModulusLength;
-exports["default"] = (key, alg)=>{
-    if (getModulusLength(key) < 2048) {
-        throw new TypeError(`${alg} requires key modulusLength to be 2048 bits or larger`);
-    }
-};
-
-
-/***/ }),
-
-/***/ 37822:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-let ciphers;
-exports["default"] = (algorithm)=>{
-    ciphers || (ciphers = new Set((0, crypto_1.getCiphers)()));
-    return ciphers.has(algorithm);
-};
-
-
-/***/ }),
-
-/***/ 62839:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const check_iv_length_js_1 = __webpack_require__(29243);
-const check_cek_length_js_1 = __webpack_require__(13421);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const errors_js_1 = __webpack_require__(56460);
-const timing_safe_equal_js_1 = __webpack_require__(69701);
-const cbc_tag_js_1 = __webpack_require__(10139);
-const webcrypto_js_1 = __webpack_require__(32355);
-const crypto_key_js_1 = __webpack_require__(85841);
-const is_key_object_js_1 = __webpack_require__(57378);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const ciphers_js_1 = __webpack_require__(37822);
-const is_key_like_js_1 = __webpack_require__(25186);
-function cbcDecrypt(enc, cek, ciphertext, iv, tag, aad) {
-    const keySize = parseInt(enc.slice(1, 4), 10);
-    if ((0, is_key_object_js_1.default)(cek)) {
-        cek = cek.export();
-    }
-    const encKey = cek.subarray(keySize >> 3);
-    const macKey = cek.subarray(0, keySize >> 3);
-    const macSize = parseInt(enc.slice(-3), 10);
-    const algorithm = `aes-${keySize}-cbc`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
-    }
-    const expectedTag = (0, cbc_tag_js_1.default)(aad, iv, ciphertext, macSize, macKey, keySize);
-    let macCheckPassed;
-    try {
-        macCheckPassed = (0, timing_safe_equal_js_1.default)(tag, expectedTag);
-    } catch  {}
-    if (!macCheckPassed) {
-        throw new errors_js_1.JWEDecryptionFailed();
-    }
-    let plaintext;
-    try {
-        const decipher = (0, crypto_1.createDecipheriv)(algorithm, encKey, iv);
-        plaintext = (0, buffer_utils_js_1.concat)(decipher.update(ciphertext), decipher.final());
-    } catch  {}
-    if (!plaintext) {
-        throw new errors_js_1.JWEDecryptionFailed();
-    }
-    return plaintext;
-}
-function gcmDecrypt(enc, cek, ciphertext, iv, tag, aad) {
-    const keySize = parseInt(enc.slice(1, 4), 10);
-    const algorithm = `aes-${keySize}-gcm`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
-    }
-    try {
-        const decipher = (0, crypto_1.createDecipheriv)(algorithm, cek, iv, {
-            authTagLength: 16
-        });
-        decipher.setAuthTag(tag);
-        if (aad.byteLength) {
-            decipher.setAAD(aad, {
-                plaintextLength: ciphertext.length
-            });
-        }
-        const plaintext = decipher.update(ciphertext);
-        decipher.final();
-        return plaintext;
-    } catch  {
-        throw new errors_js_1.JWEDecryptionFailed();
-    }
-}
-const decrypt = (enc, cek, ciphertext, iv, tag, aad)=>{
-    let key;
-    if ((0, webcrypto_js_1.isCryptoKey)(cek)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(cek, enc, "decrypt");
-        key = crypto_1.KeyObject.from(cek);
-    } else if (cek instanceof Uint8Array || (0, is_key_object_js_1.default)(cek)) {
-        key = cek;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(cek, ...is_key_like_js_1.types, "Uint8Array"));
-    }
-    (0, check_cek_length_js_1.default)(enc, key);
-    (0, check_iv_length_js_1.default)(enc, iv);
-    switch(enc){
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            return cbcDecrypt(enc, key, ciphertext, iv, tag, aad);
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            return gcmDecrypt(enc, key, ciphertext, iv, tag, aad);
-        default:
-            throw new errors_js_1.JOSENotSupported("Unsupported JWE Content Encryption Algorithm");
-    }
-};
-exports["default"] = decrypt;
-
-
-/***/ }),
-
-/***/ 1553:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const digest = (algorithm, data)=>(0, crypto_1.createHash)(algorithm).update(data).digest();
-exports["default"] = digest;
-
-
-/***/ }),
-
-/***/ 1260:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(56460);
-function dsaDigest(alg) {
-    switch(alg){
-        case "PS256":
-        case "RS256":
-        case "ES256":
-        case "ES256K":
-            return "sha256";
-        case "PS384":
-        case "RS384":
-        case "ES384":
-            return "sha384";
-        case "PS512":
-        case "RS512":
-        case "ES512":
-            return "sha512";
-        case "EdDSA":
-            return undefined;
-        default:
-            throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-}
-exports["default"] = dsaDigest;
-
-
-/***/ }),
-
-/***/ 48860:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.ecdhAllowed = exports.generateEpk = exports.deriveKey = void 0;
-const crypto_1 = __webpack_require__(6113);
-const util_1 = __webpack_require__(73837);
-const get_named_curve_js_1 = __webpack_require__(15063);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const errors_js_1 = __webpack_require__(56460);
-const webcrypto_js_1 = __webpack_require__(32355);
-const crypto_key_js_1 = __webpack_require__(85841);
-const is_key_object_js_1 = __webpack_require__(57378);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const is_key_like_js_1 = __webpack_require__(25186);
-const generateKeyPair = (0, util_1.promisify)(crypto_1.generateKeyPair);
-async function deriveKey(publicKee, privateKee, algorithm, keyLength, apu = new Uint8Array(0), apv = new Uint8Array(0)) {
-    let publicKey;
-    if ((0, webcrypto_js_1.isCryptoKey)(publicKee)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(publicKee, "ECDH");
-        publicKey = crypto_1.KeyObject.from(publicKee);
-    } else if ((0, is_key_object_js_1.default)(publicKee)) {
-        publicKey = publicKee;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(publicKee, ...is_key_like_js_1.types));
-    }
-    let privateKey;
-    if ((0, webcrypto_js_1.isCryptoKey)(privateKee)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(privateKee, "ECDH", "deriveBits");
-        privateKey = crypto_1.KeyObject.from(privateKee);
-    } else if ((0, is_key_object_js_1.default)(privateKee)) {
-        privateKey = privateKee;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(privateKee, ...is_key_like_js_1.types));
-    }
-    const value = (0, buffer_utils_js_1.concat)((0, buffer_utils_js_1.lengthAndInput)(buffer_utils_js_1.encoder.encode(algorithm)), (0, buffer_utils_js_1.lengthAndInput)(apu), (0, buffer_utils_js_1.lengthAndInput)(apv), (0, buffer_utils_js_1.uint32be)(keyLength));
-    const sharedSecret = (0, crypto_1.diffieHellman)({
-        privateKey,
-        publicKey
-    });
-    return (0, buffer_utils_js_1.concatKdf)(sharedSecret, keyLength, value);
-}
-exports.deriveKey = deriveKey;
-async function generateEpk(kee) {
-    let key;
-    if ((0, webcrypto_js_1.isCryptoKey)(kee)) {
-        key = crypto_1.KeyObject.from(kee);
-    } else if ((0, is_key_object_js_1.default)(kee)) {
-        key = kee;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(kee, ...is_key_like_js_1.types));
-    }
-    switch(key.asymmetricKeyType){
-        case "x25519":
-            return generateKeyPair("x25519");
-        case "x448":
-            {
-                return generateKeyPair("x448");
-            }
-        case "ec":
-            {
-                const namedCurve = (0, get_named_curve_js_1.default)(key);
-                return generateKeyPair("ec", {
-                    namedCurve
-                });
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported("Invalid or unsupported EPK");
-    }
-}
-exports.generateEpk = generateEpk;
-const ecdhAllowed = (key)=>[
-        "P-256",
-        "P-384",
-        "P-521",
-        "X25519",
-        "X448"
-    ].includes((0, get_named_curve_js_1.default)(key));
-exports.ecdhAllowed = ecdhAllowed;
-
-
-/***/ }),
-
-/***/ 57701:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const check_iv_length_js_1 = __webpack_require__(29243);
-const check_cek_length_js_1 = __webpack_require__(13421);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const cbc_tag_js_1 = __webpack_require__(10139);
-const webcrypto_js_1 = __webpack_require__(32355);
-const crypto_key_js_1 = __webpack_require__(85841);
-const is_key_object_js_1 = __webpack_require__(57378);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const errors_js_1 = __webpack_require__(56460);
-const ciphers_js_1 = __webpack_require__(37822);
-const is_key_like_js_1 = __webpack_require__(25186);
-function cbcEncrypt(enc, plaintext, cek, iv, aad) {
-    const keySize = parseInt(enc.slice(1, 4), 10);
-    if ((0, is_key_object_js_1.default)(cek)) {
-        cek = cek.export();
-    }
-    const encKey = cek.subarray(keySize >> 3);
-    const macKey = cek.subarray(0, keySize >> 3);
-    const algorithm = `aes-${keySize}-cbc`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
-    }
-    const cipher = (0, crypto_1.createCipheriv)(algorithm, encKey, iv);
-    const ciphertext = (0, buffer_utils_js_1.concat)(cipher.update(plaintext), cipher.final());
-    const macSize = parseInt(enc.slice(-3), 10);
-    const tag = (0, cbc_tag_js_1.default)(aad, iv, ciphertext, macSize, macKey, keySize);
+    return t.Provider.__ = t.Consumer.contextType = t;
+}, exports.createElement = y, exports.createRef = function() {
     return {
-        ciphertext,
-        tag
+        current: null
     };
-}
-function gcmEncrypt(enc, plaintext, cek, iv, aad) {
-    const keySize = parseInt(enc.slice(1, 4), 10);
-    const algorithm = `aes-${keySize}-gcm`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
-    }
-    const cipher = (0, crypto_1.createCipheriv)(algorithm, cek, iv, {
-        authTagLength: 16
-    });
-    if (aad.byteLength) {
-        cipher.setAAD(aad, {
-            plaintextLength: plaintext.length
-        });
-    }
-    const ciphertext = cipher.update(plaintext);
-    cipher.final();
-    const tag = cipher.getAuthTag();
-    return {
-        ciphertext,
-        tag
-    };
-}
-const encrypt = (enc, plaintext, cek, iv, aad)=>{
-    let key;
-    if ((0, webcrypto_js_1.isCryptoKey)(cek)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(cek, enc, "encrypt");
-        key = crypto_1.KeyObject.from(cek);
-    } else if (cek instanceof Uint8Array || (0, is_key_object_js_1.default)(cek)) {
-        key = cek;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(cek, ...is_key_like_js_1.types, "Uint8Array"));
-    }
-    (0, check_cek_length_js_1.default)(enc, key);
-    (0, check_iv_length_js_1.default)(enc, iv);
-    switch(enc){
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            return cbcEncrypt(enc, plaintext, key, iv, aad);
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            return gcmEncrypt(enc, plaintext, key, iv, aad);
-        default:
-            throw new errors_js_1.JOSENotSupported("Unsupported JWE Content Encryption Algorithm");
-    }
-};
-exports["default"] = encrypt;
-
-
-/***/ }),
-
-/***/ 93781:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const http = __webpack_require__(13685);
-const https = __webpack_require__(95687);
-const events_1 = __webpack_require__(82361);
-const errors_js_1 = __webpack_require__(56460);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const fetchJwks = async (url, timeout, options)=>{
-    let get;
-    switch(url.protocol){
-        case "https:":
-            get = https.get;
-            break;
-        case "http:":
-            get = http.get;
-            break;
-        default:
-            throw new TypeError("Unsupported URL protocol.");
-    }
-    const { agent, headers } = options;
-    const req = get(url.href, {
-        agent,
-        timeout,
-        headers
-    });
-    const [response] = await Promise.race([
-        (0, events_1.once)(req, "response"),
-        (0, events_1.once)(req, "timeout")
-    ]);
-    if (!response) {
-        req.destroy();
-        throw new errors_js_1.JWKSTimeout();
-    }
-    if (response.statusCode !== 200) {
-        throw new errors_js_1.JOSEError("Expected 200 OK from the JSON Web Key Set HTTP response");
-    }
-    const parts = [];
-    for await (const part of response){
-        parts.push(part);
-    }
-    try {
-        return JSON.parse(buffer_utils_js_1.decoder.decode((0, buffer_utils_js_1.concat)(...parts)));
-    } catch  {
-        throw new errors_js_1.JOSEError("Failed to parse the JSON Web Key Set HTTP response as JSON");
-    }
-};
-exports["default"] = fetchJwks;
-
-
-/***/ }),
-
-/***/ 58427:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.jwkImport = exports.jwkExport = exports.rsaPssParams = exports.oneShotCallback = void 0;
-const [major, minor] = process.versions.node.split(".").map((str)=>parseInt(str, 10));
-exports.oneShotCallback = major >= 16 || major === 15 && minor >= 13;
-exports.rsaPssParams = !("electron" in process.versions) && (major >= 17 || major === 16 && minor >= 9);
-exports.jwkExport = major >= 16 || major === 15 && minor >= 9;
-exports.jwkImport = major >= 16 || major === 15 && minor >= 12;
-
-
-/***/ }),
-
-/***/ 77573:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generateKeyPair = exports.generateSecret = void 0;
-const crypto_1 = __webpack_require__(6113);
-const util_1 = __webpack_require__(73837);
-const random_js_1 = __webpack_require__(29748);
-const check_modulus_length_js_1 = __webpack_require__(16659);
-const errors_js_1 = __webpack_require__(56460);
-const generate = (0, util_1.promisify)(crypto_1.generateKeyPair);
-async function generateSecret(alg, options) {
-    let length;
-    switch(alg){
-        case "HS256":
-        case "HS384":
-        case "HS512":
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            length = parseInt(alg.slice(-3), 10);
-            break;
-        case "A128KW":
-        case "A192KW":
-        case "A256KW":
-        case "A128GCMKW":
-        case "A192GCMKW":
-        case "A256GCMKW":
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            length = parseInt(alg.slice(1, 4), 10);
-            break;
-        default:
-            throw new errors_js_1.JOSENotSupported('Invalid or unsupported JWK "alg" (Algorithm) Parameter value');
-    }
-    return (0, crypto_1.createSecretKey)((0, random_js_1.default)(new Uint8Array(length >> 3)));
-}
-exports.generateSecret = generateSecret;
-async function generateKeyPair(alg, options) {
-    var _a, _b;
-    switch(alg){
-        case "RS256":
-        case "RS384":
-        case "RS512":
-        case "PS256":
-        case "PS384":
-        case "PS512":
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-        case "RSA1_5":
-            {
-                const modulusLength = (_a = options === null || options === void 0 ? void 0 : options.modulusLength) !== null && _a !== void 0 ? _a : 2048;
-                if (typeof modulusLength !== "number" || modulusLength < 2048) {
-                    throw new errors_js_1.JOSENotSupported("Invalid or unsupported modulusLength option provided, 2048 bits or larger keys must be used");
-                }
-                const keypair = await generate("rsa", {
-                    modulusLength,
-                    publicExponent: 0x10001
-                });
-                (0, check_modulus_length_js_1.setModulusLength)(keypair.privateKey, modulusLength);
-                (0, check_modulus_length_js_1.setModulusLength)(keypair.publicKey, modulusLength);
-                return keypair;
-            }
-        case "ES256":
-            return generate("ec", {
-                namedCurve: "P-256"
-            });
-        case "ES256K":
-            return generate("ec", {
-                namedCurve: "secp256k1"
-            });
-        case "ES384":
-            return generate("ec", {
-                namedCurve: "P-384"
-            });
-        case "ES512":
-            return generate("ec", {
-                namedCurve: "P-521"
-            });
-        case "EdDSA":
-            {
-                switch(options === null || options === void 0 ? void 0 : options.crv){
-                    case undefined:
-                    case "Ed25519":
-                        return generate("ed25519");
-                    case "Ed448":
-                        return generate("ed448");
-                    default:
-                        throw new errors_js_1.JOSENotSupported("Invalid or unsupported crv option provided, supported values are Ed25519 and Ed448");
-                }
-            }
-        case "ECDH-ES":
-        case "ECDH-ES+A128KW":
-        case "ECDH-ES+A192KW":
-        case "ECDH-ES+A256KW":
-            const crv = (_b = options === null || options === void 0 ? void 0 : options.crv) !== null && _b !== void 0 ? _b : "P-256";
-            switch(crv){
-                case undefined:
-                case "P-256":
-                case "P-384":
-                case "P-521":
-                    return generate("ec", {
-                        namedCurve: crv
-                    });
-                case "X25519":
-                    return generate("x25519");
-                case "X448":
-                    return generate("x448");
-                default:
-                    throw new errors_js_1.JOSENotSupported("Invalid or unsupported crv option provided, supported values are P-256, P-384, P-521, X25519, and X448");
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported('Invalid or unsupported JWK "alg" (Algorithm) Parameter value');
-    }
-}
-exports.generateKeyPair = generateKeyPair;
-
-
-/***/ }),
-
-/***/ 15063:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.setCurve = exports.weakMap = void 0;
-const buffer_1 = __webpack_require__(14300);
-const crypto_1 = __webpack_require__(6113);
-const errors_js_1 = __webpack_require__(56460);
-const webcrypto_js_1 = __webpack_require__(32355);
-const is_key_object_js_1 = __webpack_require__(57378);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const is_key_like_js_1 = __webpack_require__(25186);
-const p256 = buffer_1.Buffer.from([
-    42,
-    134,
-    72,
-    206,
-    61,
-    3,
-    1,
-    7
-]);
-const p384 = buffer_1.Buffer.from([
-    43,
-    129,
-    4,
-    0,
-    34
-]);
-const p521 = buffer_1.Buffer.from([
-    43,
-    129,
-    4,
-    0,
-    35
-]);
-const secp256k1 = buffer_1.Buffer.from([
-    43,
-    129,
-    4,
-    0,
-    10
-]);
-exports.weakMap = new WeakMap();
-const namedCurveToJOSE = (namedCurve)=>{
-    switch(namedCurve){
-        case "prime256v1":
-            return "P-256";
-        case "secp384r1":
-            return "P-384";
-        case "secp521r1":
-            return "P-521";
-        case "secp256k1":
-            return "secp256k1";
-        default:
-            throw new errors_js_1.JOSENotSupported("Unsupported key curve for this operation");
-    }
-};
-const getNamedCurve = (kee, raw)=>{
-    var _a;
-    let key;
-    if ((0, webcrypto_js_1.isCryptoKey)(kee)) {
-        key = crypto_1.KeyObject.from(kee);
-    } else if ((0, is_key_object_js_1.default)(kee)) {
-        key = kee;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(kee, ...is_key_like_js_1.types));
-    }
-    if (key.type === "secret") {
-        throw new TypeError('only "private" or "public" type keys can be used for this operation');
-    }
-    switch(key.asymmetricKeyType){
-        case "ed25519":
-        case "ed448":
-            return `Ed${key.asymmetricKeyType.slice(2)}`;
-        case "x25519":
-        case "x448":
-            return `X${key.asymmetricKeyType.slice(1)}`;
-        case "ec":
-            {
-                if (exports.weakMap.has(key)) {
-                    return exports.weakMap.get(key);
-                }
-                let namedCurve = (_a = key.asymmetricKeyDetails) === null || _a === void 0 ? void 0 : _a.namedCurve;
-                if (!namedCurve && key.type === "private") {
-                    namedCurve = getNamedCurve((0, crypto_1.createPublicKey)(key), true);
-                } else if (!namedCurve) {
-                    const buf = key.export({
-                        format: "der",
-                        type: "spki"
-                    });
-                    const i = buf[1] < 128 ? 14 : 15;
-                    const len = buf[i];
-                    const curveOid = buf.slice(i + 1, i + 1 + len);
-                    if (curveOid.equals(p256)) {
-                        namedCurve = "prime256v1";
-                    } else if (curveOid.equals(p384)) {
-                        namedCurve = "secp384r1";
-                    } else if (curveOid.equals(p521)) {
-                        namedCurve = "secp521r1";
-                    } else if (curveOid.equals(secp256k1)) {
-                        namedCurve = "secp256k1";
-                    } else {
-                        throw new errors_js_1.JOSENotSupported("Unsupported key curve for this operation");
-                    }
-                }
-                if (raw) return namedCurve;
-                const curve = namedCurveToJOSE(namedCurve);
-                exports.weakMap.set(key, curve);
-                return curve;
-            }
-        default:
-            throw new TypeError("Invalid asymmetric key type for this operation");
-    }
-};
-function setCurve(keyObject, curve) {
-    exports.weakMap.set(keyObject, curve);
-}
-exports.setCurve = setCurve;
-exports["default"] = getNamedCurve;
-
-
-/***/ }),
-
-/***/ 12989:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const webcrypto_js_1 = __webpack_require__(32355);
-const crypto_key_js_1 = __webpack_require__(85841);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const is_key_like_js_1 = __webpack_require__(25186);
-function getSignVerifyKey(alg, key, usage) {
-    if (key instanceof Uint8Array) {
-        if (!alg.startsWith("HS")) {
-            throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types));
-        }
-        return (0, crypto_1.createSecretKey)(key);
-    }
-    if (key instanceof crypto_1.KeyObject) {
-        return key;
-    }
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        (0, crypto_key_js_1.checkSigCryptoKey)(key, alg, usage);
-        return crypto_1.KeyObject.from(key);
-    }
-    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
-}
-exports["default"] = getSignVerifyKey;
-
-
-/***/ }),
-
-/***/ 994:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(56460);
-function hmacDigest(alg) {
-    switch(alg){
-        case "HS256":
-            return "sha256";
-        case "HS384":
-            return "sha384";
-        case "HS512":
-            return "sha512";
-        default:
-            throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-}
-exports["default"] = hmacDigest;
-
-
-/***/ }),
-
-/***/ 25186:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.types = void 0;
-const webcrypto_js_1 = __webpack_require__(32355);
-const is_key_object_js_1 = __webpack_require__(57378);
-exports["default"] = (key)=>(0, is_key_object_js_1.default)(key) || (0, webcrypto_js_1.isCryptoKey)(key);
-const types = [
-    "KeyObject"
-];
-exports.types = types;
-if (globalThis.CryptoKey || (webcrypto_js_1.default === null || webcrypto_js_1.default === void 0 ? void 0 : webcrypto_js_1.default.CryptoKey)) {
-    types.push("CryptoKey");
-}
-
-
-/***/ }),
-
-/***/ 57378:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const util = __webpack_require__(73837);
-exports["default"] = util.types.isKeyObject ? (obj)=>util.types.isKeyObject(obj) : (obj)=>obj != null && obj instanceof crypto_1.KeyObject;
-
-
-/***/ }),
-
-/***/ 56238:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const buffer_1 = __webpack_require__(14300);
-const crypto_1 = __webpack_require__(6113);
-const base64url_js_1 = __webpack_require__(32362);
-const errors_js_1 = __webpack_require__(56460);
-const get_named_curve_js_1 = __webpack_require__(15063);
-const check_modulus_length_js_1 = __webpack_require__(16659);
-const asn1_sequence_encoder_js_1 = __webpack_require__(78808);
-const flags_js_1 = __webpack_require__(58427);
-const parse = (jwk)=>{
-    if (flags_js_1.jwkImport && jwk.kty !== "oct") {
-        return jwk.d ? (0, crypto_1.createPrivateKey)({
-            format: "jwk",
-            key: jwk
-        }) : (0, crypto_1.createPublicKey)({
-            format: "jwk",
-            key: jwk
-        });
-    }
-    switch(jwk.kty){
-        case "oct":
-            {
-                return (0, crypto_1.createSecretKey)((0, base64url_js_1.decode)(jwk.k));
-            }
-        case "RSA":
-            {
-                const enc = new asn1_sequence_encoder_js_1.default();
-                const isPrivate = jwk.d !== undefined;
-                const modulus = buffer_1.Buffer.from(jwk.n, "base64");
-                const exponent = buffer_1.Buffer.from(jwk.e, "base64");
-                if (isPrivate) {
-                    enc.zero();
-                    enc.unsignedInteger(modulus);
-                    enc.unsignedInteger(exponent);
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.d, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.p, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.q, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.dp, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.dq, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.qi, "base64"));
-                } else {
-                    enc.unsignedInteger(modulus);
-                    enc.unsignedInteger(exponent);
-                }
-                const der = enc.end();
-                const createInput = {
-                    key: der,
-                    format: "der",
-                    type: "pkcs1"
-                };
-                const keyObject = isPrivate ? (0, crypto_1.createPrivateKey)(createInput) : (0, crypto_1.createPublicKey)(createInput);
-                (0, check_modulus_length_js_1.setModulusLength)(keyObject, modulus.length << 3);
-                return keyObject;
-            }
-        case "EC":
-            {
-                const enc = new asn1_sequence_encoder_js_1.default();
-                const isPrivate = jwk.d !== undefined;
-                const pub = buffer_1.Buffer.concat([
-                    buffer_1.Buffer.alloc(1, 4),
-                    buffer_1.Buffer.from(jwk.x, "base64"),
-                    buffer_1.Buffer.from(jwk.y, "base64")
-                ]);
-                if (isPrivate) {
-                    enc.zero();
-                    const enc$1 = new asn1_sequence_encoder_js_1.default();
-                    enc$1.oidFor("ecPublicKey");
-                    enc$1.oidFor(jwk.crv);
-                    enc.add(enc$1.end());
-                    const enc$2 = new asn1_sequence_encoder_js_1.default();
-                    enc$2.one();
-                    enc$2.octStr(buffer_1.Buffer.from(jwk.d, "base64"));
-                    const enc$3 = new asn1_sequence_encoder_js_1.default();
-                    enc$3.bitStr(pub);
-                    const f2 = enc$3.end(buffer_1.Buffer.from([
-                        0xa1
-                    ]));
-                    enc$2.add(f2);
-                    const f = enc$2.end();
-                    const enc$4 = new asn1_sequence_encoder_js_1.default();
-                    enc$4.add(f);
-                    const f3 = enc$4.end(buffer_1.Buffer.from([
-                        0x04
-                    ]));
-                    enc.add(f3);
-                    const der = enc.end();
-                    const keyObject = (0, crypto_1.createPrivateKey)({
-                        key: der,
-                        format: "der",
-                        type: "pkcs8"
-                    });
-                    (0, get_named_curve_js_1.setCurve)(keyObject, jwk.crv);
-                    return keyObject;
-                }
-                const enc$1 = new asn1_sequence_encoder_js_1.default();
-                enc$1.oidFor("ecPublicKey");
-                enc$1.oidFor(jwk.crv);
-                enc.add(enc$1.end());
-                enc.bitStr(pub);
-                const der = enc.end();
-                const keyObject = (0, crypto_1.createPublicKey)({
-                    key: der,
-                    format: "der",
-                    type: "spki"
-                });
-                (0, get_named_curve_js_1.setCurve)(keyObject, jwk.crv);
-                return keyObject;
-            }
-        case "OKP":
-            {
-                const enc = new asn1_sequence_encoder_js_1.default();
-                const isPrivate = jwk.d !== undefined;
-                if (isPrivate) {
-                    enc.zero();
-                    const enc$1 = new asn1_sequence_encoder_js_1.default();
-                    enc$1.oidFor(jwk.crv);
-                    enc.add(enc$1.end());
-                    const enc$2 = new asn1_sequence_encoder_js_1.default();
-                    enc$2.octStr(buffer_1.Buffer.from(jwk.d, "base64"));
-                    const f = enc$2.end(buffer_1.Buffer.from([
-                        0x04
-                    ]));
-                    enc.add(f);
-                    const der = enc.end();
-                    return (0, crypto_1.createPrivateKey)({
-                        key: der,
-                        format: "der",
-                        type: "pkcs8"
-                    });
-                }
-                const enc$1 = new asn1_sequence_encoder_js_1.default();
-                enc$1.oidFor(jwk.crv);
-                enc.add(enc$1.end());
-                enc.bitStr(buffer_1.Buffer.from(jwk.x, "base64"));
-                const der = enc.end();
-                return (0, crypto_1.createPublicKey)({
-                    key: der,
-                    format: "der",
-                    type: "spki"
-                });
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported('Invalid or unsupported JWK "kty" (Key Type) Parameter value');
-    }
-};
-exports["default"] = parse;
-
-
-/***/ }),
-
-/***/ 60995:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const base64url_js_1 = __webpack_require__(32362);
-const asn1_sequence_decoder_js_1 = __webpack_require__(64338);
-const errors_js_1 = __webpack_require__(56460);
-const get_named_curve_js_1 = __webpack_require__(15063);
-const webcrypto_js_1 = __webpack_require__(32355);
-const is_key_object_js_1 = __webpack_require__(57378);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const is_key_like_js_1 = __webpack_require__(25186);
-const flags_js_1 = __webpack_require__(58427);
-const keyToJWK = (key)=>{
-    let keyObject;
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        if (!key.extractable) {
-            throw new TypeError("CryptoKey is not extractable");
-        }
-        keyObject = crypto_1.KeyObject.from(key);
-    } else if ((0, is_key_object_js_1.default)(key)) {
-        keyObject = key;
-    } else if (key instanceof Uint8Array) {
-        return {
-            kty: "oct",
-            k: (0, base64url_js_1.encode)(key)
-        };
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
-    }
-    if (flags_js_1.jwkExport) {
-        if (keyObject.type !== "secret" && ![
-            "rsa",
-            "ec",
-            "ed25519",
-            "x25519",
-            "ed448",
-            "x448"
-        ].includes(keyObject.asymmetricKeyType)) {
-            throw new errors_js_1.JOSENotSupported("Unsupported key asymmetricKeyType");
-        }
-        return keyObject.export({
-            format: "jwk"
-        });
-    }
-    switch(keyObject.type){
-        case "secret":
-            return {
-                kty: "oct",
-                k: (0, base64url_js_1.encode)(keyObject.export())
-            };
-        case "private":
-        case "public":
-            {
-                switch(keyObject.asymmetricKeyType){
-                    case "rsa":
-                        {
-                            const der = keyObject.export({
-                                format: "der",
-                                type: "pkcs1"
-                            });
-                            const dec = new asn1_sequence_decoder_js_1.default(der);
-                            if (keyObject.type === "private") {
-                                dec.unsignedInteger();
-                            }
-                            const n = (0, base64url_js_1.encode)(dec.unsignedInteger());
-                            const e = (0, base64url_js_1.encode)(dec.unsignedInteger());
-                            let jwk;
-                            if (keyObject.type === "private") {
-                                jwk = {
-                                    d: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    p: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    q: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    dp: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    dq: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    qi: (0, base64url_js_1.encode)(dec.unsignedInteger())
-                                };
-                            }
-                            dec.end();
-                            return {
-                                kty: "RSA",
-                                n,
-                                e,
-                                ...jwk
-                            };
-                        }
-                    case "ec":
-                        {
-                            const crv = (0, get_named_curve_js_1.default)(keyObject);
-                            let len;
-                            let offset;
-                            let correction;
-                            switch(crv){
-                                case "secp256k1":
-                                    len = 64;
-                                    offset = 31 + 2;
-                                    correction = -1;
-                                    break;
-                                case "P-256":
-                                    len = 64;
-                                    offset = 34 + 2;
-                                    correction = -1;
-                                    break;
-                                case "P-384":
-                                    len = 96;
-                                    offset = 33 + 2;
-                                    correction = -3;
-                                    break;
-                                case "P-521":
-                                    len = 132;
-                                    offset = 33 + 2;
-                                    correction = -3;
-                                    break;
-                                default:
-                                    throw new errors_js_1.JOSENotSupported("Unsupported curve");
-                            }
-                            if (keyObject.type === "public") {
-                                const der = keyObject.export({
-                                    type: "spki",
-                                    format: "der"
-                                });
-                                return {
-                                    kty: "EC",
-                                    crv,
-                                    x: (0, base64url_js_1.encode)(der.subarray(-len, -len / 2)),
-                                    y: (0, base64url_js_1.encode)(der.subarray(-len / 2))
-                                };
-                            }
-                            const der = keyObject.export({
-                                type: "pkcs8",
-                                format: "der"
-                            });
-                            if (der.length < 100) {
-                                offset += correction;
-                            }
-                            return {
-                                ...keyToJWK((0, crypto_1.createPublicKey)(keyObject)),
-                                d: (0, base64url_js_1.encode)(der.subarray(offset, offset + len / 2))
-                            };
-                        }
-                    case "ed25519":
-                    case "x25519":
-                        {
-                            const crv = (0, get_named_curve_js_1.default)(keyObject);
-                            if (keyObject.type === "public") {
-                                const der = keyObject.export({
-                                    type: "spki",
-                                    format: "der"
-                                });
-                                return {
-                                    kty: "OKP",
-                                    crv,
-                                    x: (0, base64url_js_1.encode)(der.subarray(-32))
-                                };
-                            }
-                            const der = keyObject.export({
-                                type: "pkcs8",
-                                format: "der"
-                            });
-                            return {
-                                ...keyToJWK((0, crypto_1.createPublicKey)(keyObject)),
-                                d: (0, base64url_js_1.encode)(der.subarray(-32))
-                            };
-                        }
-                    case "ed448":
-                    case "x448":
-                        {
-                            const crv = (0, get_named_curve_js_1.default)(keyObject);
-                            if (keyObject.type === "public") {
-                                const der = keyObject.export({
-                                    type: "spki",
-                                    format: "der"
-                                });
-                                return {
-                                    kty: "OKP",
-                                    crv,
-                                    x: (0, base64url_js_1.encode)(der.subarray(crv === "Ed448" ? -57 : -56))
-                                };
-                            }
-                            const der = keyObject.export({
-                                type: "pkcs8",
-                                format: "der"
-                            });
-                            return {
-                                ...keyToJWK((0, crypto_1.createPublicKey)(keyObject)),
-                                d: (0, base64url_js_1.encode)(der.subarray(crv === "Ed448" ? -57 : -56))
-                            };
-                        }
-                    default:
-                        throw new errors_js_1.JOSENotSupported("Unsupported key asymmetricKeyType");
-                }
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported("Unsupported key type");
-    }
-};
-exports["default"] = keyToJWK;
-
-
-/***/ }),
-
-/***/ 85776:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const get_named_curve_js_1 = __webpack_require__(15063);
-const errors_js_1 = __webpack_require__(56460);
-const check_modulus_length_js_1 = __webpack_require__(16659);
-const flags_js_1 = __webpack_require__(58427);
-const PSS = {
-    padding: crypto_1.constants.RSA_PKCS1_PSS_PADDING,
-    saltLength: crypto_1.constants.RSA_PSS_SALTLEN_DIGEST
-};
-const ecCurveAlgMap = new Map([
-    [
-        "ES256",
-        "P-256"
-    ],
-    [
-        "ES256K",
-        "secp256k1"
-    ],
-    [
-        "ES384",
-        "P-384"
-    ],
-    [
-        "ES512",
-        "P-521"
-    ]
-]);
-function keyForCrypto(alg, key) {
-    switch(alg){
-        case "EdDSA":
-            if (![
-                "ed25519",
-                "ed448"
-            ].includes(key.asymmetricKeyType)) {
-                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be ed25519 or ed448");
-            }
-            return key;
-        case "RS256":
-        case "RS384":
-        case "RS512":
-            if (key.asymmetricKeyType !== "rsa") {
-                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa");
-            }
-            (0, check_modulus_length_js_1.default)(key, alg);
-            return key;
-        case flags_js_1.rsaPssParams && "PS256":
-        case flags_js_1.rsaPssParams && "PS384":
-        case flags_js_1.rsaPssParams && "PS512":
-            if (key.asymmetricKeyType === "rsa-pss") {
-                const { hashAlgorithm, mgf1HashAlgorithm, saltLength } = key.asymmetricKeyDetails;
-                const length = parseInt(alg.slice(-3), 10);
-                if (hashAlgorithm !== undefined && (hashAlgorithm !== `sha${length}` || mgf1HashAlgorithm !== hashAlgorithm)) {
-                    throw new TypeError(`Invalid key for this operation, its RSA-PSS parameters do not meet the requirements of "alg" ${alg}`);
-                }
-                if (saltLength !== undefined && saltLength > length >> 3) {
-                    throw new TypeError(`Invalid key for this operation, its RSA-PSS parameter saltLength does not meet the requirements of "alg" ${alg}`);
-                }
-            } else if (key.asymmetricKeyType !== "rsa") {
-                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa or rsa-pss");
-            }
-            (0, check_modulus_length_js_1.default)(key, alg);
-            return {
-                key,
-                ...PSS
-            };
-        case !flags_js_1.rsaPssParams && "PS256":
-        case !flags_js_1.rsaPssParams && "PS384":
-        case !flags_js_1.rsaPssParams && "PS512":
-            if (key.asymmetricKeyType !== "rsa") {
-                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa");
-            }
-            (0, check_modulus_length_js_1.default)(key, alg);
-            return {
-                key,
-                ...PSS
-            };
-        case "ES256":
-        case "ES256K":
-        case "ES384":
-        case "ES512":
-            {
-                if (key.asymmetricKeyType !== "ec") {
-                    throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be ec");
-                }
-                const actual = (0, get_named_curve_js_1.default)(key);
-                const expected = ecCurveAlgMap.get(alg);
-                if (actual !== expected) {
-                    throw new TypeError(`Invalid key curve for the algorithm, its curve must be ${expected}, got ${actual}`);
-                }
-                return {
-                    dsaEncoding: "ieee-p1363",
-                    key
-                };
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-}
-exports["default"] = keyForCrypto;
-
-
-/***/ }),
-
-/***/ 11898:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decrypt = exports.encrypt = void 0;
-const util_1 = __webpack_require__(73837);
-const crypto_1 = __webpack_require__(6113);
-const random_js_1 = __webpack_require__(29748);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const base64url_js_1 = __webpack_require__(32362);
-const aeskw_js_1 = __webpack_require__(70052);
-const check_p2s_js_1 = __webpack_require__(26432);
-const webcrypto_js_1 = __webpack_require__(32355);
-const crypto_key_js_1 = __webpack_require__(85841);
-const is_key_object_js_1 = __webpack_require__(57378);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const is_key_like_js_1 = __webpack_require__(25186);
-const pbkdf2 = (0, util_1.promisify)(crypto_1.pbkdf2);
-function getPassword(key, alg) {
-    if ((0, is_key_object_js_1.default)(key)) {
-        return key.export();
-    }
-    if (key instanceof Uint8Array) {
-        return key;
-    }
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(key, alg, "deriveBits", "deriveKey");
-        return crypto_1.KeyObject.from(key).export();
-    }
-    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
-}
-const encrypt = async (alg, key, cek, p2c = 2048, p2s = (0, random_js_1.default)(new Uint8Array(16)))=>{
-    (0, check_p2s_js_1.default)(p2s);
-    const salt = (0, buffer_utils_js_1.p2s)(alg, p2s);
-    const keylen = parseInt(alg.slice(13, 16), 10) >> 3;
-    const password = getPassword(key, alg);
-    const derivedKey = await pbkdf2(password, salt, p2c, keylen, `sha${alg.slice(8, 11)}`);
-    const encryptedKey = await (0, aeskw_js_1.wrap)(alg.slice(-6), derivedKey, cek);
-    return {
-        encryptedKey,
-        p2c,
-        p2s: (0, base64url_js_1.encode)(p2s)
-    };
-};
-exports.encrypt = encrypt;
-const decrypt = async (alg, key, encryptedKey, p2c, p2s)=>{
-    (0, check_p2s_js_1.default)(p2s);
-    const salt = (0, buffer_utils_js_1.p2s)(alg, p2s);
-    const keylen = parseInt(alg.slice(13, 16), 10) >> 3;
-    const password = getPassword(key, alg);
-    const derivedKey = await pbkdf2(password, salt, p2c, keylen, `sha${alg.slice(8, 11)}`);
-    return (0, aeskw_js_1.unwrap)(alg.slice(-6), derivedKey, encryptedKey);
-};
-exports.decrypt = decrypt;
-
-
-/***/ }),
-
-/***/ 29748:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports["default"] = void 0;
-var crypto_1 = __webpack_require__(6113);
-Object.defineProperty(exports, "default", ({
-    enumerable: true,
-    get: function() {
-        return crypto_1.randomFillSync;
-    }
-}));
-
-
-/***/ }),
-
-/***/ 64330:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decrypt = exports.encrypt = void 0;
-const crypto_1 = __webpack_require__(6113);
-const check_modulus_length_js_1 = __webpack_require__(16659);
-const webcrypto_js_1 = __webpack_require__(32355);
-const crypto_key_js_1 = __webpack_require__(85841);
-const is_key_object_js_1 = __webpack_require__(57378);
-const invalid_key_input_js_1 = __webpack_require__(74216);
-const is_key_like_js_1 = __webpack_require__(25186);
-const checkKey = (key, alg)=>{
-    if (key.asymmetricKeyType !== "rsa") {
-        throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa");
-    }
-    (0, check_modulus_length_js_1.default)(key, alg);
-};
-const resolvePadding = (alg)=>{
-    switch(alg){
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-            return crypto_1.constants.RSA_PKCS1_OAEP_PADDING;
-        case "RSA1_5":
-            return crypto_1.constants.RSA_PKCS1_PADDING;
-        default:
-            return undefined;
-    }
-};
-const resolveOaepHash = (alg)=>{
-    switch(alg){
-        case "RSA-OAEP":
-            return "sha1";
-        case "RSA-OAEP-256":
-            return "sha256";
-        case "RSA-OAEP-384":
-            return "sha384";
-        case "RSA-OAEP-512":
-            return "sha512";
-        default:
-            return undefined;
-    }
-};
-function ensureKeyObject(key, alg, ...usages) {
-    if ((0, is_key_object_js_1.default)(key)) {
-        return key;
-    }
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(key, alg, ...usages);
-        return crypto_1.KeyObject.from(key);
-    }
-    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types));
-}
-const encrypt = (alg, key, cek)=>{
-    const padding = resolvePadding(alg);
-    const oaepHash = resolveOaepHash(alg);
-    const keyObject = ensureKeyObject(key, alg, "wrapKey", "encrypt");
-    checkKey(keyObject, alg);
-    return (0, crypto_1.publicEncrypt)({
-        key: keyObject,
-        oaepHash,
-        padding
-    }, cek);
-};
-exports.encrypt = encrypt;
-const decrypt = (alg, key, encryptedKey)=>{
-    const padding = resolvePadding(alg);
-    const oaepHash = resolveOaepHash(alg);
-    const keyObject = ensureKeyObject(key, alg, "unwrapKey", "decrypt");
-    checkKey(keyObject, alg);
-    return (0, crypto_1.privateDecrypt)({
-        key: keyObject,
-        oaepHash,
-        padding
-    }, encryptedKey);
-};
-exports.decrypt = decrypt;
-
-
-/***/ }),
-
-/***/ 59094:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports["default"] = "node:crypto";
-
-
-/***/ }),
-
-/***/ 19544:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto = __webpack_require__(6113);
-const util_1 = __webpack_require__(73837);
-const dsa_digest_js_1 = __webpack_require__(1260);
-const hmac_digest_js_1 = __webpack_require__(994);
-const node_key_js_1 = __webpack_require__(85776);
-const get_sign_verify_key_js_1 = __webpack_require__(12989);
-let oneShotSign;
-if (crypto.sign.length > 3) {
-    oneShotSign = (0, util_1.promisify)(crypto.sign);
-} else {
-    oneShotSign = crypto.sign;
-}
-const sign = async (alg, key, data)=>{
-    const keyObject = (0, get_sign_verify_key_js_1.default)(alg, key, "sign");
-    if (alg.startsWith("HS")) {
-        const hmac = crypto.createHmac((0, hmac_digest_js_1.default)(alg), keyObject);
-        hmac.update(data);
-        return hmac.digest();
-    }
-    return oneShotSign((0, dsa_digest_js_1.default)(alg), data, (0, node_key_js_1.default)(alg, keyObject));
-};
-exports["default"] = sign;
-
-
-/***/ }),
-
-/***/ 69701:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const timingSafeEqual = crypto_1.timingSafeEqual;
-exports["default"] = timingSafeEqual;
-
-
-/***/ }),
-
-/***/ 93833:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto = __webpack_require__(6113);
-const util_1 = __webpack_require__(73837);
-const dsa_digest_js_1 = __webpack_require__(1260);
-const node_key_js_1 = __webpack_require__(85776);
-const sign_js_1 = __webpack_require__(19544);
-const get_sign_verify_key_js_1 = __webpack_require__(12989);
-const flags_js_1 = __webpack_require__(58427);
-let oneShotVerify;
-if (crypto.verify.length > 4 && flags_js_1.oneShotCallback) {
-    oneShotVerify = (0, util_1.promisify)(crypto.verify);
-} else {
-    oneShotVerify = crypto.verify;
-}
-const verify = async (alg, key, signature, data)=>{
-    const keyObject = (0, get_sign_verify_key_js_1.default)(alg, key, "verify");
-    if (alg.startsWith("HS")) {
-        const expected = await (0, sign_js_1.default)(alg, keyObject, data);
-        const actual = signature;
-        try {
-            return crypto.timingSafeEqual(actual, expected);
-        } catch  {
-            return false;
-        }
-    }
-    const algorithm = (0, dsa_digest_js_1.default)(alg);
-    const keyInput = (0, node_key_js_1.default)(alg, keyObject);
-    try {
-        return await oneShotVerify(algorithm, data, keyInput, signature);
-    } catch  {
-        return false;
-    }
-};
-exports["default"] = verify;
-
-
-/***/ }),
-
-/***/ 32355:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.isCryptoKey = void 0;
-const crypto = __webpack_require__(6113);
-const util = __webpack_require__(73837);
-const webcrypto = crypto.webcrypto;
-exports["default"] = webcrypto;
-exports.isCryptoKey = util.types.isCryptoKey ? (key)=>util.types.isCryptoKey(key) : (key)=>false;
-
-
-/***/ }),
-
-/***/ 93087:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.deflate = exports.inflate = void 0;
-const util_1 = __webpack_require__(73837);
-const zlib_1 = __webpack_require__(59796);
-const inflateRaw = (0, util_1.promisify)(zlib_1.inflateRaw);
-const deflateRaw = (0, util_1.promisify)(zlib_1.deflateRaw);
-const inflate = (input)=>inflateRaw(input);
-exports.inflate = inflate;
-const deflate = (input)=>deflateRaw(input);
-exports.deflate = deflate;
-
-
-/***/ }),
-
-/***/ 44732:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decode = exports.encode = void 0;
-const base64url = __webpack_require__(32362);
-exports.encode = base64url.encode;
-exports.decode = base64url.decode;
-
-
-/***/ }),
-
-/***/ 5109:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decodeJwt = void 0;
-const base64url_js_1 = __webpack_require__(44732);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const is_object_js_1 = __webpack_require__(13951);
-const errors_js_1 = __webpack_require__(56460);
-function decodeJwt(jwt) {
-    if (typeof jwt !== "string") throw new errors_js_1.JWTInvalid("JWTs must use Compact JWS serialization, JWT must be a string");
-    const { 1: payload, length } = jwt.split(".");
-    if (length === 5) throw new errors_js_1.JWTInvalid("Only JWTs using Compact JWS serialization can be decoded");
-    if (length !== 3) throw new errors_js_1.JWTInvalid("Invalid JWT");
-    if (!payload) throw new errors_js_1.JWTInvalid("JWTs must contain a payload");
-    let decoded;
-    try {
-        decoded = (0, base64url_js_1.decode)(payload);
-    } catch  {
-        throw new errors_js_1.JWTInvalid("Failed to base64url decode the payload");
-    }
-    let result;
-    try {
-        result = JSON.parse(buffer_utils_js_1.decoder.decode(decoded));
-    } catch  {
-        throw new errors_js_1.JWTInvalid("Failed to parse the decoded payload as JSON");
-    }
-    if (!(0, is_object_js_1.default)(result)) throw new errors_js_1.JWTInvalid("Invalid JWT Claims Set");
-    return result;
-}
-exports.decodeJwt = decodeJwt;
-
-
-/***/ }),
-
-/***/ 65283:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decodeProtectedHeader = void 0;
-const base64url_js_1 = __webpack_require__(44732);
-const buffer_utils_js_1 = __webpack_require__(51495);
-const is_object_js_1 = __webpack_require__(13951);
-function decodeProtectedHeader(token) {
-    let protectedB64u;
-    if (typeof token === "string") {
-        const parts = token.split(".");
-        if (parts.length === 3 || parts.length === 5) {
-            ;
-            [protectedB64u] = parts;
-        }
-    } else if (typeof token === "object" && token) {
-        if ("protected" in token) {
-            protectedB64u = token.protected;
-        } else {
-            throw new TypeError("Token does not contain a Protected Header");
-        }
-    }
-    try {
-        if (typeof protectedB64u !== "string" || !protectedB64u) {
-            throw new Error();
-        }
-        const result = JSON.parse(buffer_utils_js_1.decoder.decode((0, base64url_js_1.decode)(protectedB64u)));
-        if (!(0, is_object_js_1.default)(result)) {
-            throw new Error();
-        }
-        return result;
-    } catch  {
-        throw new TypeError("Invalid Token or Protected Header formatting");
-    }
-}
-exports.decodeProtectedHeader = decodeProtectedHeader;
-
-
-/***/ }),
-
-/***/ 56460:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.JWSSignatureVerificationFailed = exports.JWKSTimeout = exports.JWKSMultipleMatchingKeys = exports.JWKSNoMatchingKey = exports.JWKSInvalid = exports.JWKInvalid = exports.JWTInvalid = exports.JWSInvalid = exports.JWEInvalid = exports.JWEDecryptionFailed = exports.JOSENotSupported = exports.JOSEAlgNotAllowed = exports.JWTExpired = exports.JWTClaimValidationFailed = exports.JOSEError = void 0;
-class JOSEError extends Error {
-    static get code() {
-        return "ERR_JOSE_GENERIC";
-    }
-    constructor(message){
-        var _a;
-        super(message);
-        this.code = "ERR_JOSE_GENERIC";
-        this.name = this.constructor.name;
-        (_a = Error.captureStackTrace) === null || _a === void 0 ? void 0 : _a.call(Error, this, this.constructor);
-    }
-}
-exports.JOSEError = JOSEError;
-class JWTClaimValidationFailed extends JOSEError {
-    static get code() {
-        return "ERR_JWT_CLAIM_VALIDATION_FAILED";
-    }
-    constructor(message, claim = "unspecified", reason = "unspecified"){
-        super(message);
-        this.code = "ERR_JWT_CLAIM_VALIDATION_FAILED";
-        this.claim = claim;
-        this.reason = reason;
-    }
-}
-exports.JWTClaimValidationFailed = JWTClaimValidationFailed;
-class JWTExpired extends JOSEError {
-    static get code() {
-        return "ERR_JWT_EXPIRED";
-    }
-    constructor(message, claim = "unspecified", reason = "unspecified"){
-        super(message);
-        this.code = "ERR_JWT_EXPIRED";
-        this.claim = claim;
-        this.reason = reason;
-    }
-}
-exports.JWTExpired = JWTExpired;
-class JOSEAlgNotAllowed extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JOSE_ALG_NOT_ALLOWED";
-    }
-    static get code() {
-        return "ERR_JOSE_ALG_NOT_ALLOWED";
-    }
-}
-exports.JOSEAlgNotAllowed = JOSEAlgNotAllowed;
-class JOSENotSupported extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JOSE_NOT_SUPPORTED";
-    }
-    static get code() {
-        return "ERR_JOSE_NOT_SUPPORTED";
-    }
-}
-exports.JOSENotSupported = JOSENotSupported;
-class JWEDecryptionFailed extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWE_DECRYPTION_FAILED";
-        this.message = "decryption operation failed";
-    }
-    static get code() {
-        return "ERR_JWE_DECRYPTION_FAILED";
-    }
-}
-exports.JWEDecryptionFailed = JWEDecryptionFailed;
-class JWEInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWE_INVALID";
-    }
-    static get code() {
-        return "ERR_JWE_INVALID";
-    }
-}
-exports.JWEInvalid = JWEInvalid;
-class JWSInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWS_INVALID";
-    }
-    static get code() {
-        return "ERR_JWS_INVALID";
-    }
-}
-exports.JWSInvalid = JWSInvalid;
-class JWTInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWT_INVALID";
-    }
-    static get code() {
-        return "ERR_JWT_INVALID";
-    }
-}
-exports.JWTInvalid = JWTInvalid;
-class JWKInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWK_INVALID";
-    }
-    static get code() {
-        return "ERR_JWK_INVALID";
-    }
-}
-exports.JWKInvalid = JWKInvalid;
-class JWKSInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWKS_INVALID";
-    }
-    static get code() {
-        return "ERR_JWKS_INVALID";
-    }
-}
-exports.JWKSInvalid = JWKSInvalid;
-class JWKSNoMatchingKey extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWKS_NO_MATCHING_KEY";
-        this.message = "no applicable key found in the JSON Web Key Set";
-    }
-    static get code() {
-        return "ERR_JWKS_NO_MATCHING_KEY";
-    }
-}
-exports.JWKSNoMatchingKey = JWKSNoMatchingKey;
-class JWKSMultipleMatchingKeys extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWKS_MULTIPLE_MATCHING_KEYS";
-        this.message = "multiple matching keys found in the JSON Web Key Set";
-    }
-    static get code() {
-        return "ERR_JWKS_MULTIPLE_MATCHING_KEYS";
-    }
-}
-exports.JWKSMultipleMatchingKeys = JWKSMultipleMatchingKeys;
-Symbol.asyncIterator;
-class JWKSTimeout extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWKS_TIMEOUT";
-        this.message = "request timed out";
-    }
-    static get code() {
-        return "ERR_JWKS_TIMEOUT";
-    }
-}
-exports.JWKSTimeout = JWKSTimeout;
-class JWSSignatureVerificationFailed extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWS_SIGNATURE_VERIFICATION_FAILED";
-        this.message = "signature verification failed";
-    }
-    static get code() {
-        return "ERR_JWS_SIGNATURE_VERIFICATION_FAILED";
-    }
-}
-exports.JWSSignatureVerificationFailed = JWSSignatureVerificationFailed;
-
-
-/***/ }),
-
-/***/ 48643:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const runtime_js_1 = __webpack_require__(59094);
-exports["default"] = runtime_js_1.default;
+}, exports.h = y, exports.hydrate = function n(l, t) {
+    N(l, t, n);
+}, exports.isValidElement = u, exports.options = l, exports.render = N, exports.toChildArray = function n(l, t) {
+    return t = t || [], null == l || "boolean" == typeof l || (p(l) ? l.some(function(l) {
+        n(l, t);
+    }) : t.push(l)), t;
+}; //# sourceMappingURL=preact.js.map
 
 
 /***/ }),
@@ -13257,473 +13843,6 @@ exports.HMACSHA1 = function(key, data) {
 
 /***/ }),
 
-/***/ 60442:
-/***/ ((module, exports, __webpack_require__) => {
-
-"use strict";
-
-var crypto = __webpack_require__(6113);
-/**
- * Exported function
- *
- * Options:
- *
- *  - `algorithm` hash algo to be used by this instance: *'sha1', 'md5'
- *  - `excludeValues` {true|*false} hash object keys, values ignored
- *  - `encoding` hash encoding, supports 'buffer', '*hex', 'binary', 'base64'
- *  - `ignoreUnknown` {true|*false} ignore unknown object types
- *  - `replacer` optional function that replaces values before hashing
- *  - `respectFunctionProperties` {*true|false} consider function properties when hashing
- *  - `respectFunctionNames` {*true|false} consider 'name' property of functions for hashing
- *  - `respectType` {*true|false} Respect special properties (prototype, constructor)
- *    when hashing to distinguish between types
- *  - `unorderedArrays` {true|*false} Sort all arrays before hashing
- *  - `unorderedSets` {*true|false} Sort `Set` and `Map` instances before hashing
- *  * = default
- *
- * @param {object} object value to hash
- * @param {object} options hashing options
- * @return {string} hash value
- * @api public
- */ exports = module.exports = objectHash;
-function objectHash(object, options) {
-    options = applyDefaults(object, options);
-    return hash(object, options);
-}
-/**
- * Exported sugar methods
- *
- * @param {object} object value to hash
- * @return {string} hash value
- * @api public
- */ exports.sha1 = function(object) {
-    return objectHash(object);
-};
-exports.keys = function(object) {
-    return objectHash(object, {
-        excludeValues: true,
-        algorithm: "sha1",
-        encoding: "hex"
-    });
-};
-exports.MD5 = function(object) {
-    return objectHash(object, {
-        algorithm: "md5",
-        encoding: "hex"
-    });
-};
-exports.keysMD5 = function(object) {
-    return objectHash(object, {
-        algorithm: "md5",
-        encoding: "hex",
-        excludeValues: true
-    });
-};
-// Internals
-var hashes = crypto.getHashes ? crypto.getHashes().slice() : [
-    "sha1",
-    "md5"
-];
-hashes.push("passthrough");
-var encodings = [
-    "buffer",
-    "hex",
-    "binary",
-    "base64"
-];
-function applyDefaults(object, sourceOptions) {
-    sourceOptions = sourceOptions || {};
-    // create a copy rather than mutating
-    var options = {};
-    options.algorithm = sourceOptions.algorithm || "sha1";
-    options.encoding = sourceOptions.encoding || "hex";
-    options.excludeValues = sourceOptions.excludeValues ? true : false;
-    options.algorithm = options.algorithm.toLowerCase();
-    options.encoding = options.encoding.toLowerCase();
-    options.ignoreUnknown = sourceOptions.ignoreUnknown !== true ? false : true; // default to false
-    options.respectType = sourceOptions.respectType === false ? false : true; // default to true
-    options.respectFunctionNames = sourceOptions.respectFunctionNames === false ? false : true;
-    options.respectFunctionProperties = sourceOptions.respectFunctionProperties === false ? false : true;
-    options.unorderedArrays = sourceOptions.unorderedArrays !== true ? false : true; // default to false
-    options.unorderedSets = sourceOptions.unorderedSets === false ? false : true; // default to false
-    options.unorderedObjects = sourceOptions.unorderedObjects === false ? false : true; // default to true
-    options.replacer = sourceOptions.replacer || undefined;
-    options.excludeKeys = sourceOptions.excludeKeys || undefined;
-    if (typeof object === "undefined") {
-        throw new Error("Object argument required.");
-    }
-    // if there is a case-insensitive match in the hashes list, accept it
-    // (i.e. SHA256 for sha256)
-    for(var i = 0; i < hashes.length; ++i){
-        if (hashes[i].toLowerCase() === options.algorithm.toLowerCase()) {
-            options.algorithm = hashes[i];
-        }
-    }
-    if (hashes.indexOf(options.algorithm) === -1) {
-        throw new Error('Algorithm "' + options.algorithm + '"  not supported. ' + "supported values: " + hashes.join(", "));
-    }
-    if (encodings.indexOf(options.encoding) === -1 && options.algorithm !== "passthrough") {
-        throw new Error('Encoding "' + options.encoding + '"  not supported. ' + "supported values: " + encodings.join(", "));
-    }
-    return options;
-}
-/** Check if the given function is a native function */ function isNativeFunction(f) {
-    if (typeof f !== "function") {
-        return false;
-    }
-    var exp = /^function\s+\w*\s*\(\s*\)\s*{\s+\[native code\]\s+}$/i;
-    return exp.exec(Function.prototype.toString.call(f)) != null;
-}
-function hash(object, options) {
-    var hashingStream;
-    if (options.algorithm !== "passthrough") {
-        hashingStream = crypto.createHash(options.algorithm);
-    } else {
-        hashingStream = new PassThrough();
-    }
-    if (typeof hashingStream.write === "undefined") {
-        hashingStream.write = hashingStream.update;
-        hashingStream.end = hashingStream.update;
-    }
-    var hasher = typeHasher(options, hashingStream);
-    hasher.dispatch(object);
-    if (!hashingStream.update) {
-        hashingStream.end("");
-    }
-    if (hashingStream.digest) {
-        return hashingStream.digest(options.encoding === "buffer" ? undefined : options.encoding);
-    }
-    var buf = hashingStream.read();
-    if (options.encoding === "buffer") {
-        return buf;
-    }
-    return buf.toString(options.encoding);
-}
-/**
- * Expose streaming API
- *
- * @param {object} object  Value to serialize
- * @param {object} options  Options, as for hash()
- * @param {object} stream  A stream to write the serializiation to
- * @api public
- */ exports.writeToStream = function(object, options, stream) {
-    if (typeof stream === "undefined") {
-        stream = options;
-        options = {};
-    }
-    options = applyDefaults(object, options);
-    return typeHasher(options, stream).dispatch(object);
-};
-function typeHasher(options, writeTo, context) {
-    context = context || [];
-    var write = function(str) {
-        if (writeTo.update) {
-            return writeTo.update(str, "utf8");
-        } else {
-            return writeTo.write(str, "utf8");
-        }
-    };
-    return {
-        dispatch: function(value) {
-            if (options.replacer) {
-                value = options.replacer(value);
-            }
-            var type = typeof value;
-            if (value === null) {
-                type = "null";
-            }
-            //console.log("[DEBUG] Dispatch: ", value, "->", type, " -> ", "_" + type);
-            return this["_" + type](value);
-        },
-        _object: function(object) {
-            var pattern = /\[object (.*)\]/i;
-            var objString = Object.prototype.toString.call(object);
-            var objType = pattern.exec(objString);
-            if (!objType) {
-                objType = "unknown:[" + objString + "]";
-            } else {
-                objType = objType[1]; // take only the class name
-            }
-            objType = objType.toLowerCase();
-            var objectNumber = null;
-            if ((objectNumber = context.indexOf(object)) >= 0) {
-                return this.dispatch("[CIRCULAR:" + objectNumber + "]");
-            } else {
-                context.push(object);
-            }
-            if (typeof Buffer !== "undefined" && Buffer.isBuffer && Buffer.isBuffer(object)) {
-                write("buffer:");
-                return write(object);
-            }
-            if (objType !== "object" && objType !== "function" && objType !== "asyncfunction") {
-                if (this["_" + objType]) {
-                    this["_" + objType](object);
-                } else if (options.ignoreUnknown) {
-                    return write("[" + objType + "]");
-                } else {
-                    throw new Error('Unknown object type "' + objType + '"');
-                }
-            } else {
-                var keys = Object.keys(object);
-                if (options.unorderedObjects) {
-                    keys = keys.sort();
-                }
-                // Make sure to incorporate special properties, so
-                // Types with different prototypes will produce
-                // a different hash and objects derived from
-                // different functions (`new Foo`, `new Bar`) will
-                // produce different hashes.
-                // We never do this for native functions since some
-                // seem to break because of that.
-                if (options.respectType !== false && !isNativeFunction(object)) {
-                    keys.splice(0, 0, "prototype", "__proto__", "constructor");
-                }
-                if (options.excludeKeys) {
-                    keys = keys.filter(function(key) {
-                        return !options.excludeKeys(key);
-                    });
-                }
-                write("object:" + keys.length + ":");
-                var self = this;
-                return keys.forEach(function(key) {
-                    self.dispatch(key);
-                    write(":");
-                    if (!options.excludeValues) {
-                        self.dispatch(object[key]);
-                    }
-                    write(",");
-                });
-            }
-        },
-        _array: function(arr, unordered) {
-            unordered = typeof unordered !== "undefined" ? unordered : options.unorderedArrays !== false; // default to options.unorderedArrays
-            var self = this;
-            write("array:" + arr.length + ":");
-            if (!unordered || arr.length <= 1) {
-                return arr.forEach(function(entry) {
-                    return self.dispatch(entry);
-                });
-            }
-            // the unordered case is a little more complicated:
-            // since there is no canonical ordering on objects,
-            // i.e. {a:1} < {a:2} and {a:1} > {a:2} are both false,
-            // we first serialize each entry using a PassThrough stream
-            // before sorting.
-            // also: we can’t use the same context array for all entries
-            // since the order of hashing should *not* matter. instead,
-            // we keep track of the additions to a copy of the context array
-            // and add all of them to the global context array when we’re done
-            var contextAdditions = [];
-            var entries = arr.map(function(entry) {
-                var strm = new PassThrough();
-                var localContext = context.slice(); // make copy
-                var hasher = typeHasher(options, strm, localContext);
-                hasher.dispatch(entry);
-                // take only what was added to localContext and append it to contextAdditions
-                contextAdditions = contextAdditions.concat(localContext.slice(context.length));
-                return strm.read().toString();
-            });
-            context = context.concat(contextAdditions);
-            entries.sort();
-            return this._array(entries, false);
-        },
-        _date: function(date) {
-            return write("date:" + date.toJSON());
-        },
-        _symbol: function(sym) {
-            return write("symbol:" + sym.toString());
-        },
-        _error: function(err) {
-            return write("error:" + err.toString());
-        },
-        _boolean: function(bool) {
-            return write("bool:" + bool.toString());
-        },
-        _string: function(string) {
-            write("string:" + string.length + ":");
-            write(string.toString());
-        },
-        _function: function(fn) {
-            write("fn:");
-            if (isNativeFunction(fn)) {
-                this.dispatch("[native]");
-            } else {
-                this.dispatch(fn.toString());
-            }
-            if (options.respectFunctionNames !== false) {
-                // Make sure we can still distinguish native functions
-                // by their name, otherwise String and Function will
-                // have the same hash
-                this.dispatch("function-name:" + String(fn.name));
-            }
-            if (options.respectFunctionProperties) {
-                this._object(fn);
-            }
-        },
-        _number: function(number) {
-            return write("number:" + number.toString());
-        },
-        _xml: function(xml) {
-            return write("xml:" + xml.toString());
-        },
-        _null: function() {
-            return write("Null");
-        },
-        _undefined: function() {
-            return write("Undefined");
-        },
-        _regexp: function(regex) {
-            return write("regex:" + regex.toString());
-        },
-        _uint8array: function(arr) {
-            write("uint8array:");
-            return this.dispatch(Array.prototype.slice.call(arr));
-        },
-        _uint8clampedarray: function(arr) {
-            write("uint8clampedarray:");
-            return this.dispatch(Array.prototype.slice.call(arr));
-        },
-        _int8array: function(arr) {
-            write("uint8array:");
-            return this.dispatch(Array.prototype.slice.call(arr));
-        },
-        _uint16array: function(arr) {
-            write("uint16array:");
-            return this.dispatch(Array.prototype.slice.call(arr));
-        },
-        _int16array: function(arr) {
-            write("uint16array:");
-            return this.dispatch(Array.prototype.slice.call(arr));
-        },
-        _uint32array: function(arr) {
-            write("uint32array:");
-            return this.dispatch(Array.prototype.slice.call(arr));
-        },
-        _int32array: function(arr) {
-            write("uint32array:");
-            return this.dispatch(Array.prototype.slice.call(arr));
-        },
-        _float32array: function(arr) {
-            write("float32array:");
-            return this.dispatch(Array.prototype.slice.call(arr));
-        },
-        _float64array: function(arr) {
-            write("float64array:");
-            return this.dispatch(Array.prototype.slice.call(arr));
-        },
-        _arraybuffer: function(arr) {
-            write("arraybuffer:");
-            return this.dispatch(new Uint8Array(arr));
-        },
-        _url: function(url) {
-            return write("url:" + url.toString(), "utf8");
-        },
-        _map: function(map) {
-            write("map:");
-            var arr = Array.from(map);
-            return this._array(arr, options.unorderedSets !== false);
-        },
-        _set: function(set) {
-            write("set:");
-            var arr = Array.from(set);
-            return this._array(arr, options.unorderedSets !== false);
-        },
-        _file: function(file) {
-            write("file:");
-            return this.dispatch([
-                file.name,
-                file.size,
-                file.type,
-                file.lastModfied
-            ]);
-        },
-        _blob: function() {
-            if (options.ignoreUnknown) {
-                return write("[blob]");
-            }
-            throw Error("Hashing Blob objects is currently not supported\n" + "(see https://github.com/puleos/object-hash/issues/26)\n" + 'Use "options.replacer" or "options.ignoreUnknown"\n');
-        },
-        _domwindow: function() {
-            return write("domwindow");
-        },
-        _bigint: function(number) {
-            return write("bigint:" + number.toString());
-        },
-        /* Node.js standard native objects */ _process: function() {
-            return write("process");
-        },
-        _timer: function() {
-            return write("timer");
-        },
-        _pipe: function() {
-            return write("pipe");
-        },
-        _tcp: function() {
-            return write("tcp");
-        },
-        _udp: function() {
-            return write("udp");
-        },
-        _tty: function() {
-            return write("tty");
-        },
-        _statwatcher: function() {
-            return write("statwatcher");
-        },
-        _securecontext: function() {
-            return write("securecontext");
-        },
-        _connection: function() {
-            return write("connection");
-        },
-        _zlib: function() {
-            return write("zlib");
-        },
-        _context: function() {
-            return write("context");
-        },
-        _nodescript: function() {
-            return write("nodescript");
-        },
-        _httpparser: function() {
-            return write("httpparser");
-        },
-        _dataview: function() {
-            return write("dataview");
-        },
-        _signal: function() {
-            return write("signal");
-        },
-        _fsevent: function() {
-            return write("fsevent");
-        },
-        _tlswrap: function() {
-            return write("tlswrap");
-        }
-    };
-}
-// Mini-implementation of stream.PassThrough
-// We are far from having need for the full implementation, and we can
-// make assumptions like "many writes, then only one final read"
-// and we can ignore encoding specifics
-function PassThrough() {
-    return {
-        buf: "",
-        write: function(b) {
-            this.buf += b;
-        },
-        end: function(b) {
-            this.buf += b;
-        },
-        read: function() {
-            return this.buf;
-        }
-    };
-}
-
-
-/***/ }),
-
 /***/ 95531:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -13848,7 +13967,7 @@ const { strict: assert } = __webpack_require__(39491);
 const querystring = __webpack_require__(63477);
 const url = __webpack_require__(57310);
 const { URL, URLSearchParams } = __webpack_require__(57310);
-const jose = __webpack_require__(49216);
+const jose = __webpack_require__(23464);
 const tokenHash = __webpack_require__(95531);
 const isKeyObject = __webpack_require__(68519);
 const decodeJWT = __webpack_require__(22768);
@@ -15730,7 +15849,7 @@ module.exports.encode = encode;
 
 "use strict";
 
-const jose = __webpack_require__(49216);
+const jose = __webpack_require__(23464);
 const { RPError } = __webpack_require__(54180);
 const { assertIssuerConfiguration } = __webpack_require__(75486);
 const { random } = __webpack_require__(75598);
@@ -16046,7 +16165,7 @@ module.exports = (a)=>!!a && a.constructor === Object;
 
 "use strict";
 
-const objectHash = __webpack_require__(60442);
+const objectHash = __webpack_require__(77436);
 const LRU = __webpack_require__(94710);
 const { RPError } = __webpack_require__(54180);
 const { assertIssuerConfiguration } = __webpack_require__(75486);
@@ -16147,7 +16266,7 @@ module.exports.keystore = getKeyStore;
 
 "use strict";
 
-const jose = __webpack_require__(49216);
+const jose = __webpack_require__(23464);
 const clone = __webpack_require__(34033);
 const isPlainObject = __webpack_require__(75915);
 const internal = Symbol();
@@ -17276,6107 +17395,469 @@ module.exports = TokenSet;
 
 /***/ }),
 
-/***/ 49216:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ 77436:
+/***/ ((module, exports, __webpack_require__) => {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.cryptoRuntime = exports.base64url = exports.generateSecret = exports.generateKeyPair = exports.errors = exports.decodeJwt = exports.decodeProtectedHeader = exports.importJWK = exports.importX509 = exports.importPKCS8 = exports.importSPKI = exports.exportJWK = exports.exportSPKI = exports.exportPKCS8 = exports.UnsecuredJWT = exports.createRemoteJWKSet = exports.createLocalJWKSet = exports.EmbeddedJWK = exports.calculateJwkThumbprintUri = exports.calculateJwkThumbprint = exports.EncryptJWT = exports.SignJWT = exports.GeneralSign = exports.FlattenedSign = exports.CompactSign = exports.FlattenedEncrypt = exports.CompactEncrypt = exports.jwtDecrypt = exports.jwtVerify = exports.generalVerify = exports.flattenedVerify = exports.compactVerify = exports.GeneralEncrypt = exports.generalDecrypt = exports.flattenedDecrypt = exports.compactDecrypt = void 0;
-var decrypt_js_1 = __webpack_require__(58933);
-Object.defineProperty(exports, "compactDecrypt", ({
-    enumerable: true,
-    get: function() {
-        return decrypt_js_1.compactDecrypt;
-    }
-}));
-var decrypt_js_2 = __webpack_require__(46730);
-Object.defineProperty(exports, "flattenedDecrypt", ({
-    enumerable: true,
-    get: function() {
-        return decrypt_js_2.flattenedDecrypt;
-    }
-}));
-var decrypt_js_3 = __webpack_require__(73396);
-Object.defineProperty(exports, "generalDecrypt", ({
-    enumerable: true,
-    get: function() {
-        return decrypt_js_3.generalDecrypt;
-    }
-}));
-var encrypt_js_1 = __webpack_require__(91520);
-Object.defineProperty(exports, "GeneralEncrypt", ({
-    enumerable: true,
-    get: function() {
-        return encrypt_js_1.GeneralEncrypt;
-    }
-}));
-var verify_js_1 = __webpack_require__(31729);
-Object.defineProperty(exports, "compactVerify", ({
-    enumerable: true,
-    get: function() {
-        return verify_js_1.compactVerify;
-    }
-}));
-var verify_js_2 = __webpack_require__(78262);
-Object.defineProperty(exports, "flattenedVerify", ({
-    enumerable: true,
-    get: function() {
-        return verify_js_2.flattenedVerify;
-    }
-}));
-var verify_js_3 = __webpack_require__(70433);
-Object.defineProperty(exports, "generalVerify", ({
-    enumerable: true,
-    get: function() {
-        return verify_js_3.generalVerify;
-    }
-}));
-var verify_js_4 = __webpack_require__(37385);
-Object.defineProperty(exports, "jwtVerify", ({
-    enumerable: true,
-    get: function() {
-        return verify_js_4.jwtVerify;
-    }
-}));
-var decrypt_js_4 = __webpack_require__(26032);
-Object.defineProperty(exports, "jwtDecrypt", ({
-    enumerable: true,
-    get: function() {
-        return decrypt_js_4.jwtDecrypt;
-    }
-}));
-var encrypt_js_2 = __webpack_require__(32971);
-Object.defineProperty(exports, "CompactEncrypt", ({
-    enumerable: true,
-    get: function() {
-        return encrypt_js_2.CompactEncrypt;
-    }
-}));
-var encrypt_js_3 = __webpack_require__(91921);
-Object.defineProperty(exports, "FlattenedEncrypt", ({
-    enumerable: true,
-    get: function() {
-        return encrypt_js_3.FlattenedEncrypt;
-    }
-}));
-var sign_js_1 = __webpack_require__(53274);
-Object.defineProperty(exports, "CompactSign", ({
-    enumerable: true,
-    get: function() {
-        return sign_js_1.CompactSign;
-    }
-}));
-var sign_js_2 = __webpack_require__(38430);
-Object.defineProperty(exports, "FlattenedSign", ({
-    enumerable: true,
-    get: function() {
-        return sign_js_2.FlattenedSign;
-    }
-}));
-var sign_js_3 = __webpack_require__(70454);
-Object.defineProperty(exports, "GeneralSign", ({
-    enumerable: true,
-    get: function() {
-        return sign_js_3.GeneralSign;
-    }
-}));
-var sign_js_4 = __webpack_require__(90743);
-Object.defineProperty(exports, "SignJWT", ({
-    enumerable: true,
-    get: function() {
-        return sign_js_4.SignJWT;
-    }
-}));
-var encrypt_js_4 = __webpack_require__(69147);
-Object.defineProperty(exports, "EncryptJWT", ({
-    enumerable: true,
-    get: function() {
-        return encrypt_js_4.EncryptJWT;
-    }
-}));
-var thumbprint_js_1 = __webpack_require__(8787);
-Object.defineProperty(exports, "calculateJwkThumbprint", ({
-    enumerable: true,
-    get: function() {
-        return thumbprint_js_1.calculateJwkThumbprint;
-    }
-}));
-Object.defineProperty(exports, "calculateJwkThumbprintUri", ({
-    enumerable: true,
-    get: function() {
-        return thumbprint_js_1.calculateJwkThumbprintUri;
-    }
-}));
-var embedded_js_1 = __webpack_require__(57246);
-Object.defineProperty(exports, "EmbeddedJWK", ({
-    enumerable: true,
-    get: function() {
-        return embedded_js_1.EmbeddedJWK;
-    }
-}));
-var local_js_1 = __webpack_require__(7573);
-Object.defineProperty(exports, "createLocalJWKSet", ({
-    enumerable: true,
-    get: function() {
-        return local_js_1.createLocalJWKSet;
-    }
-}));
-var remote_js_1 = __webpack_require__(18664);
-Object.defineProperty(exports, "createRemoteJWKSet", ({
-    enumerable: true,
-    get: function() {
-        return remote_js_1.createRemoteJWKSet;
-    }
-}));
-var unsecured_js_1 = __webpack_require__(85884);
-Object.defineProperty(exports, "UnsecuredJWT", ({
-    enumerable: true,
-    get: function() {
-        return unsecured_js_1.UnsecuredJWT;
-    }
-}));
-var export_js_1 = __webpack_require__(82254);
-Object.defineProperty(exports, "exportPKCS8", ({
-    enumerable: true,
-    get: function() {
-        return export_js_1.exportPKCS8;
-    }
-}));
-Object.defineProperty(exports, "exportSPKI", ({
-    enumerable: true,
-    get: function() {
-        return export_js_1.exportSPKI;
-    }
-}));
-Object.defineProperty(exports, "exportJWK", ({
-    enumerable: true,
-    get: function() {
-        return export_js_1.exportJWK;
-    }
-}));
-var import_js_1 = __webpack_require__(71283);
-Object.defineProperty(exports, "importSPKI", ({
-    enumerable: true,
-    get: function() {
-        return import_js_1.importSPKI;
-    }
-}));
-Object.defineProperty(exports, "importPKCS8", ({
-    enumerable: true,
-    get: function() {
-        return import_js_1.importPKCS8;
-    }
-}));
-Object.defineProperty(exports, "importX509", ({
-    enumerable: true,
-    get: function() {
-        return import_js_1.importX509;
-    }
-}));
-Object.defineProperty(exports, "importJWK", ({
-    enumerable: true,
-    get: function() {
-        return import_js_1.importJWK;
-    }
-}));
-var decode_protected_header_js_1 = __webpack_require__(285);
-Object.defineProperty(exports, "decodeProtectedHeader", ({
-    enumerable: true,
-    get: function() {
-        return decode_protected_header_js_1.decodeProtectedHeader;
-    }
-}));
-var decode_jwt_js_1 = __webpack_require__(15881);
-Object.defineProperty(exports, "decodeJwt", ({
-    enumerable: true,
-    get: function() {
-        return decode_jwt_js_1.decodeJwt;
-    }
-}));
-exports.errors = __webpack_require__(79522);
-var generate_key_pair_js_1 = __webpack_require__(61623);
-Object.defineProperty(exports, "generateKeyPair", ({
-    enumerable: true,
-    get: function() {
-        return generate_key_pair_js_1.generateKeyPair;
-    }
-}));
-var generate_secret_js_1 = __webpack_require__(16791);
-Object.defineProperty(exports, "generateSecret", ({
-    enumerable: true,
-    get: function() {
-        return generate_secret_js_1.generateSecret;
-    }
-}));
-exports.base64url = __webpack_require__(86427);
-var runtime_js_1 = __webpack_require__(33995);
-Object.defineProperty(exports, "cryptoRuntime", ({
-    enumerable: true,
-    get: function() {
-        return runtime_js_1.default;
-    }
-}));
-
-
-/***/ }),
-
-/***/ 58933:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.compactDecrypt = void 0;
-const decrypt_js_1 = __webpack_require__(46730);
-const errors_js_1 = __webpack_require__(79522);
-const buffer_utils_js_1 = __webpack_require__(91108);
-async function compactDecrypt(jwe, key, options) {
-    if (jwe instanceof Uint8Array) {
-        jwe = buffer_utils_js_1.decoder.decode(jwe);
-    }
-    if (typeof jwe !== "string") {
-        throw new errors_js_1.JWEInvalid("Compact JWE must be a string or Uint8Array");
-    }
-    const { 0: protectedHeader, 1: encryptedKey, 2: iv, 3: ciphertext, 4: tag, length } = jwe.split(".");
-    if (length !== 5) {
-        throw new errors_js_1.JWEInvalid("Invalid Compact JWE");
-    }
-    const decrypted = await (0, decrypt_js_1.flattenedDecrypt)({
-        ciphertext,
-        iv: iv || undefined,
-        protected: protectedHeader || undefined,
-        tag: tag || undefined,
-        encrypted_key: encryptedKey || undefined
-    }, key, options);
-    const result = {
-        plaintext: decrypted.plaintext,
-        protectedHeader: decrypted.protectedHeader
-    };
-    if (typeof key === "function") {
-        return {
-            ...result,
-            key: decrypted.key
-        };
-    }
-    return result;
+var crypto = __webpack_require__(6113);
+/**
+ * Exported function
+ *
+ * Options:
+ *
+ *  - `algorithm` hash algo to be used by this instance: *'sha1', 'md5'
+ *  - `excludeValues` {true|*false} hash object keys, values ignored
+ *  - `encoding` hash encoding, supports 'buffer', '*hex', 'binary', 'base64'
+ *  - `ignoreUnknown` {true|*false} ignore unknown object types
+ *  - `replacer` optional function that replaces values before hashing
+ *  - `respectFunctionProperties` {*true|false} consider function properties when hashing
+ *  - `respectFunctionNames` {*true|false} consider 'name' property of functions for hashing
+ *  - `respectType` {*true|false} Respect special properties (prototype, constructor)
+ *    when hashing to distinguish between types
+ *  - `unorderedArrays` {true|*false} Sort all arrays before hashing
+ *  - `unorderedSets` {*true|false} Sort `Set` and `Map` instances before hashing
+ *  * = default
+ *
+ * @param {object} object value to hash
+ * @param {object} options hashing options
+ * @return {string} hash value
+ * @api public
+ */ exports = module.exports = objectHash;
+function objectHash(object, options) {
+    options = applyDefaults(object, options);
+    return hash(object, options);
 }
-exports.compactDecrypt = compactDecrypt;
-
-
-/***/ }),
-
-/***/ 32971:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.CompactEncrypt = void 0;
-const encrypt_js_1 = __webpack_require__(91921);
-class CompactEncrypt {
-    constructor(plaintext){
-        this._flattened = new encrypt_js_1.FlattenedEncrypt(plaintext);
-    }
-    setContentEncryptionKey(cek) {
-        this._flattened.setContentEncryptionKey(cek);
-        return this;
-    }
-    setInitializationVector(iv) {
-        this._flattened.setInitializationVector(iv);
-        return this;
-    }
-    setProtectedHeader(protectedHeader) {
-        this._flattened.setProtectedHeader(protectedHeader);
-        return this;
-    }
-    setKeyManagementParameters(parameters) {
-        this._flattened.setKeyManagementParameters(parameters);
-        return this;
-    }
-    async encrypt(key, options) {
-        const jwe = await this._flattened.encrypt(key, options);
-        return [
-            jwe.protected,
-            jwe.encrypted_key,
-            jwe.iv,
-            jwe.ciphertext,
-            jwe.tag
-        ].join(".");
-    }
-}
-exports.CompactEncrypt = CompactEncrypt;
-
-
-/***/ }),
-
-/***/ 46730:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.flattenedDecrypt = void 0;
-const base64url_js_1 = __webpack_require__(98844);
-const decrypt_js_1 = __webpack_require__(67302);
-const zlib_js_1 = __webpack_require__(19688);
-const errors_js_1 = __webpack_require__(79522);
-const is_disjoint_js_1 = __webpack_require__(15826);
-const is_object_js_1 = __webpack_require__(96004);
-const decrypt_key_management_js_1 = __webpack_require__(92286);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const cek_js_1 = __webpack_require__(36376);
-const validate_crit_js_1 = __webpack_require__(66435);
-const validate_algorithms_js_1 = __webpack_require__(48740);
-async function flattenedDecrypt(jwe, key, options) {
-    var _a;
-    if (!(0, is_object_js_1.default)(jwe)) {
-        throw new errors_js_1.JWEInvalid("Flattened JWE must be an object");
-    }
-    if (jwe.protected === undefined && jwe.header === undefined && jwe.unprotected === undefined) {
-        throw new errors_js_1.JWEInvalid("JOSE Header missing");
-    }
-    if (typeof jwe.iv !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Initialization Vector missing or incorrect type");
-    }
-    if (typeof jwe.ciphertext !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Ciphertext missing or incorrect type");
-    }
-    if (typeof jwe.tag !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Authentication Tag missing or incorrect type");
-    }
-    if (jwe.protected !== undefined && typeof jwe.protected !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Protected Header incorrect type");
-    }
-    if (jwe.encrypted_key !== undefined && typeof jwe.encrypted_key !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE Encrypted Key incorrect type");
-    }
-    if (jwe.aad !== undefined && typeof jwe.aad !== "string") {
-        throw new errors_js_1.JWEInvalid("JWE AAD incorrect type");
-    }
-    if (jwe.header !== undefined && !(0, is_object_js_1.default)(jwe.header)) {
-        throw new errors_js_1.JWEInvalid("JWE Shared Unprotected Header incorrect type");
-    }
-    if (jwe.unprotected !== undefined && !(0, is_object_js_1.default)(jwe.unprotected)) {
-        throw new errors_js_1.JWEInvalid("JWE Per-Recipient Unprotected Header incorrect type");
-    }
-    let parsedProt;
-    if (jwe.protected) {
-        try {
-            const protectedHeader = (0, base64url_js_1.decode)(jwe.protected);
-            parsedProt = JSON.parse(buffer_utils_js_1.decoder.decode(protectedHeader));
-        } catch  {
-            throw new errors_js_1.JWEInvalid("JWE Protected Header is invalid");
-        }
-    }
-    if (!(0, is_disjoint_js_1.default)(parsedProt, jwe.header, jwe.unprotected)) {
-        throw new errors_js_1.JWEInvalid("JWE Protected, JWE Unprotected Header, and JWE Per-Recipient Unprotected Header Parameter names must be disjoint");
-    }
-    const joseHeader = {
-        ...parsedProt,
-        ...jwe.header,
-        ...jwe.unprotected
-    };
-    (0, validate_crit_js_1.default)(errors_js_1.JWEInvalid, new Map(), options === null || options === void 0 ? void 0 : options.crit, parsedProt, joseHeader);
-    if (joseHeader.zip !== undefined) {
-        if (!parsedProt || !parsedProt.zip) {
-            throw new errors_js_1.JWEInvalid('JWE "zip" (Compression Algorithm) Header MUST be integrity protected');
-        }
-        if (joseHeader.zip !== "DEF") {
-            throw new errors_js_1.JOSENotSupported('Unsupported JWE "zip" (Compression Algorithm) Header Parameter value');
-        }
-    }
-    const { alg, enc } = joseHeader;
-    if (typeof alg !== "string" || !alg) {
-        throw new errors_js_1.JWEInvalid("missing JWE Algorithm (alg) in JWE Header");
-    }
-    if (typeof enc !== "string" || !enc) {
-        throw new errors_js_1.JWEInvalid("missing JWE Encryption Algorithm (enc) in JWE Header");
-    }
-    const keyManagementAlgorithms = options && (0, validate_algorithms_js_1.default)("keyManagementAlgorithms", options.keyManagementAlgorithms);
-    const contentEncryptionAlgorithms = options && (0, validate_algorithms_js_1.default)("contentEncryptionAlgorithms", options.contentEncryptionAlgorithms);
-    if (keyManagementAlgorithms && !keyManagementAlgorithms.has(alg)) {
-        throw new errors_js_1.JOSEAlgNotAllowed('"alg" (Algorithm) Header Parameter not allowed');
-    }
-    if (contentEncryptionAlgorithms && !contentEncryptionAlgorithms.has(enc)) {
-        throw new errors_js_1.JOSEAlgNotAllowed('"enc" (Encryption Algorithm) Header Parameter not allowed');
-    }
-    let encryptedKey;
-    if (jwe.encrypted_key !== undefined) {
-        try {
-            encryptedKey = (0, base64url_js_1.decode)(jwe.encrypted_key);
-        } catch  {
-            throw new errors_js_1.JWEInvalid("Failed to base64url decode the encrypted_key");
-        }
-    }
-    let resolvedKey = false;
-    if (typeof key === "function") {
-        key = await key(parsedProt, jwe);
-        resolvedKey = true;
-    }
-    let cek;
-    try {
-        cek = await (0, decrypt_key_management_js_1.default)(alg, key, encryptedKey, joseHeader, options);
-    } catch (err) {
-        if (err instanceof TypeError || err instanceof errors_js_1.JWEInvalid || err instanceof errors_js_1.JOSENotSupported) {
-            throw err;
-        }
-        cek = (0, cek_js_1.default)(enc);
-    }
-    let iv;
-    let tag;
-    try {
-        iv = (0, base64url_js_1.decode)(jwe.iv);
-    } catch  {
-        throw new errors_js_1.JWEInvalid("Failed to base64url decode the iv");
-    }
-    try {
-        tag = (0, base64url_js_1.decode)(jwe.tag);
-    } catch  {
-        throw new errors_js_1.JWEInvalid("Failed to base64url decode the tag");
-    }
-    const protectedHeader = buffer_utils_js_1.encoder.encode((_a = jwe.protected) !== null && _a !== void 0 ? _a : "");
-    let additionalData;
-    if (jwe.aad !== undefined) {
-        additionalData = (0, buffer_utils_js_1.concat)(protectedHeader, buffer_utils_js_1.encoder.encode("."), buffer_utils_js_1.encoder.encode(jwe.aad));
-    } else {
-        additionalData = protectedHeader;
-    }
-    let ciphertext;
-    try {
-        ciphertext = (0, base64url_js_1.decode)(jwe.ciphertext);
-    } catch  {
-        throw new errors_js_1.JWEInvalid("Failed to base64url decode the ciphertext");
-    }
-    let plaintext = await (0, decrypt_js_1.default)(enc, cek, ciphertext, iv, tag, additionalData);
-    if (joseHeader.zip === "DEF") {
-        plaintext = await ((options === null || options === void 0 ? void 0 : options.inflateRaw) || zlib_js_1.inflate)(plaintext);
-    }
-    const result = {
-        plaintext
-    };
-    if (jwe.protected !== undefined) {
-        result.protectedHeader = parsedProt;
-    }
-    if (jwe.aad !== undefined) {
-        try {
-            result.additionalAuthenticatedData = (0, base64url_js_1.decode)(jwe.aad);
-        } catch  {
-            throw new errors_js_1.JWEInvalid("Failed to base64url decode the aad");
-        }
-    }
-    if (jwe.unprotected !== undefined) {
-        result.sharedUnprotectedHeader = jwe.unprotected;
-    }
-    if (jwe.header !== undefined) {
-        result.unprotectedHeader = jwe.header;
-    }
-    if (resolvedKey) {
-        return {
-            ...result,
-            key
-        };
-    }
-    return result;
-}
-exports.flattenedDecrypt = flattenedDecrypt;
-
-
-/***/ }),
-
-/***/ 91921:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.FlattenedEncrypt = exports.unprotected = void 0;
-const base64url_js_1 = __webpack_require__(98844);
-const encrypt_js_1 = __webpack_require__(88586);
-const zlib_js_1 = __webpack_require__(19688);
-const iv_js_1 = __webpack_require__(4700);
-const encrypt_key_management_js_1 = __webpack_require__(49351);
-const errors_js_1 = __webpack_require__(79522);
-const is_disjoint_js_1 = __webpack_require__(15826);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const validate_crit_js_1 = __webpack_require__(66435);
-exports.unprotected = Symbol();
-class FlattenedEncrypt {
-    constructor(plaintext){
-        if (!(plaintext instanceof Uint8Array)) {
-            throw new TypeError("plaintext must be an instance of Uint8Array");
-        }
-        this._plaintext = plaintext;
-    }
-    setKeyManagementParameters(parameters) {
-        if (this._keyManagementParameters) {
-            throw new TypeError("setKeyManagementParameters can only be called once");
-        }
-        this._keyManagementParameters = parameters;
-        return this;
-    }
-    setProtectedHeader(protectedHeader) {
-        if (this._protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    setSharedUnprotectedHeader(sharedUnprotectedHeader) {
-        if (this._sharedUnprotectedHeader) {
-            throw new TypeError("setSharedUnprotectedHeader can only be called once");
-        }
-        this._sharedUnprotectedHeader = sharedUnprotectedHeader;
-        return this;
-    }
-    setUnprotectedHeader(unprotectedHeader) {
-        if (this._unprotectedHeader) {
-            throw new TypeError("setUnprotectedHeader can only be called once");
-        }
-        this._unprotectedHeader = unprotectedHeader;
-        return this;
-    }
-    setAdditionalAuthenticatedData(aad) {
-        this._aad = aad;
-        return this;
-    }
-    setContentEncryptionKey(cek) {
-        if (this._cek) {
-            throw new TypeError("setContentEncryptionKey can only be called once");
-        }
-        this._cek = cek;
-        return this;
-    }
-    setInitializationVector(iv) {
-        if (this._iv) {
-            throw new TypeError("setInitializationVector can only be called once");
-        }
-        this._iv = iv;
-        return this;
-    }
-    async encrypt(key, options) {
-        if (!this._protectedHeader && !this._unprotectedHeader && !this._sharedUnprotectedHeader) {
-            throw new errors_js_1.JWEInvalid("either setProtectedHeader, setUnprotectedHeader, or sharedUnprotectedHeader must be called before #encrypt()");
-        }
-        if (!(0, is_disjoint_js_1.default)(this._protectedHeader, this._unprotectedHeader, this._sharedUnprotectedHeader)) {
-            throw new errors_js_1.JWEInvalid("JWE Protected, JWE Shared Unprotected and JWE Per-Recipient Header Parameter names must be disjoint");
-        }
-        const joseHeader = {
-            ...this._protectedHeader,
-            ...this._unprotectedHeader,
-            ...this._sharedUnprotectedHeader
-        };
-        (0, validate_crit_js_1.default)(errors_js_1.JWEInvalid, new Map(), options === null || options === void 0 ? void 0 : options.crit, this._protectedHeader, joseHeader);
-        if (joseHeader.zip !== undefined) {
-            if (!this._protectedHeader || !this._protectedHeader.zip) {
-                throw new errors_js_1.JWEInvalid('JWE "zip" (Compression Algorithm) Header MUST be integrity protected');
-            }
-            if (joseHeader.zip !== "DEF") {
-                throw new errors_js_1.JOSENotSupported('Unsupported JWE "zip" (Compression Algorithm) Header Parameter value');
-            }
-        }
-        const { alg, enc } = joseHeader;
-        if (typeof alg !== "string" || !alg) {
-            throw new errors_js_1.JWEInvalid('JWE "alg" (Algorithm) Header Parameter missing or invalid');
-        }
-        if (typeof enc !== "string" || !enc) {
-            throw new errors_js_1.JWEInvalid('JWE "enc" (Encryption Algorithm) Header Parameter missing or invalid');
-        }
-        let encryptedKey;
-        if (alg === "dir") {
-            if (this._cek) {
-                throw new TypeError("setContentEncryptionKey cannot be called when using Direct Encryption");
-            }
-        } else if (alg === "ECDH-ES") {
-            if (this._cek) {
-                throw new TypeError("setContentEncryptionKey cannot be called when using Direct Key Agreement");
-            }
-        }
-        let cek;
-        {
-            let parameters;
-            ({ cek, encryptedKey, parameters } = await (0, encrypt_key_management_js_1.default)(alg, enc, key, this._cek, this._keyManagementParameters));
-            if (parameters) {
-                if (options && exports.unprotected in options) {
-                    if (!this._unprotectedHeader) {
-                        this.setUnprotectedHeader(parameters);
-                    } else {
-                        this._unprotectedHeader = {
-                            ...this._unprotectedHeader,
-                            ...parameters
-                        };
-                    }
-                } else {
-                    if (!this._protectedHeader) {
-                        this.setProtectedHeader(parameters);
-                    } else {
-                        this._protectedHeader = {
-                            ...this._protectedHeader,
-                            ...parameters
-                        };
-                    }
-                }
-            }
-        }
-        this._iv || (this._iv = (0, iv_js_1.default)(enc));
-        let additionalData;
-        let protectedHeader;
-        let aadMember;
-        if (this._protectedHeader) {
-            protectedHeader = buffer_utils_js_1.encoder.encode((0, base64url_js_1.encode)(JSON.stringify(this._protectedHeader)));
-        } else {
-            protectedHeader = buffer_utils_js_1.encoder.encode("");
-        }
-        if (this._aad) {
-            aadMember = (0, base64url_js_1.encode)(this._aad);
-            additionalData = (0, buffer_utils_js_1.concat)(protectedHeader, buffer_utils_js_1.encoder.encode("."), buffer_utils_js_1.encoder.encode(aadMember));
-        } else {
-            additionalData = protectedHeader;
-        }
-        let ciphertext;
-        let tag;
-        if (joseHeader.zip === "DEF") {
-            const deflated = await ((options === null || options === void 0 ? void 0 : options.deflateRaw) || zlib_js_1.deflate)(this._plaintext);
-            ({ ciphertext, tag } = await (0, encrypt_js_1.default)(enc, deflated, cek, this._iv, additionalData));
-        } else {
-            ;
-            ({ ciphertext, tag } = await (0, encrypt_js_1.default)(enc, this._plaintext, cek, this._iv, additionalData));
-        }
-        const jwe = {
-            ciphertext: (0, base64url_js_1.encode)(ciphertext),
-            iv: (0, base64url_js_1.encode)(this._iv),
-            tag: (0, base64url_js_1.encode)(tag)
-        };
-        if (encryptedKey) {
-            jwe.encrypted_key = (0, base64url_js_1.encode)(encryptedKey);
-        }
-        if (aadMember) {
-            jwe.aad = aadMember;
-        }
-        if (this._protectedHeader) {
-            jwe.protected = buffer_utils_js_1.decoder.decode(protectedHeader);
-        }
-        if (this._sharedUnprotectedHeader) {
-            jwe.unprotected = this._sharedUnprotectedHeader;
-        }
-        if (this._unprotectedHeader) {
-            jwe.header = this._unprotectedHeader;
-        }
-        return jwe;
-    }
-}
-exports.FlattenedEncrypt = FlattenedEncrypt;
-
-
-/***/ }),
-
-/***/ 73396:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generalDecrypt = void 0;
-const decrypt_js_1 = __webpack_require__(46730);
-const errors_js_1 = __webpack_require__(79522);
-const is_object_js_1 = __webpack_require__(96004);
-async function generalDecrypt(jwe, key, options) {
-    if (!(0, is_object_js_1.default)(jwe)) {
-        throw new errors_js_1.JWEInvalid("General JWE must be an object");
-    }
-    if (!Array.isArray(jwe.recipients) || !jwe.recipients.every(is_object_js_1.default)) {
-        throw new errors_js_1.JWEInvalid("JWE Recipients missing or incorrect type");
-    }
-    if (!jwe.recipients.length) {
-        throw new errors_js_1.JWEInvalid("JWE Recipients has no members");
-    }
-    for (const recipient of jwe.recipients){
-        try {
-            return await (0, decrypt_js_1.flattenedDecrypt)({
-                aad: jwe.aad,
-                ciphertext: jwe.ciphertext,
-                encrypted_key: recipient.encrypted_key,
-                header: recipient.header,
-                iv: jwe.iv,
-                protected: jwe.protected,
-                tag: jwe.tag,
-                unprotected: jwe.unprotected
-            }, key, options);
-        } catch  {}
-    }
-    throw new errors_js_1.JWEDecryptionFailed();
-}
-exports.generalDecrypt = generalDecrypt;
-
-
-/***/ }),
-
-/***/ 91520:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.GeneralEncrypt = void 0;
-const encrypt_js_1 = __webpack_require__(91921);
-const errors_js_1 = __webpack_require__(79522);
-const cek_js_1 = __webpack_require__(36376);
-const is_disjoint_js_1 = __webpack_require__(15826);
-const encrypt_key_management_js_1 = __webpack_require__(49351);
-const base64url_js_1 = __webpack_require__(98844);
-const validate_crit_js_1 = __webpack_require__(66435);
-class IndividualRecipient {
-    constructor(enc, key, options){
-        this.parent = enc;
-        this.key = key;
-        this.options = options;
-    }
-    setUnprotectedHeader(unprotectedHeader) {
-        if (this.unprotectedHeader) {
-            throw new TypeError("setUnprotectedHeader can only be called once");
-        }
-        this.unprotectedHeader = unprotectedHeader;
-        return this;
-    }
-    addRecipient(...args) {
-        return this.parent.addRecipient(...args);
-    }
-    encrypt(...args) {
-        return this.parent.encrypt(...args);
-    }
-    done() {
-        return this.parent;
-    }
-}
-class GeneralEncrypt {
-    constructor(plaintext){
-        this._recipients = [];
-        this._plaintext = plaintext;
-    }
-    addRecipient(key, options) {
-        const recipient = new IndividualRecipient(this, key, {
-            crit: options === null || options === void 0 ? void 0 : options.crit
-        });
-        this._recipients.push(recipient);
-        return recipient;
-    }
-    setProtectedHeader(protectedHeader) {
-        if (this._protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    setSharedUnprotectedHeader(sharedUnprotectedHeader) {
-        if (this._unprotectedHeader) {
-            throw new TypeError("setSharedUnprotectedHeader can only be called once");
-        }
-        this._unprotectedHeader = sharedUnprotectedHeader;
-        return this;
-    }
-    setAdditionalAuthenticatedData(aad) {
-        this._aad = aad;
-        return this;
-    }
-    async encrypt(options) {
-        var _a, _b, _c;
-        if (!this._recipients.length) {
-            throw new errors_js_1.JWEInvalid("at least one recipient must be added");
-        }
-        options = {
-            deflateRaw: options === null || options === void 0 ? void 0 : options.deflateRaw
-        };
-        if (this._recipients.length === 1) {
-            const [recipient] = this._recipients;
-            const flattened = await new encrypt_js_1.FlattenedEncrypt(this._plaintext).setAdditionalAuthenticatedData(this._aad).setProtectedHeader(this._protectedHeader).setSharedUnprotectedHeader(this._unprotectedHeader).setUnprotectedHeader(recipient.unprotectedHeader).encrypt(recipient.key, {
-                ...recipient.options,
-                ...options
-            });
-            let jwe = {
-                ciphertext: flattened.ciphertext,
-                iv: flattened.iv,
-                recipients: [
-                    {}
-                ],
-                tag: flattened.tag
-            };
-            if (flattened.aad) jwe.aad = flattened.aad;
-            if (flattened.protected) jwe.protected = flattened.protected;
-            if (flattened.unprotected) jwe.unprotected = flattened.unprotected;
-            if (flattened.encrypted_key) jwe.recipients[0].encrypted_key = flattened.encrypted_key;
-            if (flattened.header) jwe.recipients[0].header = flattened.header;
-            return jwe;
-        }
-        let enc;
-        for(let i = 0; i < this._recipients.length; i++){
-            const recipient = this._recipients[i];
-            if (!(0, is_disjoint_js_1.default)(this._protectedHeader, this._unprotectedHeader, recipient.unprotectedHeader)) {
-                throw new errors_js_1.JWEInvalid("JWE Protected, JWE Shared Unprotected and JWE Per-Recipient Header Parameter names must be disjoint");
-            }
-            const joseHeader = {
-                ...this._protectedHeader,
-                ...this._unprotectedHeader,
-                ...recipient.unprotectedHeader
-            };
-            const { alg } = joseHeader;
-            if (typeof alg !== "string" || !alg) {
-                throw new errors_js_1.JWEInvalid('JWE "alg" (Algorithm) Header Parameter missing or invalid');
-            }
-            if (alg === "dir" || alg === "ECDH-ES") {
-                throw new errors_js_1.JWEInvalid('"dir" and "ECDH-ES" alg may only be used with a single recipient');
-            }
-            if (typeof joseHeader.enc !== "string" || !joseHeader.enc) {
-                throw new errors_js_1.JWEInvalid('JWE "enc" (Encryption Algorithm) Header Parameter missing or invalid');
-            }
-            if (!enc) {
-                enc = joseHeader.enc;
-            } else if (enc !== joseHeader.enc) {
-                throw new errors_js_1.JWEInvalid('JWE "enc" (Encryption Algorithm) Header Parameter must be the same for all recipients');
-            }
-            (0, validate_crit_js_1.default)(errors_js_1.JWEInvalid, new Map(), recipient.options.crit, this._protectedHeader, joseHeader);
-            if (joseHeader.zip !== undefined) {
-                if (!this._protectedHeader || !this._protectedHeader.zip) {
-                    throw new errors_js_1.JWEInvalid('JWE "zip" (Compression Algorithm) Header MUST be integrity protected');
-                }
-            }
-        }
-        const cek = (0, cek_js_1.default)(enc);
-        let jwe = {
-            ciphertext: "",
-            iv: "",
-            recipients: [],
-            tag: ""
-        };
-        for(let i = 0; i < this._recipients.length; i++){
-            const recipient = this._recipients[i];
-            const target = {};
-            jwe.recipients.push(target);
-            const joseHeader = {
-                ...this._protectedHeader,
-                ...this._unprotectedHeader,
-                ...recipient.unprotectedHeader
-            };
-            const p2c = joseHeader.alg.startsWith("PBES2") ? 2048 + i : undefined;
-            if (i === 0) {
-                const flattened = await new encrypt_js_1.FlattenedEncrypt(this._plaintext).setAdditionalAuthenticatedData(this._aad).setContentEncryptionKey(cek).setProtectedHeader(this._protectedHeader).setSharedUnprotectedHeader(this._unprotectedHeader).setUnprotectedHeader(recipient.unprotectedHeader).setKeyManagementParameters({
-                    p2c
-                }).encrypt(recipient.key, {
-                    ...recipient.options,
-                    ...options,
-                    [encrypt_js_1.unprotected]: true
-                });
-                jwe.ciphertext = flattened.ciphertext;
-                jwe.iv = flattened.iv;
-                jwe.tag = flattened.tag;
-                if (flattened.aad) jwe.aad = flattened.aad;
-                if (flattened.protected) jwe.protected = flattened.protected;
-                if (flattened.unprotected) jwe.unprotected = flattened.unprotected;
-                target.encrypted_key = flattened.encrypted_key;
-                if (flattened.header) target.header = flattened.header;
-                continue;
-            }
-            const { encryptedKey, parameters } = await (0, encrypt_key_management_js_1.default)(((_a = recipient.unprotectedHeader) === null || _a === void 0 ? void 0 : _a.alg) || ((_b = this._protectedHeader) === null || _b === void 0 ? void 0 : _b.alg) || ((_c = this._unprotectedHeader) === null || _c === void 0 ? void 0 : _c.alg), enc, recipient.key, cek, {
-                p2c
-            });
-            target.encrypted_key = (0, base64url_js_1.encode)(encryptedKey);
-            if (recipient.unprotectedHeader || parameters) target.header = {
-                ...recipient.unprotectedHeader,
-                ...parameters
-            };
-        }
-        return jwe;
-    }
-}
-exports.GeneralEncrypt = GeneralEncrypt;
-
-
-/***/ }),
-
-/***/ 57246:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.EmbeddedJWK = void 0;
-const import_js_1 = __webpack_require__(71283);
-const is_object_js_1 = __webpack_require__(96004);
-const errors_js_1 = __webpack_require__(79522);
-async function EmbeddedJWK(protectedHeader, token) {
-    const joseHeader = {
-        ...protectedHeader,
-        ...token === null || token === void 0 ? void 0 : token.header
-    };
-    if (!(0, is_object_js_1.default)(joseHeader.jwk)) {
-        throw new errors_js_1.JWSInvalid('"jwk" (JSON Web Key) Header Parameter must be a JSON object');
-    }
-    const key = await (0, import_js_1.importJWK)({
-        ...joseHeader.jwk,
-        ext: true
-    }, joseHeader.alg, true);
-    if (key instanceof Uint8Array || key.type !== "public") {
-        throw new errors_js_1.JWSInvalid('"jwk" (JSON Web Key) Header Parameter must be a public key');
-    }
-    return key;
-}
-exports.EmbeddedJWK = EmbeddedJWK;
-
-
-/***/ }),
-
-/***/ 8787:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.calculateJwkThumbprintUri = exports.calculateJwkThumbprint = void 0;
-const digest_js_1 = __webpack_require__(56494);
-const base64url_js_1 = __webpack_require__(98844);
-const errors_js_1 = __webpack_require__(79522);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const is_object_js_1 = __webpack_require__(96004);
-const check = (value, description)=>{
-    if (typeof value !== "string" || !value) {
-        throw new errors_js_1.JWKInvalid(`${description} missing or invalid`);
-    }
+/**
+ * Exported sugar methods
+ *
+ * @param {object} object value to hash
+ * @return {string} hash value
+ * @api public
+ */ exports.sha1 = function(object) {
+    return objectHash(object);
 };
-async function calculateJwkThumbprint(jwk, digestAlgorithm) {
-    if (!(0, is_object_js_1.default)(jwk)) {
-        throw new TypeError("JWK must be an object");
-    }
-    digestAlgorithm !== null && digestAlgorithm !== void 0 ? digestAlgorithm : digestAlgorithm = "sha256";
-    if (digestAlgorithm !== "sha256" && digestAlgorithm !== "sha384" && digestAlgorithm !== "sha512") {
-        throw new TypeError('digestAlgorithm must one of "sha256", "sha384", or "sha512"');
-    }
-    let components;
-    switch(jwk.kty){
-        case "EC":
-            check(jwk.crv, '"crv" (Curve) Parameter');
-            check(jwk.x, '"x" (X Coordinate) Parameter');
-            check(jwk.y, '"y" (Y Coordinate) Parameter');
-            components = {
-                crv: jwk.crv,
-                kty: jwk.kty,
-                x: jwk.x,
-                y: jwk.y
-            };
-            break;
-        case "OKP":
-            check(jwk.crv, '"crv" (Subtype of Key Pair) Parameter');
-            check(jwk.x, '"x" (Public Key) Parameter');
-            components = {
-                crv: jwk.crv,
-                kty: jwk.kty,
-                x: jwk.x
-            };
-            break;
-        case "RSA":
-            check(jwk.e, '"e" (Exponent) Parameter');
-            check(jwk.n, '"n" (Modulus) Parameter');
-            components = {
-                e: jwk.e,
-                kty: jwk.kty,
-                n: jwk.n
-            };
-            break;
-        case "oct":
-            check(jwk.k, '"k" (Key Value) Parameter');
-            components = {
-                k: jwk.k,
-                kty: jwk.kty
-            };
-            break;
-        default:
-            throw new errors_js_1.JOSENotSupported('"kty" (Key Type) Parameter missing or unsupported');
-    }
-    const data = buffer_utils_js_1.encoder.encode(JSON.stringify(components));
-    return (0, base64url_js_1.encode)(await (0, digest_js_1.default)(digestAlgorithm, data));
-}
-exports.calculateJwkThumbprint = calculateJwkThumbprint;
-async function calculateJwkThumbprintUri(jwk, digestAlgorithm) {
-    digestAlgorithm !== null && digestAlgorithm !== void 0 ? digestAlgorithm : digestAlgorithm = "sha256";
-    const thumbprint = await calculateJwkThumbprint(jwk, digestAlgorithm);
-    return `urn:ietf:params:oauth:jwk-thumbprint:sha-${digestAlgorithm.slice(-3)}:${thumbprint}`;
-}
-exports.calculateJwkThumbprintUri = calculateJwkThumbprintUri;
-
-
-/***/ }),
-
-/***/ 7573:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.createLocalJWKSet = exports.LocalJWKSet = exports.isJWKSLike = void 0;
-const import_js_1 = __webpack_require__(71283);
-const errors_js_1 = __webpack_require__(79522);
-const is_object_js_1 = __webpack_require__(96004);
-function getKtyFromAlg(alg) {
-    switch(typeof alg === "string" && alg.slice(0, 2)){
-        case "RS":
-        case "PS":
-            return "RSA";
-        case "ES":
-            return "EC";
-        case "Ed":
-            return "OKP";
-        default:
-            throw new errors_js_1.JOSENotSupported('Unsupported "alg" value for a JSON Web Key Set');
-    }
-}
-function isJWKSLike(jwks) {
-    return jwks && typeof jwks === "object" && Array.isArray(jwks.keys) && jwks.keys.every(isJWKLike);
-}
-exports.isJWKSLike = isJWKSLike;
-function isJWKLike(key) {
-    return (0, is_object_js_1.default)(key);
-}
-function clone(obj) {
-    if (typeof structuredClone === "function") {
-        return structuredClone(obj);
-    }
-    return JSON.parse(JSON.stringify(obj));
-}
-class LocalJWKSet {
-    constructor(jwks){
-        this._cached = new WeakMap();
-        if (!isJWKSLike(jwks)) {
-            throw new errors_js_1.JWKSInvalid("JSON Web Key Set malformed");
-        }
-        this._jwks = clone(jwks);
-    }
-    async getKey(protectedHeader, token) {
-        const { alg, kid } = {
-            ...protectedHeader,
-            ...token === null || token === void 0 ? void 0 : token.header
-        };
-        const kty = getKtyFromAlg(alg);
-        const candidates = this._jwks.keys.filter((jwk)=>{
-            let candidate = kty === jwk.kty;
-            if (candidate && typeof kid === "string") {
-                candidate = kid === jwk.kid;
-            }
-            if (candidate && typeof jwk.alg === "string") {
-                candidate = alg === jwk.alg;
-            }
-            if (candidate && typeof jwk.use === "string") {
-                candidate = jwk.use === "sig";
-            }
-            if (candidate && Array.isArray(jwk.key_ops)) {
-                candidate = jwk.key_ops.includes("verify");
-            }
-            if (candidate && alg === "EdDSA") {
-                candidate = jwk.crv === "Ed25519" || jwk.crv === "Ed448";
-            }
-            if (candidate) {
-                switch(alg){
-                    case "ES256":
-                        candidate = jwk.crv === "P-256";
-                        break;
-                    case "ES256K":
-                        candidate = jwk.crv === "secp256k1";
-                        break;
-                    case "ES384":
-                        candidate = jwk.crv === "P-384";
-                        break;
-                    case "ES512":
-                        candidate = jwk.crv === "P-521";
-                        break;
-                }
-            }
-            return candidate;
-        });
-        const { 0: jwk, length } = candidates;
-        if (length === 0) {
-            throw new errors_js_1.JWKSNoMatchingKey();
-        } else if (length !== 1) {
-            const error = new errors_js_1.JWKSMultipleMatchingKeys();
-            const { _cached } = this;
-            error[Symbol.asyncIterator] = async function*() {
-                for (const jwk of candidates){
-                    try {
-                        yield await importWithAlgCache(_cached, jwk, alg);
-                    } catch  {
-                        continue;
-                    }
-                }
-            };
-            throw error;
-        }
-        return importWithAlgCache(this._cached, jwk, alg);
-    }
-}
-exports.LocalJWKSet = LocalJWKSet;
-async function importWithAlgCache(cache, jwk, alg) {
-    const cached = cache.get(jwk) || cache.set(jwk, {}).get(jwk);
-    if (cached[alg] === undefined) {
-        const key = await (0, import_js_1.importJWK)({
-            ...jwk,
-            ext: true
-        }, alg);
-        if (key instanceof Uint8Array || key.type !== "public") {
-            throw new errors_js_1.JWKSInvalid("JSON Web Key Set members must be public keys");
-        }
-        cached[alg] = key;
-    }
-    return cached[alg];
-}
-function createLocalJWKSet(jwks) {
-    const set = new LocalJWKSet(jwks);
-    return async function(protectedHeader, token) {
-        return set.getKey(protectedHeader, token);
-    };
-}
-exports.createLocalJWKSet = createLocalJWKSet;
-
-
-/***/ }),
-
-/***/ 18664:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.createRemoteJWKSet = void 0;
-const fetch_jwks_js_1 = __webpack_require__(87400);
-const errors_js_1 = __webpack_require__(79522);
-const local_js_1 = __webpack_require__(7573);
-function isCloudflareWorkers() {
-    return typeof WebSocketPair !== "undefined" || typeof navigator !== "undefined" && navigator.userAgent === "Cloudflare-Workers" || typeof EdgeRuntime !== "undefined" && EdgeRuntime === "vercel";
-}
-class RemoteJWKSet extends local_js_1.LocalJWKSet {
-    constructor(url, options){
-        super({
-            keys: []
-        });
-        this._jwks = undefined;
-        if (!(url instanceof URL)) {
-            throw new TypeError("url must be an instance of URL");
-        }
-        this._url = new URL(url.href);
-        this._options = {
-            agent: options === null || options === void 0 ? void 0 : options.agent,
-            headers: options === null || options === void 0 ? void 0 : options.headers
-        };
-        this._timeoutDuration = typeof (options === null || options === void 0 ? void 0 : options.timeoutDuration) === "number" ? options === null || options === void 0 ? void 0 : options.timeoutDuration : 5000;
-        this._cooldownDuration = typeof (options === null || options === void 0 ? void 0 : options.cooldownDuration) === "number" ? options === null || options === void 0 ? void 0 : options.cooldownDuration : 30000;
-        this._cacheMaxAge = typeof (options === null || options === void 0 ? void 0 : options.cacheMaxAge) === "number" ? options === null || options === void 0 ? void 0 : options.cacheMaxAge : 600000;
-    }
-    coolingDown() {
-        return typeof this._jwksTimestamp === "number" ? Date.now() < this._jwksTimestamp + this._cooldownDuration : false;
-    }
-    fresh() {
-        return typeof this._jwksTimestamp === "number" ? Date.now() < this._jwksTimestamp + this._cacheMaxAge : false;
-    }
-    async getKey(protectedHeader, token) {
-        if (!this._jwks || !this.fresh()) {
-            await this.reload();
-        }
-        try {
-            return await super.getKey(protectedHeader, token);
-        } catch (err) {
-            if (err instanceof errors_js_1.JWKSNoMatchingKey) {
-                if (this.coolingDown() === false) {
-                    await this.reload();
-                    return super.getKey(protectedHeader, token);
-                }
-            }
-            throw err;
-        }
-    }
-    async reload() {
-        if (this._pendingFetch && isCloudflareWorkers()) {
-            this._pendingFetch = undefined;
-        }
-        this._pendingFetch || (this._pendingFetch = (0, fetch_jwks_js_1.default)(this._url, this._timeoutDuration, this._options).then((json)=>{
-            if (!(0, local_js_1.isJWKSLike)(json)) {
-                throw new errors_js_1.JWKSInvalid("JSON Web Key Set malformed");
-            }
-            this._jwks = {
-                keys: json.keys
-            };
-            this._jwksTimestamp = Date.now();
-            this._pendingFetch = undefined;
-        }).catch((err)=>{
-            this._pendingFetch = undefined;
-            throw err;
-        }));
-        await this._pendingFetch;
-    }
-}
-function createRemoteJWKSet(url, options) {
-    const set = new RemoteJWKSet(url, options);
-    return async function(protectedHeader, token) {
-        return set.getKey(protectedHeader, token);
-    };
-}
-exports.createRemoteJWKSet = createRemoteJWKSet;
-
-
-/***/ }),
-
-/***/ 53274:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.CompactSign = void 0;
-const sign_js_1 = __webpack_require__(38430);
-class CompactSign {
-    constructor(payload){
-        this._flattened = new sign_js_1.FlattenedSign(payload);
-    }
-    setProtectedHeader(protectedHeader) {
-        this._flattened.setProtectedHeader(protectedHeader);
-        return this;
-    }
-    async sign(key, options) {
-        const jws = await this._flattened.sign(key, options);
-        if (jws.payload === undefined) {
-            throw new TypeError("use the flattened module for creating JWS with b64: false");
-        }
-        return `${jws.protected}.${jws.payload}.${jws.signature}`;
-    }
-}
-exports.CompactSign = CompactSign;
-
-
-/***/ }),
-
-/***/ 31729:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.compactVerify = void 0;
-const verify_js_1 = __webpack_require__(78262);
-const errors_js_1 = __webpack_require__(79522);
-const buffer_utils_js_1 = __webpack_require__(91108);
-async function compactVerify(jws, key, options) {
-    if (jws instanceof Uint8Array) {
-        jws = buffer_utils_js_1.decoder.decode(jws);
-    }
-    if (typeof jws !== "string") {
-        throw new errors_js_1.JWSInvalid("Compact JWS must be a string or Uint8Array");
-    }
-    const { 0: protectedHeader, 1: payload, 2: signature, length } = jws.split(".");
-    if (length !== 3) {
-        throw new errors_js_1.JWSInvalid("Invalid Compact JWS");
-    }
-    const verified = await (0, verify_js_1.flattenedVerify)({
-        payload,
-        protected: protectedHeader,
-        signature
-    }, key, options);
-    const result = {
-        payload: verified.payload,
-        protectedHeader: verified.protectedHeader
-    };
-    if (typeof key === "function") {
-        return {
-            ...result,
-            key: verified.key
-        };
-    }
-    return result;
-}
-exports.compactVerify = compactVerify;
-
-
-/***/ }),
-
-/***/ 38430:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.FlattenedSign = void 0;
-const base64url_js_1 = __webpack_require__(98844);
-const sign_js_1 = __webpack_require__(49534);
-const is_disjoint_js_1 = __webpack_require__(15826);
-const errors_js_1 = __webpack_require__(79522);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const check_key_type_js_1 = __webpack_require__(12593);
-const validate_crit_js_1 = __webpack_require__(66435);
-class FlattenedSign {
-    constructor(payload){
-        if (!(payload instanceof Uint8Array)) {
-            throw new TypeError("payload must be an instance of Uint8Array");
-        }
-        this._payload = payload;
-    }
-    setProtectedHeader(protectedHeader) {
-        if (this._protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    setUnprotectedHeader(unprotectedHeader) {
-        if (this._unprotectedHeader) {
-            throw new TypeError("setUnprotectedHeader can only be called once");
-        }
-        this._unprotectedHeader = unprotectedHeader;
-        return this;
-    }
-    async sign(key, options) {
-        if (!this._protectedHeader && !this._unprotectedHeader) {
-            throw new errors_js_1.JWSInvalid("either setProtectedHeader or setUnprotectedHeader must be called before #sign()");
-        }
-        if (!(0, is_disjoint_js_1.default)(this._protectedHeader, this._unprotectedHeader)) {
-            throw new errors_js_1.JWSInvalid("JWS Protected and JWS Unprotected Header Parameter names must be disjoint");
-        }
-        const joseHeader = {
-            ...this._protectedHeader,
-            ...this._unprotectedHeader
-        };
-        const extensions = (0, validate_crit_js_1.default)(errors_js_1.JWSInvalid, new Map([
-            [
-                "b64",
-                true
-            ]
-        ]), options === null || options === void 0 ? void 0 : options.crit, this._protectedHeader, joseHeader);
-        let b64 = true;
-        if (extensions.has("b64")) {
-            b64 = this._protectedHeader.b64;
-            if (typeof b64 !== "boolean") {
-                throw new errors_js_1.JWSInvalid('The "b64" (base64url-encode payload) Header Parameter must be a boolean');
-            }
-        }
-        const { alg } = joseHeader;
-        if (typeof alg !== "string" || !alg) {
-            throw new errors_js_1.JWSInvalid('JWS "alg" (Algorithm) Header Parameter missing or invalid');
-        }
-        (0, check_key_type_js_1.default)(alg, key, "sign");
-        let payload = this._payload;
-        if (b64) {
-            payload = buffer_utils_js_1.encoder.encode((0, base64url_js_1.encode)(payload));
-        }
-        let protectedHeader;
-        if (this._protectedHeader) {
-            protectedHeader = buffer_utils_js_1.encoder.encode((0, base64url_js_1.encode)(JSON.stringify(this._protectedHeader)));
-        } else {
-            protectedHeader = buffer_utils_js_1.encoder.encode("");
-        }
-        const data = (0, buffer_utils_js_1.concat)(protectedHeader, buffer_utils_js_1.encoder.encode("."), payload);
-        const signature = await (0, sign_js_1.default)(alg, key, data);
-        const jws = {
-            signature: (0, base64url_js_1.encode)(signature),
-            payload: ""
-        };
-        if (b64) {
-            jws.payload = buffer_utils_js_1.decoder.decode(payload);
-        }
-        if (this._unprotectedHeader) {
-            jws.header = this._unprotectedHeader;
-        }
-        if (this._protectedHeader) {
-            jws.protected = buffer_utils_js_1.decoder.decode(protectedHeader);
-        }
-        return jws;
-    }
-}
-exports.FlattenedSign = FlattenedSign;
-
-
-/***/ }),
-
-/***/ 78262:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.flattenedVerify = void 0;
-const base64url_js_1 = __webpack_require__(98844);
-const verify_js_1 = __webpack_require__(70924);
-const errors_js_1 = __webpack_require__(79522);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const is_disjoint_js_1 = __webpack_require__(15826);
-const is_object_js_1 = __webpack_require__(96004);
-const check_key_type_js_1 = __webpack_require__(12593);
-const validate_crit_js_1 = __webpack_require__(66435);
-const validate_algorithms_js_1 = __webpack_require__(48740);
-async function flattenedVerify(jws, key, options) {
-    var _a;
-    if (!(0, is_object_js_1.default)(jws)) {
-        throw new errors_js_1.JWSInvalid("Flattened JWS must be an object");
-    }
-    if (jws.protected === undefined && jws.header === undefined) {
-        throw new errors_js_1.JWSInvalid('Flattened JWS must have either of the "protected" or "header" members');
-    }
-    if (jws.protected !== undefined && typeof jws.protected !== "string") {
-        throw new errors_js_1.JWSInvalid("JWS Protected Header incorrect type");
-    }
-    if (jws.payload === undefined) {
-        throw new errors_js_1.JWSInvalid("JWS Payload missing");
-    }
-    if (typeof jws.signature !== "string") {
-        throw new errors_js_1.JWSInvalid("JWS Signature missing or incorrect type");
-    }
-    if (jws.header !== undefined && !(0, is_object_js_1.default)(jws.header)) {
-        throw new errors_js_1.JWSInvalid("JWS Unprotected Header incorrect type");
-    }
-    let parsedProt = {};
-    if (jws.protected) {
-        try {
-            const protectedHeader = (0, base64url_js_1.decode)(jws.protected);
-            parsedProt = JSON.parse(buffer_utils_js_1.decoder.decode(protectedHeader));
-        } catch  {
-            throw new errors_js_1.JWSInvalid("JWS Protected Header is invalid");
-        }
-    }
-    if (!(0, is_disjoint_js_1.default)(parsedProt, jws.header)) {
-        throw new errors_js_1.JWSInvalid("JWS Protected and JWS Unprotected Header Parameter names must be disjoint");
-    }
-    const joseHeader = {
-        ...parsedProt,
-        ...jws.header
-    };
-    const extensions = (0, validate_crit_js_1.default)(errors_js_1.JWSInvalid, new Map([
-        [
-            "b64",
-            true
-        ]
-    ]), options === null || options === void 0 ? void 0 : options.crit, parsedProt, joseHeader);
-    let b64 = true;
-    if (extensions.has("b64")) {
-        b64 = parsedProt.b64;
-        if (typeof b64 !== "boolean") {
-            throw new errors_js_1.JWSInvalid('The "b64" (base64url-encode payload) Header Parameter must be a boolean');
-        }
-    }
-    const { alg } = joseHeader;
-    if (typeof alg !== "string" || !alg) {
-        throw new errors_js_1.JWSInvalid('JWS "alg" (Algorithm) Header Parameter missing or invalid');
-    }
-    const algorithms = options && (0, validate_algorithms_js_1.default)("algorithms", options.algorithms);
-    if (algorithms && !algorithms.has(alg)) {
-        throw new errors_js_1.JOSEAlgNotAllowed('"alg" (Algorithm) Header Parameter not allowed');
-    }
-    if (b64) {
-        if (typeof jws.payload !== "string") {
-            throw new errors_js_1.JWSInvalid("JWS Payload must be a string");
-        }
-    } else if (typeof jws.payload !== "string" && !(jws.payload instanceof Uint8Array)) {
-        throw new errors_js_1.JWSInvalid("JWS Payload must be a string or an Uint8Array instance");
-    }
-    let resolvedKey = false;
-    if (typeof key === "function") {
-        key = await key(parsedProt, jws);
-        resolvedKey = true;
-    }
-    (0, check_key_type_js_1.default)(alg, key, "verify");
-    const data = (0, buffer_utils_js_1.concat)(buffer_utils_js_1.encoder.encode((_a = jws.protected) !== null && _a !== void 0 ? _a : ""), buffer_utils_js_1.encoder.encode("."), typeof jws.payload === "string" ? buffer_utils_js_1.encoder.encode(jws.payload) : jws.payload);
-    let signature;
-    try {
-        signature = (0, base64url_js_1.decode)(jws.signature);
-    } catch  {
-        throw new errors_js_1.JWSInvalid("Failed to base64url decode the signature");
-    }
-    const verified = await (0, verify_js_1.default)(alg, key, signature, data);
-    if (!verified) {
-        throw new errors_js_1.JWSSignatureVerificationFailed();
-    }
-    let payload;
-    if (b64) {
-        try {
-            payload = (0, base64url_js_1.decode)(jws.payload);
-        } catch  {
-            throw new errors_js_1.JWSInvalid("Failed to base64url decode the payload");
-        }
-    } else if (typeof jws.payload === "string") {
-        payload = buffer_utils_js_1.encoder.encode(jws.payload);
-    } else {
-        payload = jws.payload;
-    }
-    const result = {
-        payload
-    };
-    if (jws.protected !== undefined) {
-        result.protectedHeader = parsedProt;
-    }
-    if (jws.header !== undefined) {
-        result.unprotectedHeader = jws.header;
-    }
-    if (resolvedKey) {
-        return {
-            ...result,
-            key
-        };
-    }
-    return result;
-}
-exports.flattenedVerify = flattenedVerify;
-
-
-/***/ }),
-
-/***/ 70454:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.GeneralSign = void 0;
-const sign_js_1 = __webpack_require__(38430);
-const errors_js_1 = __webpack_require__(79522);
-class IndividualSignature {
-    constructor(sig, key, options){
-        this.parent = sig;
-        this.key = key;
-        this.options = options;
-    }
-    setProtectedHeader(protectedHeader) {
-        if (this.protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this.protectedHeader = protectedHeader;
-        return this;
-    }
-    setUnprotectedHeader(unprotectedHeader) {
-        if (this.unprotectedHeader) {
-            throw new TypeError("setUnprotectedHeader can only be called once");
-        }
-        this.unprotectedHeader = unprotectedHeader;
-        return this;
-    }
-    addSignature(...args) {
-        return this.parent.addSignature(...args);
-    }
-    sign(...args) {
-        return this.parent.sign(...args);
-    }
-    done() {
-        return this.parent;
-    }
-}
-class GeneralSign {
-    constructor(payload){
-        this._signatures = [];
-        this._payload = payload;
-    }
-    addSignature(key, options) {
-        const signature = new IndividualSignature(this, key, options);
-        this._signatures.push(signature);
-        return signature;
-    }
-    async sign() {
-        if (!this._signatures.length) {
-            throw new errors_js_1.JWSInvalid("at least one signature must be added");
-        }
-        const jws = {
-            signatures: [],
-            payload: ""
-        };
-        for(let i = 0; i < this._signatures.length; i++){
-            const signature = this._signatures[i];
-            const flattened = new sign_js_1.FlattenedSign(this._payload);
-            flattened.setProtectedHeader(signature.protectedHeader);
-            flattened.setUnprotectedHeader(signature.unprotectedHeader);
-            const { payload, ...rest } = await flattened.sign(signature.key, signature.options);
-            if (i === 0) {
-                jws.payload = payload;
-            } else if (jws.payload !== payload) {
-                throw new errors_js_1.JWSInvalid("inconsistent use of JWS Unencoded Payload (RFC7797)");
-            }
-            jws.signatures.push(rest);
-        }
-        return jws;
-    }
-}
-exports.GeneralSign = GeneralSign;
-
-
-/***/ }),
-
-/***/ 70433:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generalVerify = void 0;
-const verify_js_1 = __webpack_require__(78262);
-const errors_js_1 = __webpack_require__(79522);
-const is_object_js_1 = __webpack_require__(96004);
-async function generalVerify(jws, key, options) {
-    if (!(0, is_object_js_1.default)(jws)) {
-        throw new errors_js_1.JWSInvalid("General JWS must be an object");
-    }
-    if (!Array.isArray(jws.signatures) || !jws.signatures.every(is_object_js_1.default)) {
-        throw new errors_js_1.JWSInvalid("JWS Signatures missing or incorrect type");
-    }
-    for (const signature of jws.signatures){
-        try {
-            return await (0, verify_js_1.flattenedVerify)({
-                header: signature.header,
-                payload: jws.payload,
-                protected: signature.protected,
-                signature: signature.signature
-            }, key, options);
-        } catch  {}
-    }
-    throw new errors_js_1.JWSSignatureVerificationFailed();
-}
-exports.generalVerify = generalVerify;
-
-
-/***/ }),
-
-/***/ 26032:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.jwtDecrypt = void 0;
-const decrypt_js_1 = __webpack_require__(58933);
-const jwt_claims_set_js_1 = __webpack_require__(43359);
-const errors_js_1 = __webpack_require__(79522);
-async function jwtDecrypt(jwt, key, options) {
-    const decrypted = await (0, decrypt_js_1.compactDecrypt)(jwt, key, options);
-    const payload = (0, jwt_claims_set_js_1.default)(decrypted.protectedHeader, decrypted.plaintext, options);
-    const { protectedHeader } = decrypted;
-    if (protectedHeader.iss !== undefined && protectedHeader.iss !== payload.iss) {
-        throw new errors_js_1.JWTClaimValidationFailed('replicated "iss" claim header parameter mismatch', "iss", "mismatch");
-    }
-    if (protectedHeader.sub !== undefined && protectedHeader.sub !== payload.sub) {
-        throw new errors_js_1.JWTClaimValidationFailed('replicated "sub" claim header parameter mismatch', "sub", "mismatch");
-    }
-    if (protectedHeader.aud !== undefined && JSON.stringify(protectedHeader.aud) !== JSON.stringify(payload.aud)) {
-        throw new errors_js_1.JWTClaimValidationFailed('replicated "aud" claim header parameter mismatch', "aud", "mismatch");
-    }
-    const result = {
-        payload,
-        protectedHeader
-    };
-    if (typeof key === "function") {
-        return {
-            ...result,
-            key: decrypted.key
-        };
-    }
-    return result;
-}
-exports.jwtDecrypt = jwtDecrypt;
-
-
-/***/ }),
-
-/***/ 69147:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.EncryptJWT = void 0;
-const encrypt_js_1 = __webpack_require__(32971);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const produce_js_1 = __webpack_require__(48765);
-class EncryptJWT extends produce_js_1.ProduceJWT {
-    setProtectedHeader(protectedHeader) {
-        if (this._protectedHeader) {
-            throw new TypeError("setProtectedHeader can only be called once");
-        }
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    setKeyManagementParameters(parameters) {
-        if (this._keyManagementParameters) {
-            throw new TypeError("setKeyManagementParameters can only be called once");
-        }
-        this._keyManagementParameters = parameters;
-        return this;
-    }
-    setContentEncryptionKey(cek) {
-        if (this._cek) {
-            throw new TypeError("setContentEncryptionKey can only be called once");
-        }
-        this._cek = cek;
-        return this;
-    }
-    setInitializationVector(iv) {
-        if (this._iv) {
-            throw new TypeError("setInitializationVector can only be called once");
-        }
-        this._iv = iv;
-        return this;
-    }
-    replicateIssuerAsHeader() {
-        this._replicateIssuerAsHeader = true;
-        return this;
-    }
-    replicateSubjectAsHeader() {
-        this._replicateSubjectAsHeader = true;
-        return this;
-    }
-    replicateAudienceAsHeader() {
-        this._replicateAudienceAsHeader = true;
-        return this;
-    }
-    async encrypt(key, options) {
-        const enc = new encrypt_js_1.CompactEncrypt(buffer_utils_js_1.encoder.encode(JSON.stringify(this._payload)));
-        if (this._replicateIssuerAsHeader) {
-            this._protectedHeader = {
-                ...this._protectedHeader,
-                iss: this._payload.iss
-            };
-        }
-        if (this._replicateSubjectAsHeader) {
-            this._protectedHeader = {
-                ...this._protectedHeader,
-                sub: this._payload.sub
-            };
-        }
-        if (this._replicateAudienceAsHeader) {
-            this._protectedHeader = {
-                ...this._protectedHeader,
-                aud: this._payload.aud
-            };
-        }
-        enc.setProtectedHeader(this._protectedHeader);
-        if (this._iv) {
-            enc.setInitializationVector(this._iv);
-        }
-        if (this._cek) {
-            enc.setContentEncryptionKey(this._cek);
-        }
-        if (this._keyManagementParameters) {
-            enc.setKeyManagementParameters(this._keyManagementParameters);
-        }
-        return enc.encrypt(key, options);
-    }
-}
-exports.EncryptJWT = EncryptJWT;
-
-
-/***/ }),
-
-/***/ 48765:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.ProduceJWT = void 0;
-const epoch_js_1 = __webpack_require__(10581);
-const is_object_js_1 = __webpack_require__(96004);
-const secs_js_1 = __webpack_require__(13972);
-class ProduceJWT {
-    constructor(payload){
-        if (!(0, is_object_js_1.default)(payload)) {
-            throw new TypeError("JWT Claims Set MUST be an object");
-        }
-        this._payload = payload;
-    }
-    setIssuer(issuer) {
-        this._payload = {
-            ...this._payload,
-            iss: issuer
-        };
-        return this;
-    }
-    setSubject(subject) {
-        this._payload = {
-            ...this._payload,
-            sub: subject
-        };
-        return this;
-    }
-    setAudience(audience) {
-        this._payload = {
-            ...this._payload,
-            aud: audience
-        };
-        return this;
-    }
-    setJti(jwtId) {
-        this._payload = {
-            ...this._payload,
-            jti: jwtId
-        };
-        return this;
-    }
-    setNotBefore(input) {
-        if (typeof input === "number") {
-            this._payload = {
-                ...this._payload,
-                nbf: input
-            };
-        } else {
-            this._payload = {
-                ...this._payload,
-                nbf: (0, epoch_js_1.default)(new Date()) + (0, secs_js_1.default)(input)
-            };
-        }
-        return this;
-    }
-    setExpirationTime(input) {
-        if (typeof input === "number") {
-            this._payload = {
-                ...this._payload,
-                exp: input
-            };
-        } else {
-            this._payload = {
-                ...this._payload,
-                exp: (0, epoch_js_1.default)(new Date()) + (0, secs_js_1.default)(input)
-            };
-        }
-        return this;
-    }
-    setIssuedAt(input) {
-        if (typeof input === "undefined") {
-            this._payload = {
-                ...this._payload,
-                iat: (0, epoch_js_1.default)(new Date())
-            };
-        } else {
-            this._payload = {
-                ...this._payload,
-                iat: input
-            };
-        }
-        return this;
-    }
-}
-exports.ProduceJWT = ProduceJWT;
-
-
-/***/ }),
-
-/***/ 90743:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.SignJWT = void 0;
-const sign_js_1 = __webpack_require__(53274);
-const errors_js_1 = __webpack_require__(79522);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const produce_js_1 = __webpack_require__(48765);
-class SignJWT extends produce_js_1.ProduceJWT {
-    setProtectedHeader(protectedHeader) {
-        this._protectedHeader = protectedHeader;
-        return this;
-    }
-    async sign(key, options) {
-        var _a;
-        const sig = new sign_js_1.CompactSign(buffer_utils_js_1.encoder.encode(JSON.stringify(this._payload)));
-        sig.setProtectedHeader(this._protectedHeader);
-        if (Array.isArray((_a = this._protectedHeader) === null || _a === void 0 ? void 0 : _a.crit) && this._protectedHeader.crit.includes("b64") && this._protectedHeader.b64 === false) {
-            throw new errors_js_1.JWTInvalid("JWTs MUST NOT use unencoded payload");
-        }
-        return sig.sign(key, options);
-    }
-}
-exports.SignJWT = SignJWT;
-
-
-/***/ }),
-
-/***/ 85884:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.UnsecuredJWT = void 0;
-const base64url = __webpack_require__(98844);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const errors_js_1 = __webpack_require__(79522);
-const jwt_claims_set_js_1 = __webpack_require__(43359);
-const produce_js_1 = __webpack_require__(48765);
-class UnsecuredJWT extends produce_js_1.ProduceJWT {
-    encode() {
-        const header = base64url.encode(JSON.stringify({
-            alg: "none"
-        }));
-        const payload = base64url.encode(JSON.stringify(this._payload));
-        return `${header}.${payload}.`;
-    }
-    static decode(jwt, options) {
-        if (typeof jwt !== "string") {
-            throw new errors_js_1.JWTInvalid("Unsecured JWT must be a string");
-        }
-        const { 0: encodedHeader, 1: encodedPayload, 2: signature, length } = jwt.split(".");
-        if (length !== 3 || signature !== "") {
-            throw new errors_js_1.JWTInvalid("Invalid Unsecured JWT");
-        }
-        let header;
-        try {
-            header = JSON.parse(buffer_utils_js_1.decoder.decode(base64url.decode(encodedHeader)));
-            if (header.alg !== "none") throw new Error();
-        } catch  {
-            throw new errors_js_1.JWTInvalid("Invalid Unsecured JWT");
-        }
-        const payload = (0, jwt_claims_set_js_1.default)(header, base64url.decode(encodedPayload), options);
-        return {
-            payload,
-            header
-        };
-    }
-}
-exports.UnsecuredJWT = UnsecuredJWT;
-
-
-/***/ }),
-
-/***/ 37385:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.jwtVerify = void 0;
-const verify_js_1 = __webpack_require__(31729);
-const jwt_claims_set_js_1 = __webpack_require__(43359);
-const errors_js_1 = __webpack_require__(79522);
-async function jwtVerify(jwt, key, options) {
-    var _a;
-    const verified = await (0, verify_js_1.compactVerify)(jwt, key, options);
-    if (((_a = verified.protectedHeader.crit) === null || _a === void 0 ? void 0 : _a.includes("b64")) && verified.protectedHeader.b64 === false) {
-        throw new errors_js_1.JWTInvalid("JWTs MUST NOT use unencoded payload");
-    }
-    const payload = (0, jwt_claims_set_js_1.default)(verified.protectedHeader, verified.payload, options);
-    const result = {
-        payload,
-        protectedHeader: verified.protectedHeader
-    };
-    if (typeof key === "function") {
-        return {
-            ...result,
-            key: verified.key
-        };
-    }
-    return result;
-}
-exports.jwtVerify = jwtVerify;
-
-
-/***/ }),
-
-/***/ 82254:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.exportJWK = exports.exportPKCS8 = exports.exportSPKI = void 0;
-const asn1_js_1 = __webpack_require__(8321);
-const asn1_js_2 = __webpack_require__(8321);
-const key_to_jwk_js_1 = __webpack_require__(61524);
-async function exportSPKI(key) {
-    return (0, asn1_js_1.toSPKI)(key);
-}
-exports.exportSPKI = exportSPKI;
-async function exportPKCS8(key) {
-    return (0, asn1_js_2.toPKCS8)(key);
-}
-exports.exportPKCS8 = exportPKCS8;
-async function exportJWK(key) {
-    return (0, key_to_jwk_js_1.default)(key);
-}
-exports.exportJWK = exportJWK;
-
-
-/***/ }),
-
-/***/ 61623:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generateKeyPair = void 0;
-const generate_js_1 = __webpack_require__(48866);
-async function generateKeyPair(alg, options) {
-    return (0, generate_js_1.generateKeyPair)(alg, options);
-}
-exports.generateKeyPair = generateKeyPair;
-
-
-/***/ }),
-
-/***/ 16791:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generateSecret = void 0;
-const generate_js_1 = __webpack_require__(48866);
-async function generateSecret(alg, options) {
-    return (0, generate_js_1.generateSecret)(alg, options);
-}
-exports.generateSecret = generateSecret;
-
-
-/***/ }),
-
-/***/ 71283:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.importJWK = exports.importPKCS8 = exports.importX509 = exports.importSPKI = void 0;
-const base64url_js_1 = __webpack_require__(98844);
-const asn1_js_1 = __webpack_require__(8321);
-const jwk_to_key_js_1 = __webpack_require__(64204);
-const errors_js_1 = __webpack_require__(79522);
-const is_object_js_1 = __webpack_require__(96004);
-async function importSPKI(spki, alg, options) {
-    if (typeof spki !== "string" || spki.indexOf("-----BEGIN PUBLIC KEY-----") !== 0) {
-        throw new TypeError('"spki" must be SPKI formatted string');
-    }
-    return (0, asn1_js_1.fromSPKI)(spki, alg, options);
-}
-exports.importSPKI = importSPKI;
-async function importX509(x509, alg, options) {
-    if (typeof x509 !== "string" || x509.indexOf("-----BEGIN CERTIFICATE-----") !== 0) {
-        throw new TypeError('"x509" must be X.509 formatted string');
-    }
-    return (0, asn1_js_1.fromX509)(x509, alg, options);
-}
-exports.importX509 = importX509;
-async function importPKCS8(pkcs8, alg, options) {
-    if (typeof pkcs8 !== "string" || pkcs8.indexOf("-----BEGIN PRIVATE KEY-----") !== 0) {
-        throw new TypeError('"pkcs8" must be PKCS#8 formatted string');
-    }
-    return (0, asn1_js_1.fromPKCS8)(pkcs8, alg, options);
-}
-exports.importPKCS8 = importPKCS8;
-async function importJWK(jwk, alg, octAsKeyObject) {
-    var _a;
-    if (!(0, is_object_js_1.default)(jwk)) {
-        throw new TypeError("JWK must be an object");
-    }
-    alg || (alg = jwk.alg);
-    switch(jwk.kty){
-        case "oct":
-            if (typeof jwk.k !== "string" || !jwk.k) {
-                throw new TypeError('missing "k" (Key Value) Parameter value');
-            }
-            octAsKeyObject !== null && octAsKeyObject !== void 0 ? octAsKeyObject : octAsKeyObject = jwk.ext !== true;
-            if (octAsKeyObject) {
-                return (0, jwk_to_key_js_1.default)({
-                    ...jwk,
-                    alg,
-                    ext: (_a = jwk.ext) !== null && _a !== void 0 ? _a : false
-                });
-            }
-            return (0, base64url_js_1.decode)(jwk.k);
-        case "RSA":
-            if (jwk.oth !== undefined) {
-                throw new errors_js_1.JOSENotSupported('RSA JWK "oth" (Other Primes Info) Parameter value is not supported');
-            }
-        case "EC":
-        case "OKP":
-            return (0, jwk_to_key_js_1.default)({
-                ...jwk,
-                alg
-            });
-        default:
-            throw new errors_js_1.JOSENotSupported('Unsupported "kty" (Key Type) Parameter value');
-    }
-}
-exports.importJWK = importJWK;
-
-
-/***/ }),
-
-/***/ 38324:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.unwrap = exports.wrap = void 0;
-const encrypt_js_1 = __webpack_require__(88586);
-const decrypt_js_1 = __webpack_require__(67302);
-const iv_js_1 = __webpack_require__(4700);
-const base64url_js_1 = __webpack_require__(98844);
-async function wrap(alg, key, cek, iv) {
-    const jweAlgorithm = alg.slice(0, 7);
-    iv || (iv = (0, iv_js_1.default)(jweAlgorithm));
-    const { ciphertext: encryptedKey, tag } = await (0, encrypt_js_1.default)(jweAlgorithm, cek, key, iv, new Uint8Array(0));
-    return {
-        encryptedKey,
-        iv: (0, base64url_js_1.encode)(iv),
-        tag: (0, base64url_js_1.encode)(tag)
-    };
-}
-exports.wrap = wrap;
-async function unwrap(alg, key, encryptedKey, iv, tag) {
-    const jweAlgorithm = alg.slice(0, 7);
-    return (0, decrypt_js_1.default)(jweAlgorithm, key, encryptedKey, iv, tag, new Uint8Array(0));
-}
-exports.unwrap = unwrap;
-
-
-/***/ }),
-
-/***/ 91108:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.concatKdf = exports.lengthAndInput = exports.uint32be = exports.uint64be = exports.p2s = exports.concat = exports.decoder = exports.encoder = void 0;
-const digest_js_1 = __webpack_require__(56494);
-exports.encoder = new TextEncoder();
-exports.decoder = new TextDecoder();
-const MAX_INT32 = 2 ** 32;
-function concat(...buffers) {
-    const size = buffers.reduce((acc, { length })=>acc + length, 0);
-    const buf = new Uint8Array(size);
-    let i = 0;
-    buffers.forEach((buffer)=>{
-        buf.set(buffer, i);
-        i += buffer.length;
-    });
-    return buf;
-}
-exports.concat = concat;
-function p2s(alg, p2sInput) {
-    return concat(exports.encoder.encode(alg), new Uint8Array([
-        0
-    ]), p2sInput);
-}
-exports.p2s = p2s;
-function writeUInt32BE(buf, value, offset) {
-    if (value < 0 || value >= MAX_INT32) {
-        throw new RangeError(`value must be >= 0 and <= ${MAX_INT32 - 1}. Received ${value}`);
-    }
-    buf.set([
-        value >>> 24,
-        value >>> 16,
-        value >>> 8,
-        value & 0xff
-    ], offset);
-}
-function uint64be(value) {
-    const high = Math.floor(value / MAX_INT32);
-    const low = value % MAX_INT32;
-    const buf = new Uint8Array(8);
-    writeUInt32BE(buf, high, 0);
-    writeUInt32BE(buf, low, 4);
-    return buf;
-}
-exports.uint64be = uint64be;
-function uint32be(value) {
-    const buf = new Uint8Array(4);
-    writeUInt32BE(buf, value);
-    return buf;
-}
-exports.uint32be = uint32be;
-function lengthAndInput(input) {
-    return concat(uint32be(input.length), input);
-}
-exports.lengthAndInput = lengthAndInput;
-async function concatKdf(secret, bits, value) {
-    const iterations = Math.ceil((bits >> 3) / 32);
-    const res = new Uint8Array(iterations * 32);
-    for(let iter = 0; iter < iterations; iter++){
-        const buf = new Uint8Array(4 + secret.length + value.length);
-        buf.set(uint32be(iter + 1));
-        buf.set(secret, 4);
-        buf.set(value, 4 + secret.length);
-        res.set(await (0, digest_js_1.default)("sha256", buf), iter * 32);
-    }
-    return res.slice(0, bits >> 3);
-}
-exports.concatKdf = concatKdf;
-
-
-/***/ }),
-
-/***/ 36376:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.bitLength = void 0;
-const errors_js_1 = __webpack_require__(79522);
-const random_js_1 = __webpack_require__(1824);
-function bitLength(alg) {
-    switch(alg){
-        case "A128GCM":
-            return 128;
-        case "A192GCM":
-            return 192;
-        case "A256GCM":
-        case "A128CBC-HS256":
-            return 256;
-        case "A192CBC-HS384":
-            return 384;
-        case "A256CBC-HS512":
-            return 512;
-        default:
-            throw new errors_js_1.JOSENotSupported(`Unsupported JWE Algorithm: ${alg}`);
-    }
-}
-exports.bitLength = bitLength;
-exports["default"] = (alg)=>(0, random_js_1.default)(new Uint8Array(bitLength(alg) >> 3));
-
-
-/***/ }),
-
-/***/ 15133:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(79522);
-const iv_js_1 = __webpack_require__(4700);
-const checkIvLength = (enc, iv)=>{
-    if (iv.length << 3 !== (0, iv_js_1.bitLength)(enc)) {
-        throw new errors_js_1.JWEInvalid("Invalid Initialization Vector length");
-    }
-};
-exports["default"] = checkIvLength;
-
-
-/***/ }),
-
-/***/ 12593:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const is_key_like_js_1 = __webpack_require__(68706);
-const symmetricTypeCheck = (alg, key)=>{
-    if (key instanceof Uint8Array) return;
-    if (!(0, is_key_like_js_1.default)(key)) {
-        throw new TypeError((0, invalid_key_input_js_1.withAlg)(alg, key, ...is_key_like_js_1.types, "Uint8Array"));
-    }
-    if (key.type !== "secret") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for symmetric algorithms must be of type "secret"`);
-    }
-};
-const asymmetricTypeCheck = (alg, key, usage)=>{
-    if (!(0, is_key_like_js_1.default)(key)) {
-        throw new TypeError((0, invalid_key_input_js_1.withAlg)(alg, key, ...is_key_like_js_1.types));
-    }
-    if (key.type === "secret") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithms must not be of type "secret"`);
-    }
-    if (usage === "sign" && key.type === "public") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm signing must be of type "private"`);
-    }
-    if (usage === "decrypt" && key.type === "public") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm decryption must be of type "private"`);
-    }
-    if (key.algorithm && usage === "verify" && key.type === "private") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm verifying must be of type "public"`);
-    }
-    if (key.algorithm && usage === "encrypt" && key.type === "private") {
-        throw new TypeError(`${is_key_like_js_1.types.join(" or ")} instances for asymmetric algorithm encryption must be of type "public"`);
-    }
-};
-const checkKeyType = (alg, key, usage)=>{
-    const symmetric = alg.startsWith("HS") || alg === "dir" || alg.startsWith("PBES2") || /^A\d{3}(?:GCM)?KW$/.test(alg);
-    if (symmetric) {
-        symmetricTypeCheck(alg, key);
-    } else {
-        asymmetricTypeCheck(alg, key, usage);
-    }
-};
-exports["default"] = checkKeyType;
-
-
-/***/ }),
-
-/***/ 76206:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(79522);
-function checkP2s(p2s) {
-    if (!(p2s instanceof Uint8Array) || p2s.length < 8) {
-        throw new errors_js_1.JWEInvalid("PBES2 Salt Input must be 8 or more octets");
-    }
-}
-exports["default"] = checkP2s;
-
-
-/***/ }),
-
-/***/ 69836:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.checkEncCryptoKey = exports.checkSigCryptoKey = void 0;
-function unusable(name, prop = "algorithm.name") {
-    return new TypeError(`CryptoKey does not support this operation, its ${prop} must be ${name}`);
-}
-function isAlgorithm(algorithm, name) {
-    return algorithm.name === name;
-}
-function getHashLength(hash) {
-    return parseInt(hash.name.slice(4), 10);
-}
-function getNamedCurve(alg) {
-    switch(alg){
-        case "ES256":
-            return "P-256";
-        case "ES384":
-            return "P-384";
-        case "ES512":
-            return "P-521";
-        default:
-            throw new Error("unreachable");
-    }
-}
-function checkUsage(key, usages) {
-    if (usages.length && !usages.some((expected)=>key.usages.includes(expected))) {
-        let msg = "CryptoKey does not support this operation, its usages must include ";
-        if (usages.length > 2) {
-            const last = usages.pop();
-            msg += `one of ${usages.join(", ")}, or ${last}.`;
-        } else if (usages.length === 2) {
-            msg += `one of ${usages[0]} or ${usages[1]}.`;
-        } else {
-            msg += `${usages[0]}.`;
-        }
-        throw new TypeError(msg);
-    }
-}
-function checkSigCryptoKey(key, alg, ...usages) {
-    switch(alg){
-        case "HS256":
-        case "HS384":
-        case "HS512":
-            {
-                if (!isAlgorithm(key.algorithm, "HMAC")) throw unusable("HMAC");
-                const expected = parseInt(alg.slice(2), 10);
-                const actual = getHashLength(key.algorithm.hash);
-                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
-                break;
-            }
-        case "RS256":
-        case "RS384":
-        case "RS512":
-            {
-                if (!isAlgorithm(key.algorithm, "RSASSA-PKCS1-v1_5")) throw unusable("RSASSA-PKCS1-v1_5");
-                const expected = parseInt(alg.slice(2), 10);
-                const actual = getHashLength(key.algorithm.hash);
-                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
-                break;
-            }
-        case "PS256":
-        case "PS384":
-        case "PS512":
-            {
-                if (!isAlgorithm(key.algorithm, "RSA-PSS")) throw unusable("RSA-PSS");
-                const expected = parseInt(alg.slice(2), 10);
-                const actual = getHashLength(key.algorithm.hash);
-                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
-                break;
-            }
-        case "EdDSA":
-            {
-                if (key.algorithm.name !== "Ed25519" && key.algorithm.name !== "Ed448") {
-                    throw unusable("Ed25519 or Ed448");
-                }
-                break;
-            }
-        case "ES256":
-        case "ES384":
-        case "ES512":
-            {
-                if (!isAlgorithm(key.algorithm, "ECDSA")) throw unusable("ECDSA");
-                const expected = getNamedCurve(alg);
-                const actual = key.algorithm.namedCurve;
-                if (actual !== expected) throw unusable(expected, "algorithm.namedCurve");
-                break;
-            }
-        default:
-            throw new TypeError("CryptoKey does not support this operation");
-    }
-    checkUsage(key, usages);
-}
-exports.checkSigCryptoKey = checkSigCryptoKey;
-function checkEncCryptoKey(key, alg, ...usages) {
-    switch(alg){
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            {
-                if (!isAlgorithm(key.algorithm, "AES-GCM")) throw unusable("AES-GCM");
-                const expected = parseInt(alg.slice(1, 4), 10);
-                const actual = key.algorithm.length;
-                if (actual !== expected) throw unusable(expected, "algorithm.length");
-                break;
-            }
-        case "A128KW":
-        case "A192KW":
-        case "A256KW":
-            {
-                if (!isAlgorithm(key.algorithm, "AES-KW")) throw unusable("AES-KW");
-                const expected = parseInt(alg.slice(1, 4), 10);
-                const actual = key.algorithm.length;
-                if (actual !== expected) throw unusable(expected, "algorithm.length");
-                break;
-            }
-        case "ECDH":
-            {
-                switch(key.algorithm.name){
-                    case "ECDH":
-                    case "X25519":
-                    case "X448":
-                        break;
-                    default:
-                        throw unusable("ECDH, X25519, or X448");
-                }
-                break;
-            }
-        case "PBES2-HS256+A128KW":
-        case "PBES2-HS384+A192KW":
-        case "PBES2-HS512+A256KW":
-            if (!isAlgorithm(key.algorithm, "PBKDF2")) throw unusable("PBKDF2");
-            break;
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-            {
-                if (!isAlgorithm(key.algorithm, "RSA-OAEP")) throw unusable("RSA-OAEP");
-                const expected = parseInt(alg.slice(9), 10) || 1;
-                const actual = getHashLength(key.algorithm.hash);
-                if (actual !== expected) throw unusable(`SHA-${expected}`, "algorithm.hash");
-                break;
-            }
-        default:
-            throw new TypeError("CryptoKey does not support this operation");
-    }
-    checkUsage(key, usages);
-}
-exports.checkEncCryptoKey = checkEncCryptoKey;
-
-
-/***/ }),
-
-/***/ 92286:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const aeskw_js_1 = __webpack_require__(43349);
-const ECDH = __webpack_require__(51170);
-const pbes2kw_js_1 = __webpack_require__(41254);
-const rsaes_js_1 = __webpack_require__(25469);
-const base64url_js_1 = __webpack_require__(98844);
-const errors_js_1 = __webpack_require__(79522);
-const cek_js_1 = __webpack_require__(36376);
-const import_js_1 = __webpack_require__(71283);
-const check_key_type_js_1 = __webpack_require__(12593);
-const is_object_js_1 = __webpack_require__(96004);
-const aesgcmkw_js_1 = __webpack_require__(38324);
-async function decryptKeyManagement(alg, key, encryptedKey, joseHeader, options) {
-    (0, check_key_type_js_1.default)(alg, key, "decrypt");
-    switch(alg){
-        case "dir":
-            {
-                if (encryptedKey !== undefined) throw new errors_js_1.JWEInvalid("Encountered unexpected JWE Encrypted Key");
-                return key;
-            }
-        case "ECDH-ES":
-            if (encryptedKey !== undefined) throw new errors_js_1.JWEInvalid("Encountered unexpected JWE Encrypted Key");
-        case "ECDH-ES+A128KW":
-        case "ECDH-ES+A192KW":
-        case "ECDH-ES+A256KW":
-            {
-                if (!(0, is_object_js_1.default)(joseHeader.epk)) throw new errors_js_1.JWEInvalid(`JOSE Header "epk" (Ephemeral Public Key) missing or invalid`);
-                if (!ECDH.ecdhAllowed(key)) throw new errors_js_1.JOSENotSupported("ECDH with the provided key is not allowed or not supported by your javascript runtime");
-                const epk = await (0, import_js_1.importJWK)(joseHeader.epk, alg);
-                let partyUInfo;
-                let partyVInfo;
-                if (joseHeader.apu !== undefined) {
-                    if (typeof joseHeader.apu !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "apu" (Agreement PartyUInfo) invalid`);
-                    try {
-                        partyUInfo = (0, base64url_js_1.decode)(joseHeader.apu);
-                    } catch  {
-                        throw new errors_js_1.JWEInvalid("Failed to base64url decode the apu");
-                    }
-                }
-                if (joseHeader.apv !== undefined) {
-                    if (typeof joseHeader.apv !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "apv" (Agreement PartyVInfo) invalid`);
-                    try {
-                        partyVInfo = (0, base64url_js_1.decode)(joseHeader.apv);
-                    } catch  {
-                        throw new errors_js_1.JWEInvalid("Failed to base64url decode the apv");
-                    }
-                }
-                const sharedSecret = await ECDH.deriveKey(epk, key, alg === "ECDH-ES" ? joseHeader.enc : alg, alg === "ECDH-ES" ? (0, cek_js_1.bitLength)(joseHeader.enc) : parseInt(alg.slice(-5, -2), 10), partyUInfo, partyVInfo);
-                if (alg === "ECDH-ES") return sharedSecret;
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                return (0, aeskw_js_1.unwrap)(alg.slice(-6), sharedSecret, encryptedKey);
-            }
-        case "RSA1_5":
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-            {
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                return (0, rsaes_js_1.decrypt)(alg, key, encryptedKey);
-            }
-        case "PBES2-HS256+A128KW":
-        case "PBES2-HS384+A192KW":
-        case "PBES2-HS512+A256KW":
-            {
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                if (typeof joseHeader.p2c !== "number") throw new errors_js_1.JWEInvalid(`JOSE Header "p2c" (PBES2 Count) missing or invalid`);
-                const p2cLimit = (options === null || options === void 0 ? void 0 : options.maxPBES2Count) || 10000;
-                if (joseHeader.p2c > p2cLimit) throw new errors_js_1.JWEInvalid(`JOSE Header "p2c" (PBES2 Count) out is of acceptable bounds`);
-                if (typeof joseHeader.p2s !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "p2s" (PBES2 Salt) missing or invalid`);
-                let p2s;
-                try {
-                    p2s = (0, base64url_js_1.decode)(joseHeader.p2s);
-                } catch  {
-                    throw new errors_js_1.JWEInvalid("Failed to base64url decode the p2s");
-                }
-                return (0, pbes2kw_js_1.decrypt)(alg, key, encryptedKey, joseHeader.p2c, p2s);
-            }
-        case "A128KW":
-        case "A192KW":
-        case "A256KW":
-            {
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                return (0, aeskw_js_1.unwrap)(alg, key, encryptedKey);
-            }
-        case "A128GCMKW":
-        case "A192GCMKW":
-        case "A256GCMKW":
-            {
-                if (encryptedKey === undefined) throw new errors_js_1.JWEInvalid("JWE Encrypted Key missing");
-                if (typeof joseHeader.iv !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "iv" (Initialization Vector) missing or invalid`);
-                if (typeof joseHeader.tag !== "string") throw new errors_js_1.JWEInvalid(`JOSE Header "tag" (Authentication Tag) missing or invalid`);
-                let iv;
-                try {
-                    iv = (0, base64url_js_1.decode)(joseHeader.iv);
-                } catch  {
-                    throw new errors_js_1.JWEInvalid("Failed to base64url decode the iv");
-                }
-                let tag;
-                try {
-                    tag = (0, base64url_js_1.decode)(joseHeader.tag);
-                } catch  {
-                    throw new errors_js_1.JWEInvalid("Failed to base64url decode the tag");
-                }
-                return (0, aesgcmkw_js_1.unwrap)(alg, key, encryptedKey, iv, tag);
-            }
-        default:
-            {
-                throw new errors_js_1.JOSENotSupported('Invalid or unsupported "alg" (JWE Algorithm) header value');
-            }
-    }
-}
-exports["default"] = decryptKeyManagement;
-
-
-/***/ }),
-
-/***/ 49351:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const aeskw_js_1 = __webpack_require__(43349);
-const ECDH = __webpack_require__(51170);
-const pbes2kw_js_1 = __webpack_require__(41254);
-const rsaes_js_1 = __webpack_require__(25469);
-const base64url_js_1 = __webpack_require__(98844);
-const cek_js_1 = __webpack_require__(36376);
-const errors_js_1 = __webpack_require__(79522);
-const export_js_1 = __webpack_require__(82254);
-const check_key_type_js_1 = __webpack_require__(12593);
-const aesgcmkw_js_1 = __webpack_require__(38324);
-async function encryptKeyManagement(alg, enc, key, providedCek, providedParameters = {}) {
-    let encryptedKey;
-    let parameters;
-    let cek;
-    (0, check_key_type_js_1.default)(alg, key, "encrypt");
-    switch(alg){
-        case "dir":
-            {
-                cek = key;
-                break;
-            }
-        case "ECDH-ES":
-        case "ECDH-ES+A128KW":
-        case "ECDH-ES+A192KW":
-        case "ECDH-ES+A256KW":
-            {
-                if (!ECDH.ecdhAllowed(key)) {
-                    throw new errors_js_1.JOSENotSupported("ECDH with the provided key is not allowed or not supported by your javascript runtime");
-                }
-                const { apu, apv } = providedParameters;
-                let { epk: ephemeralKey } = providedParameters;
-                ephemeralKey || (ephemeralKey = (await ECDH.generateEpk(key)).privateKey);
-                const { x, y, crv, kty } = await (0, export_js_1.exportJWK)(ephemeralKey);
-                const sharedSecret = await ECDH.deriveKey(key, ephemeralKey, alg === "ECDH-ES" ? enc : alg, alg === "ECDH-ES" ? (0, cek_js_1.bitLength)(enc) : parseInt(alg.slice(-5, -2), 10), apu, apv);
-                parameters = {
-                    epk: {
-                        x,
-                        crv,
-                        kty
-                    }
-                };
-                if (kty === "EC") parameters.epk.y = y;
-                if (apu) parameters.apu = (0, base64url_js_1.encode)(apu);
-                if (apv) parameters.apv = (0, base64url_js_1.encode)(apv);
-                if (alg === "ECDH-ES") {
-                    cek = sharedSecret;
-                    break;
-                }
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                const kwAlg = alg.slice(-6);
-                encryptedKey = await (0, aeskw_js_1.wrap)(kwAlg, sharedSecret, cek);
-                break;
-            }
-        case "RSA1_5":
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-            {
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                encryptedKey = await (0, rsaes_js_1.encrypt)(alg, key, cek);
-                break;
-            }
-        case "PBES2-HS256+A128KW":
-        case "PBES2-HS384+A192KW":
-        case "PBES2-HS512+A256KW":
-            {
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                const { p2c, p2s } = providedParameters;
-                ({ encryptedKey, ...parameters } = await (0, pbes2kw_js_1.encrypt)(alg, key, cek, p2c, p2s));
-                break;
-            }
-        case "A128KW":
-        case "A192KW":
-        case "A256KW":
-            {
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                encryptedKey = await (0, aeskw_js_1.wrap)(alg, key, cek);
-                break;
-            }
-        case "A128GCMKW":
-        case "A192GCMKW":
-        case "A256GCMKW":
-            {
-                cek = providedCek || (0, cek_js_1.default)(enc);
-                const { iv } = providedParameters;
-                ({ encryptedKey, ...parameters } = await (0, aesgcmkw_js_1.wrap)(alg, key, cek, iv));
-                break;
-            }
-        default:
-            {
-                throw new errors_js_1.JOSENotSupported('Invalid or unsupported "alg" (JWE Algorithm) header value');
-            }
-    }
-    return {
-        cek,
-        encryptedKey,
-        parameters
-    };
-}
-exports["default"] = encryptKeyManagement;
-
-
-/***/ }),
-
-/***/ 10581:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports["default"] = (date)=>Math.floor(date.getTime() / 1000);
-
-
-/***/ }),
-
-/***/ 46968:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.withAlg = void 0;
-function message(msg, actual, ...types) {
-    if (types.length > 2) {
-        const last = types.pop();
-        msg += `one of type ${types.join(", ")}, or ${last}.`;
-    } else if (types.length === 2) {
-        msg += `one of type ${types[0]} or ${types[1]}.`;
-    } else {
-        msg += `of type ${types[0]}.`;
-    }
-    if (actual == null) {
-        msg += ` Received ${actual}`;
-    } else if (typeof actual === "function" && actual.name) {
-        msg += ` Received function ${actual.name}`;
-    } else if (typeof actual === "object" && actual != null) {
-        if (actual.constructor && actual.constructor.name) {
-            msg += ` Received an instance of ${actual.constructor.name}`;
-        }
-    }
-    return msg;
-}
-exports["default"] = (actual, ...types)=>{
-    return message("Key must be ", actual, ...types);
-};
-function withAlg(alg, actual, ...types) {
-    return message(`Key for the ${alg} algorithm must be `, actual, ...types);
-}
-exports.withAlg = withAlg;
-
-
-/***/ }),
-
-/***/ 15826:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const isDisjoint = (...headers)=>{
-    const sources = headers.filter(Boolean);
-    if (sources.length === 0 || sources.length === 1) {
-        return true;
-    }
-    let acc;
-    for (const header of sources){
-        const parameters = Object.keys(header);
-        if (!acc || acc.size === 0) {
-            acc = new Set(parameters);
-            continue;
-        }
-        for (const parameter of parameters){
-            if (acc.has(parameter)) {
-                return false;
-            }
-            acc.add(parameter);
-        }
-    }
-    return true;
-};
-exports["default"] = isDisjoint;
-
-
-/***/ }),
-
-/***/ 96004:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-function isObjectLike(value) {
-    return typeof value === "object" && value !== null;
-}
-function isObject(input) {
-    if (!isObjectLike(input) || Object.prototype.toString.call(input) !== "[object Object]") {
-        return false;
-    }
-    if (Object.getPrototypeOf(input) === null) {
-        return true;
-    }
-    let proto = input;
-    while(Object.getPrototypeOf(proto) !== null){
-        proto = Object.getPrototypeOf(proto);
-    }
-    return Object.getPrototypeOf(input) === proto;
-}
-exports["default"] = isObject;
-
-
-/***/ }),
-
-/***/ 4700:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.bitLength = void 0;
-const errors_js_1 = __webpack_require__(79522);
-const random_js_1 = __webpack_require__(1824);
-function bitLength(alg) {
-    switch(alg){
-        case "A128GCM":
-        case "A128GCMKW":
-        case "A192GCM":
-        case "A192GCMKW":
-        case "A256GCM":
-        case "A256GCMKW":
-            return 96;
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            return 128;
-        default:
-            throw new errors_js_1.JOSENotSupported(`Unsupported JWE Algorithm: ${alg}`);
-    }
-}
-exports.bitLength = bitLength;
-exports["default"] = (alg)=>(0, random_js_1.default)(new Uint8Array(bitLength(alg) >> 3));
-
-
-/***/ }),
-
-/***/ 43359:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(79522);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const epoch_js_1 = __webpack_require__(10581);
-const secs_js_1 = __webpack_require__(13972);
-const is_object_js_1 = __webpack_require__(96004);
-const normalizeTyp = (value)=>value.toLowerCase().replace(/^application\//, "");
-const checkAudiencePresence = (audPayload, audOption)=>{
-    if (typeof audPayload === "string") {
-        return audOption.includes(audPayload);
-    }
-    if (Array.isArray(audPayload)) {
-        return audOption.some(Set.prototype.has.bind(new Set(audPayload)));
-    }
-    return false;
-};
-exports["default"] = (protectedHeader, encodedPayload, options = {})=>{
-    const { typ } = options;
-    if (typ && (typeof protectedHeader.typ !== "string" || normalizeTyp(protectedHeader.typ) !== normalizeTyp(typ))) {
-        throw new errors_js_1.JWTClaimValidationFailed('unexpected "typ" JWT header value', "typ", "check_failed");
-    }
-    let payload;
-    try {
-        payload = JSON.parse(buffer_utils_js_1.decoder.decode(encodedPayload));
-    } catch  {}
-    if (!(0, is_object_js_1.default)(payload)) {
-        throw new errors_js_1.JWTInvalid("JWT Claims Set must be a top-level JSON object");
-    }
-    const { requiredClaims = [], issuer, subject, audience, maxTokenAge } = options;
-    if (maxTokenAge !== undefined) requiredClaims.push("iat");
-    if (audience !== undefined) requiredClaims.push("aud");
-    if (subject !== undefined) requiredClaims.push("sub");
-    if (issuer !== undefined) requiredClaims.push("iss");
-    for (const claim of new Set(requiredClaims.reverse())){
-        if (!(claim in payload)) {
-            throw new errors_js_1.JWTClaimValidationFailed(`missing required "${claim}" claim`, claim, "missing");
-        }
-    }
-    if (issuer && !(Array.isArray(issuer) ? issuer : [
-        issuer
-    ]).includes(payload.iss)) {
-        throw new errors_js_1.JWTClaimValidationFailed('unexpected "iss" claim value', "iss", "check_failed");
-    }
-    if (subject && payload.sub !== subject) {
-        throw new errors_js_1.JWTClaimValidationFailed('unexpected "sub" claim value', "sub", "check_failed");
-    }
-    if (audience && !checkAudiencePresence(payload.aud, typeof audience === "string" ? [
-        audience
-    ] : audience)) {
-        throw new errors_js_1.JWTClaimValidationFailed('unexpected "aud" claim value', "aud", "check_failed");
-    }
-    let tolerance;
-    switch(typeof options.clockTolerance){
-        case "string":
-            tolerance = (0, secs_js_1.default)(options.clockTolerance);
-            break;
-        case "number":
-            tolerance = options.clockTolerance;
-            break;
-        case "undefined":
-            tolerance = 0;
-            break;
-        default:
-            throw new TypeError("Invalid clockTolerance option type");
-    }
-    const { currentDate } = options;
-    const now = (0, epoch_js_1.default)(currentDate || new Date());
-    if ((payload.iat !== undefined || maxTokenAge) && typeof payload.iat !== "number") {
-        throw new errors_js_1.JWTClaimValidationFailed('"iat" claim must be a number', "iat", "invalid");
-    }
-    if (payload.nbf !== undefined) {
-        if (typeof payload.nbf !== "number") {
-            throw new errors_js_1.JWTClaimValidationFailed('"nbf" claim must be a number', "nbf", "invalid");
-        }
-        if (payload.nbf > now + tolerance) {
-            throw new errors_js_1.JWTClaimValidationFailed('"nbf" claim timestamp check failed', "nbf", "check_failed");
-        }
-    }
-    if (payload.exp !== undefined) {
-        if (typeof payload.exp !== "number") {
-            throw new errors_js_1.JWTClaimValidationFailed('"exp" claim must be a number', "exp", "invalid");
-        }
-        if (payload.exp <= now - tolerance) {
-            throw new errors_js_1.JWTExpired('"exp" claim timestamp check failed', "exp", "check_failed");
-        }
-    }
-    if (maxTokenAge) {
-        const age = now - payload.iat;
-        const max = typeof maxTokenAge === "number" ? maxTokenAge : (0, secs_js_1.default)(maxTokenAge);
-        if (age - tolerance > max) {
-            throw new errors_js_1.JWTExpired('"iat" claim timestamp check failed (too far in the past)', "iat", "check_failed");
-        }
-        if (age < 0 - tolerance) {
-            throw new errors_js_1.JWTClaimValidationFailed('"iat" claim timestamp check failed (it should be in the past)', "iat", "check_failed");
-        }
-    }
-    return payload;
-};
-
-
-/***/ }),
-
-/***/ 13972:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const minute = 60;
-const hour = minute * 60;
-const day = hour * 24;
-const week = day * 7;
-const year = day * 365.25;
-const REGEX = /^(\d+|\d+\.\d+) ?(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)$/i;
-exports["default"] = (str)=>{
-    const matched = REGEX.exec(str);
-    if (!matched) {
-        throw new TypeError("Invalid time period format");
-    }
-    const value = parseFloat(matched[1]);
-    const unit = matched[2].toLowerCase();
-    switch(unit){
-        case "sec":
-        case "secs":
-        case "second":
-        case "seconds":
-        case "s":
-            return Math.round(value);
-        case "minute":
-        case "minutes":
-        case "min":
-        case "mins":
-        case "m":
-            return Math.round(value * minute);
-        case "hour":
-        case "hours":
-        case "hr":
-        case "hrs":
-        case "h":
-            return Math.round(value * hour);
-        case "day":
-        case "days":
-        case "d":
-            return Math.round(value * day);
-        case "week":
-        case "weeks":
-        case "w":
-            return Math.round(value * week);
-        default:
-            return Math.round(value * year);
-    }
-};
-
-
-/***/ }),
-
-/***/ 48740:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const validateAlgorithms = (option, algorithms)=>{
-    if (algorithms !== undefined && (!Array.isArray(algorithms) || algorithms.some((s)=>typeof s !== "string"))) {
-        throw new TypeError(`"${option}" option must be an array of strings`);
-    }
-    if (!algorithms) {
-        return undefined;
-    }
-    return new Set(algorithms);
-};
-exports["default"] = validateAlgorithms;
-
-
-/***/ }),
-
-/***/ 66435:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(79522);
-function validateCrit(Err, recognizedDefault, recognizedOption, protectedHeader, joseHeader) {
-    if (joseHeader.crit !== undefined && protectedHeader.crit === undefined) {
-        throw new Err('"crit" (Critical) Header Parameter MUST be integrity protected');
-    }
-    if (!protectedHeader || protectedHeader.crit === undefined) {
-        return new Set();
-    }
-    if (!Array.isArray(protectedHeader.crit) || protectedHeader.crit.length === 0 || protectedHeader.crit.some((input)=>typeof input !== "string" || input.length === 0)) {
-        throw new Err('"crit" (Critical) Header Parameter MUST be an array of non-empty strings when present');
-    }
-    let recognized;
-    if (recognizedOption !== undefined) {
-        recognized = new Map([
-            ...Object.entries(recognizedOption),
-            ...recognizedDefault.entries()
-        ]);
-    } else {
-        recognized = recognizedDefault;
-    }
-    for (const parameter of protectedHeader.crit){
-        if (!recognized.has(parameter)) {
-            throw new errors_js_1.JOSENotSupported(`Extension Header Parameter "${parameter}" is not recognized`);
-        }
-        if (joseHeader[parameter] === undefined) {
-            throw new Err(`Extension Header Parameter "${parameter}" is missing`);
-        } else if (recognized.get(parameter) && protectedHeader[parameter] === undefined) {
-            throw new Err(`Extension Header Parameter "${parameter}" MUST be integrity protected`);
-        }
-    }
-    return new Set(protectedHeader.crit);
-}
-exports["default"] = validateCrit;
-
-
-/***/ }),
-
-/***/ 43349:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.unwrap = exports.wrap = void 0;
-const buffer_1 = __webpack_require__(14300);
-const crypto_1 = __webpack_require__(6113);
-const errors_js_1 = __webpack_require__(79522);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const webcrypto_js_1 = __webpack_require__(53628);
-const crypto_key_js_1 = __webpack_require__(69836);
-const is_key_object_js_1 = __webpack_require__(75483);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const ciphers_js_1 = __webpack_require__(59970);
-const is_key_like_js_1 = __webpack_require__(68706);
-function checkKeySize(key, alg) {
-    if (key.symmetricKeySize << 3 !== parseInt(alg.slice(1, 4), 10)) {
-        throw new TypeError(`Invalid key size for alg: ${alg}`);
-    }
-}
-function ensureKeyObject(key, alg, usage) {
-    if ((0, is_key_object_js_1.default)(key)) {
-        return key;
-    }
-    if (key instanceof Uint8Array) {
-        return (0, crypto_1.createSecretKey)(key);
-    }
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(key, alg, usage);
-        return crypto_1.KeyObject.from(key);
-    }
-    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
-}
-const wrap = (alg, key, cek)=>{
-    const size = parseInt(alg.slice(1, 4), 10);
-    const algorithm = `aes${size}-wrap`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-    const keyObject = ensureKeyObject(key, alg, "wrapKey");
-    checkKeySize(keyObject, alg);
-    const cipher = (0, crypto_1.createCipheriv)(algorithm, keyObject, buffer_1.Buffer.alloc(8, 0xa6));
-    return (0, buffer_utils_js_1.concat)(cipher.update(cek), cipher.final());
-};
-exports.wrap = wrap;
-const unwrap = (alg, key, encryptedKey)=>{
-    const size = parseInt(alg.slice(1, 4), 10);
-    const algorithm = `aes${size}-wrap`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-    const keyObject = ensureKeyObject(key, alg, "unwrapKey");
-    checkKeySize(keyObject, alg);
-    const cipher = (0, crypto_1.createDecipheriv)(algorithm, keyObject, buffer_1.Buffer.alloc(8, 0xa6));
-    return (0, buffer_utils_js_1.concat)(cipher.update(encryptedKey), cipher.final());
-};
-exports.unwrap = unwrap;
-
-
-/***/ }),
-
-/***/ 8321:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.fromX509 = exports.fromSPKI = exports.fromPKCS8 = exports.toPKCS8 = exports.toSPKI = void 0;
-const crypto_1 = __webpack_require__(6113);
-const buffer_1 = __webpack_require__(14300);
-const webcrypto_js_1 = __webpack_require__(53628);
-const is_key_object_js_1 = __webpack_require__(75483);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const is_key_like_js_1 = __webpack_require__(68706);
-const genericExport = (keyType, keyFormat, key)=>{
-    let keyObject;
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        if (!key.extractable) {
-            throw new TypeError("CryptoKey is not extractable");
-        }
-        keyObject = crypto_1.KeyObject.from(key);
-    } else if ((0, is_key_object_js_1.default)(key)) {
-        keyObject = key;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types));
-    }
-    if (keyObject.type !== keyType) {
-        throw new TypeError(`key is not a ${keyType} key`);
-    }
-    return keyObject.export({
-        format: "pem",
-        type: keyFormat
+exports.keys = function(object) {
+    return objectHash(object, {
+        excludeValues: true,
+        algorithm: "sha1",
+        encoding: "hex"
     });
 };
-const toSPKI = (key)=>{
-    return genericExport("public", "spki", key);
-};
-exports.toSPKI = toSPKI;
-const toPKCS8 = (key)=>{
-    return genericExport("private", "pkcs8", key);
-};
-exports.toPKCS8 = toPKCS8;
-const fromPKCS8 = (pem)=>(0, crypto_1.createPrivateKey)({
-        key: buffer_1.Buffer.from(pem.replace(/(?:-----(?:BEGIN|END) PRIVATE KEY-----|\s)/g, ""), "base64"),
-        type: "pkcs8",
-        format: "der"
+exports.MD5 = function(object) {
+    return objectHash(object, {
+        algorithm: "md5",
+        encoding: "hex"
     });
-exports.fromPKCS8 = fromPKCS8;
-const fromSPKI = (pem)=>(0, crypto_1.createPublicKey)({
-        key: buffer_1.Buffer.from(pem.replace(/(?:-----(?:BEGIN|END) PUBLIC KEY-----|\s)/g, ""), "base64"),
-        type: "spki",
-        format: "der"
+};
+exports.keysMD5 = function(object) {
+    return objectHash(object, {
+        algorithm: "md5",
+        encoding: "hex",
+        excludeValues: true
     });
-exports.fromSPKI = fromSPKI;
-const fromX509 = (pem)=>(0, crypto_1.createPublicKey)({
-        key: pem,
-        type: "spki",
-        format: "pem"
-    });
-exports.fromX509 = fromX509;
-
-
-/***/ }),
-
-/***/ 68307:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const tagInteger = 0x02;
-const tagSequence = 0x30;
-class Asn1SequenceDecoder {
-    constructor(buffer){
-        if (buffer[0] !== tagSequence) {
-            throw new TypeError();
-        }
-        this.buffer = buffer;
-        this.offset = 1;
-        const len = this.decodeLength();
-        if (len !== buffer.length - this.offset) {
-            throw new TypeError();
-        }
-    }
-    decodeLength() {
-        let length = this.buffer[this.offset++];
-        if (length & 0x80) {
-            const nBytes = length & ~0x80;
-            length = 0;
-            for(let i = 0; i < nBytes; i++)length = length << 8 | this.buffer[this.offset + i];
-            this.offset += nBytes;
-        }
-        return length;
-    }
-    unsignedInteger() {
-        if (this.buffer[this.offset++] !== tagInteger) {
-            throw new TypeError();
-        }
-        let length = this.decodeLength();
-        if (this.buffer[this.offset] === 0) {
-            this.offset++;
-            length--;
-        }
-        const result = this.buffer.slice(this.offset, this.offset + length);
-        this.offset += length;
-        return result;
-    }
-    end() {
-        if (this.offset !== this.buffer.length) {
-            throw new TypeError();
-        }
-    }
-}
-exports["default"] = Asn1SequenceDecoder;
-
-
-/***/ }),
-
-/***/ 68119:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const buffer_1 = __webpack_require__(14300);
-const errors_js_1 = __webpack_require__(79522);
-const tagInteger = 0x02;
-const tagBitStr = 0x03;
-const tagOctStr = 0x04;
-const tagSequence = 0x30;
-const bZero = buffer_1.Buffer.from([
-    0x00
-]);
-const bTagInteger = buffer_1.Buffer.from([
-    tagInteger
-]);
-const bTagBitStr = buffer_1.Buffer.from([
-    tagBitStr
-]);
-const bTagSequence = buffer_1.Buffer.from([
-    tagSequence
-]);
-const bTagOctStr = buffer_1.Buffer.from([
-    tagOctStr
-]);
-const encodeLength = (len)=>{
-    if (len < 128) return buffer_1.Buffer.from([
-        len
-    ]);
-    const buffer = buffer_1.Buffer.alloc(5);
-    buffer.writeUInt32BE(len, 1);
-    let offset = 1;
-    while(buffer[offset] === 0)offset++;
-    buffer[offset - 1] = 0x80 | 5 - offset;
-    return buffer.slice(offset - 1);
 };
-const oids = new Map([
-    [
-        "P-256",
-        buffer_1.Buffer.from("06 08 2A 86 48 CE 3D 03 01 07".replace(/ /g, ""), "hex")
-    ],
-    [
-        "secp256k1",
-        buffer_1.Buffer.from("06 05 2B 81 04 00 0A".replace(/ /g, ""), "hex")
-    ],
-    [
-        "P-384",
-        buffer_1.Buffer.from("06 05 2B 81 04 00 22".replace(/ /g, ""), "hex")
-    ],
-    [
-        "P-521",
-        buffer_1.Buffer.from("06 05 2B 81 04 00 23".replace(/ /g, ""), "hex")
-    ],
-    [
-        "ecPublicKey",
-        buffer_1.Buffer.from("06 07 2A 86 48 CE 3D 02 01".replace(/ /g, ""), "hex")
-    ],
-    [
-        "X25519",
-        buffer_1.Buffer.from("06 03 2B 65 6E".replace(/ /g, ""), "hex")
-    ],
-    [
-        "X448",
-        buffer_1.Buffer.from("06 03 2B 65 6F".replace(/ /g, ""), "hex")
-    ],
-    [
-        "Ed25519",
-        buffer_1.Buffer.from("06 03 2B 65 70".replace(/ /g, ""), "hex")
-    ],
-    [
-        "Ed448",
-        buffer_1.Buffer.from("06 03 2B 65 71".replace(/ /g, ""), "hex")
-    ]
-]);
-class DumbAsn1Encoder {
-    constructor(){
-        this.length = 0;
-        this.elements = [];
-    }
-    oidFor(oid) {
-        const bOid = oids.get(oid);
-        if (!bOid) {
-            throw new errors_js_1.JOSENotSupported("Invalid or unsupported OID");
-        }
-        this.elements.push(bOid);
-        this.length += bOid.length;
-    }
-    zero() {
-        this.elements.push(bTagInteger, buffer_1.Buffer.from([
-            0x01
-        ]), bZero);
-        this.length += 3;
-    }
-    one() {
-        this.elements.push(bTagInteger, buffer_1.Buffer.from([
-            0x01
-        ]), buffer_1.Buffer.from([
-            0x01
-        ]));
-        this.length += 3;
-    }
-    unsignedInteger(integer) {
-        if (integer[0] & 0x80) {
-            const len = encodeLength(integer.length + 1);
-            this.elements.push(bTagInteger, len, bZero, integer);
-            this.length += 2 + len.length + integer.length;
-        } else {
-            let i = 0;
-            while(integer[i] === 0 && (integer[i + 1] & 0x80) === 0)i++;
-            const len = encodeLength(integer.length - i);
-            this.elements.push(bTagInteger, encodeLength(integer.length - i), integer.slice(i));
-            this.length += 1 + len.length + integer.length - i;
-        }
-    }
-    octStr(octStr) {
-        const len = encodeLength(octStr.length);
-        this.elements.push(bTagOctStr, encodeLength(octStr.length), octStr);
-        this.length += 1 + len.length + octStr.length;
-    }
-    bitStr(bitS) {
-        const len = encodeLength(bitS.length + 1);
-        this.elements.push(bTagBitStr, encodeLength(bitS.length + 1), bZero, bitS);
-        this.length += 1 + len.length + bitS.length + 1;
-    }
-    add(seq) {
-        this.elements.push(seq);
-        this.length += seq.length;
-    }
-    end(tag = bTagSequence) {
-        const len = encodeLength(this.length);
-        return buffer_1.Buffer.concat([
-            tag,
-            len,
-            ...this.elements
-        ], 1 + len.length + this.length);
-    }
-}
-exports["default"] = DumbAsn1Encoder;
-
-
-/***/ }),
-
-/***/ 98844:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decode = exports.encode = exports.encodeBase64 = exports.decodeBase64 = void 0;
-const buffer_1 = __webpack_require__(14300);
-const buffer_utils_js_1 = __webpack_require__(91108);
-let encode;
-function normalize(input) {
-    let encoded = input;
-    if (encoded instanceof Uint8Array) {
-        encoded = buffer_utils_js_1.decoder.decode(encoded);
-    }
-    return encoded;
-}
-if (buffer_1.Buffer.isEncoding("base64url")) {
-    exports.encode = encode = (input)=>buffer_1.Buffer.from(input).toString("base64url");
-} else {
-    exports.encode = encode = (input)=>buffer_1.Buffer.from(input).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
-}
-const decodeBase64 = (input)=>buffer_1.Buffer.from(input, "base64");
-exports.decodeBase64 = decodeBase64;
-const encodeBase64 = (input)=>buffer_1.Buffer.from(input).toString("base64");
-exports.encodeBase64 = encodeBase64;
-const decode = (input)=>buffer_1.Buffer.from(normalize(input), "base64");
-exports.decode = decode;
-
-
-/***/ }),
-
-/***/ 22651:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const buffer_utils_js_1 = __webpack_require__(91108);
-function cbcTag(aad, iv, ciphertext, macSize, macKey, keySize) {
-    const macData = (0, buffer_utils_js_1.concat)(aad, iv, ciphertext, (0, buffer_utils_js_1.uint64be)(aad.length << 3));
-    const hmac = (0, crypto_1.createHmac)(`sha${macSize}`, macKey);
-    hmac.update(macData);
-    return hmac.digest().slice(0, keySize >> 3);
-}
-exports["default"] = cbcTag;
-
-
-/***/ }),
-
-/***/ 90536:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(79522);
-const is_key_object_js_1 = __webpack_require__(75483);
-const checkCekLength = (enc, cek)=>{
-    let expected;
-    switch(enc){
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            expected = parseInt(enc.slice(-3), 10);
-            break;
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            expected = parseInt(enc.slice(1, 4), 10);
-            break;
-        default:
-            throw new errors_js_1.JOSENotSupported(`Content Encryption Algorithm ${enc} is not supported either by JOSE or your javascript runtime`);
-    }
-    if (cek instanceof Uint8Array) {
-        const actual = cek.byteLength << 3;
-        if (actual !== expected) {
-            throw new errors_js_1.JWEInvalid(`Invalid Content Encryption Key length. Expected ${expected} bits, got ${actual} bits`);
-        }
-        return;
-    }
-    if ((0, is_key_object_js_1.default)(cek) && cek.type === "secret") {
-        const actual = cek.symmetricKeySize << 3;
-        if (actual !== expected) {
-            throw new errors_js_1.JWEInvalid(`Invalid Content Encryption Key length. Expected ${expected} bits, got ${actual} bits`);
-        }
-        return;
-    }
-    throw new TypeError("Invalid Content Encryption Key type");
-};
-exports["default"] = checkCekLength;
-
-
-/***/ }),
-
-/***/ 533:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.setModulusLength = exports.weakMap = void 0;
-exports.weakMap = new WeakMap();
-const getLength = (buf, index)=>{
-    let len = buf.readUInt8(1);
-    if ((len & 0x80) === 0) {
-        if (index === 0) {
-            return len;
-        }
-        return getLength(buf.subarray(2 + len), index - 1);
-    }
-    const num = len & 0x7f;
-    len = 0;
-    for(let i = 0; i < num; i++){
-        len <<= 8;
-        const j = buf.readUInt8(2 + i);
-        len |= j;
-    }
-    if (index === 0) {
-        return len;
-    }
-    return getLength(buf.subarray(2 + len), index - 1);
-};
-const getLengthOfSeqIndex = (sequence, index)=>{
-    const len = sequence.readUInt8(1);
-    if ((len & 0x80) === 0) {
-        return getLength(sequence.subarray(2), index);
-    }
-    const num = len & 0x7f;
-    return getLength(sequence.subarray(2 + num), index);
-};
-const getModulusLength = (key)=>{
-    var _a, _b;
-    if (exports.weakMap.has(key)) {
-        return exports.weakMap.get(key);
-    }
-    const modulusLength = (_b = (_a = key.asymmetricKeyDetails) === null || _a === void 0 ? void 0 : _a.modulusLength) !== null && _b !== void 0 ? _b : getLengthOfSeqIndex(key.export({
-        format: "der",
-        type: "pkcs1"
-    }), key.type === "private" ? 1 : 0) - 1 << 3;
-    exports.weakMap.set(key, modulusLength);
-    return modulusLength;
-};
-const setModulusLength = (keyObject, modulusLength)=>{
-    exports.weakMap.set(keyObject, modulusLength);
-};
-exports.setModulusLength = setModulusLength;
-exports["default"] = (key, alg)=>{
-    if (getModulusLength(key) < 2048) {
-        throw new TypeError(`${alg} requires key modulusLength to be 2048 bits or larger`);
-    }
-};
-
-
-/***/ }),
-
-/***/ 59970:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-let ciphers;
-exports["default"] = (algorithm)=>{
-    ciphers || (ciphers = new Set((0, crypto_1.getCiphers)()));
-    return ciphers.has(algorithm);
-};
-
-
-/***/ }),
-
-/***/ 67302:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const check_iv_length_js_1 = __webpack_require__(15133);
-const check_cek_length_js_1 = __webpack_require__(90536);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const errors_js_1 = __webpack_require__(79522);
-const timing_safe_equal_js_1 = __webpack_require__(3763);
-const cbc_tag_js_1 = __webpack_require__(22651);
-const webcrypto_js_1 = __webpack_require__(53628);
-const crypto_key_js_1 = __webpack_require__(69836);
-const is_key_object_js_1 = __webpack_require__(75483);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const ciphers_js_1 = __webpack_require__(59970);
-const is_key_like_js_1 = __webpack_require__(68706);
-function cbcDecrypt(enc, cek, ciphertext, iv, tag, aad) {
-    const keySize = parseInt(enc.slice(1, 4), 10);
-    if ((0, is_key_object_js_1.default)(cek)) {
-        cek = cek.export();
-    }
-    const encKey = cek.subarray(keySize >> 3);
-    const macKey = cek.subarray(0, keySize >> 3);
-    const macSize = parseInt(enc.slice(-3), 10);
-    const algorithm = `aes-${keySize}-cbc`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
-    }
-    const expectedTag = (0, cbc_tag_js_1.default)(aad, iv, ciphertext, macSize, macKey, keySize);
-    let macCheckPassed;
-    try {
-        macCheckPassed = (0, timing_safe_equal_js_1.default)(tag, expectedTag);
-    } catch  {}
-    if (!macCheckPassed) {
-        throw new errors_js_1.JWEDecryptionFailed();
-    }
-    let plaintext;
-    try {
-        const decipher = (0, crypto_1.createDecipheriv)(algorithm, encKey, iv);
-        plaintext = (0, buffer_utils_js_1.concat)(decipher.update(ciphertext), decipher.final());
-    } catch  {}
-    if (!plaintext) {
-        throw new errors_js_1.JWEDecryptionFailed();
-    }
-    return plaintext;
-}
-function gcmDecrypt(enc, cek, ciphertext, iv, tag, aad) {
-    const keySize = parseInt(enc.slice(1, 4), 10);
-    const algorithm = `aes-${keySize}-gcm`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
-    }
-    try {
-        const decipher = (0, crypto_1.createDecipheriv)(algorithm, cek, iv, {
-            authTagLength: 16
-        });
-        decipher.setAuthTag(tag);
-        if (aad.byteLength) {
-            decipher.setAAD(aad, {
-                plaintextLength: ciphertext.length
-            });
-        }
-        const plaintext = decipher.update(ciphertext);
-        decipher.final();
-        return plaintext;
-    } catch  {
-        throw new errors_js_1.JWEDecryptionFailed();
-    }
-}
-const decrypt = (enc, cek, ciphertext, iv, tag, aad)=>{
-    let key;
-    if ((0, webcrypto_js_1.isCryptoKey)(cek)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(cek, enc, "decrypt");
-        key = crypto_1.KeyObject.from(cek);
-    } else if (cek instanceof Uint8Array || (0, is_key_object_js_1.default)(cek)) {
-        key = cek;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(cek, ...is_key_like_js_1.types, "Uint8Array"));
-    }
-    (0, check_cek_length_js_1.default)(enc, key);
-    (0, check_iv_length_js_1.default)(enc, iv);
-    switch(enc){
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            return cbcDecrypt(enc, key, ciphertext, iv, tag, aad);
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            return gcmDecrypt(enc, key, ciphertext, iv, tag, aad);
-        default:
-            throw new errors_js_1.JOSENotSupported("Unsupported JWE Content Encryption Algorithm");
-    }
-};
-exports["default"] = decrypt;
-
-
-/***/ }),
-
-/***/ 56494:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const digest = (algorithm, data)=>(0, crypto_1.createHash)(algorithm).update(data).digest();
-exports["default"] = digest;
-
-
-/***/ }),
-
-/***/ 58397:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(79522);
-function dsaDigest(alg) {
-    switch(alg){
-        case "PS256":
-        case "RS256":
-        case "ES256":
-        case "ES256K":
-            return "sha256";
-        case "PS384":
-        case "RS384":
-        case "ES384":
-            return "sha384";
-        case "PS512":
-        case "RS512":
-        case "ES512":
-            return "sha512";
-        case "EdDSA":
-            return undefined;
-        default:
-            throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-}
-exports["default"] = dsaDigest;
-
-
-/***/ }),
-
-/***/ 51170:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.ecdhAllowed = exports.generateEpk = exports.deriveKey = void 0;
-const crypto_1 = __webpack_require__(6113);
-const util_1 = __webpack_require__(73837);
-const get_named_curve_js_1 = __webpack_require__(91141);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const errors_js_1 = __webpack_require__(79522);
-const webcrypto_js_1 = __webpack_require__(53628);
-const crypto_key_js_1 = __webpack_require__(69836);
-const is_key_object_js_1 = __webpack_require__(75483);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const is_key_like_js_1 = __webpack_require__(68706);
-const generateKeyPair = (0, util_1.promisify)(crypto_1.generateKeyPair);
-async function deriveKey(publicKee, privateKee, algorithm, keyLength, apu = new Uint8Array(0), apv = new Uint8Array(0)) {
-    let publicKey;
-    if ((0, webcrypto_js_1.isCryptoKey)(publicKee)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(publicKee, "ECDH");
-        publicKey = crypto_1.KeyObject.from(publicKee);
-    } else if ((0, is_key_object_js_1.default)(publicKee)) {
-        publicKey = publicKee;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(publicKee, ...is_key_like_js_1.types));
-    }
-    let privateKey;
-    if ((0, webcrypto_js_1.isCryptoKey)(privateKee)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(privateKee, "ECDH", "deriveBits");
-        privateKey = crypto_1.KeyObject.from(privateKee);
-    } else if ((0, is_key_object_js_1.default)(privateKee)) {
-        privateKey = privateKee;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(privateKee, ...is_key_like_js_1.types));
-    }
-    const value = (0, buffer_utils_js_1.concat)((0, buffer_utils_js_1.lengthAndInput)(buffer_utils_js_1.encoder.encode(algorithm)), (0, buffer_utils_js_1.lengthAndInput)(apu), (0, buffer_utils_js_1.lengthAndInput)(apv), (0, buffer_utils_js_1.uint32be)(keyLength));
-    const sharedSecret = (0, crypto_1.diffieHellman)({
-        privateKey,
-        publicKey
-    });
-    return (0, buffer_utils_js_1.concatKdf)(sharedSecret, keyLength, value);
-}
-exports.deriveKey = deriveKey;
-async function generateEpk(kee) {
-    let key;
-    if ((0, webcrypto_js_1.isCryptoKey)(kee)) {
-        key = crypto_1.KeyObject.from(kee);
-    } else if ((0, is_key_object_js_1.default)(kee)) {
-        key = kee;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(kee, ...is_key_like_js_1.types));
-    }
-    switch(key.asymmetricKeyType){
-        case "x25519":
-            return generateKeyPair("x25519");
-        case "x448":
-            {
-                return generateKeyPair("x448");
-            }
-        case "ec":
-            {
-                const namedCurve = (0, get_named_curve_js_1.default)(key);
-                return generateKeyPair("ec", {
-                    namedCurve
-                });
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported("Invalid or unsupported EPK");
-    }
-}
-exports.generateEpk = generateEpk;
-const ecdhAllowed = (key)=>[
-        "P-256",
-        "P-384",
-        "P-521",
-        "X25519",
-        "X448"
-    ].includes((0, get_named_curve_js_1.default)(key));
-exports.ecdhAllowed = ecdhAllowed;
-
-
-/***/ }),
-
-/***/ 88586:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const check_iv_length_js_1 = __webpack_require__(15133);
-const check_cek_length_js_1 = __webpack_require__(90536);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const cbc_tag_js_1 = __webpack_require__(22651);
-const webcrypto_js_1 = __webpack_require__(53628);
-const crypto_key_js_1 = __webpack_require__(69836);
-const is_key_object_js_1 = __webpack_require__(75483);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const errors_js_1 = __webpack_require__(79522);
-const ciphers_js_1 = __webpack_require__(59970);
-const is_key_like_js_1 = __webpack_require__(68706);
-function cbcEncrypt(enc, plaintext, cek, iv, aad) {
-    const keySize = parseInt(enc.slice(1, 4), 10);
-    if ((0, is_key_object_js_1.default)(cek)) {
-        cek = cek.export();
-    }
-    const encKey = cek.subarray(keySize >> 3);
-    const macKey = cek.subarray(0, keySize >> 3);
-    const algorithm = `aes-${keySize}-cbc`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
-    }
-    const cipher = (0, crypto_1.createCipheriv)(algorithm, encKey, iv);
-    const ciphertext = (0, buffer_utils_js_1.concat)(cipher.update(plaintext), cipher.final());
-    const macSize = parseInt(enc.slice(-3), 10);
-    const tag = (0, cbc_tag_js_1.default)(aad, iv, ciphertext, macSize, macKey, keySize);
-    return {
-        ciphertext,
-        tag
-    };
-}
-function gcmEncrypt(enc, plaintext, cek, iv, aad) {
-    const keySize = parseInt(enc.slice(1, 4), 10);
-    const algorithm = `aes-${keySize}-gcm`;
-    if (!(0, ciphers_js_1.default)(algorithm)) {
-        throw new errors_js_1.JOSENotSupported(`alg ${enc} is not supported by your javascript runtime`);
-    }
-    const cipher = (0, crypto_1.createCipheriv)(algorithm, cek, iv, {
-        authTagLength: 16
-    });
-    if (aad.byteLength) {
-        cipher.setAAD(aad, {
-            plaintextLength: plaintext.length
-        });
-    }
-    const ciphertext = cipher.update(plaintext);
-    cipher.final();
-    const tag = cipher.getAuthTag();
-    return {
-        ciphertext,
-        tag
-    };
-}
-const encrypt = (enc, plaintext, cek, iv, aad)=>{
-    let key;
-    if ((0, webcrypto_js_1.isCryptoKey)(cek)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(cek, enc, "encrypt");
-        key = crypto_1.KeyObject.from(cek);
-    } else if (cek instanceof Uint8Array || (0, is_key_object_js_1.default)(cek)) {
-        key = cek;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(cek, ...is_key_like_js_1.types, "Uint8Array"));
-    }
-    (0, check_cek_length_js_1.default)(enc, key);
-    (0, check_iv_length_js_1.default)(enc, iv);
-    switch(enc){
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            return cbcEncrypt(enc, plaintext, key, iv, aad);
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            return gcmEncrypt(enc, plaintext, key, iv, aad);
-        default:
-            throw new errors_js_1.JOSENotSupported("Unsupported JWE Content Encryption Algorithm");
-    }
-};
-exports["default"] = encrypt;
-
-
-/***/ }),
-
-/***/ 87400:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const http = __webpack_require__(13685);
-const https = __webpack_require__(95687);
-const events_1 = __webpack_require__(82361);
-const errors_js_1 = __webpack_require__(79522);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const fetchJwks = async (url, timeout, options)=>{
-    let get;
-    switch(url.protocol){
-        case "https:":
-            get = https.get;
-            break;
-        case "http:":
-            get = http.get;
-            break;
-        default:
-            throw new TypeError("Unsupported URL protocol.");
-    }
-    const { agent, headers } = options;
-    const req = get(url.href, {
-        agent,
-        timeout,
-        headers
-    });
-    const [response] = await Promise.race([
-        (0, events_1.once)(req, "response"),
-        (0, events_1.once)(req, "timeout")
-    ]);
-    if (!response) {
-        req.destroy();
-        throw new errors_js_1.JWKSTimeout();
-    }
-    if (response.statusCode !== 200) {
-        throw new errors_js_1.JOSEError("Expected 200 OK from the JSON Web Key Set HTTP response");
-    }
-    const parts = [];
-    for await (const part of response){
-        parts.push(part);
-    }
-    try {
-        return JSON.parse(buffer_utils_js_1.decoder.decode((0, buffer_utils_js_1.concat)(...parts)));
-    } catch  {
-        throw new errors_js_1.JOSEError("Failed to parse the JSON Web Key Set HTTP response as JSON");
-    }
-};
-exports["default"] = fetchJwks;
-
-
-/***/ }),
-
-/***/ 71048:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.jwkImport = exports.jwkExport = exports.rsaPssParams = exports.oneShotCallback = void 0;
-const [major, minor] = process.versions.node.split(".").map((str)=>parseInt(str, 10));
-exports.oneShotCallback = major >= 16 || major === 15 && minor >= 13;
-exports.rsaPssParams = !("electron" in process.versions) && (major >= 17 || major === 16 && minor >= 9);
-exports.jwkExport = major >= 16 || major === 15 && minor >= 9;
-exports.jwkImport = major >= 16 || major === 15 && minor >= 12;
-
-
-/***/ }),
-
-/***/ 48866:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.generateKeyPair = exports.generateSecret = void 0;
-const crypto_1 = __webpack_require__(6113);
-const util_1 = __webpack_require__(73837);
-const random_js_1 = __webpack_require__(1824);
-const check_modulus_length_js_1 = __webpack_require__(533);
-const errors_js_1 = __webpack_require__(79522);
-const generate = (0, util_1.promisify)(crypto_1.generateKeyPair);
-async function generateSecret(alg, options) {
-    let length;
-    switch(alg){
-        case "HS256":
-        case "HS384":
-        case "HS512":
-        case "A128CBC-HS256":
-        case "A192CBC-HS384":
-        case "A256CBC-HS512":
-            length = parseInt(alg.slice(-3), 10);
-            break;
-        case "A128KW":
-        case "A192KW":
-        case "A256KW":
-        case "A128GCMKW":
-        case "A192GCMKW":
-        case "A256GCMKW":
-        case "A128GCM":
-        case "A192GCM":
-        case "A256GCM":
-            length = parseInt(alg.slice(1, 4), 10);
-            break;
-        default:
-            throw new errors_js_1.JOSENotSupported('Invalid or unsupported JWK "alg" (Algorithm) Parameter value');
-    }
-    return (0, crypto_1.createSecretKey)((0, random_js_1.default)(new Uint8Array(length >> 3)));
-}
-exports.generateSecret = generateSecret;
-async function generateKeyPair(alg, options) {
-    var _a, _b;
-    switch(alg){
-        case "RS256":
-        case "RS384":
-        case "RS512":
-        case "PS256":
-        case "PS384":
-        case "PS512":
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-        case "RSA1_5":
-            {
-                const modulusLength = (_a = options === null || options === void 0 ? void 0 : options.modulusLength) !== null && _a !== void 0 ? _a : 2048;
-                if (typeof modulusLength !== "number" || modulusLength < 2048) {
-                    throw new errors_js_1.JOSENotSupported("Invalid or unsupported modulusLength option provided, 2048 bits or larger keys must be used");
-                }
-                const keypair = await generate("rsa", {
-                    modulusLength,
-                    publicExponent: 0x10001
-                });
-                (0, check_modulus_length_js_1.setModulusLength)(keypair.privateKey, modulusLength);
-                (0, check_modulus_length_js_1.setModulusLength)(keypair.publicKey, modulusLength);
-                return keypair;
-            }
-        case "ES256":
-            return generate("ec", {
-                namedCurve: "P-256"
-            });
-        case "ES256K":
-            return generate("ec", {
-                namedCurve: "secp256k1"
-            });
-        case "ES384":
-            return generate("ec", {
-                namedCurve: "P-384"
-            });
-        case "ES512":
-            return generate("ec", {
-                namedCurve: "P-521"
-            });
-        case "EdDSA":
-            {
-                switch(options === null || options === void 0 ? void 0 : options.crv){
-                    case undefined:
-                    case "Ed25519":
-                        return generate("ed25519");
-                    case "Ed448":
-                        return generate("ed448");
-                    default:
-                        throw new errors_js_1.JOSENotSupported("Invalid or unsupported crv option provided, supported values are Ed25519 and Ed448");
-                }
-            }
-        case "ECDH-ES":
-        case "ECDH-ES+A128KW":
-        case "ECDH-ES+A192KW":
-        case "ECDH-ES+A256KW":
-            const crv = (_b = options === null || options === void 0 ? void 0 : options.crv) !== null && _b !== void 0 ? _b : "P-256";
-            switch(crv){
-                case undefined:
-                case "P-256":
-                case "P-384":
-                case "P-521":
-                    return generate("ec", {
-                        namedCurve: crv
-                    });
-                case "X25519":
-                    return generate("x25519");
-                case "X448":
-                    return generate("x448");
-                default:
-                    throw new errors_js_1.JOSENotSupported("Invalid or unsupported crv option provided, supported values are P-256, P-384, P-521, X25519, and X448");
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported('Invalid or unsupported JWK "alg" (Algorithm) Parameter value');
-    }
-}
-exports.generateKeyPair = generateKeyPair;
-
-
-/***/ }),
-
-/***/ 91141:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.setCurve = exports.weakMap = void 0;
-const buffer_1 = __webpack_require__(14300);
-const crypto_1 = __webpack_require__(6113);
-const errors_js_1 = __webpack_require__(79522);
-const webcrypto_js_1 = __webpack_require__(53628);
-const is_key_object_js_1 = __webpack_require__(75483);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const is_key_like_js_1 = __webpack_require__(68706);
-const p256 = buffer_1.Buffer.from([
-    42,
-    134,
-    72,
-    206,
-    61,
-    3,
-    1,
-    7
-]);
-const p384 = buffer_1.Buffer.from([
-    43,
-    129,
-    4,
-    0,
-    34
-]);
-const p521 = buffer_1.Buffer.from([
-    43,
-    129,
-    4,
-    0,
-    35
-]);
-const secp256k1 = buffer_1.Buffer.from([
-    43,
-    129,
-    4,
-    0,
-    10
-]);
-exports.weakMap = new WeakMap();
-const namedCurveToJOSE = (namedCurve)=>{
-    switch(namedCurve){
-        case "prime256v1":
-            return "P-256";
-        case "secp384r1":
-            return "P-384";
-        case "secp521r1":
-            return "P-521";
-        case "secp256k1":
-            return "secp256k1";
-        default:
-            throw new errors_js_1.JOSENotSupported("Unsupported key curve for this operation");
-    }
-};
-const getNamedCurve = (kee, raw)=>{
-    var _a;
-    let key;
-    if ((0, webcrypto_js_1.isCryptoKey)(kee)) {
-        key = crypto_1.KeyObject.from(kee);
-    } else if ((0, is_key_object_js_1.default)(kee)) {
-        key = kee;
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(kee, ...is_key_like_js_1.types));
-    }
-    if (key.type === "secret") {
-        throw new TypeError('only "private" or "public" type keys can be used for this operation');
-    }
-    switch(key.asymmetricKeyType){
-        case "ed25519":
-        case "ed448":
-            return `Ed${key.asymmetricKeyType.slice(2)}`;
-        case "x25519":
-        case "x448":
-            return `X${key.asymmetricKeyType.slice(1)}`;
-        case "ec":
-            {
-                if (exports.weakMap.has(key)) {
-                    return exports.weakMap.get(key);
-                }
-                let namedCurve = (_a = key.asymmetricKeyDetails) === null || _a === void 0 ? void 0 : _a.namedCurve;
-                if (!namedCurve && key.type === "private") {
-                    namedCurve = getNamedCurve((0, crypto_1.createPublicKey)(key), true);
-                } else if (!namedCurve) {
-                    const buf = key.export({
-                        format: "der",
-                        type: "spki"
-                    });
-                    const i = buf[1] < 128 ? 14 : 15;
-                    const len = buf[i];
-                    const curveOid = buf.slice(i + 1, i + 1 + len);
-                    if (curveOid.equals(p256)) {
-                        namedCurve = "prime256v1";
-                    } else if (curveOid.equals(p384)) {
-                        namedCurve = "secp384r1";
-                    } else if (curveOid.equals(p521)) {
-                        namedCurve = "secp521r1";
-                    } else if (curveOid.equals(secp256k1)) {
-                        namedCurve = "secp256k1";
-                    } else {
-                        throw new errors_js_1.JOSENotSupported("Unsupported key curve for this operation");
-                    }
-                }
-                if (raw) return namedCurve;
-                const curve = namedCurveToJOSE(namedCurve);
-                exports.weakMap.set(key, curve);
-                return curve;
-            }
-        default:
-            throw new TypeError("Invalid asymmetric key type for this operation");
-    }
-};
-function setCurve(keyObject, curve) {
-    exports.weakMap.set(keyObject, curve);
-}
-exports.setCurve = setCurve;
-exports["default"] = getNamedCurve;
-
-
-/***/ }),
-
-/***/ 2053:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const webcrypto_js_1 = __webpack_require__(53628);
-const crypto_key_js_1 = __webpack_require__(69836);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const is_key_like_js_1 = __webpack_require__(68706);
-function getSignVerifyKey(alg, key, usage) {
-    if (key instanceof Uint8Array) {
-        if (!alg.startsWith("HS")) {
-            throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types));
-        }
-        return (0, crypto_1.createSecretKey)(key);
-    }
-    if (key instanceof crypto_1.KeyObject) {
-        return key;
-    }
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        (0, crypto_key_js_1.checkSigCryptoKey)(key, alg, usage);
-        return crypto_1.KeyObject.from(key);
-    }
-    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
-}
-exports["default"] = getSignVerifyKey;
-
-
-/***/ }),
-
-/***/ 70221:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const errors_js_1 = __webpack_require__(79522);
-function hmacDigest(alg) {
-    switch(alg){
-        case "HS256":
-            return "sha256";
-        case "HS384":
-            return "sha384";
-        case "HS512":
-            return "sha512";
-        default:
-            throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-}
-exports["default"] = hmacDigest;
-
-
-/***/ }),
-
-/***/ 68706:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.types = void 0;
-const webcrypto_js_1 = __webpack_require__(53628);
-const is_key_object_js_1 = __webpack_require__(75483);
-exports["default"] = (key)=>(0, is_key_object_js_1.default)(key) || (0, webcrypto_js_1.isCryptoKey)(key);
-const types = [
-    "KeyObject"
+// Internals
+var hashes = crypto.getHashes ? crypto.getHashes().slice() : [
+    "sha1",
+    "md5"
 ];
-exports.types = types;
-if (globalThis.CryptoKey || (webcrypto_js_1.default === null || webcrypto_js_1.default === void 0 ? void 0 : webcrypto_js_1.default.CryptoKey)) {
-    types.push("CryptoKey");
-}
-
-
-/***/ }),
-
-/***/ 75483:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const util = __webpack_require__(73837);
-exports["default"] = util.types.isKeyObject ? (obj)=>util.types.isKeyObject(obj) : (obj)=>obj != null && obj instanceof crypto_1.KeyObject;
-
-
-/***/ }),
-
-/***/ 64204:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const buffer_1 = __webpack_require__(14300);
-const crypto_1 = __webpack_require__(6113);
-const base64url_js_1 = __webpack_require__(98844);
-const errors_js_1 = __webpack_require__(79522);
-const get_named_curve_js_1 = __webpack_require__(91141);
-const check_modulus_length_js_1 = __webpack_require__(533);
-const asn1_sequence_encoder_js_1 = __webpack_require__(68119);
-const flags_js_1 = __webpack_require__(71048);
-const parse = (jwk)=>{
-    if (flags_js_1.jwkImport && jwk.kty !== "oct") {
-        return jwk.d ? (0, crypto_1.createPrivateKey)({
-            format: "jwk",
-            key: jwk
-        }) : (0, crypto_1.createPublicKey)({
-            format: "jwk",
-            key: jwk
-        });
+hashes.push("passthrough");
+var encodings = [
+    "buffer",
+    "hex",
+    "binary",
+    "base64"
+];
+function applyDefaults(object, sourceOptions) {
+    sourceOptions = sourceOptions || {};
+    // create a copy rather than mutating
+    var options = {};
+    options.algorithm = sourceOptions.algorithm || "sha1";
+    options.encoding = sourceOptions.encoding || "hex";
+    options.excludeValues = sourceOptions.excludeValues ? true : false;
+    options.algorithm = options.algorithm.toLowerCase();
+    options.encoding = options.encoding.toLowerCase();
+    options.ignoreUnknown = sourceOptions.ignoreUnknown !== true ? false : true; // default to false
+    options.respectType = sourceOptions.respectType === false ? false : true; // default to true
+    options.respectFunctionNames = sourceOptions.respectFunctionNames === false ? false : true;
+    options.respectFunctionProperties = sourceOptions.respectFunctionProperties === false ? false : true;
+    options.unorderedArrays = sourceOptions.unorderedArrays !== true ? false : true; // default to false
+    options.unorderedSets = sourceOptions.unorderedSets === false ? false : true; // default to false
+    options.unorderedObjects = sourceOptions.unorderedObjects === false ? false : true; // default to true
+    options.replacer = sourceOptions.replacer || undefined;
+    options.excludeKeys = sourceOptions.excludeKeys || undefined;
+    if (typeof object === "undefined") {
+        throw new Error("Object argument required.");
     }
-    switch(jwk.kty){
-        case "oct":
-            {
-                return (0, crypto_1.createSecretKey)((0, base64url_js_1.decode)(jwk.k));
-            }
-        case "RSA":
-            {
-                const enc = new asn1_sequence_encoder_js_1.default();
-                const isPrivate = jwk.d !== undefined;
-                const modulus = buffer_1.Buffer.from(jwk.n, "base64");
-                const exponent = buffer_1.Buffer.from(jwk.e, "base64");
-                if (isPrivate) {
-                    enc.zero();
-                    enc.unsignedInteger(modulus);
-                    enc.unsignedInteger(exponent);
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.d, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.p, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.q, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.dp, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.dq, "base64"));
-                    enc.unsignedInteger(buffer_1.Buffer.from(jwk.qi, "base64"));
-                } else {
-                    enc.unsignedInteger(modulus);
-                    enc.unsignedInteger(exponent);
-                }
-                const der = enc.end();
-                const createInput = {
-                    key: der,
-                    format: "der",
-                    type: "pkcs1"
-                };
-                const keyObject = isPrivate ? (0, crypto_1.createPrivateKey)(createInput) : (0, crypto_1.createPublicKey)(createInput);
-                (0, check_modulus_length_js_1.setModulusLength)(keyObject, modulus.length << 3);
-                return keyObject;
-            }
-        case "EC":
-            {
-                const enc = new asn1_sequence_encoder_js_1.default();
-                const isPrivate = jwk.d !== undefined;
-                const pub = buffer_1.Buffer.concat([
-                    buffer_1.Buffer.alloc(1, 4),
-                    buffer_1.Buffer.from(jwk.x, "base64"),
-                    buffer_1.Buffer.from(jwk.y, "base64")
-                ]);
-                if (isPrivate) {
-                    enc.zero();
-                    const enc$1 = new asn1_sequence_encoder_js_1.default();
-                    enc$1.oidFor("ecPublicKey");
-                    enc$1.oidFor(jwk.crv);
-                    enc.add(enc$1.end());
-                    const enc$2 = new asn1_sequence_encoder_js_1.default();
-                    enc$2.one();
-                    enc$2.octStr(buffer_1.Buffer.from(jwk.d, "base64"));
-                    const enc$3 = new asn1_sequence_encoder_js_1.default();
-                    enc$3.bitStr(pub);
-                    const f2 = enc$3.end(buffer_1.Buffer.from([
-                        0xa1
-                    ]));
-                    enc$2.add(f2);
-                    const f = enc$2.end();
-                    const enc$4 = new asn1_sequence_encoder_js_1.default();
-                    enc$4.add(f);
-                    const f3 = enc$4.end(buffer_1.Buffer.from([
-                        0x04
-                    ]));
-                    enc.add(f3);
-                    const der = enc.end();
-                    const keyObject = (0, crypto_1.createPrivateKey)({
-                        key: der,
-                        format: "der",
-                        type: "pkcs8"
-                    });
-                    (0, get_named_curve_js_1.setCurve)(keyObject, jwk.crv);
-                    return keyObject;
-                }
-                const enc$1 = new asn1_sequence_encoder_js_1.default();
-                enc$1.oidFor("ecPublicKey");
-                enc$1.oidFor(jwk.crv);
-                enc.add(enc$1.end());
-                enc.bitStr(pub);
-                const der = enc.end();
-                const keyObject = (0, crypto_1.createPublicKey)({
-                    key: der,
-                    format: "der",
-                    type: "spki"
-                });
-                (0, get_named_curve_js_1.setCurve)(keyObject, jwk.crv);
-                return keyObject;
-            }
-        case "OKP":
-            {
-                const enc = new asn1_sequence_encoder_js_1.default();
-                const isPrivate = jwk.d !== undefined;
-                if (isPrivate) {
-                    enc.zero();
-                    const enc$1 = new asn1_sequence_encoder_js_1.default();
-                    enc$1.oidFor(jwk.crv);
-                    enc.add(enc$1.end());
-                    const enc$2 = new asn1_sequence_encoder_js_1.default();
-                    enc$2.octStr(buffer_1.Buffer.from(jwk.d, "base64"));
-                    const f = enc$2.end(buffer_1.Buffer.from([
-                        0x04
-                    ]));
-                    enc.add(f);
-                    const der = enc.end();
-                    return (0, crypto_1.createPrivateKey)({
-                        key: der,
-                        format: "der",
-                        type: "pkcs8"
-                    });
-                }
-                const enc$1 = new asn1_sequence_encoder_js_1.default();
-                enc$1.oidFor(jwk.crv);
-                enc.add(enc$1.end());
-                enc.bitStr(buffer_1.Buffer.from(jwk.x, "base64"));
-                const der = enc.end();
-                return (0, crypto_1.createPublicKey)({
-                    key: der,
-                    format: "der",
-                    type: "spki"
-                });
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported('Invalid or unsupported JWK "kty" (Key Type) Parameter value');
-    }
-};
-exports["default"] = parse;
-
-
-/***/ }),
-
-/***/ 61524:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const base64url_js_1 = __webpack_require__(98844);
-const asn1_sequence_decoder_js_1 = __webpack_require__(68307);
-const errors_js_1 = __webpack_require__(79522);
-const get_named_curve_js_1 = __webpack_require__(91141);
-const webcrypto_js_1 = __webpack_require__(53628);
-const is_key_object_js_1 = __webpack_require__(75483);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const is_key_like_js_1 = __webpack_require__(68706);
-const flags_js_1 = __webpack_require__(71048);
-const keyToJWK = (key)=>{
-    let keyObject;
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        if (!key.extractable) {
-            throw new TypeError("CryptoKey is not extractable");
-        }
-        keyObject = crypto_1.KeyObject.from(key);
-    } else if ((0, is_key_object_js_1.default)(key)) {
-        keyObject = key;
-    } else if (key instanceof Uint8Array) {
-        return {
-            kty: "oct",
-            k: (0, base64url_js_1.encode)(key)
-        };
-    } else {
-        throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
-    }
-    if (flags_js_1.jwkExport) {
-        if (keyObject.type !== "secret" && ![
-            "rsa",
-            "ec",
-            "ed25519",
-            "x25519",
-            "ed448",
-            "x448"
-        ].includes(keyObject.asymmetricKeyType)) {
-            throw new errors_js_1.JOSENotSupported("Unsupported key asymmetricKeyType");
-        }
-        return keyObject.export({
-            format: "jwk"
-        });
-    }
-    switch(keyObject.type){
-        case "secret":
-            return {
-                kty: "oct",
-                k: (0, base64url_js_1.encode)(keyObject.export())
-            };
-        case "private":
-        case "public":
-            {
-                switch(keyObject.asymmetricKeyType){
-                    case "rsa":
-                        {
-                            const der = keyObject.export({
-                                format: "der",
-                                type: "pkcs1"
-                            });
-                            const dec = new asn1_sequence_decoder_js_1.default(der);
-                            if (keyObject.type === "private") {
-                                dec.unsignedInteger();
-                            }
-                            const n = (0, base64url_js_1.encode)(dec.unsignedInteger());
-                            const e = (0, base64url_js_1.encode)(dec.unsignedInteger());
-                            let jwk;
-                            if (keyObject.type === "private") {
-                                jwk = {
-                                    d: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    p: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    q: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    dp: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    dq: (0, base64url_js_1.encode)(dec.unsignedInteger()),
-                                    qi: (0, base64url_js_1.encode)(dec.unsignedInteger())
-                                };
-                            }
-                            dec.end();
-                            return {
-                                kty: "RSA",
-                                n,
-                                e,
-                                ...jwk
-                            };
-                        }
-                    case "ec":
-                        {
-                            const crv = (0, get_named_curve_js_1.default)(keyObject);
-                            let len;
-                            let offset;
-                            let correction;
-                            switch(crv){
-                                case "secp256k1":
-                                    len = 64;
-                                    offset = 31 + 2;
-                                    correction = -1;
-                                    break;
-                                case "P-256":
-                                    len = 64;
-                                    offset = 34 + 2;
-                                    correction = -1;
-                                    break;
-                                case "P-384":
-                                    len = 96;
-                                    offset = 33 + 2;
-                                    correction = -3;
-                                    break;
-                                case "P-521":
-                                    len = 132;
-                                    offset = 33 + 2;
-                                    correction = -3;
-                                    break;
-                                default:
-                                    throw new errors_js_1.JOSENotSupported("Unsupported curve");
-                            }
-                            if (keyObject.type === "public") {
-                                const der = keyObject.export({
-                                    type: "spki",
-                                    format: "der"
-                                });
-                                return {
-                                    kty: "EC",
-                                    crv,
-                                    x: (0, base64url_js_1.encode)(der.subarray(-len, -len / 2)),
-                                    y: (0, base64url_js_1.encode)(der.subarray(-len / 2))
-                                };
-                            }
-                            const der = keyObject.export({
-                                type: "pkcs8",
-                                format: "der"
-                            });
-                            if (der.length < 100) {
-                                offset += correction;
-                            }
-                            return {
-                                ...keyToJWK((0, crypto_1.createPublicKey)(keyObject)),
-                                d: (0, base64url_js_1.encode)(der.subarray(offset, offset + len / 2))
-                            };
-                        }
-                    case "ed25519":
-                    case "x25519":
-                        {
-                            const crv = (0, get_named_curve_js_1.default)(keyObject);
-                            if (keyObject.type === "public") {
-                                const der = keyObject.export({
-                                    type: "spki",
-                                    format: "der"
-                                });
-                                return {
-                                    kty: "OKP",
-                                    crv,
-                                    x: (0, base64url_js_1.encode)(der.subarray(-32))
-                                };
-                            }
-                            const der = keyObject.export({
-                                type: "pkcs8",
-                                format: "der"
-                            });
-                            return {
-                                ...keyToJWK((0, crypto_1.createPublicKey)(keyObject)),
-                                d: (0, base64url_js_1.encode)(der.subarray(-32))
-                            };
-                        }
-                    case "ed448":
-                    case "x448":
-                        {
-                            const crv = (0, get_named_curve_js_1.default)(keyObject);
-                            if (keyObject.type === "public") {
-                                const der = keyObject.export({
-                                    type: "spki",
-                                    format: "der"
-                                });
-                                return {
-                                    kty: "OKP",
-                                    crv,
-                                    x: (0, base64url_js_1.encode)(der.subarray(crv === "Ed448" ? -57 : -56))
-                                };
-                            }
-                            const der = keyObject.export({
-                                type: "pkcs8",
-                                format: "der"
-                            });
-                            return {
-                                ...keyToJWK((0, crypto_1.createPublicKey)(keyObject)),
-                                d: (0, base64url_js_1.encode)(der.subarray(crv === "Ed448" ? -57 : -56))
-                            };
-                        }
-                    default:
-                        throw new errors_js_1.JOSENotSupported("Unsupported key asymmetricKeyType");
-                }
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported("Unsupported key type");
-    }
-};
-exports["default"] = keyToJWK;
-
-
-/***/ }),
-
-/***/ 6919:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const get_named_curve_js_1 = __webpack_require__(91141);
-const errors_js_1 = __webpack_require__(79522);
-const check_modulus_length_js_1 = __webpack_require__(533);
-const flags_js_1 = __webpack_require__(71048);
-const PSS = {
-    padding: crypto_1.constants.RSA_PKCS1_PSS_PADDING,
-    saltLength: crypto_1.constants.RSA_PSS_SALTLEN_DIGEST
-};
-const ecCurveAlgMap = new Map([
-    [
-        "ES256",
-        "P-256"
-    ],
-    [
-        "ES256K",
-        "secp256k1"
-    ],
-    [
-        "ES384",
-        "P-384"
-    ],
-    [
-        "ES512",
-        "P-521"
-    ]
-]);
-function keyForCrypto(alg, key) {
-    switch(alg){
-        case "EdDSA":
-            if (![
-                "ed25519",
-                "ed448"
-            ].includes(key.asymmetricKeyType)) {
-                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be ed25519 or ed448");
-            }
-            return key;
-        case "RS256":
-        case "RS384":
-        case "RS512":
-            if (key.asymmetricKeyType !== "rsa") {
-                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa");
-            }
-            (0, check_modulus_length_js_1.default)(key, alg);
-            return key;
-        case flags_js_1.rsaPssParams && "PS256":
-        case flags_js_1.rsaPssParams && "PS384":
-        case flags_js_1.rsaPssParams && "PS512":
-            if (key.asymmetricKeyType === "rsa-pss") {
-                const { hashAlgorithm, mgf1HashAlgorithm, saltLength } = key.asymmetricKeyDetails;
-                const length = parseInt(alg.slice(-3), 10);
-                if (hashAlgorithm !== undefined && (hashAlgorithm !== `sha${length}` || mgf1HashAlgorithm !== hashAlgorithm)) {
-                    throw new TypeError(`Invalid key for this operation, its RSA-PSS parameters do not meet the requirements of "alg" ${alg}`);
-                }
-                if (saltLength !== undefined && saltLength > length >> 3) {
-                    throw new TypeError(`Invalid key for this operation, its RSA-PSS parameter saltLength does not meet the requirements of "alg" ${alg}`);
-                }
-            } else if (key.asymmetricKeyType !== "rsa") {
-                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa or rsa-pss");
-            }
-            (0, check_modulus_length_js_1.default)(key, alg);
-            return {
-                key,
-                ...PSS
-            };
-        case !flags_js_1.rsaPssParams && "PS256":
-        case !flags_js_1.rsaPssParams && "PS384":
-        case !flags_js_1.rsaPssParams && "PS512":
-            if (key.asymmetricKeyType !== "rsa") {
-                throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa");
-            }
-            (0, check_modulus_length_js_1.default)(key, alg);
-            return {
-                key,
-                ...PSS
-            };
-        case "ES256":
-        case "ES256K":
-        case "ES384":
-        case "ES512":
-            {
-                if (key.asymmetricKeyType !== "ec") {
-                    throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be ec");
-                }
-                const actual = (0, get_named_curve_js_1.default)(key);
-                const expected = ecCurveAlgMap.get(alg);
-                if (actual !== expected) {
-                    throw new TypeError(`Invalid key curve for the algorithm, its curve must be ${expected}, got ${actual}`);
-                }
-                return {
-                    dsaEncoding: "ieee-p1363",
-                    key
-                };
-            }
-        default:
-            throw new errors_js_1.JOSENotSupported(`alg ${alg} is not supported either by JOSE or your javascript runtime`);
-    }
-}
-exports["default"] = keyForCrypto;
-
-
-/***/ }),
-
-/***/ 41254:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decrypt = exports.encrypt = void 0;
-const util_1 = __webpack_require__(73837);
-const crypto_1 = __webpack_require__(6113);
-const random_js_1 = __webpack_require__(1824);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const base64url_js_1 = __webpack_require__(98844);
-const aeskw_js_1 = __webpack_require__(43349);
-const check_p2s_js_1 = __webpack_require__(76206);
-const webcrypto_js_1 = __webpack_require__(53628);
-const crypto_key_js_1 = __webpack_require__(69836);
-const is_key_object_js_1 = __webpack_require__(75483);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const is_key_like_js_1 = __webpack_require__(68706);
-const pbkdf2 = (0, util_1.promisify)(crypto_1.pbkdf2);
-function getPassword(key, alg) {
-    if ((0, is_key_object_js_1.default)(key)) {
-        return key.export();
-    }
-    if (key instanceof Uint8Array) {
-        return key;
-    }
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(key, alg, "deriveBits", "deriveKey");
-        return crypto_1.KeyObject.from(key).export();
-    }
-    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types, "Uint8Array"));
-}
-const encrypt = async (alg, key, cek, p2c = 2048, p2s = (0, random_js_1.default)(new Uint8Array(16)))=>{
-    (0, check_p2s_js_1.default)(p2s);
-    const salt = (0, buffer_utils_js_1.p2s)(alg, p2s);
-    const keylen = parseInt(alg.slice(13, 16), 10) >> 3;
-    const password = getPassword(key, alg);
-    const derivedKey = await pbkdf2(password, salt, p2c, keylen, `sha${alg.slice(8, 11)}`);
-    const encryptedKey = await (0, aeskw_js_1.wrap)(alg.slice(-6), derivedKey, cek);
-    return {
-        encryptedKey,
-        p2c,
-        p2s: (0, base64url_js_1.encode)(p2s)
-    };
-};
-exports.encrypt = encrypt;
-const decrypt = async (alg, key, encryptedKey, p2c, p2s)=>{
-    (0, check_p2s_js_1.default)(p2s);
-    const salt = (0, buffer_utils_js_1.p2s)(alg, p2s);
-    const keylen = parseInt(alg.slice(13, 16), 10) >> 3;
-    const password = getPassword(key, alg);
-    const derivedKey = await pbkdf2(password, salt, p2c, keylen, `sha${alg.slice(8, 11)}`);
-    return (0, aeskw_js_1.unwrap)(alg.slice(-6), derivedKey, encryptedKey);
-};
-exports.decrypt = decrypt;
-
-
-/***/ }),
-
-/***/ 1824:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports["default"] = void 0;
-var crypto_1 = __webpack_require__(6113);
-Object.defineProperty(exports, "default", ({
-    enumerable: true,
-    get: function() {
-        return crypto_1.randomFillSync;
-    }
-}));
-
-
-/***/ }),
-
-/***/ 25469:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decrypt = exports.encrypt = void 0;
-const crypto_1 = __webpack_require__(6113);
-const check_modulus_length_js_1 = __webpack_require__(533);
-const webcrypto_js_1 = __webpack_require__(53628);
-const crypto_key_js_1 = __webpack_require__(69836);
-const is_key_object_js_1 = __webpack_require__(75483);
-const invalid_key_input_js_1 = __webpack_require__(46968);
-const is_key_like_js_1 = __webpack_require__(68706);
-const checkKey = (key, alg)=>{
-    if (key.asymmetricKeyType !== "rsa") {
-        throw new TypeError("Invalid key for this operation, its asymmetricKeyType must be rsa");
-    }
-    (0, check_modulus_length_js_1.default)(key, alg);
-};
-const resolvePadding = (alg)=>{
-    switch(alg){
-        case "RSA-OAEP":
-        case "RSA-OAEP-256":
-        case "RSA-OAEP-384":
-        case "RSA-OAEP-512":
-            return crypto_1.constants.RSA_PKCS1_OAEP_PADDING;
-        case "RSA1_5":
-            return crypto_1.constants.RSA_PKCS1_PADDING;
-        default:
-            return undefined;
-    }
-};
-const resolveOaepHash = (alg)=>{
-    switch(alg){
-        case "RSA-OAEP":
-            return "sha1";
-        case "RSA-OAEP-256":
-            return "sha256";
-        case "RSA-OAEP-384":
-            return "sha384";
-        case "RSA-OAEP-512":
-            return "sha512";
-        default:
-            return undefined;
-    }
-};
-function ensureKeyObject(key, alg, ...usages) {
-    if ((0, is_key_object_js_1.default)(key)) {
-        return key;
-    }
-    if ((0, webcrypto_js_1.isCryptoKey)(key)) {
-        (0, crypto_key_js_1.checkEncCryptoKey)(key, alg, ...usages);
-        return crypto_1.KeyObject.from(key);
-    }
-    throw new TypeError((0, invalid_key_input_js_1.default)(key, ...is_key_like_js_1.types));
-}
-const encrypt = (alg, key, cek)=>{
-    const padding = resolvePadding(alg);
-    const oaepHash = resolveOaepHash(alg);
-    const keyObject = ensureKeyObject(key, alg, "wrapKey", "encrypt");
-    checkKey(keyObject, alg);
-    return (0, crypto_1.publicEncrypt)({
-        key: keyObject,
-        oaepHash,
-        padding
-    }, cek);
-};
-exports.encrypt = encrypt;
-const decrypt = (alg, key, encryptedKey)=>{
-    const padding = resolvePadding(alg);
-    const oaepHash = resolveOaepHash(alg);
-    const keyObject = ensureKeyObject(key, alg, "unwrapKey", "decrypt");
-    checkKey(keyObject, alg);
-    return (0, crypto_1.privateDecrypt)({
-        key: keyObject,
-        oaepHash,
-        padding
-    }, encryptedKey);
-};
-exports.decrypt = decrypt;
-
-
-/***/ }),
-
-/***/ 77225:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports["default"] = "node:crypto";
-
-
-/***/ }),
-
-/***/ 49534:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto = __webpack_require__(6113);
-const util_1 = __webpack_require__(73837);
-const dsa_digest_js_1 = __webpack_require__(58397);
-const hmac_digest_js_1 = __webpack_require__(70221);
-const node_key_js_1 = __webpack_require__(6919);
-const get_sign_verify_key_js_1 = __webpack_require__(2053);
-let oneShotSign;
-if (crypto.sign.length > 3) {
-    oneShotSign = (0, util_1.promisify)(crypto.sign);
-} else {
-    oneShotSign = crypto.sign;
-}
-const sign = async (alg, key, data)=>{
-    const keyObject = (0, get_sign_verify_key_js_1.default)(alg, key, "sign");
-    if (alg.startsWith("HS")) {
-        const hmac = crypto.createHmac((0, hmac_digest_js_1.default)(alg), keyObject);
-        hmac.update(data);
-        return hmac.digest();
-    }
-    return oneShotSign((0, dsa_digest_js_1.default)(alg), data, (0, node_key_js_1.default)(alg, keyObject));
-};
-exports["default"] = sign;
-
-
-/***/ }),
-
-/***/ 3763:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto_1 = __webpack_require__(6113);
-const timingSafeEqual = crypto_1.timingSafeEqual;
-exports["default"] = timingSafeEqual;
-
-
-/***/ }),
-
-/***/ 70924:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const crypto = __webpack_require__(6113);
-const util_1 = __webpack_require__(73837);
-const dsa_digest_js_1 = __webpack_require__(58397);
-const node_key_js_1 = __webpack_require__(6919);
-const sign_js_1 = __webpack_require__(49534);
-const get_sign_verify_key_js_1 = __webpack_require__(2053);
-const flags_js_1 = __webpack_require__(71048);
-let oneShotVerify;
-if (crypto.verify.length > 4 && flags_js_1.oneShotCallback) {
-    oneShotVerify = (0, util_1.promisify)(crypto.verify);
-} else {
-    oneShotVerify = crypto.verify;
-}
-const verify = async (alg, key, signature, data)=>{
-    const keyObject = (0, get_sign_verify_key_js_1.default)(alg, key, "verify");
-    if (alg.startsWith("HS")) {
-        const expected = await (0, sign_js_1.default)(alg, keyObject, data);
-        const actual = signature;
-        try {
-            return crypto.timingSafeEqual(actual, expected);
-        } catch  {
-            return false;
+    // if there is a case-insensitive match in the hashes list, accept it
+    // (i.e. SHA256 for sha256)
+    for(var i = 0; i < hashes.length; ++i){
+        if (hashes[i].toLowerCase() === options.algorithm.toLowerCase()) {
+            options.algorithm = hashes[i];
         }
     }
-    const algorithm = (0, dsa_digest_js_1.default)(alg);
-    const keyInput = (0, node_key_js_1.default)(alg, keyObject);
-    try {
-        return await oneShotVerify(algorithm, data, keyInput, signature);
-    } catch  {
+    if (hashes.indexOf(options.algorithm) === -1) {
+        throw new Error('Algorithm "' + options.algorithm + '"  not supported. ' + "supported values: " + hashes.join(", "));
+    }
+    if (encodings.indexOf(options.encoding) === -1 && options.algorithm !== "passthrough") {
+        throw new Error('Encoding "' + options.encoding + '"  not supported. ' + "supported values: " + encodings.join(", "));
+    }
+    return options;
+}
+/** Check if the given function is a native function */ function isNativeFunction(f) {
+    if (typeof f !== "function") {
         return false;
     }
+    var exp = /^function\s+\w*\s*\(\s*\)\s*{\s+\[native code\]\s+}$/i;
+    return exp.exec(Function.prototype.toString.call(f)) != null;
+}
+function hash(object, options) {
+    var hashingStream;
+    if (options.algorithm !== "passthrough") {
+        hashingStream = crypto.createHash(options.algorithm);
+    } else {
+        hashingStream = new PassThrough();
+    }
+    if (typeof hashingStream.write === "undefined") {
+        hashingStream.write = hashingStream.update;
+        hashingStream.end = hashingStream.update;
+    }
+    var hasher = typeHasher(options, hashingStream);
+    hasher.dispatch(object);
+    if (!hashingStream.update) {
+        hashingStream.end("");
+    }
+    if (hashingStream.digest) {
+        return hashingStream.digest(options.encoding === "buffer" ? undefined : options.encoding);
+    }
+    var buf = hashingStream.read();
+    if (options.encoding === "buffer") {
+        return buf;
+    }
+    return buf.toString(options.encoding);
+}
+/**
+ * Expose streaming API
+ *
+ * @param {object} object  Value to serialize
+ * @param {object} options  Options, as for hash()
+ * @param {object} stream  A stream to write the serializiation to
+ * @api public
+ */ exports.writeToStream = function(object, options, stream) {
+    if (typeof stream === "undefined") {
+        stream = options;
+        options = {};
+    }
+    options = applyDefaults(object, options);
+    return typeHasher(options, stream).dispatch(object);
 };
-exports["default"] = verify;
-
-
-/***/ }),
-
-/***/ 53628:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.isCryptoKey = void 0;
-const crypto = __webpack_require__(6113);
-const util = __webpack_require__(73837);
-const webcrypto = crypto.webcrypto;
-exports["default"] = webcrypto;
-exports.isCryptoKey = util.types.isCryptoKey ? (key)=>util.types.isCryptoKey(key) : (key)=>false;
-
-
-/***/ }),
-
-/***/ 19688:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.deflate = exports.inflate = void 0;
-const util_1 = __webpack_require__(73837);
-const zlib_1 = __webpack_require__(59796);
-const inflateRaw = (0, util_1.promisify)(zlib_1.inflateRaw);
-const deflateRaw = (0, util_1.promisify)(zlib_1.deflateRaw);
-const inflate = (input)=>inflateRaw(input);
-exports.inflate = inflate;
-const deflate = (input)=>deflateRaw(input);
-exports.deflate = deflate;
-
-
-/***/ }),
-
-/***/ 86427:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decode = exports.encode = void 0;
-const base64url = __webpack_require__(98844);
-exports.encode = base64url.encode;
-exports.decode = base64url.decode;
-
-
-/***/ }),
-
-/***/ 15881:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decodeJwt = void 0;
-const base64url_js_1 = __webpack_require__(86427);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const is_object_js_1 = __webpack_require__(96004);
-const errors_js_1 = __webpack_require__(79522);
-function decodeJwt(jwt) {
-    if (typeof jwt !== "string") throw new errors_js_1.JWTInvalid("JWTs must use Compact JWS serialization, JWT must be a string");
-    const { 1: payload, length } = jwt.split(".");
-    if (length === 5) throw new errors_js_1.JWTInvalid("Only JWTs using Compact JWS serialization can be decoded");
-    if (length !== 3) throw new errors_js_1.JWTInvalid("Invalid JWT");
-    if (!payload) throw new errors_js_1.JWTInvalid("JWTs must contain a payload");
-    let decoded;
-    try {
-        decoded = (0, base64url_js_1.decode)(payload);
-    } catch  {
-        throw new errors_js_1.JWTInvalid("Failed to base64url decode the payload");
-    }
-    let result;
-    try {
-        result = JSON.parse(buffer_utils_js_1.decoder.decode(decoded));
-    } catch  {
-        throw new errors_js_1.JWTInvalid("Failed to parse the decoded payload as JSON");
-    }
-    if (!(0, is_object_js_1.default)(result)) throw new errors_js_1.JWTInvalid("Invalid JWT Claims Set");
-    return result;
-}
-exports.decodeJwt = decodeJwt;
-
-
-/***/ }),
-
-/***/ 285:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.decodeProtectedHeader = void 0;
-const base64url_js_1 = __webpack_require__(86427);
-const buffer_utils_js_1 = __webpack_require__(91108);
-const is_object_js_1 = __webpack_require__(96004);
-function decodeProtectedHeader(token) {
-    let protectedB64u;
-    if (typeof token === "string") {
-        const parts = token.split(".");
-        if (parts.length === 3 || parts.length === 5) {
-            ;
-            [protectedB64u] = parts;
-        }
-    } else if (typeof token === "object" && token) {
-        if ("protected" in token) {
-            protectedB64u = token.protected;
+function typeHasher(options, writeTo, context) {
+    context = context || [];
+    var write = function(str) {
+        if (writeTo.update) {
+            return writeTo.update(str, "utf8");
         } else {
-            throw new TypeError("Token does not contain a Protected Header");
+            return writeTo.write(str, "utf8");
         }
-    }
-    try {
-        if (typeof protectedB64u !== "string" || !protectedB64u) {
-            throw new Error();
-        }
-        const result = JSON.parse(buffer_utils_js_1.decoder.decode((0, base64url_js_1.decode)(protectedB64u)));
-        if (!(0, is_object_js_1.default)(result)) {
-            throw new Error();
-        }
-        return result;
-    } catch  {
-        throw new TypeError("Invalid Token or Protected Header formatting");
-    }
-}
-exports.decodeProtectedHeader = decodeProtectedHeader;
-
-
-/***/ }),
-
-/***/ 79522:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-exports.JWSSignatureVerificationFailed = exports.JWKSTimeout = exports.JWKSMultipleMatchingKeys = exports.JWKSNoMatchingKey = exports.JWKSInvalid = exports.JWKInvalid = exports.JWTInvalid = exports.JWSInvalid = exports.JWEInvalid = exports.JWEDecryptionFailed = exports.JOSENotSupported = exports.JOSEAlgNotAllowed = exports.JWTExpired = exports.JWTClaimValidationFailed = exports.JOSEError = void 0;
-class JOSEError extends Error {
-    static get code() {
-        return "ERR_JOSE_GENERIC";
-    }
-    constructor(message){
-        var _a;
-        super(message);
-        this.code = "ERR_JOSE_GENERIC";
-        this.name = this.constructor.name;
-        (_a = Error.captureStackTrace) === null || _a === void 0 ? void 0 : _a.call(Error, this, this.constructor);
-    }
-}
-exports.JOSEError = JOSEError;
-class JWTClaimValidationFailed extends JOSEError {
-    static get code() {
-        return "ERR_JWT_CLAIM_VALIDATION_FAILED";
-    }
-    constructor(message, claim = "unspecified", reason = "unspecified"){
-        super(message);
-        this.code = "ERR_JWT_CLAIM_VALIDATION_FAILED";
-        this.claim = claim;
-        this.reason = reason;
-    }
-}
-exports.JWTClaimValidationFailed = JWTClaimValidationFailed;
-class JWTExpired extends JOSEError {
-    static get code() {
-        return "ERR_JWT_EXPIRED";
-    }
-    constructor(message, claim = "unspecified", reason = "unspecified"){
-        super(message);
-        this.code = "ERR_JWT_EXPIRED";
-        this.claim = claim;
-        this.reason = reason;
-    }
-}
-exports.JWTExpired = JWTExpired;
-class JOSEAlgNotAllowed extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JOSE_ALG_NOT_ALLOWED";
-    }
-    static get code() {
-        return "ERR_JOSE_ALG_NOT_ALLOWED";
-    }
-}
-exports.JOSEAlgNotAllowed = JOSEAlgNotAllowed;
-class JOSENotSupported extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JOSE_NOT_SUPPORTED";
-    }
-    static get code() {
-        return "ERR_JOSE_NOT_SUPPORTED";
-    }
-}
-exports.JOSENotSupported = JOSENotSupported;
-class JWEDecryptionFailed extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWE_DECRYPTION_FAILED";
-        this.message = "decryption operation failed";
-    }
-    static get code() {
-        return "ERR_JWE_DECRYPTION_FAILED";
-    }
-}
-exports.JWEDecryptionFailed = JWEDecryptionFailed;
-class JWEInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWE_INVALID";
-    }
-    static get code() {
-        return "ERR_JWE_INVALID";
-    }
-}
-exports.JWEInvalid = JWEInvalid;
-class JWSInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWS_INVALID";
-    }
-    static get code() {
-        return "ERR_JWS_INVALID";
-    }
-}
-exports.JWSInvalid = JWSInvalid;
-class JWTInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWT_INVALID";
-    }
-    static get code() {
-        return "ERR_JWT_INVALID";
-    }
-}
-exports.JWTInvalid = JWTInvalid;
-class JWKInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWK_INVALID";
-    }
-    static get code() {
-        return "ERR_JWK_INVALID";
-    }
-}
-exports.JWKInvalid = JWKInvalid;
-class JWKSInvalid extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWKS_INVALID";
-    }
-    static get code() {
-        return "ERR_JWKS_INVALID";
-    }
-}
-exports.JWKSInvalid = JWKSInvalid;
-class JWKSNoMatchingKey extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWKS_NO_MATCHING_KEY";
-        this.message = "no applicable key found in the JSON Web Key Set";
-    }
-    static get code() {
-        return "ERR_JWKS_NO_MATCHING_KEY";
-    }
-}
-exports.JWKSNoMatchingKey = JWKSNoMatchingKey;
-class JWKSMultipleMatchingKeys extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWKS_MULTIPLE_MATCHING_KEYS";
-        this.message = "multiple matching keys found in the JSON Web Key Set";
-    }
-    static get code() {
-        return "ERR_JWKS_MULTIPLE_MATCHING_KEYS";
-    }
-}
-exports.JWKSMultipleMatchingKeys = JWKSMultipleMatchingKeys;
-Symbol.asyncIterator;
-class JWKSTimeout extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWKS_TIMEOUT";
-        this.message = "request timed out";
-    }
-    static get code() {
-        return "ERR_JWKS_TIMEOUT";
-    }
-}
-exports.JWKSTimeout = JWKSTimeout;
-class JWSSignatureVerificationFailed extends JOSEError {
-    constructor(){
-        super(...arguments);
-        this.code = "ERR_JWS_SIGNATURE_VERIFICATION_FAILED";
-        this.message = "signature verification failed";
-    }
-    static get code() {
-        return "ERR_JWS_SIGNATURE_VERIFICATION_FAILED";
-    }
-}
-exports.JWSSignatureVerificationFailed = JWSSignatureVerificationFailed;
-
-
-/***/ }),
-
-/***/ 33995:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({
-    value: true
-}));
-const runtime_js_1 = __webpack_require__(77225);
-exports["default"] = runtime_js_1.default;
-
-
-/***/ }),
-
-/***/ 5688:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-!function(e, t) {
-     true ? t(exports, __webpack_require__(97804)) : 0;
-}(this, function(e, t) {
-    var r = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|^--/i, n = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/, o = /[\s\n\\/='"\0<>]/, i = /^xlink:?./, s = /["&<]/;
-    function a(e) {
-        if (!1 === s.test(e += "")) return e;
-        for(var t = 0, r = 0, n = "", o = ""; r < e.length; r++){
-            switch(e.charCodeAt(r)){
-                case 34:
-                    o = "&quot;";
-                    break;
-                case 38:
-                    o = "&amp;";
-                    break;
-                case 60:
-                    o = "&lt;";
-                    break;
-                default:
-                    continue;
-            }
-            r !== t && (n += e.slice(t, r)), n += o, t = r + 1;
-        }
-        return r !== t && (n += e.slice(t, r)), n;
-    }
-    var l = function(e, t) {
-        return String(e).replace(/(\n+)/g, "$1" + (t || "	"));
-    }, f = function(e, t, r) {
-        return String(e).length > (t || 40) || !r && -1 !== String(e).indexOf("\n") || -1 !== String(e).indexOf("<");
-    }, c = {}, u = /([A-Z])/g;
-    function p(e) {
-        var t = "";
-        for(var n in e){
-            var o = e[n];
-            null != o && "" !== o && (t && (t += " "), t += "-" == n[0] ? n : c[n] || (c[n] = n.replace(u, "-$1").toLowerCase()), t = "number" == typeof o && !1 === r.test(n) ? t + ": " + o + "px;" : t + ": " + o + ";");
-        }
-        return t || void 0;
-    }
-    function d(e, t) {
-        return Array.isArray(t) ? t.reduce(d, e) : null != t && !1 !== t && e.push(t), e;
-    }
-    function _() {
-        this.__d = !0;
-    }
-    function v(e, t) {
-        return {
-            __v: e,
-            context: t,
-            props: e.props,
-            setState: _,
-            forceUpdate: _,
-            __d: !0,
-            __h: []
-        };
-    }
-    function g(e, t) {
-        var r = e.contextType, n = r && t[r.__c];
-        return null != r ? n ? n.props.value : r.__ : t;
-    }
-    var h = [];
-    function y(e, r, s, c, u, _) {
-        if (null == e || "boolean" == typeof e) return "";
-        if ("object" != typeof e) return a(e);
-        var m = s.pretty, b = m && "string" == typeof m ? m : "	";
-        if (Array.isArray(e)) {
-            for(var x = "", S = 0; S < e.length; S++)m && S > 0 && (x += "\n"), x += y(e[S], r, s, c, u, _);
-            return x;
-        }
-        var k, w = e.type, C = e.props, O = !1;
-        if ("function" == typeof w) {
-            if (O = !0, !s.shallow || !c && !1 !== s.renderRootComponent) {
-                if (w === t.Fragment) {
-                    var j = [];
-                    return d(j, e.props.children), y(j, r, s, !1 !== s.shallowHighOrder, u, _);
-                }
-                var A, F = e.__c = v(e, r);
-                t.options.__b && t.options.__b(e);
-                var T = t.options.__r;
-                if (w.prototype && "function" == typeof w.prototype.render) {
-                    var H = g(w, r);
-                    (F = e.__c = new w(C, H)).__v = e, F._dirty = F.__d = !0, F.props = C, null == F.state && (F.state = {}), null == F._nextState && null == F.__s && (F._nextState = F.__s = F.state), F.context = H, w.getDerivedStateFromProps ? F.state = Object.assign({}, F.state, w.getDerivedStateFromProps(F.props, F.state)) : F.componentWillMount && (F.componentWillMount(), F.state = F._nextState !== F.state ? F._nextState : F.__s !== F.state ? F.__s : F.state), T && T(e), A = F.render(F.props, F.state, F.context);
-                } else for(var M = g(w, r), L = 0; F.__d && L++ < 25;)F.__d = !1, T && T(e), A = w.call(e.__c, C, M);
-                return F.getChildContext && (r = Object.assign({}, r, F.getChildContext())), t.options.diffed && t.options.diffed(e), y(A, r, s, !1 !== s.shallowHighOrder, u, _);
-            }
-            w = (k = w).displayName || k !== Function && k.name || function(e) {
-                var t = (Function.prototype.toString.call(e).match(/^\s*function\s+([^( ]+)/) || "")[1];
-                if (!t) {
-                    for(var r = -1, n = h.length; n--;)if (h[n] === e) {
-                        r = n;
-                        break;
-                    }
-                    r < 0 && (r = h.push(e) - 1), t = "UnnamedComponent" + r;
-                }
-                return t;
-            }(k);
-        }
-        var E, $, D = "<" + w;
-        if (C) {
-            var N = Object.keys(C);
-            s && !0 === s.sortAttributes && N.sort();
-            for(var P = 0; P < N.length; P++){
-                var R = N[P], W = C[R];
-                if ("children" !== R) {
-                    if (!o.test(R) && (s && s.allAttributes || "key" !== R && "ref" !== R && "__self" !== R && "__source" !== R)) {
-                        if ("defaultValue" === R) R = "value";
-                        else if ("defaultChecked" === R) R = "checked";
-                        else if ("defaultSelected" === R) R = "selected";
-                        else if ("className" === R) {
-                            if (void 0 !== C.class) continue;
-                            R = "class";
-                        } else u && i.test(R) && (R = R.toLowerCase().replace(/^xlink:?/, "xlink:"));
-                        if ("htmlFor" === R) {
-                            if (C.for) continue;
-                            R = "for";
-                        }
-                        "style" === R && W && "object" == typeof W && (W = p(W)), "a" === R[0] && "r" === R[1] && "boolean" == typeof W && (W = String(W));
-                        var q = s.attributeHook && s.attributeHook(R, W, r, s, O);
-                        if (q || "" === q) D += q;
-                        else if ("dangerouslySetInnerHTML" === R) $ = W && W.__html;
-                        else if ("textarea" === w && "value" === R) E = W;
-                        else if ((W || 0 === W || "" === W) && "function" != typeof W) {
-                            if (!(!0 !== W && "" !== W || (W = R, s && s.xml))) {
-                                D = D + " " + R;
-                                continue;
-                            }
-                            if ("value" === R) {
-                                if ("select" === w) {
-                                    _ = W;
-                                    continue;
-                                }
-                                "option" === w && _ == W && void 0 === C.selected && (D += " selected");
-                            }
-                            D = D + " " + R + '="' + a(W) + '"';
-                        }
-                    }
-                } else E = W;
-            }
-        }
-        if (m) {
-            var I = D.replace(/\n\s*/, " ");
-            I === D || ~I.indexOf("\n") ? m && ~D.indexOf("\n") && (D += "\n") : D = I;
-        }
-        if (D += ">", o.test(w)) throw new Error(w + " is not a valid HTML tag name in " + D);
-        var U, V = n.test(w) || s.voidElements && s.voidElements.test(w), z = [];
-        if ($) m && f($) && ($ = "\n" + b + l($, b)), D += $;
-        else if (null != E && d(U = [], E).length) {
-            for(var Z = m && ~D.indexOf("\n"), B = !1, G = 0; G < U.length; G++){
-                var J = U[G];
-                if (null != J && !1 !== J) {
-                    var K = y(J, r, s, !0, "svg" === w || "foreignObject" !== w && u, _);
-                    if (m && !Z && f(K) && (Z = !0), K) if (m) {
-                        var Q = K.length > 0 && "<" != K[0];
-                        B && Q ? z[z.length - 1] += K : z.push(K), B = Q;
-                    } else z.push(K);
-                }
-            }
-            if (m && Z) for(var X = z.length; X--;)z[X] = "\n" + b + l(z[X], b);
-        }
-        if (z.length || $) D += z.join("");
-        else if (s && s.xml) return D.substring(0, D.length - 1) + " />";
-        return !V || U || $ ? (m && ~D.indexOf("\n") && (D += "\n"), D = D + "</" + w + ">") : D = D.replace(/>$/, " />"), D;
-    }
-    var m = {
-        shallow: !0
     };
-    S.render = S;
-    var b = function(e, t) {
-        return S(e, t, m);
-    }, x = [];
-    function S(e, r, n) {
-        r = r || {};
-        var o, i = t.options.__s;
-        return t.options.__s = !0, o = n && (n.pretty || n.voidElements || n.sortAttributes || n.shallow || n.allAttributes || n.xml || n.attributeHook) ? y(e, r, n) : j(e, r, !1, void 0), t.options.__c && t.options.__c(e, x), t.options.__s = i, x.length = 0, o;
-    }
-    function k(e, t) {
-        return "className" === e ? "class" : "htmlFor" === e ? "for" : "defaultValue" === e ? "value" : "defaultChecked" === e ? "checked" : "defaultSelected" === e ? "selected" : t && i.test(e) ? e.toLowerCase().replace(/^xlink:?/, "xlink:") : e;
-    }
-    function w(e, t) {
-        return "style" === e && null != t && "object" == typeof t ? p(t) : "a" === e[0] && "r" === e[1] && "boolean" == typeof t ? String(t) : t;
-    }
-    var C = Array.isArray, O = Object.assign;
-    function j(e, r, i, s) {
-        if (null == e || !0 === e || !1 === e || "" === e) return "";
-        if ("object" != typeof e) return a(e);
-        if (C(e)) {
-            for(var l = "", f = 0; f < e.length; f++)l += j(e[f], r, i, s);
-            return l;
-        }
-        t.options.__b && t.options.__b(e);
-        var c = e.type, u = e.props;
-        if ("function" == typeof c) {
-            if (c === t.Fragment) return j(e.props.children, r, i, s);
-            var p;
-            p = c.prototype && "function" == typeof c.prototype.render ? function(e, r) {
-                var n = e.type, o = g(n, r), i = new n(e.props, o);
-                e.__c = i, i.__v = e, i.__d = !0, i.props = e.props, null == i.state && (i.state = {}), null == i.__s && (i.__s = i.state), i.context = o, n.getDerivedStateFromProps ? i.state = O({}, i.state, n.getDerivedStateFromProps(i.props, i.state)) : i.componentWillMount && (i.componentWillMount(), i.state = i.__s !== i.state ? i.__s : i.state);
-                var s = t.options.__r;
-                return s && s(e), i.render(i.props, i.state, i.context);
-            }(e, r) : function(e, r) {
-                var n, o = v(e, r), i = g(e.type, r);
-                e.__c = o;
-                for(var s = t.options.__r, a = 0; o.__d && a++ < 25;)o.__d = !1, s && s(e), n = e.type.call(o, e.props, i);
-                return n;
-            }(e, r);
-            var d = e.__c;
-            d.getChildContext && (r = O({}, r, d.getChildContext()));
-            var _ = j(p, r, i, s);
-            return t.options.diffed && t.options.diffed(e), _;
-        }
-        var h, y, m = "<";
-        if (m += c, u) for(var b in h = u.children, u){
-            var x = u[b];
-            if (!("key" === b || "ref" === b || "__self" === b || "__source" === b || "children" === b || "className" === b && "class" in u || "htmlFor" === b && "for" in u || o.test(b))) {
-                if (x = w(b = k(b, i), x), "dangerouslySetInnerHTML" === b) y = x && x.__html;
-                else if ("textarea" === c && "value" === b) h = x;
-                else if ((x || 0 === x || "" === x) && "function" != typeof x) {
-                    if (!0 === x || "" === x) {
-                        x = b, m = m + " " + b;
-                        continue;
-                    }
-                    if ("value" === b) {
-                        if ("select" === c) {
-                            s = x;
-                            continue;
-                        }
-                        "option" !== c || s != x || "selected" in u || (m += " selected");
-                    }
-                    m = m + " " + b + '="' + a(x) + '"';
+    return {
+        dispatch: function(value) {
+            if (options.replacer) {
+                value = options.replacer(value);
+            }
+            var type = typeof value;
+            if (value === null) {
+                type = "null";
+            }
+            //console.log("[DEBUG] Dispatch: ", value, "->", type, " -> ", "_" + type);
+            return this["_" + type](value);
+        },
+        _object: function(object) {
+            var pattern = /\[object (.*)\]/i;
+            var objString = Object.prototype.toString.call(object);
+            var objType = pattern.exec(objString);
+            if (!objType) {
+                objType = "unknown:[" + objString + "]";
+            } else {
+                objType = objType[1]; // take only the class name
+            }
+            objType = objType.toLowerCase();
+            var objectNumber = null;
+            if ((objectNumber = context.indexOf(object)) >= 0) {
+                return this.dispatch("[CIRCULAR:" + objectNumber + "]");
+            } else {
+                context.push(object);
+            }
+            if (typeof Buffer !== "undefined" && Buffer.isBuffer && Buffer.isBuffer(object)) {
+                write("buffer:");
+                return write(object);
+            }
+            if (objType !== "object" && objType !== "function" && objType !== "asyncfunction") {
+                if (this["_" + objType]) {
+                    this["_" + objType](object);
+                } else if (options.ignoreUnknown) {
+                    return write("[" + objType + "]");
+                } else {
+                    throw new Error('Unknown object type "' + objType + '"');
                 }
-            }
-        }
-        var S = m;
-        if (m += ">", o.test(c)) throw new Error(c + " is not a valid HTML tag name in " + m);
-        var A = "", F = !1;
-        if (y) A += y, F = !0;
-        else if ("string" == typeof h) A += a(h), F = !0;
-        else if (C(h)) for(var T = 0; T < h.length; T++){
-            var H = h[T];
-            if (null != H && !1 !== H) {
-                var M = j(H, r, "svg" === c || "foreignObject" !== c && i, s);
-                M && (A += M, F = !0);
-            }
-        }
-        else if (null != h && !1 !== h && !0 !== h) {
-            var L = j(h, r, "svg" === c || "foreignObject" !== c && i, s);
-            L && (A += L, F = !0);
-        }
-        if (t.options.diffed && t.options.diffed(e), F) m += A;
-        else if (n.test(c)) return S + " />";
-        return m + "</" + c + ">";
-    }
-    S.shallowRender = b, e.default = S, e.render = S, e.renderToStaticMarkup = S, e.renderToString = S, e.shallowRender = b;
-}); //# sourceMappingURL=index.js.map
-
-
-/***/ }),
-
-/***/ 16829:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-module.exports = __webpack_require__(5688)["default"];
-
-
-/***/ }),
-
-/***/ 97804:
-/***/ ((__unused_webpack_module, exports) => {
-
-var n, l, u, t, i, o, r, f = {}, e = [], c = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
-function s(n, l) {
-    for(var u in l)n[u] = l[u];
-    return n;
-}
-function a(n) {
-    var l = n.parentNode;
-    l && l.removeChild(n);
-}
-function v(l, u, t) {
-    var i, o, r, f = {};
-    for(r in u)"key" == r ? i = u[r] : "ref" == r ? o = u[r] : f[r] = u[r];
-    if (arguments.length > 2 && (f.children = arguments.length > 3 ? n.call(arguments, 2) : t), "function" == typeof l && null != l.defaultProps) for(r in l.defaultProps)void 0 === f[r] && (f[r] = l.defaultProps[r]);
-    return h(l, f, i, o, null);
-}
-function h(n, t, i, o, r) {
-    var f = {
-        type: n,
-        props: t,
-        key: i,
-        ref: o,
-        __k: null,
-        __: null,
-        __b: 0,
-        __e: null,
-        __d: void 0,
-        __c: null,
-        __h: null,
-        constructor: void 0,
-        __v: null == r ? ++u : r
-    };
-    return null == r && null != l.vnode && l.vnode(f), f;
-}
-function p(n) {
-    return n.children;
-}
-function y(n, l) {
-    this.props = n, this.context = l;
-}
-function d(n, l) {
-    if (null == l) return n.__ ? d(n.__, n.__.__k.indexOf(n) + 1) : null;
-    for(var u; l < n.__k.length; l++)if (null != (u = n.__k[l]) && null != u.__e) return u.__e;
-    return "function" == typeof n.type ? d(n) : null;
-}
-function _(n) {
-    var l, u;
-    if (null != (n = n.__) && null != n.__c) {
-        for(n.__e = n.__c.base = null, l = 0; l < n.__k.length; l++)if (null != (u = n.__k[l]) && null != u.__e) {
-            n.__e = n.__c.base = u.__e;
-            break;
-        }
-        return _(n);
-    }
-}
-function k(n) {
-    (!n.__d && (n.__d = !0) && i.push(n) && !x.__r++ || o !== l.debounceRendering) && ((o = l.debounceRendering) || setTimeout)(x);
-}
-function x() {
-    for(var n; x.__r = i.length;)n = i.sort(function(n, l) {
-        return n.__v.__b - l.__v.__b;
-    }), i = [], n.some(function(n) {
-        var l, u, t, i, o, r;
-        n.__d && (o = (i = (l = n).__v).__e, (r = l.__P) && (u = [], (t = s({}, i)).__v = i.__v + 1, I(r, i, t, l.__n, void 0 !== r.ownerSVGElement, null != i.__h ? [
-            o
-        ] : null, u, null == o ? d(i) : o, i.__h), T(u, i), i.__e != o && _(i)));
-    });
-}
-function b(n, l, u, t, i, o, r, c, s, a) {
-    var v, y, _, k, x, b, m, A = t && t.__k || e, C = A.length;
-    for(u.__k = [], v = 0; v < l.length; v++)if (null != (k = u.__k[v] = null == (k = l[v]) || "boolean" == typeof k ? null : "string" == typeof k || "number" == typeof k || "bigint" == typeof k ? h(null, k, null, null, k) : Array.isArray(k) ? h(p, {
-        children: k
-    }, null, null, null) : k.__b > 0 ? h(k.type, k.props, k.key, k.ref ? k.ref : null, k.__v) : k)) {
-        if (k.__ = u, k.__b = u.__b + 1, null === (_ = A[v]) || _ && k.key == _.key && k.type === _.type) A[v] = void 0;
-        else for(y = 0; y < C; y++){
-            if ((_ = A[y]) && k.key == _.key && k.type === _.type) {
-                A[y] = void 0;
-                break;
-            }
-            _ = null;
-        }
-        I(n, k, _ = _ || f, i, o, r, c, s, a), x = k.__e, (y = k.ref) && _.ref != y && (m || (m = []), _.ref && m.push(_.ref, null, k), m.push(y, k.__c || x, k)), null != x ? (null == b && (b = x), "function" == typeof k.type && k.__k === _.__k ? k.__d = s = g(k, s, n) : s = w(n, k, _, A, x, s), "function" == typeof u.type && (u.__d = s)) : s && _.__e == s && s.parentNode != n && (s = d(_));
-    }
-    for(u.__e = b, v = C; v--;)null != A[v] && L(A[v], A[v]);
-    if (m) for(v = 0; v < m.length; v++)z(m[v], m[++v], m[++v]);
-}
-function g(n, l, u) {
-    for(var t, i = n.__k, o = 0; i && o < i.length; o++)(t = i[o]) && (t.__ = n, l = "function" == typeof t.type ? g(t, l, u) : w(u, t, t, i, t.__e, l));
-    return l;
-}
-function w(n, l, u, t, i, o) {
-    var r, f, e;
-    if (void 0 !== l.__d) r = l.__d, l.__d = void 0;
-    else if (null == u || i != o || null == i.parentNode) n: if (null == o || o.parentNode !== n) n.appendChild(i), r = null;
-    else {
-        for(f = o, e = 0; (f = f.nextSibling) && e < t.length; e += 1)if (f == i) break n;
-        n.insertBefore(i, o), r = o;
-    }
-    return void 0 !== r ? r : i.nextSibling;
-}
-function m(n, l, u, t, i) {
-    var o;
-    for(o in u)"children" === o || "key" === o || o in l || C(n, o, null, u[o], t);
-    for(o in l)i && "function" != typeof l[o] || "children" === o || "key" === o || "value" === o || "checked" === o || u[o] === l[o] || C(n, o, l[o], u[o], t);
-}
-function A(n, l, u) {
-    "-" === l[0] ? n.setProperty(l, u) : n[l] = null == u ? "" : "number" != typeof u || c.test(l) ? u : u + "px";
-}
-function C(n, l, u, t, i) {
-    var o;
-    n: if ("style" === l) if ("string" == typeof u) n.style.cssText = u;
-    else {
-        if ("string" == typeof t && (n.style.cssText = t = ""), t) for(l in t)u && l in u || A(n.style, l, "");
-        if (u) for(l in u)t && u[l] === t[l] || A(n.style, l, u[l]);
-    }
-    else if ("o" === l[0] && "n" === l[1]) o = l !== (l = l.replace(/Capture$/, "")), l = l.toLowerCase() in n ? l.toLowerCase().slice(2) : l.slice(2), n.l || (n.l = {}), n.l[l + o] = u, u ? t || n.addEventListener(l, o ? H : $, o) : n.removeEventListener(l, o ? H : $, o);
-    else if ("dangerouslySetInnerHTML" !== l) {
-        if (i) l = l.replace(/xlink(H|:h)/, "h").replace(/sName$/, "s");
-        else if ("href" !== l && "list" !== l && "form" !== l && "tabIndex" !== l && "download" !== l && l in n) try {
-            n[l] = null == u ? "" : u;
-            break n;
-        } catch (n) {}
-        "function" == typeof u || (null == u || !1 === u && -1 == l.indexOf("-") ? n.removeAttribute(l) : n.setAttribute(l, u));
-    }
-}
-function $(n) {
-    this.l[n.type + !1](l.event ? l.event(n) : n);
-}
-function H(n) {
-    this.l[n.type + !0](l.event ? l.event(n) : n);
-}
-function I(n, u, t, i, o, r, f, e, c) {
-    var a, v, h, d, _, k, x, g, w, m, A, C, $, H, I, T = u.type;
-    if (void 0 !== u.constructor) return null;
-    null != t.__h && (c = t.__h, e = u.__e = t.__e, u.__h = null, r = [
-        e
-    ]), (a = l.__b) && a(u);
-    try {
-        n: if ("function" == typeof T) {
-            if (g = u.props, w = (a = T.contextType) && i[a.__c], m = a ? w ? w.props.value : a.__ : i, t.__c ? x = (v = u.__c = t.__c).__ = v.__E : ("prototype" in T && T.prototype.render ? u.__c = v = new T(g, m) : (u.__c = v = new y(g, m), v.constructor = T, v.render = M), w && w.sub(v), v.props = g, v.state || (v.state = {}), v.context = m, v.__n = i, h = v.__d = !0, v.__h = [], v._sb = []), null == v.__s && (v.__s = v.state), null != T.getDerivedStateFromProps && (v.__s == v.state && (v.__s = s({}, v.__s)), s(v.__s, T.getDerivedStateFromProps(g, v.__s))), d = v.props, _ = v.state, h) null == T.getDerivedStateFromProps && null != v.componentWillMount && v.componentWillMount(), null != v.componentDidMount && v.__h.push(v.componentDidMount);
-            else {
-                if (null == T.getDerivedStateFromProps && g !== d && null != v.componentWillReceiveProps && v.componentWillReceiveProps(g, m), !v.__e && null != v.shouldComponentUpdate && !1 === v.shouldComponentUpdate(g, v.__s, m) || u.__v === t.__v) {
-                    for(v.props = g, v.state = v.__s, u.__v !== t.__v && (v.__d = !1), v.__v = u, u.__e = t.__e, u.__k = t.__k, u.__k.forEach(function(n) {
-                        n && (n.__ = u);
-                    }), A = 0; A < v._sb.length; A++)v.__h.push(v._sb[A]);
-                    v._sb = [], v.__h.length && f.push(v);
-                    break n;
+            } else {
+                var keys = Object.keys(object);
+                if (options.unorderedObjects) {
+                    keys = keys.sort();
                 }
-                null != v.componentWillUpdate && v.componentWillUpdate(g, v.__s, m), null != v.componentDidUpdate && v.__h.push(function() {
-                    v.componentDidUpdate(d, _, k);
+                // Make sure to incorporate special properties, so
+                // Types with different prototypes will produce
+                // a different hash and objects derived from
+                // different functions (`new Foo`, `new Bar`) will
+                // produce different hashes.
+                // We never do this for native functions since some
+                // seem to break because of that.
+                if (options.respectType !== false && !isNativeFunction(object)) {
+                    keys.splice(0, 0, "prototype", "__proto__", "constructor");
+                }
+                if (options.excludeKeys) {
+                    keys = keys.filter(function(key) {
+                        return !options.excludeKeys(key);
+                    });
+                }
+                write("object:" + keys.length + ":");
+                var self = this;
+                return keys.forEach(function(key) {
+                    self.dispatch(key);
+                    write(":");
+                    if (!options.excludeValues) {
+                        self.dispatch(object[key]);
+                    }
+                    write(",");
                 });
             }
-            if (v.context = m, v.props = g, v.__v = u, v.__P = n, C = l.__r, $ = 0, "prototype" in T && T.prototype.render) {
-                for(v.state = v.__s, v.__d = !1, C && C(u), a = v.render(v.props, v.state, v.context), H = 0; H < v._sb.length; H++)v.__h.push(v._sb[H]);
-                v._sb = [];
-            } else do {
-                v.__d = !1, C && C(u), a = v.render(v.props, v.state, v.context), v.state = v.__s;
-            }while (v.__d && ++$ < 25);
-            v.state = v.__s, null != v.getChildContext && (i = s(s({}, i), v.getChildContext())), h || null == v.getSnapshotBeforeUpdate || (k = v.getSnapshotBeforeUpdate(d, _)), I = null != a && a.type === p && null == a.key ? a.props.children : a, b(n, Array.isArray(I) ? I : [
-                I
-            ], u, t, i, o, r, f, e, c), v.base = u.__e, u.__h = null, v.__h.length && f.push(v), x && (v.__E = v.__ = null), v.__e = !1;
-        } else null == r && u.__v === t.__v ? (u.__k = t.__k, u.__e = t.__e) : u.__e = j(t.__e, u, t, i, o, r, f, c);
-        (a = l.diffed) && a(u);
-    } catch (n) {
-        u.__v = null, (c || null != r) && (u.__e = e, u.__h = !!c, r[r.indexOf(e)] = null), l.__e(n, u, t);
-    }
-}
-function T(n, u) {
-    l.__c && l.__c(u, n), n.some(function(u) {
-        try {
-            n = u.__h, u.__h = [], n.some(function(n) {
-                n.call(u);
-            });
-        } catch (n) {
-            l.__e(n, u.__v);
-        }
-    });
-}
-function j(l, u, t, i, o, r, e, c) {
-    var s, v, h, p = t.props, y = u.props, _ = u.type, k = 0;
-    if ("svg" === _ && (o = !0), null != r) {
-        for(; k < r.length; k++)if ((s = r[k]) && "setAttribute" in s == !!_ && (_ ? s.localName === _ : 3 === s.nodeType)) {
-            l = s, r[k] = null;
-            break;
-        }
-    }
-    if (null == l) {
-        if (null === _) return document.createTextNode(y);
-        l = o ? document.createElementNS("http://www.w3.org/2000/svg", _) : document.createElement(_, y.is && y), r = null, c = !1;
-    }
-    if (null === _) p === y || c && l.data === y || (l.data = y);
-    else {
-        if (r = r && n.call(l.childNodes), v = (p = t.props || f).dangerouslySetInnerHTML, h = y.dangerouslySetInnerHTML, !c) {
-            if (null != r) for(p = {}, k = 0; k < l.attributes.length; k++)p[l.attributes[k].name] = l.attributes[k].value;
-            (h || v) && (h && (v && h.__html == v.__html || h.__html === l.innerHTML) || (l.innerHTML = h && h.__html || ""));
-        }
-        if (m(l, y, p, o, c), h) u.__k = [];
-        else if (k = u.props.children, b(l, Array.isArray(k) ? k : [
-            k
-        ], u, t, i, o && "foreignObject" !== _, r, e, r ? r[0] : t.__k && d(t, 0), c), null != r) for(k = r.length; k--;)null != r[k] && a(r[k]);
-        c || ("value" in y && void 0 !== (k = y.value) && (k !== l.value || "progress" === _ && !k || "option" === _ && k !== p.value) && C(l, "value", k, p.value, !1), "checked" in y && void 0 !== (k = y.checked) && k !== l.checked && C(l, "checked", k, p.checked, !1));
-    }
-    return l;
-}
-function z(n, u, t) {
-    try {
-        "function" == typeof n ? n(u) : n.current = u;
-    } catch (n) {
-        l.__e(n, t);
-    }
-}
-function L(n, u, t) {
-    var i, o;
-    if (l.unmount && l.unmount(n), (i = n.ref) && (i.current && i.current !== n.__e || z(i, null, u)), null != (i = n.__c)) {
-        if (i.componentWillUnmount) try {
-            i.componentWillUnmount();
-        } catch (n) {
-            l.__e(n, u);
-        }
-        i.base = i.__P = null, n.__c = void 0;
-    }
-    if (i = n.__k) for(o = 0; o < i.length; o++)i[o] && L(i[o], u, t || "function" != typeof n.type);
-    t || null == n.__e || a(n.__e), n.__ = n.__e = n.__d = void 0;
-}
-function M(n, l, u) {
-    return this.constructor(n, u);
-}
-function N(u, t, i) {
-    var o, r, e;
-    l.__ && l.__(u, t), r = (o = "function" == typeof i) ? null : i && i.__k || t.__k, e = [], I(t, u = (!o && i || t).__k = v(p, null, [
-        u
-    ]), r || f, f, void 0 !== t.ownerSVGElement, !o && i ? [
-        i
-    ] : r ? null : t.firstChild ? n.call(t.childNodes) : null, e, !o && i ? i : r ? r.__e : t.firstChild, o), T(e, u);
-}
-n = e.slice, l = {
-    __e: function(n, l, u, t) {
-        for(var i, o, r; l = l.__;)if ((i = l.__c) && !i.__) try {
-            if ((o = i.constructor) && null != o.getDerivedStateFromError && (i.setState(o.getDerivedStateFromError(n)), r = i.__d), null != i.componentDidCatch && (i.componentDidCatch(n, t || {}), r = i.__d), r) return i.__E = i;
-        } catch (l) {
-            n = l;
-        }
-        throw n;
-    }
-}, u = 0, t = function(n) {
-    return null != n && void 0 === n.constructor;
-}, y.prototype.setState = function(n, l) {
-    var u;
-    u = null != this.__s && this.__s !== this.state ? this.__s : this.__s = s({}, this.state), "function" == typeof n && (n = n(s({}, u), this.props)), n && s(u, n), null != n && this.__v && (l && this._sb.push(l), k(this));
-}, y.prototype.forceUpdate = function(n) {
-    this.__v && (this.__e = !0, n && this.__h.push(n), k(this));
-}, y.prototype.render = p, i = [], x.__r = 0, r = 0, exports.Component = y, exports.Fragment = p, exports.cloneElement = function(l, u, t) {
-    var i, o, r, f = s({}, l.props);
-    for(r in u)"key" == r ? i = u[r] : "ref" == r ? o = u[r] : f[r] = u[r];
-    return arguments.length > 2 && (f.children = arguments.length > 3 ? n.call(arguments, 2) : t), h(l.type, f, i || l.key, o || l.ref, null);
-}, exports.createContext = function(n, l) {
-    var u = {
-        __c: l = "__cC" + r++,
-        __: n,
-        Consumer: function(n, l) {
-            return n.children(l);
         },
-        Provider: function(n) {
-            var u, t;
-            return this.getChildContext || (u = [], (t = {})[l] = this, this.getChildContext = function() {
-                return t;
-            }, this.shouldComponentUpdate = function(n) {
-                this.props.value !== n.value && u.some(k);
-            }, this.sub = function(n) {
-                u.push(n);
-                var l = n.componentWillUnmount;
-                n.componentWillUnmount = function() {
-                    u.splice(u.indexOf(n), 1), l && l.call(n);
-                };
-            }), n.children;
+        _array: function(arr, unordered) {
+            unordered = typeof unordered !== "undefined" ? unordered : options.unorderedArrays !== false; // default to options.unorderedArrays
+            var self = this;
+            write("array:" + arr.length + ":");
+            if (!unordered || arr.length <= 1) {
+                return arr.forEach(function(entry) {
+                    return self.dispatch(entry);
+                });
+            }
+            // the unordered case is a little more complicated:
+            // since there is no canonical ordering on objects,
+            // i.e. {a:1} < {a:2} and {a:1} > {a:2} are both false,
+            // we first serialize each entry using a PassThrough stream
+            // before sorting.
+            // also: we can’t use the same context array for all entries
+            // since the order of hashing should *not* matter. instead,
+            // we keep track of the additions to a copy of the context array
+            // and add all of them to the global context array when we’re done
+            var contextAdditions = [];
+            var entries = arr.map(function(entry) {
+                var strm = new PassThrough();
+                var localContext = context.slice(); // make copy
+                var hasher = typeHasher(options, strm, localContext);
+                hasher.dispatch(entry);
+                // take only what was added to localContext and append it to contextAdditions
+                contextAdditions = contextAdditions.concat(localContext.slice(context.length));
+                return strm.read().toString();
+            });
+            context = context.concat(contextAdditions);
+            entries.sort();
+            return this._array(entries, false);
+        },
+        _date: function(date) {
+            return write("date:" + date.toJSON());
+        },
+        _symbol: function(sym) {
+            return write("symbol:" + sym.toString());
+        },
+        _error: function(err) {
+            return write("error:" + err.toString());
+        },
+        _boolean: function(bool) {
+            return write("bool:" + bool.toString());
+        },
+        _string: function(string) {
+            write("string:" + string.length + ":");
+            write(string.toString());
+        },
+        _function: function(fn) {
+            write("fn:");
+            if (isNativeFunction(fn)) {
+                this.dispatch("[native]");
+            } else {
+                this.dispatch(fn.toString());
+            }
+            if (options.respectFunctionNames !== false) {
+                // Make sure we can still distinguish native functions
+                // by their name, otherwise String and Function will
+                // have the same hash
+                this.dispatch("function-name:" + String(fn.name));
+            }
+            if (options.respectFunctionProperties) {
+                this._object(fn);
+            }
+        },
+        _number: function(number) {
+            return write("number:" + number.toString());
+        },
+        _xml: function(xml) {
+            return write("xml:" + xml.toString());
+        },
+        _null: function() {
+            return write("Null");
+        },
+        _undefined: function() {
+            return write("Undefined");
+        },
+        _regexp: function(regex) {
+            return write("regex:" + regex.toString());
+        },
+        _uint8array: function(arr) {
+            write("uint8array:");
+            return this.dispatch(Array.prototype.slice.call(arr));
+        },
+        _uint8clampedarray: function(arr) {
+            write("uint8clampedarray:");
+            return this.dispatch(Array.prototype.slice.call(arr));
+        },
+        _int8array: function(arr) {
+            write("uint8array:");
+            return this.dispatch(Array.prototype.slice.call(arr));
+        },
+        _uint16array: function(arr) {
+            write("uint16array:");
+            return this.dispatch(Array.prototype.slice.call(arr));
+        },
+        _int16array: function(arr) {
+            write("uint16array:");
+            return this.dispatch(Array.prototype.slice.call(arr));
+        },
+        _uint32array: function(arr) {
+            write("uint32array:");
+            return this.dispatch(Array.prototype.slice.call(arr));
+        },
+        _int32array: function(arr) {
+            write("uint32array:");
+            return this.dispatch(Array.prototype.slice.call(arr));
+        },
+        _float32array: function(arr) {
+            write("float32array:");
+            return this.dispatch(Array.prototype.slice.call(arr));
+        },
+        _float64array: function(arr) {
+            write("float64array:");
+            return this.dispatch(Array.prototype.slice.call(arr));
+        },
+        _arraybuffer: function(arr) {
+            write("arraybuffer:");
+            return this.dispatch(new Uint8Array(arr));
+        },
+        _url: function(url) {
+            return write("url:" + url.toString(), "utf8");
+        },
+        _map: function(map) {
+            write("map:");
+            var arr = Array.from(map);
+            return this._array(arr, options.unorderedSets !== false);
+        },
+        _set: function(set) {
+            write("set:");
+            var arr = Array.from(set);
+            return this._array(arr, options.unorderedSets !== false);
+        },
+        _file: function(file) {
+            write("file:");
+            return this.dispatch([
+                file.name,
+                file.size,
+                file.type,
+                file.lastModfied
+            ]);
+        },
+        _blob: function() {
+            if (options.ignoreUnknown) {
+                return write("[blob]");
+            }
+            throw Error("Hashing Blob objects is currently not supported\n" + "(see https://github.com/puleos/object-hash/issues/26)\n" + 'Use "options.replacer" or "options.ignoreUnknown"\n');
+        },
+        _domwindow: function() {
+            return write("domwindow");
+        },
+        _bigint: function(number) {
+            return write("bigint:" + number.toString());
+        },
+        /* Node.js standard native objects */ _process: function() {
+            return write("process");
+        },
+        _timer: function() {
+            return write("timer");
+        },
+        _pipe: function() {
+            return write("pipe");
+        },
+        _tcp: function() {
+            return write("tcp");
+        },
+        _udp: function() {
+            return write("udp");
+        },
+        _tty: function() {
+            return write("tty");
+        },
+        _statwatcher: function() {
+            return write("statwatcher");
+        },
+        _securecontext: function() {
+            return write("securecontext");
+        },
+        _connection: function() {
+            return write("connection");
+        },
+        _zlib: function() {
+            return write("zlib");
+        },
+        _context: function() {
+            return write("context");
+        },
+        _nodescript: function() {
+            return write("nodescript");
+        },
+        _httpparser: function() {
+            return write("httpparser");
+        },
+        _dataview: function() {
+            return write("dataview");
+        },
+        _signal: function() {
+            return write("signal");
+        },
+        _fsevent: function() {
+            return write("fsevent");
+        },
+        _tlswrap: function() {
+            return write("tlswrap");
         }
     };
-    return u.Provider.__ = u.Consumer.contextType = u;
-}, exports.createElement = v, exports.createRef = function() {
+}
+// Mini-implementation of stream.PassThrough
+// We are far from having need for the full implementation, and we can
+// make assumptions like "many writes, then only one final read"
+// and we can ignore encoding specifics
+function PassThrough() {
     return {
-        current: null
+        buf: "",
+        write: function(b) {
+            this.buf += b;
+        },
+        end: function(b) {
+            this.buf += b;
+        },
+        read: function() {
+            return this.buf;
+        }
     };
-}, exports.h = v, exports.hydrate = function n(l, u) {
-    N(l, u, n);
-}, exports.isValidElement = t, exports.options = l, exports.render = N, exports.toChildArray = function n(l, u) {
-    return u = u || [], null == l || "boolean" == typeof l || (Array.isArray(l) ? l.some(function(l) {
-        n(l, u);
-    }) : u.push(l)), u;
-}; //# sourceMappingURL=preact.js.map
+}
 
 
 /***/ }),
@@ -24237,22 +18718,14 @@ module.exports = _classPrivateFieldSet, module.exports.__esModule = true, module
 
 var setPrototypeOf = __webpack_require__(19);
 var isNativeReflectConstruct = __webpack_require__(10066);
-function _construct(Parent, args, Class) {
-    if (isNativeReflectConstruct()) {
-        module.exports = _construct = Reflect.construct.bind(), module.exports.__esModule = true, module.exports["default"] = module.exports;
-    } else {
-        module.exports = _construct = function _construct(Parent, args, Class) {
-            var a = [
-                null
-            ];
-            a.push.apply(a, args);
-            var Constructor = Function.bind.apply(Parent, a);
-            var instance = new Constructor();
-            if (Class) setPrototypeOf(instance, Class.prototype);
-            return instance;
-        }, module.exports.__esModule = true, module.exports["default"] = module.exports;
-    }
-    return _construct.apply(null, arguments);
+function _construct(t, e, r) {
+    if (isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments);
+    var o = [
+        null
+    ];
+    o.push.apply(o, e);
+    var p = new (t.bind.apply(t, o))();
+    return r && setPrototypeOf(p, r.prototype), p;
 }
 module.exports = _construct, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
@@ -24417,15 +18890,12 @@ module.exports = _isNativeFunction, module.exports.__esModule = true, module.exp
 "use strict";
 
 function _isNativeReflectConstruct() {
-    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-    if (Reflect.construct.sham) return false;
-    if (typeof Proxy === "function") return true;
     try {
-        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {}));
-        return true;
-    } catch (e) {
-        return false;
-    }
+        var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {}));
+    } catch (t) {}
+    return (module.exports = _isNativeReflectConstruct = function _isNativeReflectConstruct() {
+        return !!t;
+    }, module.exports.__esModule = true, module.exports["default"] = module.exports)();
 }
 module.exports = _isNativeReflectConstruct, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
@@ -25201,7 +19671,7 @@ try {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"openid-client","version":"5.6.2","description":"OpenID Connect Relying Party (RP, Client) implementation for Node.js runtime, supports passportjs","keywords":["auth","authentication","basic","certified","client","connect","dynamic","electron","hybrid","identity","implicit","oauth","oauth2","oidc","openid","passport","relying party","strategy"],"homepage":"https://github.com/panva/node-openid-client","repository":"panva/node-openid-client","funding":{"url":"https://github.com/sponsors/panva"},"license":"MIT","author":"Filip Skokan <panva.ip@gmail.com>","exports":{"types":"./types/index.d.ts","import":"./lib/index.mjs","require":"./lib/index.js"},"main":"./lib/index.js","types":"./types/index.d.ts","files":["lib","types/index.d.ts"],"scripts":{"format":"npx prettier --loglevel silent --write ./lib ./test ./certification ./types","test":"mocha test/**/*.test.js"},"dependencies":{"jose":"^4.15.4","lru-cache":"^6.0.0","object-hash":"^2.2.0","oidc-token-hash":"^5.0.3"},"devDependencies":{"@types/node":"^16.18.59","@types/passport":"^1.0.14","base64url":"^3.0.1","chai":"^4.3.10","mocha":"^10.2.0","nock":"^13.3.6","prettier":"^2.8.8","readable-mock-req":"^0.2.2","sinon":"^9.2.4","timekeeper":"^2.3.1"},"standard-version":{"scripts":{"postchangelog":"sed -i \'\' -e \'s/### \\\\[/## [/g\' CHANGELOG.md"},"types":[{"type":"feat","section":"Features"},{"type":"fix","section":"Fixes"},{"type":"chore","hidden":true},{"type":"docs","hidden":true},{"type":"style","hidden":true},{"type":"refactor","section":"Refactor","hidden":false},{"type":"perf","section":"Performance","hidden":false},{"type":"test","hidden":true}]}}');
+module.exports = JSON.parse('{"name":"openid-client","version":"5.6.4","description":"OpenID Connect Relying Party (RP, Client) implementation for Node.js runtime, supports passportjs","keywords":["auth","authentication","basic","certified","client","connect","dynamic","electron","hybrid","identity","implicit","oauth","oauth2","oidc","openid","passport","relying party","strategy"],"homepage":"https://github.com/panva/node-openid-client","repository":"panva/node-openid-client","funding":{"url":"https://github.com/sponsors/panva"},"license":"MIT","author":"Filip Skokan <panva.ip@gmail.com>","exports":{"types":"./types/index.d.ts","import":"./lib/index.mjs","require":"./lib/index.js"},"main":"./lib/index.js","types":"./types/index.d.ts","files":["lib","types/index.d.ts"],"scripts":{"format":"npx prettier --loglevel silent --write ./lib ./test ./certification ./types","test":"mocha test/**/*.test.js"},"dependencies":{"jose":"^4.15.4","lru-cache":"^6.0.0","object-hash":"^2.2.0","oidc-token-hash":"^5.0.3"},"devDependencies":{"@types/node":"^16.18.59","@types/passport":"^1.0.14","base64url":"^3.0.1","chai":"^4.3.10","mocha":"^10.2.0","nock":"^13.3.6","prettier":"^2.8.8","readable-mock-req":"^0.2.2","sinon":"^9.2.4","timekeeper":"^2.3.1"},"standard-version":{"scripts":{"postchangelog":"sed -i \'\' -e \'s/### \\\\[/## [/g\' CHANGELOG.md"},"types":[{"type":"feat","section":"Features"},{"type":"fix","section":"Fixes"},{"type":"chore","hidden":true},{"type":"docs","hidden":true},{"type":"style","hidden":true},{"type":"refactor","section":"Refactor","hidden":false},{"type":"perf","section":"Performance","hidden":false},{"type":"test","hidden":true}]}}');
 
 /***/ })
 
