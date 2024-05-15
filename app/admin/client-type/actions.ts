@@ -1,6 +1,7 @@
 'use server'
 import prisma from'../../../lib/prisma'
-import { revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 
 
@@ -33,9 +34,10 @@ export async function addClientType(input: FormData) {
     }
 
     console.log('executing revaliate');
-    
-    revalidateTag(`client-types`);
 
-    return clientType;
+    revalidatePath(`/admin/client-type/list`);
+    redirect(`/admin/client-type/list`)
+    
+
 
 }

@@ -12,7 +12,7 @@ export const get = async (url: string, params: requestParams) => {
         console.log('proccessedUrl');
         console.log(proccessedUrl);
         
-        const res = await fetch(proccessedUrl);
+        const res = await fetch(proccessedUrl,{cache:'no-cache'});
         console.log('response');
         console.log(res);
 

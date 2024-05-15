@@ -8,7 +8,7 @@ export default async function Page({
   }: {
     params: { product: string }
   })  {
-    const clientTypes = await getClientTypes()
+    const clientTypes = await getClientTypes({page:'1',limit:'1000'})
     const productId:any = params.product
     
     return (

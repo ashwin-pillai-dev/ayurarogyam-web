@@ -55,7 +55,7 @@ async function getSignedS3Url(file: File) {
         const command = new PutObjectCommand({
             Bucket: process.env.AWS_S3_BUCKET_NAME,
             Key: `${fileKey}.${getFileExtension(file)}`,
-            // ACL:'public-read'
+            ACL:'public-read'
         });
 
         console.log("key: " + fileKey);
@@ -73,7 +73,8 @@ async function uploadFileToPresignedUrl(presignedUrl: string, file: File) {
         const response = await fetch(presignedUrl, {
             method: 'PUT',
             headers: {
-                'Content-Type': file.type, // Set the Content-Type header based on the file type
+                'Content-Type': file.type,
+                'x-amz-acl': 'public-read', // Set the Content-Type header based on the file type
             },
             body: file,
         });

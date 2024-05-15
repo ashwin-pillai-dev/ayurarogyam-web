@@ -349,10 +349,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 13259:
-/***/ (() => {
+/***/ 64496:
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-
+Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 81881))
 
 /***/ }),
 
@@ -366,11 +366,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(76931);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _services__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16457);
+/* harmony import */ var _components_seacrhBar_SearchBar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(58267);
+/* harmony import */ var _services__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16457);
 
 
-async function page() {
-    const clientTypes = await (0,_services__WEBPACK_IMPORTED_MODULE_1__/* .getClientTypes */ .J)();
+
+async function page({ searchParams }) {
+    const page = typeof searchParams.page === "string" ? Number(searchParams.page) : 1;
+    const limit = typeof searchParams.limit === "string" ? Number(searchParams.limit) : 10;
+    const search = typeof searchParams.search === "string" ? searchParams.search.toString() : "";
+    const response = await (0,_services__WEBPACK_IMPORTED_MODULE_2__/* .getClientTypes */ .J)({
+        query: search,
+        page: page.toString(),
+        limit: limit.toString()
+    });
+    const clientTypes = response.data;
+    const { total } = response;
+    // const clientTypes = await getClientTypes()
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("section", {
         className: "bg-gray-50 dark:bg-gray-900 sm:p-5",
         children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
@@ -383,41 +395,9 @@ async function page() {
                         children: [
                             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
                                 className: "w-full md:w-1/2",
-                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("form", {
-                                    className: "flex items-center",
-                                    children: [
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("label", {
-                                            htmlFor: "simple-search",
-                                            className: "sr-only",
-                                            children: "Search"
-                                        }),
-                                        /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                            className: "relative w-full",
-                                            children: [
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                    className: "absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none",
-                                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
-                                                        "aria-hidden": "true",
-                                                        className: "w-5 h-5 text-gray-500 dark:text-gray-400",
-                                                        fill: "currentColor",
-                                                        viewBox: "0 0 20 20",
-                                                        xmlns: "http://www.w3.org/2000/svg",
-                                                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("path", {
-                                                            fillRule: "evenodd",
-                                                            d: "M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z",
-                                                            clipRule: "evenodd"
-                                                        })
-                                                    })
-                                                }),
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("input", {
-                                                    type: "text",
-                                                    id: "simple-search",
-                                                    className: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
-                                                    placeholder: "Search"
-                                                })
-                                            ]
-                                        })
-                                    ]
+                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_seacrhBar_SearchBar__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .ZP, {
+                                    routeUrl: "/admin/client-type/list",
+                                    searchText: search
                                 })
                             }),
                             /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
@@ -576,34 +556,10 @@ async function page() {
 
 /***/ }),
 
-/***/ 16457:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ 59483:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   J: () => (/* binding */ getClientTypes)
-/* harmony export */ });
-async function getClientTypes() {
-    try {
-        const response = await fetch(`${process.env.API_URL}/client-types`, {
-            next: {
-                tags: [
-                    "client-types"
-                ]
-            }
-        });
-        if (response.ok) {
-            const data = await response.json();
-            console.log("data");
-            console.log(data);
-            return data;
-        } else {
-            console.error("Error fetching admin data:", response.statusText);
-        }
-    } catch (error) {
-        console.error("Error fetching admin data:", error);
-    }
-}
+module.exports = __webpack_require__(75171)
 
 
 /***/ })
@@ -615,7 +571,7 @@ async function getClientTypes() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,9540,9733,5918], () => (__webpack_exec__(14640)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,9540,9733,5918,1789,4128,6457], () => (__webpack_exec__(14640)));
 module.exports = __webpack_exports__;
 
 })();

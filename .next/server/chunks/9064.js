@@ -61,7 +61,8 @@ async function getSignedS3Url(file) {
         let fileKey = (0,_paralleldrive_cuid2__WEBPACK_IMPORTED_MODULE_1__.createId)(); // You should define the createId function
         const command = new _aws_sdk_client_s3__WEBPACK_IMPORTED_MODULE_3__.PutObjectCommand({
             Bucket: process.env.AWS_S3_BUCKET_NAME,
-            Key: `${fileKey}.${getFileExtension(file)}`
+            Key: `${fileKey}.${getFileExtension(file)}`,
+            ACL: "public-read"
         });
         console.log("key: " + fileKey);
         const response = await (0,_aws_sdk_s3_request_presigner__WEBPACK_IMPORTED_MODULE_0__.getSignedUrl)(_lib_s3Client__WEBPACK_IMPORTED_MODULE_2__["default"], command, {
@@ -81,7 +82,8 @@ async function uploadFileToPresignedUrl(presignedUrl, file) {
         const response = await fetch(presignedUrl, {
             method: "PUT",
             headers: {
-                "Content-Type": file.type
+                "Content-Type": file.type,
+                "x-amz-acl": "public-read"
             },
             body: file
         });

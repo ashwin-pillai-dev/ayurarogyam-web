@@ -700,7 +700,8 @@ async function getSignedS3Url(file) {
         let fileKey = (0,cuid2/* createId */.Mc)(); // You should define the createId function
         const command = new dist_cjs.PutObjectCommand({
             Bucket: process.env.AWS_S3_BUCKET_NAME,
-            Key: `${fileKey}.${getFileExtension(file)}`
+            Key: `${fileKey}.${getFileExtension(file)}`,
+            ACL: "public-read"
         });
         console.log("key: " + fileKey);
         const response = await (0,s3_request_presigner_dist_cjs.getSignedUrl)(lib_s3Client, command, {
@@ -720,7 +721,8 @@ async function uploadFileToPresignedUrl(presignedUrl, file) {
         const response = await fetch(presignedUrl, {
             method: "PUT",
             headers: {
-                "Content-Type": file.type
+                "Content-Type": file.type,
+                "x-amz-acl": "public-read"
             },
             body: file
         });

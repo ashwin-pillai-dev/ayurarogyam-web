@@ -13,10 +13,10 @@ export default function FormItems(){
          console.log('res from component');
          console.log(res);
          
-         if(res){
-             router.push(`/admin/client-type/list`)
+        //  if(res){
+        //      router.push(`/admin/client-type/list`)
  
-         }
+        //  }
         } catch (error) {
          
         }

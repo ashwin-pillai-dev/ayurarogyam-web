@@ -535,38 +535,6 @@ const ClientForm = (props)=>{
 
 /***/ }),
 
-/***/ 16457:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   J: () => (/* binding */ getClientTypes)
-/* harmony export */ });
-async function getClientTypes() {
-    try {
-        const response = await fetch(`${process.env.API_URL}/client-types`, {
-            next: {
-                tags: [
-                    "client-types"
-                ]
-            }
-        });
-        if (response.ok) {
-            const data = await response.json();
-            console.log("data");
-            console.log(data);
-            return data;
-        } else {
-            console.error("Error fetching admin data:", response.statusText);
-        }
-    } catch (error) {
-        console.error("Error fetching admin data:", error);
-    }
-}
-
-
-/***/ }),
-
 /***/ 95077:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -654,7 +622,10 @@ var services = __webpack_require__(16457);
 
 
 async function page() {
-    const clientTypes = await (0,services/* getClientTypes */.J)();
+    const clientTypes = await (0,services/* getClientTypes */.J)({
+        page: "1",
+        limit: "1000"
+    });
     return /*#__PURE__*/ jsx_runtime_.jsx("div", {
         children: /*#__PURE__*/ jsx_runtime_.jsx("section", {
             className: "bg-white dark:bg-gray-900",
@@ -707,7 +678,7 @@ if (true) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,4378,8875,369,9540,9733,5918], () => (__webpack_exec__(27625)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,4378,8875,369,9540,9733,5918,1789,6457], () => (__webpack_exec__(27625)));
 module.exports = __webpack_exports__;
 
 })();

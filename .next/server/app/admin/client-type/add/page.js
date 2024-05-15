@@ -435,9 +435,9 @@ function FormItems() {
             const res = await addClientType(formData);
             console.log("res from component");
             console.log(res);
-            if (res) {
-                router.push(`/admin/client-type/list`);
-            }
+        //  if(res){
+        //      router.push(`/admin/client-type/list`)
+        //  }
         } catch (error) {}
     }
     return /*#__PURE__*/ jsx_runtime_.jsx("div", {
@@ -492,8 +492,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_prisma__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(34611);
 /* harmony import */ var next_cache__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(73236);
 /* harmony import */ var next_cache__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_cache__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(19730);
+/* harmony import */ var next_navigation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(44475);
+/* harmony import */ var next_navigation__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_navigation__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(19730);
 /* __next_internal_action_entry_do_not_use__ addClientType */ 
+
 
 
 async function addClientType(input) {
@@ -515,11 +518,11 @@ async function addClientType(input) {
         throw error;
     }
     console.log("executing revaliate");
-    (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidateTag)(`client-types`);
-    return clientType;
+    (0,next_cache__WEBPACK_IMPORTED_MODULE_2__.revalidatePath)(`/admin/client-type/list`);
+    (0,next_navigation__WEBPACK_IMPORTED_MODULE_3__.redirect)(`/admin/client-type/list`);
 }
 
-(0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_3__["default"])([
+(0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_4__["default"])([
     addClientType
 ]);
 (0,private_next_rsc_action_proxy__WEBPACK_IMPORTED_MODULE_0__["default"])("bbe14bedf769b2421ce76819a1f3d4077050709d", null, addClientType);
@@ -618,7 +621,7 @@ module.exports = __webpack_require__(75171)
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,5291,3236,9540,9733,5918], () => (__webpack_exec__(49705)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,5291,3236,4475,9540,9733,5918], () => (__webpack_exec__(49705)));
 module.exports = __webpack_exports__;
 
 })();

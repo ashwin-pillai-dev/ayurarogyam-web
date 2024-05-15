@@ -40,7 +40,9 @@ __webpack_require__.d(__webpack_exports__, {
 var route_namespaceObject = {};
 __webpack_require__.r(route_namespaceObject);
 __webpack_require__.d(route_namespaceObject, {
-  GET: () => (GET)
+  GET: () => (GET),
+  dynamic: () => (dynamic),
+  revalidate: () => (revalidate)
 });
 
 // EXTERNAL MODULE: ./node_modules/next/dist/server/node-polyfill-headers.js
@@ -52,10 +54,37 @@ var module_default = /*#__PURE__*/__webpack_require__.n(app_route_module);
 var prisma = __webpack_require__(94734);
 ;// CONCATENATED MODULE: ./app/api/client-types/route.ts
 
+const dynamic = "force-dynamic";
+const revalidate = 0;
 async function GET(request) {
-    console.log("hello");
     let res;
     try {
+        const searchParams = request.nextUrl.searchParams;
+        const pageParam = searchParams.get("page");
+        const limitParam = searchParams.get("limit");
+        console.log(`page${pageParam} limit ${limitParam}`);
+        const page = pageParam != null ? Number(pageParam) : 1;
+        const limit = limitParam != null ? Number(limitParam) : 10;
+        const skip = Number(page) == 1 ? 0 : Number(page - 1) * Number(limit);
+        let filters = {};
+        searchParams.forEach((value, key)=>{
+            if (key.startsWith("filter")) {
+                const parts = value.split("||");
+                if (parts.length === 3) {
+                    const [field, cond, value] = parts;
+                    if (cond == "contains") {
+                        filters[field] = {
+                            [cond]: value,
+                            mode: "insensitive"
+                        };
+                    } else {
+                        filters[field] = {
+                            [cond]: value
+                        };
+                    }
+                }
+            }
+        });
         res = await prisma/* default */.Z.clientType.findMany();
     } catch (error) {
         return Response.error();

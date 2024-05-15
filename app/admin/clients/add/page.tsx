@@ -6,7 +6,7 @@ import { ClientType } from '@prisma/client'
 
 
 export default async function page() {
-    const clientTypes:ClientType[] = await getClientTypes()
+    const clientTypes:ClientType[] = await getClientTypes({page:'1',limit:'1000'})
     return (
         <div>
             <section className="bg-white dark:bg-gray-900">
