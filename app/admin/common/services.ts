@@ -31,7 +31,7 @@ export async function getImageFromBucket(fileKey:string) {
         console.log('response url:');
         console.log(responseUrl);
         
-        const response = await fetch(responseUrl);
+        const response = await fetch(responseUrl,{cache:'no-cache'});
         if (!response.ok) {
             throw new Error(`Failed to fetch object: ${response.status} ${response.statusText}`);
           }
@@ -74,7 +74,7 @@ async function uploadFileToPresignedUrl(presignedUrl: string, file: File) {
             method: 'PUT',
             headers: {
                 'Content-Type': file.type,
-                'x-amz-acl': 'public-read', // Set the Content-Type header based on the file type
+                // 'x-amz-acl': 'public-read', // Set the Content-Type header based on the file type
             },
             body: file,
         });
@@ -97,10 +97,15 @@ export async function FileUpload(file: File) {
 
     try {
         const presignedUrlResponse = await getSignedS3Url(file)
+        console.log(presignedUrlResponse);
+        
 
         
         if(presignedUrlResponse?.url){
         const response = await uploadFileToPresignedUrl(presignedUrlResponse.url, file)
+
+        console.log(response);
+        
 
         return presignedUrlResponse.key
         }

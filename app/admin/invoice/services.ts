@@ -1,6 +1,8 @@
+import { get } from "@/utils/queryHelper/queryHelper";
+
 export async function getInvoiceById(invoiceId: string) {
   try {
-    const response = await fetch(`${process.env.API_URL}/invoice?invoiceId=${invoiceId}`, { cache: 'no-store' });
+    const response = await fetch(`${process.env.API_URL}/invoice?invoiceId=${invoiceId}`, {cache:'no-cache'});
     if (response.ok) {
       const data = await response.json();
       console.log('Invoice data:');

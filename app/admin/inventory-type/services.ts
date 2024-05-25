@@ -1,8 +1,18 @@
+import { get } from "@/utils/queryHelper/queryHelper";
+import { requestParams } from "@/utils/queryHelper/queryHelper.types";
 
 export async function getInventoryTypes() {
   try {
 
-    const response = await fetch(`${process.env.API_URL}/inventory-types`);
+    const params:requestParams={
+      page: 1,
+      limit: 10,
+      filters:[],
+      orderBy:'createdAt,DESC',
+      fullTextSearch:''
+    }
+
+    const response = await get(`/inventory-types`,params);
 
 
 

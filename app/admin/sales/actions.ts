@@ -30,6 +30,8 @@ export async function addSales(input: SalesParam) {
     let qty: number = 0;
     let invoiceItems: any = [];
 
+
+
     input.productWithPrices.forEach((obj) => {
         subTotal += obj.total;
         qty += obj.qty;
@@ -64,7 +66,7 @@ export async function addSales(input: SalesParam) {
                     paid: false,
                     dateOfPayment: new Date(input.date),
                     amount: 0.05 * subTotal,
-                    partnerId: input.partner.leaderId,// Calculate the leader's commission
+                    partnerId: input.partner.leaderId,
                 }
 
             ]
@@ -84,13 +86,7 @@ export async function addSales(input: SalesParam) {
         }
 
     }
-
-    console.log('Commission:');
-    console.log(commissions);
-
-
     let newSale;
-
     try {
         const partner = input.partner;
         console.log(`partner in salea action:`);
@@ -103,7 +99,11 @@ export async function addSales(input: SalesParam) {
                 invoice: {
                     include: {
                         client: true,
-                        invoiceItem: true,
+                        invoiceItem: {
+                            include:{
+                                product:true
+                            }
+                        },
                     }
                 }
             },
@@ -135,6 +135,9 @@ export async function addSales(input: SalesParam) {
 
         console.log('Sale with Invoice and Invoice Items created successfully.');
         console.log(newSale);
+        console.log('newSale.invocie.invoiceItems',newSale.invoice.invoiceItem);
+        await updateInventory(newSale);
+        
 
     } catch (error: any) {
         console.error('Error adding inventory:', error);
@@ -148,83 +151,6 @@ export async function addSales(input: SalesParam) {
 
 
 
-
-// export async function addSales(input: SalesParam) {
-
-
-//     let subTotal: number = 0;
-//     let qty: number = 0;
-
-//     let invoiceItems: any = []
-
-//     input.productWithPrices.forEach((obj) => {
-//         subTotal += obj.total;
-//         qty += obj.qty;
-//         invoiceItems.push({
-//             amount: obj.price,
-//             total: obj.total,
-//             quantity: obj.qty,
-//             productId: obj.productId.toString()
-//         }
-//         )
-//     });
-
-//     const total = Math.ceil(subTotal + (16 / 100) * subTotal);
-
-//     try {
-//         const newSale = await prisma.sale.create({
-//             include: {
-//                 partner: true,
-//                 invoice: {
-//                     include: {
-//                         client: true,
-//                         invoiceItem: true,
-//                     }
-//                 }
-
-//             },
-//             data: {
-//                 date: new Date(input.date),
-//                 partnerId: input.partnerId,
-//                 visitType: input.visitType,
-//                 remarks: input.remarks,
-//                 invoice: {
-//                     create: {
-//                         invoiceNumber: generateRandomInvoiceNumber(),
-//                         quantity: qty,
-//                         subTotal: subTotal,
-//                         total: total,
-//                         invoiceDate: new Date(input.date),
-//                         isPaid: false,
-//                         clientId: input.clientId,
-//                     },
-//                 },
-//                 // Create a commission as 10% of the sale subtotal
-//                 commissions: {
-//                     create: {
-//                         paid: false,
-//                         dateOfPayment: new Date(input.date),
-//                         amount: 0.10 * subTotal, // Calculate the commission amount based on subtotal
-//                         partner: {
-//                             connect: { id: input.partnerId },
-//                         },
-//                     },
-//                 },
-//             },
-//         });
-
-//         console.log('Sale with Invoice and Invoice Items created successfully.');
-//         console.log(newSale);
-//         revalidatePath(`/admin/sales/list`);
-//         return newSale;
-//     } catch (error: any) {
-//         console.error('Error adding inventory:', error);
-//         throw error;
-//     }
-
-// }
-
-
 function generateRandomInvoiceNumber() {
     const timestamp = Date.now();
 
@@ -233,3 +159,51 @@ function generateRandomInvoiceNumber() {
 
     return invoiceNumber;
 }
+
+async function updateInventoryQuantity(inventoryId:string, quantity:number) {
+    // Simulate updating the inventory quantity in the database
+    await prisma.inventory.update({
+        where: {
+            id: inventoryId,
+        },
+        data: {
+            qty: quantity
+        },
+      })
+    console.log(`Updated inventory for inventory id ${inventoryId} to new quantity ${quantity}`);
+  }
+
+  async function getInventoryByProductId(productId:string) {
+    // Simulate fetching inventory data from a database
+    const inventory = await prisma.inventory.findMany({ where: { productId: productId } });
+    console.log('inventory: ',inventory);
+    
+    return inventory[0];
+  }
+
+  async function updateInventory(newSale) {
+    console.log(newSale);
+    
+    const invoiceItems = newSale.invoice.invoiceItem;
+    console.log('invoice items', invoiceItems);
+    
+  
+    for (const item of invoiceItems) {
+      const productId = item.productId;
+      const soldQuantity = item.quantity;
+  
+      // Fetch current inventory
+      const inventory = await getInventoryByProductId(productId);
+      
+      if (inventory) {
+        // Subtract sold quantity
+        const newQuantity = inventory.qty - soldQuantity;
+  
+        // Update the inventory
+        await updateInventoryQuantity(inventory.id, newQuantity);
+      } else {
+        console.log(`Inventory for product ID ${productId} not found`);
+      }
+    }
+  }
+  

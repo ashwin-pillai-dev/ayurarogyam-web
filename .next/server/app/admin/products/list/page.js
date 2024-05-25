@@ -334,7 +334,7 @@ __webpack_require__.r(__webpack_exports__);
         'list',
         {
         children: ['__PAGE__', {}, {
-          page: [() => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 58722)), "D:\\projects\\ayurarogyam-web\\app\\admin\\products\\list\\page.tsx"],
+          page: [() => Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 13657)), "D:\\projects\\ayurarogyam-web\\app\\admin\\products\\list\\page.tsx"],
           
         }]
       },
@@ -389,70 +389,86 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 68450:
+/***/ 13134:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 27977, 23))
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 27977, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 63912, 23))
 
 /***/ }),
 
-/***/ 58722:
+/***/ 13657:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ page)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(76931);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _services__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(79163);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(34834);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_1__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "default": () => (/* binding */ page)
+});
+
+// EXTERNAL MODULE: external "next/dist/compiled/react-experimental/jsx-runtime"
+var jsx_runtime_ = __webpack_require__(76931);
+// EXTERNAL MODULE: ./app/admin/products/services.ts
+var services = __webpack_require__(79163);
+;// CONCATENATED MODULE: ./app/constants.ts
+const s3bucketurl = "https://ayurarogyam-assets.s3.ap-south-1.amazonaws.com";
+
+// EXTERNAL MODULE: ./node_modules/next/image.js
+var next_image = __webpack_require__(10993);
+var image_default = /*#__PURE__*/__webpack_require__.n(next_image);
+// EXTERNAL MODULE: ./node_modules/next/link.js
+var next_link = __webpack_require__(34834);
+var link_default = /*#__PURE__*/__webpack_require__.n(next_link);
+;// CONCATENATED MODULE: ./app/admin/products/list/page.tsx
+
+
 
 
 
 async function page() {
-    const products = await (0,_services__WEBPACK_IMPORTED_MODULE_2__/* .getProducts */ .X)();
-    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("section", {
+    const products = await (0,services/* getProducts */.X)();
+    return /*#__PURE__*/ jsx_runtime_.jsx("section", {
         className: "bg-gray-50 dark:bg-gray-900 sm:p-5",
-        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+        children: /*#__PURE__*/ jsx_runtime_.jsx("div", {
             className: "mx-auto max-w-screen-xl px-4 lg:px-12",
-            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+            children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
                 className: "bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden",
                 children: [
-                    /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                    /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
                         className: "flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4",
                         children: [
-                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                            /*#__PURE__*/ jsx_runtime_.jsx("div", {
                                 className: "w-full md:w-1/2",
-                                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("form", {
+                                children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("form", {
                                     className: "flex items-center",
                                     children: [
-                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("label", {
+                                        /*#__PURE__*/ jsx_runtime_.jsx("label", {
                                             htmlFor: "simple-search",
                                             className: "sr-only",
                                             children: "Search"
                                         }),
-                                        /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                        /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
                                             className: "relative w-full",
                                             children: [
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                /*#__PURE__*/ jsx_runtime_.jsx("div", {
                                                     className: "absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none",
-                                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
+                                                    children: /*#__PURE__*/ jsx_runtime_.jsx("svg", {
                                                         "aria-hidden": "true",
                                                         className: "w-5 h-5 text-gray-500 dark:text-gray-400",
                                                         fill: "currentColor",
                                                         viewBox: "0 0 20 20",
                                                         xmlns: "http://www.w3.org/2000/svg",
-                                                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("path", {
+                                                        children: /*#__PURE__*/ jsx_runtime_.jsx("path", {
                                                             fillRule: "evenodd",
                                                             d: "M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z",
                                                             clipRule: "evenodd"
                                                         })
                                                     })
                                                 }),
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("input", {
+                                                /*#__PURE__*/ jsx_runtime_.jsx("input", {
                                                     type: "text",
                                                     id: "simple-search",
                                                     className: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
@@ -463,20 +479,20 @@ async function page() {
                                     ]
                                 })
                             }),
-                            /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                            /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
                                 className: "w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0",
                                 children: [
-                                    /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("a", {
+                                    /*#__PURE__*/ (0,jsx_runtime_.jsxs)("a", {
                                         href: "/admin/products/add",
                                         className: "flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800",
                                         children: [
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
+                                            /*#__PURE__*/ jsx_runtime_.jsx("svg", {
                                                 className: "h-3.5 w-3.5 mr-2",
                                                 fill: "currentColor",
                                                 viewBox: "0 0 20 20",
                                                 xmlns: "http://www.w3.org/2000/svg",
                                                 "aria-hidden": "true",
-                                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("path", {
+                                                children: /*#__PURE__*/ jsx_runtime_.jsx("path", {
                                                     clipRule: "evenodd",
                                                     fillRule: "evenodd",
                                                     d: "M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
@@ -485,22 +501,22 @@ async function page() {
                                             "Add Product"
                                         ]
                                     }),
-                                    /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                    /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
                                         className: "flex items-center space-x-3 w-full md:w-auto",
                                         children: [
-                                            /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("button", {
+                                            /*#__PURE__*/ (0,jsx_runtime_.jsxs)("button", {
                                                 id: "actionsDropdownButton",
                                                 "data-dropdown-toggle": "actionsDropdown",
                                                 className: "w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700",
                                                 type: "button",
                                                 children: [
-                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("svg", {
+                                                    /*#__PURE__*/ jsx_runtime_.jsx("svg", {
                                                         className: "-ml-1 mr-1.5 w-5 h-5",
                                                         fill: "currentColor",
                                                         viewBox: "0 0 20 20",
                                                         xmlns: "http://www.w3.org/2000/svg",
                                                         "aria-hidden": "true",
-                                                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("path", {
+                                                        children: /*#__PURE__*/ jsx_runtime_.jsx("path", {
                                                             clipRule: "evenodd",
                                                             fillRule: "evenodd",
                                                             d: "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -509,24 +525,24 @@ async function page() {
                                                     "Actions"
                                                 ]
                                             }),
-                                            /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                            /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
                                                 id: "actionsDropdown",
                                                 className: "hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600",
                                                 children: [
-                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("ul", {
+                                                    /*#__PURE__*/ jsx_runtime_.jsx("ul", {
                                                         className: "py-1 text-sm text-gray-700 dark:text-gray-200",
                                                         "aria-labelledby": "actionsDropdownButton",
-                                                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("li", {
-                                                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
+                                                        children: /*#__PURE__*/ jsx_runtime_.jsx("li", {
+                                                            children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
                                                                 href: "#",
                                                                 className: "block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white",
                                                                 children: "Mass Edit"
                                                             })
                                                         })
                                                     }),
-                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                    /*#__PURE__*/ jsx_runtime_.jsx("div", {
                                                         className: "py-1",
-                                                        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
+                                                        children: /*#__PURE__*/ jsx_runtime_.jsx("a", {
                                                             href: "#",
                                                             className: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white",
                                                             children: "Delete all"
@@ -534,27 +550,27 @@ async function page() {
                                                     })
                                                 ]
                                             }),
-                                            /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                            /*#__PURE__*/ (0,jsx_runtime_.jsxs)("div", {
                                                 id: "filterDropdown",
                                                 className: "z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700",
                                                 children: [
-                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h6", {
+                                                    /*#__PURE__*/ jsx_runtime_.jsx("h6", {
                                                         className: "mb-3 text-sm font-medium text-gray-900 dark:text-white",
                                                         children: "Choose brand"
                                                     }),
-                                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("ul", {
+                                                    /*#__PURE__*/ jsx_runtime_.jsx("ul", {
                                                         className: "space-y-2 text-sm",
                                                         "aria-labelledby": "filterDropdownButton",
-                                                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("li", {
+                                                        children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("li", {
                                                             className: "flex items-center",
                                                             children: [
-                                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("input", {
+                                                                /*#__PURE__*/ jsx_runtime_.jsx("input", {
                                                                     id: "apple",
                                                                     type: "checkbox",
                                                                     value: "",
                                                                     className: "w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                                                                 }),
-                                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("label", {
+                                                                /*#__PURE__*/ jsx_runtime_.jsx("label", {
                                                                     htmlFor: "apple",
                                                                     className: "ml-2 text-sm font-medium text-gray-900 dark:text-gray-100",
                                                                     children: "Apple (56)"
@@ -570,36 +586,36 @@ async function page() {
                             })
                         ]
                     }),
-                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                    /*#__PURE__*/ jsx_runtime_.jsx("div", {
                         className: "overflow-x-auto",
-                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("table", {
+                        children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("table", {
                             className: "w-full text-sm text-left text-gray-500 dark:text-gray-400",
                             children: [
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("thead", {
+                                /*#__PURE__*/ jsx_runtime_.jsx("thead", {
                                     className: "text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400",
-                                    children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("tr", {
+                                    children: /*#__PURE__*/ (0,jsx_runtime_.jsxs)("tr", {
                                         children: [
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("th", {
+                                            /*#__PURE__*/ jsx_runtime_.jsx("th", {
                                                 scope: "col",
                                                 className: "px-4 py-3",
                                                 children: "Name"
                                             }),
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("th", {
+                                            /*#__PURE__*/ jsx_runtime_.jsx("th", {
                                                 scope: "col",
                                                 className: "px-4 py-3",
                                                 children: "Description"
                                             }),
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("th", {
+                                            /*#__PURE__*/ jsx_runtime_.jsx("th", {
                                                 scope: "col",
                                                 className: "px-4 py-3",
                                                 children: "Category"
                                             }),
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("th", {
+                                            /*#__PURE__*/ jsx_runtime_.jsx("th", {
                                                 scope: "col",
                                                 className: "px-4 py-3",
                                                 children: "MRP"
                                             }),
-                                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("th", {
+                                            /*#__PURE__*/ jsx_runtime_.jsx("th", {
                                                 scope: "col",
                                                 className: "px-4 py-3",
                                                 children: "Prices"
@@ -607,39 +623,48 @@ async function page() {
                                         ]
                                     })
                                 }),
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("tbody", {
+                                /*#__PURE__*/ jsx_runtime_.jsx("tbody", {
                                     children: products.map((product)=>{
-                                        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("tr", {
+                                        return /*#__PURE__*/ (0,jsx_runtime_.jsxs)("tr", {
                                             className: "border-b dark:border-gray-700",
                                             children: [
-                                                /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("th", {
+                                                /*#__PURE__*/ (0,jsx_runtime_.jsxs)("th", {
                                                     scope: "row",
                                                     className: "flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white",
                                                     children: [
-                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                                            className: "relative w-14 h-14 rounded-lg overflow-hidden"
+                                                        /*#__PURE__*/ jsx_runtime_.jsx("div", {
+                                                            className: "relative w-14 h-14 rounded-lg overflow-hidden",
+                                                            children: /*#__PURE__*/ jsx_runtime_.jsx((image_default()), {
+                                                                fill: true,
+                                                                style: {
+                                                                    objectFit: "contain"
+                                                                },
+                                                                src: product.image ? product.image.startsWith("/") ? s3bucketurl + product.image : s3bucketurl + "/" + product.image : "",
+                                                                alt: "",
+                                                                className: "rounded-full"
+                                                            })
                                                         }),
-                                                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                                                        /*#__PURE__*/ jsx_runtime_.jsx("span", {
                                                             className: "font-medium text-gray-900 whitespace-nowrap dark:text-white",
                                                             children: product.name
                                                         })
                                                     ]
                                                 }),
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("td", {
+                                                /*#__PURE__*/ jsx_runtime_.jsx("td", {
                                                     className: "px-4 py-3",
                                                     children: product.desc
                                                 }),
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("td", {
+                                                /*#__PURE__*/ jsx_runtime_.jsx("td", {
                                                     className: "px-4 py-3",
                                                     children: product.category.name
                                                 }),
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("td", {
+                                                /*#__PURE__*/ jsx_runtime_.jsx("td", {
                                                     className: "px-4 py-3",
                                                     children: product.mrp
                                                 }),
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("td", {
+                                                /*#__PURE__*/ jsx_runtime_.jsx("td", {
                                                     className: "px-4 py-3",
-                                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_1___default()), {
+                                                    children: /*#__PURE__*/ jsx_runtime_.jsx((link_default()), {
                                                         className: "",
                                                         href: `/admin/prices/list/${product.id}`,
                                                         children: "View Prices"
@@ -668,9 +693,17 @@ async function page() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   X: () => (/* binding */ getProducts)
 /* harmony export */ });
+/* harmony import */ var _utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11789);
+
 async function getProducts() {
     try {
-        const response = await fetch(`${process.env.API_URL}/products`);
+        const response = await (0,_utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U)(`/products`, {
+            limit: 1000,
+            page: 1,
+            filters: [],
+            fullTextSearch: "",
+            orderBy: "createdAt,DESC"
+        });
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -692,7 +725,7 @@ async function getProducts() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,322,9540,9733,5918], () => (__webpack_exec__(90492)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,993,322,6418,9733,5918,1789], () => (__webpack_exec__(90492)));
 module.exports = __webpack_exports__;
 
 })();

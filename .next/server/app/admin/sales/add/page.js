@@ -471,12 +471,13 @@ const SalesForm = (props)=>{
         setLoading(true);
         try {
             if (product && qty) {
-                const response = await fetch(`/api/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, {
-                    cache: "no-store"
+                console.log("url", `${"https://ayurarogyam.co.in/api"}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`);
+                const response = await fetch(`${"https://ayurarogyam.co.in/api"}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, {
+                    cache: "no-cache"
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(`response: ${data}`);
+                    console.log(`response filtered prices: ${data}`);
                     const item = {
                         product,
                         productId: product.id,
@@ -501,6 +502,7 @@ const SalesForm = (props)=>{
             }
         } catch (error) {
             setLoading(false);
+            console.log("filteres prices", error);
             react_toastify_esm.toast.error("Error adding items!", {
                 position: react_toastify_esm.toast.POSITION.TOP_CENTER
             });
@@ -775,9 +777,17 @@ const SalesForm = (props)=>{
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   j: () => (/* binding */ getAgents)
 /* harmony export */ });
+/* harmony import */ var _utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11789);
+
 async function getAgents() {
     try {
-        const response = await fetch(`${process.env.API_URL}/partners`);
+        const response = await (0,_utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U)(`/partners`, {
+            limit: 1000,
+            page: 1,
+            filters: [],
+            fullTextSearch: "",
+            orderBy: "createdAt,DESC"
+        });
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -799,9 +809,17 @@ async function getAgents() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Z: () => (/* binding */ getClients)
 /* harmony export */ });
+/* harmony import */ var _utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11789);
+
 async function getClients() {
     try {
-        const response = await fetch(`${process.env.API_URL}/clients`);
+        const response = await (0,_utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U)(`/clients`, {
+            limit: 1000,
+            page: 1,
+            filters: [],
+            fullTextSearch: "",
+            orderBy: "createdAt,DESC"
+        });
         if (response.ok) {
             const data = await response.json();
             console.log(data);
@@ -824,9 +842,17 @@ async function getClients() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   X: () => (/* binding */ getProducts)
 /* harmony export */ });
+/* harmony import */ var _utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11789);
+
 async function getProducts() {
     try {
-        const response = await fetch(`${process.env.API_URL}/products`);
+        const response = await (0,_utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U)(`/products`, {
+            limit: 1000,
+            page: 1,
+            filters: [],
+            fullTextSearch: "",
+            orderBy: "createdAt,DESC"
+        });
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -904,8 +930,6 @@ async function addSales(input) {
             ];
         }
     }
-    console.log("Commission:");
-    console.log(commissions);
     let newSale;
     try {
         const partner = input.partner;
@@ -918,7 +942,11 @@ async function addSales(input) {
                 invoice: {
                     include: {
                         client: true,
-                        invoiceItem: true
+                        invoiceItem: {
+                            include: {
+                                product: true
+                            }
+                        }
                     }
                 }
             },
@@ -949,6 +977,8 @@ async function addSales(input) {
         });
         console.log("Sale with Invoice and Invoice Items created successfully.");
         console.log(newSale);
+        console.log("newSale.invocie.invoiceItems", newSale.invoice.invoiceItem);
+        await updateInventory(newSale);
     } catch (error) {
         console.error("Error adding inventory:", error);
         throw error;
@@ -956,76 +986,52 @@ async function addSales(input) {
     (0,next_cache__WEBPACK_IMPORTED_MODULE_1__.revalidatePath)(`/admin/sales/list`);
     return {};
 }
-// export async function addSales(input: SalesParam) {
-//     let subTotal: number = 0;
-//     let qty: number = 0;
-//     let invoiceItems: any = []
-//     input.productWithPrices.forEach((obj) => {
-//         subTotal += obj.total;
-//         qty += obj.qty;
-//         invoiceItems.push({
-//             amount: obj.price,
-//             total: obj.total,
-//             quantity: obj.qty,
-//             productId: obj.productId.toString()
-//         }
-//         )
-//     });
-//     const total = Math.ceil(subTotal + (16 / 100) * subTotal);
-//     try {
-//         const newSale = await prisma.sale.create({
-//             include: {
-//                 partner: true,
-//                 invoice: {
-//                     include: {
-//                         client: true,
-//                         invoiceItem: true,
-//                     }
-//                 }
-//             },
-//             data: {
-//                 date: new Date(input.date),
-//                 partnerId: input.partnerId,
-//                 visitType: input.visitType,
-//                 remarks: input.remarks,
-//                 invoice: {
-//                     create: {
-//                         invoiceNumber: generateRandomInvoiceNumber(),
-//                         quantity: qty,
-//                         subTotal: subTotal,
-//                         total: total,
-//                         invoiceDate: new Date(input.date),
-//                         isPaid: false,
-//                         clientId: input.clientId,
-//                     },
-//                 },
-//                 // Create a commission as 10% of the sale subtotal
-//                 commissions: {
-//                     create: {
-//                         paid: false,
-//                         dateOfPayment: new Date(input.date),
-//                         amount: 0.10 * subTotal, // Calculate the commission amount based on subtotal
-//                         partner: {
-//                             connect: { id: input.partnerId },
-//                         },
-//                     },
-//                 },
-//             },
-//         });
-//         console.log('Sale with Invoice and Invoice Items created successfully.');
-//         console.log(newSale);
-//         revalidatePath(`/admin/sales/list`);
-//         return newSale;
-//     } catch (error: any) {
-//         console.error('Error adding inventory:', error);
-//         throw error;
-//     }
-// }
 function generateRandomInvoiceNumber() {
     const timestamp = Date.now();
     // Combine the random characters, digits, and timestamp to create the invoice number
     const invoiceNumber = `INV-${timestamp}`;
     return invoiceNumber;
+}
+async function updateInventoryQuantity(inventoryId, quantity) {
+    // Simulate updating the inventory quantity in the database
+    await _lib_prisma__WEBPACK_IMPORTED_MODULE_2__["default"].inventory.update({
+        where: {
+            id: inventoryId
+        },
+        data: {
+            qty: quantity
+        }
+    });
+    console.log(`Updated inventory for inventory id ${inventoryId} to new quantity ${quantity}`);
+}
+async function getInventoryByProductId(productId) {
+    // Simulate fetching inventory data from a database
+    const inventory = await _lib_prisma__WEBPACK_IMPORTED_MODULE_2__["default"].inventory.findMany({
+        where: {
+            productId: productId
+        }
+    });
+    console.log("inventory: ", inventory);
+    return inventory[0];
+}
+async function updateInventory(newSale) {
+    console.log(newSale);
+    const invoiceItems = newSale.invoice.invoiceItem;
+    console.log("invoice items", invoiceItems);
+    for (const item of invoiceItems){
+        const productId = item.productId;
+        const soldQuantity = item.quantity;
+        // Fetch current inventory
+        const inventory = await getInventoryByProductId(productId);
+        if (inventory) {
+            // Subtract sold quantity
+            const newQuantity = inventory.qty - soldQuantity;
+            // Update the inventory
+            await updateInventoryQuantity(inventory.id, newQuantity);
+        } else {
+            console.log(`Inventory for product ID ${productId} not found`);
+        }
+    }
 }
 
 (0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_3__["default"])([
@@ -1105,7 +1111,7 @@ async function page() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,3236,6897,9540,9733,5918,3650], () => (__webpack_exec__(18768)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,3236,6897,6418,9733,5918,1789,3650], () => (__webpack_exec__(18768)));
 module.exports = __webpack_exports__;
 
 })();

@@ -91,9 +91,9 @@ export default async function page({searchParams}:{searchParams:{[key:string]:st
                                             <tr className="border-b dark:border-gray-700" key={inventory.id}>
 
 <th scope="row" className="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <div className="relative w-16 h-16 rounded-lg overflow-hidden">
+                                                {/* <div className="relative w-16 h-16 rounded-lg overflow-hidden">
                                                 <Image fill={true} style={{objectFit:'contain'}} src={s3bucketurl + inventory.image } alt="" className="rounded-full" />
-                                                </div>
+                                                </div> */}
                                                 <span className="font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {inventory.name}
                                                 </span>

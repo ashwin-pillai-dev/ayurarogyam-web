@@ -51,11 +51,14 @@ const SalesForm: React.FC<PropType> = (props) => {
     async function getFilteredPrices() {
         setLoading(true)
         try {
-            if (product && qty) {
-                const response = await fetch(`/api/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, { cache: 'no-store' });
+            if (product && qty) {  
+                
+                console.log('url',`${process.env.NEXT_PUBLIC_API_URL}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`);
+                              
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, { cache: 'no-cache' });
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(`response: ${data}`);
+                    console.log(`response filtered prices: ${data}`);
                     const item = {
                         product,
                         productId: product.id,
@@ -77,6 +80,8 @@ const SalesForm: React.FC<PropType> = (props) => {
             }
         } catch (error) {
             setLoading(false)
+            console.log('filteres prices',error);
+            
             toast.error("Error adding items!", {
                 position: toast.POSITION.TOP_CENTER
             });

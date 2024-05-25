@@ -591,9 +591,18 @@ async function page() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   C: () => (/* binding */ getCategories)
 /* harmony export */ });
+/* harmony import */ var _utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11789);
+
 async function getCategories() {
     try {
-        const response = await fetch(`${process.env.API_URL}/categories`);
+        const params = {
+            page: 1,
+            limit: 100,
+            filters: [],
+            orderBy: "id,ASC",
+            fullTextSearch: ""
+        };
+        const response = await (0,_utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U)("/categories", params);
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -615,7 +624,7 @@ async function getCategories() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,9540,9733,5918], () => (__webpack_exec__(73827)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6418,9733,5918,1789], () => (__webpack_exec__(73827)));
 module.exports = __webpack_exports__;
 
 })();

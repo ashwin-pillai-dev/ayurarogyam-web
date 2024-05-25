@@ -102,7 +102,7 @@ export default async function page() {
                                             <tr className="border-b dark:border-gray-700" key={product.id}>
                                                 <th scope="row" className="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 <div className="relative w-14 h-14 rounded-lg overflow-hidden">
-                                                {/* <Image fill={true} style={{objectFit:'contain'}} src={s3bucketurl + product.image } alt="" className="rounded-full" /> */}
+                                                <Image fill={true} style={{objectFit:'contain'}} src={  product.image? product.image.startsWith('/')?s3bucketurl + product.image: s3bucketurl + '/'+product.image:'' } alt="" className="rounded-full" />
                                                 </div>
                                                 <span className="font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {product.name}

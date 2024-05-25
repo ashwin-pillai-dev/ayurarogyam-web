@@ -465,9 +465,17 @@ function FilterSearch(props) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Z: () => (/* binding */ getClients)
 /* harmony export */ });
+/* harmony import */ var _utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11789);
+
 async function getClients() {
     try {
-        const response = await fetch(`${process.env.API_URL}/clients`);
+        const response = await (0,_utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U)(`/clients`, {
+            limit: 1000,
+            page: 1,
+            filters: [],
+            fullTextSearch: "",
+            orderBy: "createdAt,DESC"
+        });
         if (response.ok) {
             const data = await response.json();
             console.log(data);
@@ -525,8 +533,7 @@ async function getSales(props) {
     };
     try {
         const response = await (0,queryHelper/* get */.U)("/sales", params);
-        // const response = await fetch('http://13.201.127.24:3000/api/inventory?page=1&limit=10&orderBy=id,ASC')
-        http: console.log(response.ok);
+        console.log(response.ok);
         if (response.ok) {
             console.log("before data");
             console.log(response);
@@ -545,7 +552,9 @@ async function getSales(props) {
 }
 async function fetchFilteredPrice(productId, clientTypeId, qty) {
     try {
-        const response = await fetch(`${process.env.API_URL}/filteredPrices?productId=${productId}&clientTypeId=${clientTypeId}&qty=${qty}`);
+        const response = await fetch(`${process.env.API_URL}/filteredPrices?productId=${productId}&clientTypeId=${clientTypeId}&qty=${qty}`, {
+            cache: "no-cache"
+        });
         if (response.ok) {
             const result = await response.json();
             return result;
@@ -564,9 +573,16 @@ var Pagination = __webpack_require__(60778);
 // EXTERNAL MODULE: ./app/admin/clients/services.ts
 var services = __webpack_require__(29460);
 ;// CONCATENATED MODULE: ./app/admin/partners/services.ts
+
 async function getAgents() {
     try {
-        const response = await fetch("http://localhost:3000/api/partners");
+        const response = await (0,queryHelper/* get */.U)("/partners", {
+            limit: 1000,
+            page: 1,
+            filters: [],
+            fullTextSearch: "",
+            orderBy: "id,DESC"
+        });
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -937,7 +953,7 @@ async function page({ searchParams }) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,322,6897,9540,9733,5918,1789,778], () => (__webpack_exec__(51523)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,322,6897,6418,9733,5918,1789,778], () => (__webpack_exec__(51523)));
 module.exports = __webpack_exports__;
 
 })();

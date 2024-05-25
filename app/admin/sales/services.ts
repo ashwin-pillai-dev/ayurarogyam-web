@@ -28,8 +28,6 @@ export async function getSales(props: PropType) {
 
   try {
     const response = await get('/sales', params)
-    // const response = await fetch('http://13.201.127.24:3000/api/inventory?page=1&limit=10&orderBy=id,ASC')
-    http://13.201.127.24:3000/api/inventory?page=1&limit=10&orderBy=id,ASC
 
     console.log(response.ok);
 
@@ -57,7 +55,7 @@ export async function getSales(props: PropType) {
 
 export async function fetchFilteredPrice(productId: string, clientTypeId: string, qty: number) {
   try {
-    const response = await fetch(`${process.env.API_URL}/filteredPrices?productId=${productId}&clientTypeId=${clientTypeId}&qty=${qty}`);
+    const response = await fetch(`${process.env.API_URL}/filteredPrices?productId=${productId}&clientTypeId=${clientTypeId}&qty=${qty}`,{cache:'no-cache'});
     if (response.ok) {
       const result = await response.json();
       return result;

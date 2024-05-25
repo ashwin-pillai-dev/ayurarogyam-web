@@ -180,7 +180,7 @@ module.exports = require("next/dist/shared/lib/server-inserted-html");
 
 /***/ }),
 
-/***/ 459:
+/***/ 3349:
 /***/ ((module) => {
 
 "use strict";
@@ -456,7 +456,7 @@ module.exports = {
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 93578));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3280, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 69274, 23));
-Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 459, 23));
+Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 3349, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.t.bind(__webpack_require__, 90701, 23));
 Promise.resolve(/* import() eager */).then(__webpack_require__.bind(__webpack_require__, 87886))
 
@@ -560,19 +560,6 @@ function FormItems(props) {
                     })
                 ]
             }),
-            /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                children: [
-                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(flowbite_react__WEBPACK_IMPORTED_MODULE_1__.Label, {
-                        htmlFor: "image",
-                        value: "Upload file"
-                    }),
-                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(flowbite_react__WEBPACK_IMPORTED_MODULE_1__.FileInput, {
-                        helperText: "Image for Inventory",
-                        id: "image",
-                        name: "image"
-                    })
-                ]
-            }),
             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(flowbite_react__WEBPACK_IMPORTED_MODULE_1__.Button, {
                 size: "xs",
                 type: "submit",
@@ -596,9 +583,18 @@ function FormItems(props) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   W: () => (/* binding */ getInventoryTypes)
 /* harmony export */ });
+/* harmony import */ var _utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11789);
+
 async function getInventoryTypes() {
     try {
-        const response = await fetch(`${process.env.API_URL}/inventory-types`);
+        const params = {
+            page: 1,
+            limit: 10,
+            filters: [],
+            orderBy: "createdAt,DESC",
+            fullTextSearch: ""
+        };
+        const response = await (0,_utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U)(`/inventory-types`, params);
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -681,7 +677,9 @@ async function getImageFromBucket(fileKey) {
         });
         console.log("response url:");
         console.log(responseUrl);
-        const response = await fetch(responseUrl);
+        const response = await fetch(responseUrl, {
+            cache: "no-cache"
+        });
         if (!response.ok) {
             throw new Error(`Failed to fetch object: ${response.status} ${response.statusText}`);
         }
@@ -721,8 +719,7 @@ async function uploadFileToPresignedUrl(presignedUrl, file) {
         const response = await fetch(presignedUrl, {
             method: "PUT",
             headers: {
-                "Content-Type": file.type,
-                "x-amz-acl": "public-read"
+                "Content-Type": file.type
             },
             body: file
         });
@@ -739,8 +736,10 @@ async function uploadFileToPresignedUrl(presignedUrl, file) {
 async function FileUpload(file) {
     try {
         const presignedUrlResponse = await getSignedS3Url(file);
+        console.log(presignedUrlResponse);
         if (presignedUrlResponse?.url) {
             const response = await uploadFileToPresignedUrl(presignedUrlResponse.url, file);
+            console.log(response);
             return presignedUrlResponse.key;
         } else {
             throw new Error("Error uploading file");
@@ -879,9 +878,17 @@ async function page() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   X: () => (/* binding */ getProducts)
 /* harmony export */ });
+/* harmony import */ var _utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11789);
+
 async function getProducts() {
     try {
-        const response = await fetch(`${process.env.API_URL}/products`);
+        const response = await (0,_utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U)(`/products`, {
+            limit: 1000,
+            page: 1,
+            filters: [],
+            fullTextSearch: "",
+            orderBy: "createdAt,DESC"
+        });
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -922,7 +929,7 @@ if (true) {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,3578,4378,5291,8875,369,3353,9540,9733,5918], () => (__webpack_exec__(52981)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6133,188,3578,4378,5291,8875,369,3353,6418,9733,5918,1789], () => (__webpack_exec__(52981)));
 module.exports = __webpack_exports__;
 
 })();

@@ -1,8 +1,9 @@
+import { get } from "@/utils/queryHelper/queryHelper";
 
 export async function getAgents() {
     try {
       
-      const response = await  fetch('http://localhost:3000/api/partners');
+      const response = await  get('/partners',{limit:1000,page:1,filters:[],fullTextSearch:'',orderBy:'id,DESC'});
       
 
       if (response.ok) {        

@@ -620,9 +620,17 @@ async function page() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Z: () => (/* binding */ getClients)
 /* harmony export */ });
+/* harmony import */ var _utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11789);
+
 async function getClients() {
     try {
-        const response = await fetch(`${process.env.API_URL}/clients`);
+        const response = await (0,_utils_queryHelper_queryHelper__WEBPACK_IMPORTED_MODULE_0__/* .get */ .U)(`/clients`, {
+            limit: 1000,
+            page: 1,
+            filters: [],
+            fullTextSearch: "",
+            orderBy: "createdAt,DESC"
+        });
         if (response.ok) {
             const data = await response.json();
             console.log(data);
@@ -645,7 +653,7 @@ async function getClients() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,9540,9733,5918], () => (__webpack_exec__(63768)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,6418,9733,5918,1789], () => (__webpack_exec__(63768)));
 module.exports = __webpack_exports__;
 
 })();

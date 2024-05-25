@@ -2,7 +2,7 @@ import { get } from '@/utils/queryHelper/queryHelper'
 export async function getProducts() {
   try {
 
-    const response = await fetch(`${process.env.API_URL}/products`);
+    const response = await get(`/products`,{limit:1000,page:1,filters:[],fullTextSearch:'',orderBy:'createdAt,DESC'});
     if (response.ok) {
       const data = await response.json();
       return data;

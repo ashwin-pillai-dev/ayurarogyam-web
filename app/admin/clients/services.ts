@@ -1,8 +1,9 @@
+import { get } from "@/utils/queryHelper/queryHelper";
 
 export async function getClients() {
     try {
       
-      const response = await  fetch(`${process.env.API_URL}/clients`);
+      const response = await get(`/clients`,{limit:1000,page:1,filters:[],fullTextSearch:'',orderBy:'createdAt,DESC'});
       
 
       if (response.ok) {        

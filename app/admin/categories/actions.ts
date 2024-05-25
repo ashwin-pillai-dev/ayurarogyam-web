@@ -12,16 +12,17 @@ import { FileUpload } from '../common/services';
 export async function addCategory(input: FormData) {
 
     const { name, file } = Object.fromEntries(input)
-    console.log('Type of file');
-    console.log(typeof (file));
     let fileObj: any = file;
-    console.log(fileObj.type);
+    let uploadResponse = '';
 
 
 
+    if (file) {
+        uploadResponse = await FileUpload(fileObj)
+    }
 
+    console.log(uploadResponse);
 
-    const uploadResponse = await FileUpload(fileObj)
 
     const data = {
         name: name.toString(),
@@ -45,8 +46,8 @@ export async function addCategory(input: FormData) {
     }
 
     revalidatePath(`/admin/categories/list`);
-    return category;
+    // return category;
 
-    // redirect(`/admin/categories/list`)
+    redirect(`/admin/categories/list`)
 
 }

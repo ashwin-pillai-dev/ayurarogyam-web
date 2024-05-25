@@ -1,8 +1,9 @@
+import { get } from "@/utils/queryHelper/queryHelper";
 
 export async function getCommissions(partnerId:string) {
     try {
       
-      const response = await  fetch(`${process.env.API_URL}/commissions?partnerId=${partnerId}`,{cache:'no-store'});
+      const response = await  get(`/commissions?partnerId=${partnerId}`,{limit:1000,page:1,filters:[],fullTextSearch:'',orderBy:'createdAt,DESC'});
       if (response.ok) {        
         const data = await response.json();
         console.log(`commsision data:`);
