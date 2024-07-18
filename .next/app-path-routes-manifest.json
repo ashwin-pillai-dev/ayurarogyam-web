@@ -1,12 +1,12 @@
 {
   "/favicon.ico/route": "/favicon.ico",
   "/page": "/",
-  "/Categories/page": "/Categories",
-  "/About/page": "/About",
-  "/Products/page": "/Products",
   "/Blog/page": "/Blog",
+  "/About/page": "/About",
+  "/Categories/page": "/Categories",
   "/Coming-soon/page": "/Coming-soon",
   "/Contact/page": "/Contact",
+  "/Products/page": "/Products",
   "/Products/Kurol/page": "/Products/Kurol",
   "/Products/Ojuset/page": "/Products/Ojuset",
   "/Products/Ojuset/benefits/[id]/page": "/Products/Ojuset/benefits/[id]"

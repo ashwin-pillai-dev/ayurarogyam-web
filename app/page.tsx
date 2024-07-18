@@ -3,7 +3,7 @@ import DefaultNavbar from './components/DefaultNavbar'
 import DefaultFooter from './components/footer'
 import Slider from './components/slider/slider'
 import EmblaCarousel from './components/carousel/EmblaCarousel';
-import { EmblaOptionsType } from 'embla-carousel-react';
+// import { EmblaOptionsType } from 'embla-carousel-react';
 
 export default function Home() {
   const slides = [
@@ -23,7 +23,7 @@ const SLIDES:any= [
     { title: '100% Pure Ayurvedic Products', src: '/100-ayurveidc.jpg', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.' },
     { title: 'The Herbal way of Healing Piles', src: '/kurol-banner-1.jpg', desc: 'Complete relief from piles.' },
 ]
-const OPTIONS: EmblaOptionsType = { loop: true }
+const OPTIONS: any = { loop: true }
   return (
     <div>
       <DefaultNavbar />

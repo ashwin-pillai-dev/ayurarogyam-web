@@ -2,7 +2,7 @@ exports.id = 544;
 exports.ids = [544];
 exports.modules = {
 
-/***/ 3168:
+/***/ 6956:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -19,22 +19,22 @@ __webpack_require__.d(__webpack_exports__, {
   FloatingOverlay: () => (/* binding */ FloatingOverlay),
   FloatingPortal: () => (/* binding */ FloatingPortal),
   FloatingTree: () => (/* binding */ FloatingTree),
-  arrow: () => (/* reexport */ floating_ui_react_dom_esm_arrow),
-  autoPlacement: () => (/* reexport */ autoPlacement),
+  arrow: () => (/* reexport */ floating_ui_react_dom_arrow),
+  autoPlacement: () => (/* reexport */ floating_ui_dom_autoPlacement),
   autoUpdate: () => (/* reexport */ autoUpdate),
   computePosition: () => (/* reexport */ floating_ui_dom_computePosition),
   detectOverflow: () => (/* reexport */ detectOverflow),
-  flip: () => (/* reexport */ flip),
+  flip: () => (/* reexport */ floating_ui_dom_flip),
   getOverflowAncestors: () => (/* reexport */ getOverflowAncestors),
-  hide: () => (/* reexport */ hide),
-  inline: () => (/* reexport */ inline),
+  hide: () => (/* reexport */ floating_ui_dom_hide),
+  inline: () => (/* reexport */ floating_ui_dom_inline),
   inner: () => (/* binding */ inner),
-  limitShift: () => (/* reexport */ limitShift),
+  limitShift: () => (/* reexport */ floating_ui_dom_limitShift),
   offset: () => (/* reexport */ offset),
   platform: () => (/* reexport */ platform),
   safePolygon: () => (/* binding */ safePolygon),
-  shift: () => (/* reexport */ shift),
-  size: () => (/* reexport */ size),
+  shift: () => (/* reexport */ floating_ui_dom_shift),
+  size: () => (/* reexport */ floating_ui_dom_size),
   useClick: () => (/* binding */ useClick),
   useClientPoint: () => (/* binding */ useClientPoint),
   useDelayGroup: () => (/* binding */ useDelayGroup),
@@ -59,35 +59,154 @@ __webpack_require__.d(__webpack_exports__, {
   useTypeahead: () => (/* binding */ useTypeahead)
 });
 
-;// CONCATENATED MODULE: ./node_modules/@floating-ui/core/dist/floating-ui.core.mjs
-function getAlignment(placement) {
-  return placement.split('-')[1];
-}
+;// CONCATENATED MODULE: ./node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
+/**
+ * Custom positioning reference element.
+ * @see https://floating-ui.com/docs/virtual-elements
+ */
 
-function getLengthFromAxis(axis) {
-  return axis === 'y' ? 'height' : 'width';
+const sides = ['top', 'right', 'bottom', 'left'];
+const alignments = ['start', 'end'];
+const placements = /*#__PURE__*/sides.reduce((acc, side) => acc.concat(side, side + "-" + alignments[0], side + "-" + alignments[1]), []);
+const min = Math.min;
+const max = Math.max;
+const round = Math.round;
+const floor = Math.floor;
+const createCoords = v => ({
+  x: v,
+  y: v
+});
+const oppositeSideMap = {
+  left: 'right',
+  right: 'left',
+  bottom: 'top',
+  top: 'bottom'
+};
+const oppositeAlignmentMap = {
+  start: 'end',
+  end: 'start'
+};
+function clamp(start, value, end) {
+  return max(start, min(value, end));
 }
-
+function evaluate(value, param) {
+  return typeof value === 'function' ? value(param) : value;
+}
 function getSide(placement) {
   return placement.split('-')[0];
 }
-
-function getMainAxisFromPlacement(placement) {
-  return ['top', 'bottom'].includes(getSide(placement)) ? 'x' : 'y';
+function getAlignment(placement) {
+  return placement.split('-')[1];
 }
+function getOppositeAxis(axis) {
+  return axis === 'x' ? 'y' : 'x';
+}
+function getAxisLength(axis) {
+  return axis === 'y' ? 'height' : 'width';
+}
+function getSideAxis(placement) {
+  return ['top', 'bottom'].includes(getSide(placement)) ? 'y' : 'x';
+}
+function getAlignmentAxis(placement) {
+  return getOppositeAxis(getSideAxis(placement));
+}
+function getAlignmentSides(placement, rects, rtl) {
+  if (rtl === void 0) {
+    rtl = false;
+  }
+  const alignment = getAlignment(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const length = getAxisLength(alignmentAxis);
+  let mainAlignmentSide = alignmentAxis === 'x' ? alignment === (rtl ? 'end' : 'start') ? 'right' : 'left' : alignment === 'start' ? 'bottom' : 'top';
+  if (rects.reference[length] > rects.floating[length]) {
+    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
+  }
+  return [mainAlignmentSide, getOppositePlacement(mainAlignmentSide)];
+}
+function getExpandedPlacements(placement) {
+  const oppositePlacement = getOppositePlacement(placement);
+  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
+}
+function getOppositeAlignmentPlacement(placement) {
+  return placement.replace(/start|end/g, alignment => oppositeAlignmentMap[alignment]);
+}
+function getSideList(side, isStart, rtl) {
+  const lr = ['left', 'right'];
+  const rl = ['right', 'left'];
+  const tb = ['top', 'bottom'];
+  const bt = ['bottom', 'top'];
+  switch (side) {
+    case 'top':
+    case 'bottom':
+      if (rtl) return isStart ? rl : lr;
+      return isStart ? lr : rl;
+    case 'left':
+    case 'right':
+      return isStart ? tb : bt;
+    default:
+      return [];
+  }
+}
+function getOppositeAxisPlacements(placement, flipAlignment, direction, rtl) {
+  const alignment = getAlignment(placement);
+  let list = getSideList(getSide(placement), direction === 'start', rtl);
+  if (alignment) {
+    list = list.map(side => side + "-" + alignment);
+    if (flipAlignment) {
+      list = list.concat(list.map(getOppositeAlignmentPlacement));
+    }
+  }
+  return list;
+}
+function getOppositePlacement(placement) {
+  return placement.replace(/left|right|bottom|top/g, side => oppositeSideMap[side]);
+}
+function expandPaddingObject(padding) {
+  return {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    ...padding
+  };
+}
+function getPaddingObject(padding) {
+  return typeof padding !== 'number' ? expandPaddingObject(padding) : {
+    top: padding,
+    right: padding,
+    bottom: padding,
+    left: padding
+  };
+}
+function rectToClientRect(rect) {
+  return {
+    ...rect,
+    top: rect.y,
+    left: rect.x,
+    right: rect.x + rect.width,
+    bottom: rect.y + rect.height
+  };
+}
+
+
+
+;// CONCATENATED MODULE: ./node_modules/@floating-ui/core/dist/floating-ui.core.mjs
+
+
 
 function computeCoordsFromPlacement(_ref, placement, rtl) {
   let {
     reference,
     floating
   } = _ref;
+  const sideAxis = getSideAxis(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const alignLength = getAxisLength(alignmentAxis);
+  const side = getSide(placement);
+  const isVertical = sideAxis === 'y';
   const commonX = reference.x + reference.width / 2 - floating.width / 2;
   const commonY = reference.y + reference.height / 2 - floating.height / 2;
-  const mainAxis = getMainAxisFromPlacement(placement);
-  const length = getLengthFromAxis(mainAxis);
-  const commonAlign = reference[length] / 2 - floating[length] / 2;
-  const side = getSide(placement);
-  const isVertical = mainAxis === 'x';
+  const commonAlign = reference[alignLength] / 2 - floating[alignLength] / 2;
   let coords;
   switch (side) {
     case 'top':
@@ -122,10 +241,10 @@ function computeCoordsFromPlacement(_ref, placement, rtl) {
   }
   switch (getAlignment(placement)) {
     case 'start':
-      coords[mainAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
+      coords[alignmentAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
       break;
     case 'end':
-      coords[mainAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
+      coords[alignmentAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
       break;
   }
   return coords;
@@ -133,7 +252,7 @@ function computeCoordsFromPlacement(_ref, placement, rtl) {
 
 /**
  * Computes the `x` and `y` coordinates that will place the floating element
- * next to a reference element when it is given a certain positioning strategy.
+ * next to a given reference element.
  *
  * This export does not have any `platform` interface logic. You will need to
  * write one for the platform you are using Floating UI with.
@@ -223,39 +342,6 @@ const computePosition = async (reference, floating, config) => {
   };
 };
 
-function evaluate(value, param) {
-  return typeof value === 'function' ? value(param) : value;
-}
-
-function expandPaddingObject(padding) {
-  return {
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    ...padding
-  };
-}
-
-function getSideObjectFromPadding(padding) {
-  return typeof padding !== 'number' ? expandPaddingObject(padding) : {
-    top: padding,
-    right: padding,
-    bottom: padding,
-    left: padding
-  };
-}
-
-function rectToClientRect(rect) {
-  return {
-    ...rect,
-    top: rect.y,
-    left: rect.x,
-    right: rect.x + rect.width,
-    bottom: rect.y + rect.height
-  };
-}
-
 /**
  * Resolves with an object of overflow side offsets that determine how much the
  * element is overflowing a given clipping boundary on each side.
@@ -284,7 +370,7 @@ async function detectOverflow(state, options) {
     altBoundary = false,
     padding = 0
   } = evaluate(options, state);
-  const paddingObject = getSideObjectFromPadding(padding);
+  const paddingObject = getPaddingObject(padding);
   const altContext = elementContext === 'floating' ? 'reference' : 'floating';
   const element = elements[altBoundary ? altContext : elementContext];
   const clippingClientRect = rectToClientRect(await platform.getClippingRect({
@@ -319,13 +405,6 @@ async function detectOverflow(state, options) {
   };
 }
 
-const min = Math.min;
-const max = Math.max;
-
-function within(min$1, value, max$1) {
-  return max(min$1, min(value, max$1));
-}
-
 /**
  * Provides data to position an inner element of the floating element so that it
  * appears centered to the reference element.
@@ -341,7 +420,8 @@ const arrow = options => ({
       placement,
       rects,
       platform,
-      elements
+      elements,
+      middlewareData
     } = state;
     // Since `element` is required, we don't Partial<> the type.
     const {
@@ -351,13 +431,13 @@ const arrow = options => ({
     if (element == null) {
       return {};
     }
-    const paddingObject = getSideObjectFromPadding(padding);
+    const paddingObject = getPaddingObject(padding);
     const coords = {
       x,
       y
     };
-    const axis = getMainAxisFromPlacement(placement);
-    const length = getLengthFromAxis(axis);
+    const axis = getAlignmentAxis(placement);
+    const length = getAxisLength(axis);
     const arrowDimensions = await platform.getDimensions(element);
     const isYAxis = axis === 'y';
     const minProp = isYAxis ? 'top' : 'left';
@@ -385,61 +465,27 @@ const arrow = options => ({
     const min$1 = minPadding;
     const max = clientSize - arrowDimensions[length] - maxPadding;
     const center = clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
-    const offset = within(min$1, center, max);
+    const offset = clamp(min$1, center, max);
 
     // If the reference is small enough that the arrow's padding causes it to
     // to point to nothing for an aligned placement, adjust the offset of the
-    // floating element itself. This stops `shift()` from taking action, but can
-    // be worked around by calling it again after the `arrow()` if desired.
-    const shouldAddOffset = getAlignment(placement) != null && center != offset && rects.reference[length] / 2 - (center < min$1 ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
-    const alignmentOffset = shouldAddOffset ? center < min$1 ? min$1 - center : max - center : 0;
+    // floating element itself. To ensure `shift()` continues to take action,
+    // a single reset is performed when this is true.
+    const shouldAddOffset = !middlewareData.arrow && getAlignment(placement) != null && center != offset && rects.reference[length] / 2 - (center < min$1 ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
+    const alignmentOffset = shouldAddOffset ? center < min$1 ? center - min$1 : center - max : 0;
     return {
-      [axis]: coords[axis] - alignmentOffset,
+      [axis]: coords[axis] + alignmentOffset,
       data: {
         [axis]: offset,
-        centerOffset: center - offset + alignmentOffset
-      }
+        centerOffset: center - offset - alignmentOffset,
+        ...(shouldAddOffset && {
+          alignmentOffset
+        })
+      },
+      reset: shouldAddOffset
     };
   }
 });
-
-const sides = ['top', 'right', 'bottom', 'left'];
-const allPlacements = /*#__PURE__*/sides.reduce((acc, side) => acc.concat(side, side + "-start", side + "-end"), []);
-
-const oppositeSideMap = {
-  left: 'right',
-  right: 'left',
-  bottom: 'top',
-  top: 'bottom'
-};
-function getOppositePlacement(placement) {
-  return placement.replace(/left|right|bottom|top/g, side => oppositeSideMap[side]);
-}
-
-function getAlignmentSides(placement, rects, rtl) {
-  if (rtl === void 0) {
-    rtl = false;
-  }
-  const alignment = getAlignment(placement);
-  const mainAxis = getMainAxisFromPlacement(placement);
-  const length = getLengthFromAxis(mainAxis);
-  let mainAlignmentSide = mainAxis === 'x' ? alignment === (rtl ? 'end' : 'start') ? 'right' : 'left' : alignment === 'start' ? 'bottom' : 'top';
-  if (rects.reference[length] > rects.floating[length]) {
-    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
-  }
-  return {
-    main: mainAlignmentSide,
-    cross: getOppositePlacement(mainAlignmentSide)
-  };
-}
-
-const oppositeAlignmentMap = {
-  start: 'end',
-  end: 'start'
-};
-function getOppositeAlignmentPlacement(placement) {
-  return placement.replace(/start|end/g, alignment => oppositeAlignmentMap[alignment]);
-}
 
 function getPlacementList(alignment, autoAlignment, allowedPlacements) {
   const allowedPlacementsSortedByAlignment = alignment ? [...allowedPlacements.filter(placement => getAlignment(placement) === alignment), ...allowedPlacements.filter(placement => getAlignment(placement) !== alignment)] : allowedPlacements.filter(placement => getSide(placement) === placement);
@@ -475,36 +521,33 @@ const autoPlacement = function (options) {
       const {
         crossAxis = false,
         alignment,
-        allowedPlacements = allPlacements,
+        allowedPlacements = placements,
         autoAlignment = true,
         ...detectOverflowOptions
       } = evaluate(options, state);
-      const placements = alignment !== undefined || allowedPlacements === allPlacements ? getPlacementList(alignment || null, autoAlignment, allowedPlacements) : allowedPlacements;
+      const placements$1 = alignment !== undefined || allowedPlacements === placements ? getPlacementList(alignment || null, autoAlignment, allowedPlacements) : allowedPlacements;
       const overflow = await detectOverflow(state, detectOverflowOptions);
       const currentIndex = ((_middlewareData$autoP = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP.index) || 0;
-      const currentPlacement = placements[currentIndex];
+      const currentPlacement = placements$1[currentIndex];
       if (currentPlacement == null) {
         return {};
       }
-      const {
-        main,
-        cross
-      } = getAlignmentSides(currentPlacement, rects, await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating)));
+      const alignmentSides = getAlignmentSides(currentPlacement, rects, await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating)));
 
       // Make `computeCoords` start from the right place.
       if (placement !== currentPlacement) {
         return {
           reset: {
-            placement: placements[0]
+            placement: placements$1[0]
           }
         };
       }
-      const currentOverflows = [overflow[getSide(currentPlacement)], overflow[main], overflow[cross]];
+      const currentOverflows = [overflow[getSide(currentPlacement)], overflow[alignmentSides[0]], overflow[alignmentSides[1]]];
       const allOverflows = [...(((_middlewareData$autoP2 = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP2.overflows) || []), {
         placement: currentPlacement,
         overflows: currentOverflows
       }];
-      const nextPlacement = placements[currentIndex + 1];
+      const nextPlacement = placements$1[currentIndex + 1];
 
       // There are more placements to check.
       if (nextPlacement) {
@@ -547,40 +590,6 @@ const autoPlacement = function (options) {
   };
 };
 
-function getExpandedPlacements(placement) {
-  const oppositePlacement = getOppositePlacement(placement);
-  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
-}
-
-function getSideList(side, isStart, rtl) {
-  const lr = ['left', 'right'];
-  const rl = ['right', 'left'];
-  const tb = ['top', 'bottom'];
-  const bt = ['bottom', 'top'];
-  switch (side) {
-    case 'top':
-    case 'bottom':
-      if (rtl) return isStart ? rl : lr;
-      return isStart ? lr : rl;
-    case 'left':
-    case 'right':
-      return isStart ? tb : bt;
-    default:
-      return [];
-  }
-}
-function getOppositeAxisPlacements(placement, flipAlignment, direction, rtl) {
-  const alignment = getAlignment(placement);
-  let list = getSideList(getSide(placement), direction === 'start', rtl);
-  if (alignment) {
-    list = list.map(side => side + "-" + alignment);
-    if (flipAlignment) {
-      list = list.concat(list.map(getOppositeAlignmentPlacement));
-    }
-  }
-  return list;
-}
-
 /**
  * Optimizes the visibility of the floating element by flipping the `placement`
  * in order to keep it in view when the preferred placement(s) will overflow the
@@ -595,7 +604,7 @@ const flip = function (options) {
     name: 'flip',
     options,
     async fn(state) {
-      var _middlewareData$flip;
+      var _middlewareData$arrow, _middlewareData$flip;
       const {
         placement,
         middlewareData,
@@ -613,6 +622,14 @@ const flip = function (options) {
         flipAlignment = true,
         ...detectOverflowOptions
       } = evaluate(options, state);
+
+      // If a reset by the arrow was caused due to an alignment offset being
+      // added, we should skip any logic now since `flip()` has already done its
+      // work.
+      // https://github.com/floating-ui/floating-ui/issues/2549#issuecomment-1719601643
+      if ((_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
       const side = getSide(placement);
       const isBasePlacement = getSide(initialPlacement) === initialPlacement;
       const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating));
@@ -628,11 +645,8 @@ const flip = function (options) {
         overflows.push(overflow[side]);
       }
       if (checkCrossAxis) {
-        const {
-          main,
-          cross
-        } = getAlignmentSides(placement, rects, rtl);
-        overflows.push(overflow[main], overflow[cross]);
+        const sides = getAlignmentSides(placement, rects, rtl);
+        overflows.push(overflow[sides[0]], overflow[sides[1]]);
       }
       overflowsData = [...overflowsData, {
         placement,
@@ -818,7 +832,7 @@ const inline = function (options) {
       const nativeClientRects = Array.from((await (platform.getClientRects == null ? void 0 : platform.getClientRects(elements.reference))) || []);
       const clientRects = getRectsByLine(nativeClientRects);
       const fallback = rectToClientRect(getBoundingRect(nativeClientRects));
-      const paddingObject = getSideObjectFromPadding(padding);
+      const paddingObject = getPaddingObject(padding);
       function getBoundingClientRect() {
         // There are two rects and they are disjoined.
         if (clientRects.length === 2 && clientRects[0].left > clientRects[1].right && x != null && y != null) {
@@ -828,7 +842,7 @@ const inline = function (options) {
 
         // There are 2 or more connected rects.
         if (clientRects.length >= 2) {
-          if (getMainAxisFromPlacement(placement) === 'x') {
+          if (getSideAxis(placement) === 'y') {
             const firstRect = clientRects[0];
             const lastRect = clientRects[clientRects.length - 1];
             const isTop = getSide(placement) === 'top';
@@ -891,6 +905,9 @@ const inline = function (options) {
   };
 };
 
+// For type backwards-compatibility, the `OffsetOptions` type was also
+// Derivable.
+
 async function convertValueToCoords(state, options) {
   const {
     placement,
@@ -900,7 +917,7 @@ async function convertValueToCoords(state, options) {
   const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating));
   const side = getSide(placement);
   const alignment = getAlignment(placement);
-  const isVertical = getMainAxisFromPlacement(placement) === 'x';
+  const isVertical = getSideAxis(placement) === 'y';
   const mainAxisMulti = ['left', 'top'].includes(side) ? -1 : 1;
   const crossAxisMulti = rtl && isVertical ? -1 : 1;
   const rawValue = evaluate(options, state);
@@ -947,23 +964,31 @@ const offset = function (options) {
     name: 'offset',
     options,
     async fn(state) {
+      var _middlewareData$offse, _middlewareData$arrow;
       const {
         x,
-        y
+        y,
+        placement,
+        middlewareData
       } = state;
       const diffCoords = await convertValueToCoords(state, options);
+
+      // If the placement is the same and the arrow caused an alignment offset
+      // then we don't need to change the positioning coordinates.
+      if (placement === ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse.placement) && (_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
       return {
         x: x + diffCoords.x,
         y: y + diffCoords.y,
-        data: diffCoords
+        data: {
+          ...diffCoords,
+          placement
+        }
       };
     }
   };
 };
-
-function getCrossAxis(axis) {
-  return axis === 'x' ? 'y' : 'x';
-}
 
 /**
  * Optimizes the visibility of the floating element by shifting it in order to
@@ -1005,8 +1030,8 @@ const shift = function (options) {
         y
       };
       const overflow = await detectOverflow(state, detectOverflowOptions);
-      const mainAxis = getMainAxisFromPlacement(getSide(placement));
-      const crossAxis = getCrossAxis(mainAxis);
+      const crossAxis = getSideAxis(getSide(placement));
+      const mainAxis = getOppositeAxis(crossAxis);
       let mainAxisCoord = coords[mainAxis];
       let crossAxisCoord = coords[crossAxis];
       if (checkMainAxis) {
@@ -1014,14 +1039,14 @@ const shift = function (options) {
         const maxSide = mainAxis === 'y' ? 'bottom' : 'right';
         const min = mainAxisCoord + overflow[minSide];
         const max = mainAxisCoord - overflow[maxSide];
-        mainAxisCoord = within(min, mainAxisCoord, max);
+        mainAxisCoord = clamp(min, mainAxisCoord, max);
       }
       if (checkCrossAxis) {
         const minSide = crossAxis === 'y' ? 'top' : 'left';
         const maxSide = crossAxis === 'y' ? 'bottom' : 'right';
         const min = crossAxisCoord + overflow[minSide];
         const max = crossAxisCoord - overflow[maxSide];
-        crossAxisCoord = within(min, crossAxisCoord, max);
+        crossAxisCoord = clamp(min, crossAxisCoord, max);
       }
       const limitedCoords = limiter.fn({
         ...state,
@@ -1064,8 +1089,8 @@ const limitShift = function (options) {
         x,
         y
       };
-      const mainAxis = getMainAxisFromPlacement(placement);
-      const crossAxis = getCrossAxis(mainAxis);
+      const crossAxis = getSideAxis(placement);
+      const mainAxis = getOppositeAxis(crossAxis);
       let mainAxisCoord = coords[mainAxis];
       let crossAxisCoord = coords[crossAxis];
       const rawOffset = evaluate(offset, state);
@@ -1134,8 +1159,7 @@ const size = function (options) {
       const overflow = await detectOverflow(state, detectOverflowOptions);
       const side = getSide(placement);
       const alignment = getAlignment(placement);
-      const axis = getMainAxisFromPlacement(placement);
-      const isXAxis = axis === 'x';
+      const isYAxis = getSideAxis(placement) === 'y';
       const {
         width,
         height
@@ -1154,7 +1178,7 @@ const size = function (options) {
       const noShift = !state.middlewareData.shift;
       let availableHeight = overflowAvailableHeight;
       let availableWidth = overflowAvailableWidth;
-      if (isXAxis) {
+      if (isYAxis) {
         const maximumClippingWidth = width - overflow.left - overflow.right;
         availableWidth = alignment || noShift ? min(overflowAvailableWidth, maximumClippingWidth) : maximumClippingWidth;
       } else {
@@ -1166,7 +1190,7 @@ const size = function (options) {
         const xMax = max(overflow.right, 0);
         const yMin = max(overflow.top, 0);
         const yMax = max(overflow.bottom, 0);
-        if (isXAxis) {
+        if (isYAxis) {
           availableWidth = width - 2 * (xMin !== 0 || xMax !== 0 ? xMin + xMax : max(overflow.left, overflow.right));
         } else {
           availableHeight = height - 2 * (yMin !== 0 || yMax !== 0 ? yMin + yMax : max(overflow.top, overflow.bottom));
@@ -1192,22 +1216,7 @@ const size = function (options) {
 
 
 
-;// CONCATENATED MODULE: ./node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
-
-
-
-function getWindow(node) {
-  var _node$ownerDocument;
-  return ((_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
-}
-
-function getComputedStyle$1(element) {
-  return getWindow(element).getComputedStyle(element);
-}
-
-function isNode(value) {
-  return value instanceof getWindow(value).Node;
-}
+;// CONCATENATED MODULE: ./node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
 function getNodeName(node) {
   if (isNode(node)) {
     return (node.nodeName || '').toLowerCase();
@@ -1217,19 +1226,29 @@ function getNodeName(node) {
   // https://github.com/floating-ui/floating-ui/issues/2317
   return '#document';
 }
-
-function isHTMLElement(value) {
-  return value instanceof getWindow(value).HTMLElement;
+function getWindow(node) {
+  var _node$ownerDocument;
+  return (node == null || (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function getDocumentElement(node) {
+  var _ref;
+  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
+}
+function isNode(value) {
+  return value instanceof Node || value instanceof getWindow(value).Node;
 }
 function isElement(value) {
-  return value instanceof getWindow(value).Element;
+  return value instanceof Element || value instanceof getWindow(value).Element;
 }
-function isShadowRoot(node) {
+function isHTMLElement(value) {
+  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
+}
+function isShadowRoot(value) {
   // Browsers without `ShadowRoot` support.
   if (typeof ShadowRoot === 'undefined') {
     return false;
   }
-  return node instanceof getWindow(node).ShadowRoot || node instanceof ShadowRoot;
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
 }
 function isOverflowElement(element) {
   const {
@@ -1237,38 +1256,105 @@ function isOverflowElement(element) {
     overflowX,
     overflowY,
     display
-  } = getComputedStyle$1(element);
+  } = getComputedStyle(element);
   return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && !['inline', 'contents'].includes(display);
 }
 function isTableElement(element) {
   return ['table', 'td', 'th'].includes(getNodeName(element));
 }
 function isContainingBlock(element) {
-  const safari = isSafari();
-  const css = getComputedStyle$1(element);
+  const webkit = isWebKit();
+  const css = getComputedStyle(element);
 
   // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
-  return css.transform !== 'none' || css.perspective !== 'none' || (css.containerType ? css.containerType !== 'normal' : false) || !safari && (css.backdropFilter ? css.backdropFilter !== 'none' : false) || !safari && (css.filter ? css.filter !== 'none' : false) || ['transform', 'perspective', 'filter'].some(value => (css.willChange || '').includes(value)) || ['paint', 'layout', 'strict', 'content'].some(value => (css.contain || '').includes(value));
+  return css.transform !== 'none' || css.perspective !== 'none' || (css.containerType ? css.containerType !== 'normal' : false) || !webkit && (css.backdropFilter ? css.backdropFilter !== 'none' : false) || !webkit && (css.filter ? css.filter !== 'none' : false) || ['transform', 'perspective', 'filter'].some(value => (css.willChange || '').includes(value)) || ['paint', 'layout', 'strict', 'content'].some(value => (css.contain || '').includes(value));
 }
-function isSafari() {
+function getContainingBlock(element) {
+  let currentNode = getParentNode(element);
+  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    if (isContainingBlock(currentNode)) {
+      return currentNode;
+    } else {
+      currentNode = getParentNode(currentNode);
+    }
+  }
+  return null;
+}
+function isWebKit() {
   if (typeof CSS === 'undefined' || !CSS.supports) return false;
   return CSS.supports('-webkit-backdrop-filter', 'none');
 }
 function isLastTraversableNode(node) {
   return ['html', 'body', '#document'].includes(getNodeName(node));
 }
+function getComputedStyle(element) {
+  return getWindow(element).getComputedStyle(element);
+}
+function getNodeScroll(element) {
+  if (isElement(element)) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+  return {
+    scrollLeft: element.pageXOffset,
+    scrollTop: element.pageYOffset
+  };
+}
+function getParentNode(node) {
+  if (getNodeName(node) === 'html') {
+    return node;
+  }
+  const result =
+  // Step into the shadow DOM of the parent of a slotted node.
+  node.assignedSlot ||
+  // DOM Element detected.
+  node.parentNode ||
+  // ShadowRoot detected.
+  isShadowRoot(node) && node.host ||
+  // Fallback.
+  getDocumentElement(node);
+  return isShadowRoot(result) ? result.host : result;
+}
+function getNearestOverflowAncestor(node) {
+  const parentNode = getParentNode(node);
+  if (isLastTraversableNode(parentNode)) {
+    return node.ownerDocument ? node.ownerDocument.body : node.body;
+  }
+  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
+    return parentNode;
+  }
+  return getNearestOverflowAncestor(parentNode);
+}
+function getOverflowAncestors(node, list, traverseIframes) {
+  var _node$ownerDocument2;
+  if (list === void 0) {
+    list = [];
+  }
+  if (traverseIframes === void 0) {
+    traverseIframes = true;
+  }
+  const scrollableAncestor = getNearestOverflowAncestor(node);
+  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const win = getWindow(scrollableAncestor);
+  if (isBody) {
+    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], win.frameElement && traverseIframes ? getOverflowAncestors(win.frameElement) : []);
+  }
+  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
+}
 
-const floating_ui_dom_min = Math.min;
-const floating_ui_dom_max = Math.max;
-const round = Math.round;
-const floor = Math.floor;
-const createEmptyCoords = v => ({
-  x: v,
-  y: v
-});
+
+
+;// CONCATENATED MODULE: ./node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
+
+
+
+
+
 
 function getCssDimensions(element) {
-  const css = getComputedStyle$1(element);
+  const css = getComputedStyle(element);
   // In testing environments, the `width` and `height` properties are empty
   // strings for SVG elements, returning NaN. Fallback to `0` in this case.
   let width = parseFloat(css.width) || 0;
@@ -1295,7 +1381,7 @@ function unwrapElement(element) {
 function getScale(element) {
   const domElement = unwrapElement(element);
   if (!isHTMLElement(domElement)) {
-    return createEmptyCoords(1);
+    return createCoords(1);
   }
   const rect = domElement.getBoundingClientRect();
   const {
@@ -1320,23 +1406,25 @@ function getScale(element) {
   };
 }
 
-const noOffsets = /*#__PURE__*/createEmptyCoords(0);
-function getVisualOffsets(element, isFixed, floatingOffsetParent) {
-  var _win$visualViewport, _win$visualViewport2;
-  if (isFixed === void 0) {
-    isFixed = true;
-  }
-  if (!isSafari()) {
-    return noOffsets;
-  }
-  const win = element ? getWindow(element) : window;
-  if (!floatingOffsetParent || isFixed && floatingOffsetParent !== win) {
+const noOffsets = /*#__PURE__*/createCoords(0);
+function getVisualOffsets(element) {
+  const win = getWindow(element);
+  if (!isWebKit() || !win.visualViewport) {
     return noOffsets;
   }
   return {
-    x: ((_win$visualViewport = win.visualViewport) == null ? void 0 : _win$visualViewport.offsetLeft) || 0,
-    y: ((_win$visualViewport2 = win.visualViewport) == null ? void 0 : _win$visualViewport2.offsetTop) || 0
+    x: win.visualViewport.offsetLeft,
+    y: win.visualViewport.offsetTop
   };
+}
+function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
+  if (isFixed === void 0) {
+    isFixed = false;
+  }
+  if (!floatingOffsetParent || isFixed && floatingOffsetParent !== getWindow(element)) {
+    return false;
+  }
+  return isFixed;
 }
 
 function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
@@ -1348,7 +1436,7 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
   }
   const clientRect = element.getBoundingClientRect();
   const domElement = unwrapElement(element);
-  let scale = createEmptyCoords(1);
+  let scale = createCoords(1);
   if (includeScale) {
     if (offsetParent) {
       if (isElement(offsetParent)) {
@@ -1358,7 +1446,7 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
       scale = getScale(element);
     }
   }
-  const visualOffsets = getVisualOffsets(domElement, isFixedStrategy, offsetParent);
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : createCoords(0);
   let x = (clientRect.left + visualOffsets.x) / scale.x;
   let y = (clientRect.top + visualOffsets.y) / scale.y;
   let width = clientRect.width / scale.x;
@@ -1390,23 +1478,6 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
   });
 }
 
-function getDocumentElement(node) {
-  return ((isNode(node) ? node.ownerDocument : node.document) || window.document).documentElement;
-}
-
-function getNodeScroll(element) {
-  if (isElement(element)) {
-    return {
-      scrollLeft: element.scrollLeft,
-      scrollTop: element.scrollTop
-    };
-  }
-  return {
-    scrollLeft: element.pageXOffset,
-    scrollTop: element.pageYOffset
-  };
-}
-
 function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
   let {
     rect,
@@ -1422,8 +1493,8 @@ function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
     scrollLeft: 0,
     scrollTop: 0
   };
-  let scale = createEmptyCoords(1);
-  const offsets = createEmptyCoords(0);
+  let scale = createCoords(1);
+  const offsets = createCoords(0);
   if (isOffsetParentAnElement || !isOffsetParentAnElement && strategy !== 'fixed') {
     if (getNodeName(offsetParent) !== 'body' || isOverflowElement(documentElement)) {
       scroll = getNodeScroll(offsetParent);
@@ -1443,6 +1514,10 @@ function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
   };
 }
 
+function getClientRects(element) {
+  return Array.from(element.getClientRects());
+}
+
 function getWindowScrollBarX(element) {
   // If <html> has a CSS width greater than the viewport, then this will be
   // incorrect for RTL.
@@ -1455,12 +1530,12 @@ function getDocumentRect(element) {
   const html = getDocumentElement(element);
   const scroll = getNodeScroll(element);
   const body = element.ownerDocument.body;
-  const width = floating_ui_dom_max(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
-  const height = floating_ui_dom_max(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
+  const width = max(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
+  const height = max(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
   let x = -scroll.scrollLeft + getWindowScrollBarX(element);
   const y = -scroll.scrollTop;
-  if (getComputedStyle$1(body).direction === 'rtl') {
-    x += floating_ui_dom_max(html.clientWidth, body.clientWidth) - width;
+  if (getComputedStyle(body).direction === 'rtl') {
+    x += max(html.clientWidth, body.clientWidth) - width;
   }
   return {
     width,
@@ -1468,47 +1543,6 @@ function getDocumentRect(element) {
     x,
     y
   };
-}
-
-function getParentNode(node) {
-  if (getNodeName(node) === 'html') {
-    return node;
-  }
-  const result =
-  // Step into the shadow DOM of the parent of a slotted node.
-  node.assignedSlot ||
-  // DOM Element detected.
-  node.parentNode ||
-  // ShadowRoot detected.
-  isShadowRoot(node) && node.host ||
-  // Fallback.
-  getDocumentElement(node);
-  return isShadowRoot(result) ? result.host : result;
-}
-
-function getNearestOverflowAncestor(node) {
-  const parentNode = getParentNode(node);
-  if (isLastTraversableNode(parentNode)) {
-    return node.ownerDocument ? node.ownerDocument.body : node.body;
-  }
-  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
-    return parentNode;
-  }
-  return getNearestOverflowAncestor(parentNode);
-}
-
-function getOverflowAncestors(node, list) {
-  var _node$ownerDocument;
-  if (list === void 0) {
-    list = [];
-  }
-  const scrollableAncestor = getNearestOverflowAncestor(node);
-  const isBody = scrollableAncestor === ((_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.body);
-  const win = getWindow(scrollableAncestor);
-  if (isBody) {
-    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : []);
-  }
-  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor));
 }
 
 function getViewportRect(element, strategy) {
@@ -1522,7 +1556,7 @@ function getViewportRect(element, strategy) {
   if (visualViewport) {
     width = visualViewport.width;
     height = visualViewport.height;
-    const visualViewportBased = isSafari();
+    const visualViewportBased = isWebKit();
     if (!visualViewportBased || visualViewportBased && strategy === 'fixed') {
       x = visualViewport.offsetLeft;
       y = visualViewport.offsetTop;
@@ -1541,7 +1575,7 @@ function getInnerBoundingClientRect(element, strategy) {
   const clientRect = getBoundingClientRect(element, true, strategy === 'fixed');
   const top = clientRect.top + element.clientTop;
   const left = clientRect.left + element.clientLeft;
-  const scale = isHTMLElement(element) ? getScale(element) : createEmptyCoords(1);
+  const scale = isHTMLElement(element) ? getScale(element) : createCoords(1);
   const width = element.clientWidth * scale.x;
   const height = element.clientHeight * scale.y;
   const x = left * scale.x;
@@ -1576,7 +1610,7 @@ function hasFixedPositionAncestor(element, stopNode) {
   if (parentNode === stopNode || !isElement(parentNode) || isLastTraversableNode(parentNode)) {
     return false;
   }
-  return getComputedStyle$1(parentNode).position === 'fixed' || hasFixedPositionAncestor(parentNode, stopNode);
+  return getComputedStyle(parentNode).position === 'fixed' || hasFixedPositionAncestor(parentNode, stopNode);
 }
 
 // A "clipping ancestor" is an `overflow` element with the characteristic of
@@ -1587,14 +1621,14 @@ function getClippingElementAncestors(element, cache) {
   if (cachedResult) {
     return cachedResult;
   }
-  let result = getOverflowAncestors(element).filter(el => isElement(el) && getNodeName(el) !== 'body');
+  let result = getOverflowAncestors(element, [], false).filter(el => isElement(el) && getNodeName(el) !== 'body');
   let currentContainingBlockComputedStyle = null;
-  const elementIsFixed = getComputedStyle$1(element).position === 'fixed';
+  const elementIsFixed = getComputedStyle(element).position === 'fixed';
   let currentNode = elementIsFixed ? getParentNode(element) : element;
 
   // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
   while (isElement(currentNode) && !isLastTraversableNode(currentNode)) {
-    const computedStyle = getComputedStyle$1(currentNode);
+    const computedStyle = getComputedStyle(currentNode);
     const currentNodeIsContaining = isContainingBlock(currentNode);
     if (!currentNodeIsContaining && computedStyle.position === 'fixed') {
       currentContainingBlockComputedStyle = null;
@@ -1627,10 +1661,10 @@ function getClippingRect(_ref) {
   const firstClippingAncestor = clippingAncestors[0];
   const clippingRect = clippingAncestors.reduce((accRect, clippingAncestor) => {
     const rect = getClientRectFromClippingAncestor(element, clippingAncestor, strategy);
-    accRect.top = floating_ui_dom_max(rect.top, accRect.top);
-    accRect.right = floating_ui_dom_min(rect.right, accRect.right);
-    accRect.bottom = floating_ui_dom_min(rect.bottom, accRect.bottom);
-    accRect.left = floating_ui_dom_max(rect.left, accRect.left);
+    accRect.top = max(rect.top, accRect.top);
+    accRect.right = min(rect.right, accRect.right);
+    accRect.bottom = min(rect.bottom, accRect.bottom);
+    accRect.left = max(rect.left, accRect.left);
     return accRect;
   }, getClientRectFromClippingAncestor(element, firstClippingAncestor, strategy));
   return {
@@ -1642,45 +1676,14 @@ function getClippingRect(_ref) {
 }
 
 function getDimensions(element) {
-  return getCssDimensions(element);
-}
-
-function getTrueOffsetParent(element, polyfill) {
-  if (!isHTMLElement(element) || getComputedStyle$1(element).position === 'fixed') {
-    return null;
-  }
-  if (polyfill) {
-    return polyfill(element);
-  }
-  return element.offsetParent;
-}
-function getContainingBlock(element) {
-  let currentNode = getParentNode(element);
-  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
-    if (isContainingBlock(currentNode)) {
-      return currentNode;
-    } else {
-      currentNode = getParentNode(currentNode);
-    }
-  }
-  return null;
-}
-
-// Gets the closest ancestor positioned element. Handles some edge cases,
-// such as table ancestors and cross browser bugs.
-function getOffsetParent(element, polyfill) {
-  const window = getWindow(element);
-  if (!isHTMLElement(element)) {
-    return window;
-  }
-  let offsetParent = getTrueOffsetParent(element, polyfill);
-  while (offsetParent && isTableElement(offsetParent) && getComputedStyle$1(offsetParent).position === 'static') {
-    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
-  }
-  if (offsetParent && (getNodeName(offsetParent) === 'html' || getNodeName(offsetParent) === 'body' && getComputedStyle$1(offsetParent).position === 'static' && !isContainingBlock(offsetParent))) {
-    return window;
-  }
-  return offsetParent || getContainingBlock(element) || window;
+  const {
+    width,
+    height
+  } = getCssDimensions(element);
+  return {
+    width,
+    height
+  };
 }
 
 function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
@@ -1692,12 +1695,12 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
     scrollLeft: 0,
     scrollTop: 0
   };
-  const offsets = createEmptyCoords(0);
+  const offsets = createCoords(0);
   if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
     if (getNodeName(offsetParent) !== 'body' || isOverflowElement(documentElement)) {
       scroll = getNodeScroll(offsetParent);
     }
-    if (isHTMLElement(offsetParent)) {
+    if (isOffsetParentAnElement) {
       const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
       offsets.x = offsetRect.x + offsetParent.clientLeft;
       offsets.y = offsetRect.y + offsetParent.clientTop;
@@ -1713,33 +1716,66 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
   };
 }
 
+function getTrueOffsetParent(element, polyfill) {
+  if (!isHTMLElement(element) || getComputedStyle(element).position === 'fixed') {
+    return null;
+  }
+  if (polyfill) {
+    return polyfill(element);
+  }
+  return element.offsetParent;
+}
+
+// Gets the closest ancestor positioned element. Handles some edge cases,
+// such as table ancestors and cross browser bugs.
+function getOffsetParent(element, polyfill) {
+  const window = getWindow(element);
+  if (!isHTMLElement(element)) {
+    return window;
+  }
+  let offsetParent = getTrueOffsetParent(element, polyfill);
+  while (offsetParent && isTableElement(offsetParent) && getComputedStyle(offsetParent).position === 'static') {
+    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
+  }
+  if (offsetParent && (getNodeName(offsetParent) === 'html' || getNodeName(offsetParent) === 'body' && getComputedStyle(offsetParent).position === 'static' && !isContainingBlock(offsetParent))) {
+    return window;
+  }
+  return offsetParent || getContainingBlock(element) || window;
+}
+
+const getElementRects = async function (_ref) {
+  let {
+    reference,
+    floating,
+    strategy
+  } = _ref;
+  const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
+  const getDimensionsFn = this.getDimensions;
+  return {
+    reference: getRectRelativeToOffsetParent(reference, await getOffsetParentFn(floating), strategy),
+    floating: {
+      x: 0,
+      y: 0,
+      ...(await getDimensionsFn(floating))
+    }
+  };
+};
+
+function isRTL(element) {
+  return getComputedStyle(element).direction === 'rtl';
+}
+
 const platform = {
-  getClippingRect,
   convertOffsetParentRelativeRectToViewportRelativeRect,
-  isElement,
-  getDimensions,
+  getDocumentElement: getDocumentElement,
+  getClippingRect,
   getOffsetParent,
-  getDocumentElement,
+  getElementRects,
+  getClientRects,
+  getDimensions,
   getScale,
-  async getElementRects(_ref) {
-    let {
-      reference,
-      floating,
-      strategy
-    } = _ref;
-    const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
-    const getDimensionsFn = this.getDimensions;
-    return {
-      reference: getRectRelativeToOffsetParent(reference, await getOffsetParentFn(floating), strategy),
-      floating: {
-        x: 0,
-        y: 0,
-        ...(await getDimensionsFn(floating))
-      }
-    };
-  },
-  getClientRects: element => Array.from(element.getClientRects()),
-  isRTL: element => getComputedStyle$1(element).direction === 'rtl'
+  isElement: isElement,
+  isRTL
 };
 
 // https://samthor.au/2021/observing-dom/
@@ -1779,7 +1815,7 @@ function observeMove(element, onMove) {
     const rootMargin = -insetTop + "px " + -insetRight + "px " + -insetBottom + "px " + -insetLeft + "px";
     const options = {
       rootMargin,
-      threshold: floating_ui_dom_max(0, floating_ui_dom_min(1, threshold)) || 1
+      threshold: max(0, min(1, threshold)) || 1
     };
     let isFirstUpdate = true;
     function handleObserve(entries) {
@@ -1894,9 +1930,65 @@ function autoUpdate(reference, floating, update, options) {
 }
 
 /**
+ * Optimizes the visibility of the floating element by choosing the placement
+ * that has the most space available automatically, without needing to specify a
+ * preferred placement. Alternative to `flip`.
+ * @see https://floating-ui.com/docs/autoPlacement
+ */
+const floating_ui_dom_autoPlacement = autoPlacement;
+
+/**
+ * Optimizes the visibility of the floating element by shifting it in order to
+ * keep it in view when it will overflow the clipping boundary.
+ * @see https://floating-ui.com/docs/shift
+ */
+const floating_ui_dom_shift = shift;
+
+/**
+ * Optimizes the visibility of the floating element by flipping the `placement`
+ * in order to keep it in view when the preferred placement(s) will overflow the
+ * clipping boundary. Alternative to `autoPlacement`.
+ * @see https://floating-ui.com/docs/flip
+ */
+const floating_ui_dom_flip = flip;
+
+/**
+ * Provides data that allows you to change the size of the floating element —
+ * for instance, prevent it from overflowing the clipping boundary or match the
+ * width of the reference element.
+ * @see https://floating-ui.com/docs/size
+ */
+const floating_ui_dom_size = size;
+
+/**
+ * Provides data to hide the floating element in applicable situations, such as
+ * when it is not in the same clipping context as the reference element.
+ * @see https://floating-ui.com/docs/hide
+ */
+const floating_ui_dom_hide = hide;
+
+/**
+ * Provides data to position an inner element of the floating element so that it
+ * appears centered to the reference element.
+ * @see https://floating-ui.com/docs/arrow
+ */
+const floating_ui_dom_arrow = arrow;
+
+/**
+ * Provides improved positioning for inline reference elements that can span
+ * over multiple lines, such as hyperlinks or range selections.
+ * @see https://floating-ui.com/docs/inline
+ */
+const floating_ui_dom_inline = inline;
+
+/**
+ * Built-in `limiter` that will stop `shift()` at a certain point.
+ */
+const floating_ui_dom_limitShift = limitShift;
+
+/**
  * Computes the `x` and `y` coordinates that will place the floating element
- * next to a reference element when it is given a certain CSS positioning
- * strategy.
+ * next to a given reference element.
  */
 const floating_ui_dom_computePosition = (reference, floating, options) => {
   // This caches the expensive `getClippingElementAncestors` function so that
@@ -1923,7 +2015,7 @@ const floating_ui_dom_computePosition = (reference, floating, options) => {
 var react_ = __webpack_require__(8038);
 // EXTERNAL MODULE: external "next/dist/compiled/react-dom/server-rendering-stub"
 var server_rendering_stub_ = __webpack_require__(8704);
-;// CONCATENATED MODULE: ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.esm.js
+;// CONCATENATED MODULE: ./node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
 
 
 
@@ -1936,7 +2028,7 @@ var server_rendering_stub_ = __webpack_require__(8704);
  * This wraps the core `arrow` middleware to allow React refs as the element.
  * @see https://floating-ui.com/docs/arrow
  */
-const floating_ui_react_dom_esm_arrow = options => {
+const floating_ui_react_dom_arrow = options => {
   function isRef(value) {
     return {}.hasOwnProperty.call(value, 'current');
   }
@@ -1950,14 +2042,14 @@ const floating_ui_react_dom_esm_arrow = options => {
       } = typeof options === 'function' ? options(state) : options;
       if (element && isRef(element)) {
         if (element.current != null) {
-          return arrow({
+          return floating_ui_dom_arrow({
             element: element.current,
             padding
           }).fn(state);
         }
         return {};
       } else if (element) {
-        return arrow({
+        return floating_ui_dom_arrow({
           element,
           padding
         }).fn(state);
@@ -2040,7 +2132,7 @@ function useLatestRef(value) {
 
 /**
  * Provides data to position a floating element.
- * @see https://floating-ui.com/docs/react
+ * @see https://floating-ui.com/docs/useFloating
  */
 function useFloating(options) {
   if (options === void 0) {
@@ -2467,10 +2559,10 @@ function floating_ui_react_esm_getWindow(value) {
   return getDocument(value).defaultView || window;
 }
 function floating_ui_react_esm_isElement(value) {
-  return value ? value instanceof floating_ui_react_esm_getWindow(value).Element : false;
+  return value ? value instanceof Element || value instanceof floating_ui_react_esm_getWindow(value).Element : false;
 }
 function floating_ui_react_esm_isHTMLElement(value) {
-  return value ? value instanceof floating_ui_react_esm_getWindow(value).HTMLElement : false;
+  return value ? value instanceof HTMLElement || value instanceof floating_ui_react_esm_getWindow(value).HTMLElement : false;
 }
 function floating_ui_react_esm_isShadowRoot(node) {
   // Browsers without `ShadowRoot` support
@@ -2497,7 +2589,7 @@ function isVirtualPointerEvent(event) {
   // iOS VoiceOver returns 0.333• for width/height.
   event.width < 1 && event.height < 1 && event.pressure === 0 && event.detail === 0;
 }
-function floating_ui_react_esm_isSafari() {
+function isSafari() {
   // Chrome DevTools does not complain about navigator.vendor
   return /apple/i.test(navigator.vendor);
 }
@@ -2515,13 +2607,6 @@ function isMouseLikePointerType(pointerType, strict) {
 }
 function isReactEvent(event) {
   return 'nativeEvent' in event;
-}
-function isHidden(el) {
-  if (!el) return false;
-  return el.offsetParent === null;
-}
-function isRootElement(element) {
-  return element.matches('html,body');
 }
 
 function contains(parent, child) {
@@ -3140,7 +3225,7 @@ function setActiveElementOnTab(event) {
 const FocusGuard = /*#__PURE__*/react_.forwardRef(function FocusGuard(props, ref) {
   const [role, setRole] = react_.useState();
   floating_ui_react_esm_index(() => {
-    if (floating_ui_react_esm_isSafari()) {
+    if (isSafari()) {
       // Unlike other screen readers such as NVDA and JAWS, the virtual cursor
       // on VoiceOver does trigger the onFocus event, so we can use the focus
       // trap element. On Safari, only buttons trigger the onFocus event.
@@ -3336,6 +3421,7 @@ function FloatingFocusManager(props) {
   const {
     context,
     children,
+    disabled = false,
     order = ['content'],
     guards: _guards = true,
     initialFocus = 0,
@@ -3399,9 +3485,7 @@ function FloatingFocusManager(props) {
     }).filter(Boolean).flat();
   }, [domReference, floating, orderRef, getTabbableContent]);
   react_.useEffect(() => {
-    if (!modal) {
-      return;
-    }
+    if (disabled || !modal) return;
     function onKeyDown(event) {
       if (event.key === 'Tab') {
         // The focus guards have nothing to focus, so we need to stop the event.
@@ -3429,11 +3513,9 @@ function FloatingFocusManager(props) {
     return () => {
       doc.removeEventListener('keydown', onKeyDown);
     };
-  }, [domReference, floating, modal, orderRef, refs, isTypeableCombobox, getTabbableContent, getTabbableElements]);
+  }, [disabled, domReference, floating, modal, orderRef, refs, isTypeableCombobox, getTabbableContent, getTabbableElements]);
   react_.useEffect(() => {
-    if (!closeOnFocusOut) {
-      return;
-    }
+    if (disabled || !closeOnFocusOut) return;
 
     // In Safari, buttons lose focus when pressing them.
     function handlePointerDown() {
@@ -3473,9 +3555,11 @@ function FloatingFocusManager(props) {
         !modal && floating.removeEventListener('focusout', handleFocusOutside);
       };
     }
-  }, [domReference, floating, modal, nodeId, tree, portalContext, onOpenChange, closeOnFocusOut]);
+  }, [disabled, domReference, floating, modal, nodeId, tree, portalContext, onOpenChange, closeOnFocusOut]);
   react_.useEffect(() => {
     var _portalContext$portal;
+    if (disabled) return;
+
     // Don't hide portals nested within the parent portal.
     const portalNodes = Array.from((portalContext == null ? void 0 : (_portalContext$portal = portalContext.portalNode) == null ? void 0 : _portalContext$portal.querySelectorAll("[" + createAttribute('portal') + "]")) || []);
     if (floating && modal) {
@@ -3486,9 +3570,9 @@ function FloatingFocusManager(props) {
         cleanup();
       };
     }
-  }, [domReference, floating, modal, orderRef, portalContext, isTypeableCombobox, guards]);
+  }, [disabled, domReference, floating, modal, orderRef, portalContext, isTypeableCombobox, guards]);
   floating_ui_react_esm_index(() => {
-    if (!floating) return;
+    if (disabled || !floating) return;
     const doc = getDocument(floating);
     const previouslyFocusedElement = activeElement(doc);
 
@@ -3504,9 +3588,9 @@ function FloatingFocusManager(props) {
         });
       }
     });
-  }, [open, floating, ignoreInitialFocus, getTabbableElements, initialFocusRef]);
+  }, [disabled, open, floating, ignoreInitialFocus, getTabbableElements, initialFocusRef]);
   floating_ui_react_esm_index(() => {
-    if (!floating) return;
+    if (disabled || !floating) return;
     let preventReturnFocusScroll = false;
     const doc = getDocument(floating);
     const previouslyFocusedElement = activeElement(doc);
@@ -3554,12 +3638,12 @@ function FloatingFocusManager(props) {
         });
       }
     };
-  }, [floating, returnFocusRef, dataRef, refs, events, tree, nodeId]);
+  }, [disabled, floating, returnFocusRef, dataRef, refs, events, tree, nodeId]);
 
   // Synchronize the `context` & `modal` value to the FloatingPortal context.
   // It will decide whether or not it needs to render its own guards.
   floating_ui_react_esm_index(() => {
-    if (!portalContext) return;
+    if (disabled || !portalContext) return;
     portalContext.setFocusManagerState({
       ...context,
       modal,
@@ -3569,8 +3653,9 @@ function FloatingFocusManager(props) {
     return () => {
       portalContext.setFocusManagerState(null);
     };
-  }, [portalContext, modal, open, closeOnFocusOut, context]);
+  }, [disabled, portalContext, modal, open, closeOnFocusOut, context]);
   floating_ui_react_esm_index(() => {
+    if (disabled) return;
     if (floating && typeof MutationObserver === 'function') {
       const handleMutation = () => {
         const tabIndex = floating.getAttribute('tabindex');
@@ -3593,14 +3678,17 @@ function FloatingFocusManager(props) {
         observer.disconnect();
       };
     }
-  }, [floating, refs, orderRef, getTabbableContent]);
+  }, [disabled, floating, refs, orderRef, getTabbableContent]);
   function renderDismissButton(location) {
-    return visuallyHiddenDismiss && modal ? /*#__PURE__*/react_.createElement(VisuallyHiddenDismiss, {
+    if (disabled || !visuallyHiddenDismiss || !modal) {
+      return null;
+    }
+    return /*#__PURE__*/react_.createElement(VisuallyHiddenDismiss, {
       ref: location === 'start' ? startDismissButtonRef : endDismissButtonRef,
       onClick: event => onOpenChange(false, event.nativeEvent)
-    }, typeof visuallyHiddenDismiss === 'string' ? visuallyHiddenDismiss : 'Dismiss') : null;
+    }, typeof visuallyHiddenDismiss === 'string' ? visuallyHiddenDismiss : 'Dismiss');
   }
-  const shouldRenderGuards = guards && !isTypeableCombobox && (isInsidePortal || modal);
+  const shouldRenderGuards = !disabled && guards && !isTypeableCombobox && (isInsidePortal || modal);
   return /*#__PURE__*/react_.createElement(react_.Fragment, null, shouldRenderGuards && /*#__PURE__*/react_.createElement(FocusGuard, {
     "data-type": "inside",
     ref: portalContext == null ? void 0 : portalContext.beforeInsideRef,
@@ -3892,10 +3980,8 @@ function useClick(context, props) {
           if (eventOption === 'click') {
             return;
           }
-          if (open) {
-            if (toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === 'mousedown' : true)) {
-              onOpenChange(false, event.nativeEvent);
-            }
+          if (open && toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === 'mousedown' : true)) {
+            onOpenChange(false, event.nativeEvent);
           } else {
             // Prevent stealing focus from the floating element
             event.preventDefault();
@@ -3910,10 +3996,8 @@ function useClick(context, props) {
           if (isMouseLikePointerType(pointerTypeRef.current, true) && ignoreMouse) {
             return;
           }
-          if (open) {
-            if (toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === 'click' : true)) {
-              onOpenChange(false, event.nativeEvent);
-            }
+          if (open && toggle && (dataRef.current.openEvent ? dataRef.current.openEvent.type === 'click' : true)) {
+            onOpenChange(false, event.nativeEvent);
           } else {
             onOpenChange(true, event.nativeEvent);
           }
@@ -3929,10 +4013,8 @@ function useClick(context, props) {
             didKeyDownRef.current = true;
           }
           if (event.key === 'Enter') {
-            if (open) {
-              if (toggle) {
-                onOpenChange(false, event.nativeEvent);
-              }
+            if (open && toggle) {
+              onOpenChange(false, event.nativeEvent);
             } else {
               onOpenChange(true, event.nativeEvent);
             }
@@ -3944,10 +4026,8 @@ function useClick(context, props) {
           }
           if (event.key === ' ' && didKeyDownRef.current) {
             didKeyDownRef.current = false;
-            if (open) {
-              if (toggle) {
-                onOpenChange(false, event.nativeEvent);
-              }
+            if (open && toggle) {
+              onOpenChange(false, event.nativeEvent);
             } else {
               onOpenChange(true, event.nativeEvent);
             }
@@ -4156,19 +4236,6 @@ function useClientPoint(context, props) {
   }, [enabled, handleReferenceEnterOrMove]);
 }
 
-function closest(node, selector) {
-  if (!node || floating_ui_react_esm_isElement(node) && isRootElement(node)) {
-    return null;
-  }
-  if (floating_ui_react_esm_isShadowRoot(node)) {
-    return closest(node.host, selector);
-  }
-  if (floating_ui_react_esm_isElement(node) && node.matches(selector)) {
-    return node;
-  }
-  return closest(node.parentNode, selector);
-}
-
 /**
  * Check whether the event.target is within the provided node. Uses event.composedPath if available for custom element support.
  *
@@ -4289,19 +4356,6 @@ function useDismiss(context, props) {
       return;
     }
     const target = getTarget(event);
-    const targetIsElement = floating_ui_react_esm_isElement(target);
-    const targetParent = targetIsElement && target.parentNode;
-    const inertSelector = "[" + createAttribute('inert') + "]";
-    const isThirdPartyElement = targetIsElement && !isRootElement(target) && getDocument(target).querySelector(inertSelector) && !(closest(target, inertSelector) ||
-    // For comboboxes where the reference element avoids the inert trap,
-    // check if any siblings have the inert marker.
-    floating_ui_react_esm_isElement(targetParent) && !isRootElement(targetParent) && targetParent.querySelector(inertSelector));
-
-    // Prevent closing when clicking third party extensions injected *after*
-    // the floating element opens.
-    if (isThirdPartyElement) {
-      return;
-    }
 
     // Check if the click occurred on the scrollbar
     if (floating_ui_react_esm_isHTMLElement(target) && floating) {
@@ -4729,7 +4783,7 @@ function findNonDisabledIndex(listRef, _temp) {
   do {
     var _list$index, _list$index2;
     index = index + (decrement ? -amount : amount);
-  } while (index >= 0 && index <= list.length - 1 && (disabledIndices ? disabledIndices.includes(index) : list[index] == null || ((_list$index = list[index]) == null ? void 0 : _list$index.hasAttribute('disabled')) || ((_list$index2 = list[index]) == null ? void 0 : _list$index2.getAttribute('aria-disabled')) === 'true' || isHidden(list[index])));
+  } while (index >= 0 && index <= list.length - 1 && (disabledIndices ? disabledIndices.includes(index) : list[index] == null || ((_list$index = list[index]) == null ? void 0 : _list$index.hasAttribute('disabled')) || ((_list$index2 = list[index]) == null ? void 0 : _list$index2.getAttribute('aria-disabled')) === 'true'));
   return index;
 }
 function doSwitch(orientation, vertical, horizontal) {
@@ -4843,7 +4897,7 @@ function useListNavigation(context, props) {
         // subsequent calls. `preventScroll` is supported in modern Safari,
         // so we can use that instead.
         // iOS Safari must be async or the first item will not be focused.
-        sync: isMac() && floating_ui_react_esm_isSafari() ? isPreventScrollSupported || forceSyncFocus.current : false
+        sync: isMac() && isSafari() ? isPreventScrollSupported || forceSyncFocus.current : false
       });
     }
     requestAnimationFrame(() => {
@@ -6657,7 +6711,7 @@ const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
 const Badge = ({ children, color = 'info', href, icon: Icon, size = 'xs', className, theme: customTheme = {}, ...props }) => {
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.badge, customTheme);
-    const Content = () => ((0, jsx_runtime_1.jsxs)("span", { className: (0, tailwind_merge_1.twMerge)(theme.root.base, theme.root.color[color], theme.icon[Icon ? 'on' : 'off'], theme.root.size[size], className), "data-testid": "flowbite-badge", ...props, children: [Icon && (0, jsx_runtime_1.jsx)(Icon, { "aria-hidden": true, className: theme.icon.size[size], "data-testid": "flowbite-badge-icon" }), children && (0, jsx_runtime_1.jsx)("span", { children: children })] }));
+    const Content = () => ((0, jsx_runtime_1.jsxs)("span", { className: (0, tailwind_merge_1.twMerge)(theme.root.base, theme.root.color[color], theme.root.size[size], theme.icon[Icon ? 'on' : 'off'], className), "data-testid": "flowbite-badge", ...props, children: [Icon && (0, jsx_runtime_1.jsx)(Icon, { "aria-hidden": true, className: theme.icon.size[size], "data-testid": "flowbite-badge-icon" }), children && (0, jsx_runtime_1.jsx)("span", { children: children })] }));
     return href ? ((0, jsx_runtime_1.jsx)("a", { className: theme.root.href, href: href, children: (0, jsx_runtime_1.jsx)(Content, {}) })) : ((0, jsx_runtime_1.jsx)(Content, {}));
 };
 exports.Badge = Badge;
@@ -6733,6 +6787,136 @@ exports.badgeTheme = {
             xs: 'w-3 h-3',
             sm: 'w-3.5 h-3.5',
         },
+    },
+};
+
+
+/***/ }),
+
+/***/ 7322:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Banner = void 0;
+const jsx_runtime_1 = __webpack_require__(6786);
+const BannerCollapseButton_1 = __webpack_require__(3101);
+const BannerComponent = ({ children, ...props }) => {
+    return ((0, jsx_runtime_1.jsx)("div", { "data-testid": "flowbite-banner", role: "banner", tabIndex: -1, ...props, children: children }));
+};
+BannerComponent.displayName = 'Banner';
+exports.Banner = Object.assign(BannerComponent, {
+    CollapseButton: BannerCollapseButton_1.BannerCollapseButton,
+});
+
+
+/***/ }),
+
+/***/ 3101:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BannerCollapseButton = void 0;
+const jsx_runtime_1 = __webpack_require__(6786);
+const Button_1 = __webpack_require__(736);
+const BannerCollapseButton = ({ children, ...props }) => {
+    const onClick = (event) => {
+        const collapseButton = event.target;
+        const parentBanner = collapseButton.closest('[role="banner"]');
+        parentBanner?.remove();
+    };
+    return ((0, jsx_runtime_1.jsx)(Button_1.Button, { onClick: onClick, ...props, children: children }));
+};
+exports.BannerCollapseButton = BannerCollapseButton;
+exports.BannerCollapseButton.displayName = 'Banner.CollapseButton';
+
+
+/***/ }),
+
+/***/ 7860:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(7322), exports);
+
+
+/***/ }),
+
+/***/ 1721:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Blockquote = void 0;
+const jsx_runtime_1 = __webpack_require__(6786);
+const tailwind_merge_1 = __webpack_require__(3233);
+const __1 = __webpack_require__(9920);
+const merge_deep_1 = __webpack_require__(4901);
+const Blockquote = ({ children, className, theme: customTheme = {}, ...props }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.blockquote, customTheme);
+    return ((0, jsx_runtime_1.jsx)("blockquote", { className: (0, tailwind_merge_1.twMerge)(theme.root.base, className), "data-testid": "flowbite-blockquote", ...props, children: children }));
+};
+exports.Blockquote = Blockquote;
+exports.Blockquote.displayName = 'Blockquote';
+
+
+/***/ }),
+
+/***/ 6720:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(1721), exports);
+
+
+/***/ }),
+
+/***/ 8079:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.blockquoteTheme = void 0;
+exports.blockquoteTheme = {
+    root: {
+        base: 'text-xl italic font-semibold text-gray-900 dark:text-white',
     },
 };
 
@@ -6824,7 +7008,7 @@ exports.breadcrumbTheme = {
     },
     item: {
         base: 'group flex items-center',
-        chevron: 'mx-1 h-6 w-6 text-gray-400 group-first:hidden md:mx-2',
+        chevron: 'mx-1 h-4 w-4 text-gray-400 group-first:hidden md:mx-2',
         href: {
             off: 'flex items-center text-sm font-medium text-gray-500 dark:text-gray-400',
             on: 'flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white',
@@ -6847,29 +7031,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Button = void 0;
 const jsx_runtime_1 = __webpack_require__(6786);
-const react_1 = __webpack_require__(8038);
 const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
+const generic_forward_ref_1 = __importDefault(__webpack_require__(4186));
 const merge_deep_1 = __webpack_require__(4901);
+const ButtonBase_1 = __webpack_require__(8360);
 const ButtonGroup_1 = __importDefault(__webpack_require__(4661));
-const ButtonComponent = (0, react_1.forwardRef)(({ children, className, color = 'info', disabled = false, fullSized, isProcessing = false, processingLabel = 'Loading...', processingSpinner: SpinnerComponent = (0, jsx_runtime_1.jsx)(__1.Spinner, {}), gradientDuoTone, gradientMonochrome, as: Component = 'button', href, label, outline = false, pill = false, positionInGroup = 'none', size = 'md', theme: customTheme = {}, ...props }, ref) => {
+const ButtonComponentFn = ({ children, className, color = 'info', disabled, fullSized, isProcessing = false, processingLabel = 'Loading...', processingSpinner, gradientDuoTone, gradientMonochrome, label, outline = false, pill = false, positionInGroup = 'none', size = 'md', theme: customTheme = {}, ...props }, ref) => {
     const { buttonGroup: groupTheme, button: buttonTheme } = (0, __1.useTheme)().theme;
     const theme = (0, merge_deep_1.mergeDeep)(buttonTheme, customTheme);
-    const BaseComponent = href ? 'a' : Component ?? 'button';
     const theirProps = props;
-    return (0, react_1.createElement)(BaseComponent, {
-        disabled,
-        href,
-        type: Component === 'button' ? 'button' : undefined,
-        ref: ref,
-        className: (0, tailwind_merge_1.twMerge)(theme.base, disabled && theme.disabled, !gradientDuoTone && !gradientMonochrome && theme.color[color], gradientDuoTone && !gradientMonochrome && theme.gradientDuoTone[gradientDuoTone], !gradientDuoTone && gradientMonochrome && theme.gradient[gradientMonochrome], outline && (theme.outline.color[color] ?? theme.outline.color.default), theme.pill[pill ? 'on' : 'off'], fullSized && theme.fullSized, groupTheme.position[positionInGroup], className),
-        ...theirProps,
-    }, (0, jsx_runtime_1.jsx)("span", { className: (0, tailwind_merge_1.twMerge)(theme.inner.base, theme.outline[outline ? 'on' : 'off'], theme.outline.pill[outline && pill ? 'on' : 'off'], theme.size[size], outline && !theme.outline.color[color] && theme.inner.outline, isProcessing && theme.isProcessing, theme.inner.position[positionInGroup]), children: (0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [isProcessing && (0, jsx_runtime_1.jsx)("span", { className: (0, tailwind_merge_1.twMerge)(theme.spinnerSlot), children: SpinnerComponent }), typeof children !== 'undefined' ? (children) : ((0, jsx_runtime_1.jsx)("span", { "data-testid": "flowbite-button-label", className: (0, tailwind_merge_1.twMerge)(theme.label), children: isProcessing ? processingLabel : label }))] }) }));
-});
-ButtonComponent.displayName = 'Button';
+    return ((0, jsx_runtime_1.jsx)(ButtonBase_1.ButtonBase, { ref: ref, disabled: disabled, className: (0, tailwind_merge_1.twMerge)(theme.base, disabled && theme.disabled, !gradientDuoTone && !gradientMonochrome && theme.color[color], gradientDuoTone && !gradientMonochrome && theme.gradientDuoTone[gradientDuoTone], !gradientDuoTone && gradientMonochrome && theme.gradient[gradientMonochrome], outline && (theme.outline.color[color] ?? theme.outline.color.default), theme.pill[pill ? 'on' : 'off'], fullSized && theme.fullSized, groupTheme.position[positionInGroup], className), ...theirProps, children: (0, jsx_runtime_1.jsx)("span", { className: (0, tailwind_merge_1.twMerge)(theme.inner.base, theme.outline[outline ? 'on' : 'off'], theme.outline.pill[outline && pill ? 'on' : 'off'], theme.size[size], outline && !theme.outline.color[color] && theme.inner.outline, isProcessing && theme.isProcessing, isProcessing && theme.inner.isProcessingPadding[size], theme.inner.position[positionInGroup]), children: (0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [isProcessing && ((0, jsx_runtime_1.jsx)("span", { className: (0, tailwind_merge_1.twMerge)(theme.spinnerSlot, theme.spinnerLeftPosition[size]), children: processingSpinner || (0, jsx_runtime_1.jsx)(__1.Spinner, { size: size }) })), typeof children !== 'undefined' ? (children) : ((0, jsx_runtime_1.jsx)("span", { "data-testid": "flowbite-button-label", className: (0, tailwind_merge_1.twMerge)(theme.label), children: isProcessing ? processingLabel : label }))] }) }) }));
+};
+ButtonComponentFn.displayName = 'Button';
+const ButtonComponent = (0, generic_forward_ref_1.default)(ButtonComponentFn);
 exports.Button = Object.assign(ButtonComponent, {
     Group: ButtonGroup_1.default,
 });
+
+
+/***/ }),
+
+/***/ 8360:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ButtonBase = void 0;
+const react_1 = __webpack_require__(8038);
+const generic_forward_ref_1 = __importDefault(__webpack_require__(4186));
+const ButtonBaseComponent = ({ children, as: Component, href, type = 'button', ...props }, ref) => {
+    const BaseComponent = Component || (href ? 'a' : 'button');
+    return (0, react_1.createElement)(BaseComponent, { ref, href, type, ...props }, children);
+};
+exports.ButtonBase = (0, generic_forward_ref_1.default)(ButtonBaseComponent);
 
 
 /***/ }),
@@ -6933,18 +7132,18 @@ __exportStar(__webpack_require__(1464), exports);
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.buttonGroupTheme = exports.buttonTheme = void 0;
 exports.buttonTheme = {
-    base: 'group flex h-min items-center justify-center p-0.5 text-center font-medium focus:z-10',
+    base: 'group flex items-stretch items-center justify-center p-0.5 text-center font-medium relative focus:z-10 focus:outline-none',
     fullSized: 'w-full',
     color: {
         dark: 'text-white bg-gray-800 border border-transparent enabled:hover:bg-gray-900 focus:ring-4 focus:ring-gray-300 dark:bg-gray-800 dark:enabled:hover:bg-gray-700 dark:focus:ring-gray-800 dark:border-gray-700',
         failure: 'text-white bg-red-700 border border-transparent enabled:hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:enabled:hover:bg-red-700 dark:focus:ring-red-900',
         gray: 'text-gray-900 bg-white border border-gray-200 enabled:hover:bg-gray-100 enabled:hover:text-cyan-700 :ring-cyan-700 focus:text-cyan-700 dark:bg-transparent dark:text-gray-400 dark:border-gray-600 dark:enabled:hover:text-white dark:enabled:hover:bg-gray-700 focus:ring-2',
         info: 'text-white bg-cyan-700 border border-transparent enabled:hover:bg-cyan-800 focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:enabled:hover:bg-cyan-700 dark:focus:ring-cyan-800',
-        light: 'text-gray-900 bg-white border border-gray-300 enabled:hover:bg-gray-100 focus:ring-4 focus:ring-cyan-300 :bg-gray-600 dark:text-white dark:border-gray-600 dark:enabled:hover:bg-gray-700 dark:enabled:hover:border-gray-700 dark:focus:ring-gray-700',
+        light: 'text-gray-900 bg-white border border-gray-300 enabled:hover:bg-gray-100 focus:ring-4 focus:ring-cyan-300 dark:bg-gray-600 dark:text-white dark:border-gray-600 dark:enabled:hover:bg-gray-700 dark:enabled:hover:border-gray-700 dark:focus:ring-gray-700',
         purple: 'text-white bg-purple-700 border border-transparent enabled:hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 dark:bg-purple-600 dark:enabled:hover:bg-purple-700 dark:focus:ring-purple-900',
         success: 'text-white bg-green-700 border border-transparent enabled:hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:enabled:hover:bg-green-700 dark:focus:ring-green-800',
         warning: 'text-white bg-yellow-400 border border-transparent enabled:hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-900',
-        blue: 'text-cyan-900 bg-white border border-cyan-300 enabled:hover:bg-cyan-100 focus:ring-4 focus:ring-cyan-300 :bg-cyan-600 dark:text-white dark:border-cyan-600 dark:enabled:hover:bg-cyan-700 dark:enabled:hover:border-cyan-700 dark:focus:ring-cyan-700',
+        blue: 'text-white bg-blue-700 border border-transparent enabled:hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800',
         cyan: 'text-cyan-900 bg-white border border-cyan-300 enabled:hover:bg-cyan-100 focus:ring-4 focus:ring-cyan-300 :bg-cyan-600 dark:text-white dark:border-cyan-600 dark:enabled:hover:bg-cyan-700 dark:enabled:hover:border-cyan-700 dark:focus:ring-cyan-700',
         green: 'text-green-900 bg-white border border-green-300 enabled:hover:bg-green-100 focus:ring-4 focus:ring-green-300 :bg-green-600 dark:text-white dark:border-green-600 dark:enabled:hover:bg-green-700 dark:enabled:hover:border-green-700 dark:focus:ring-green-700',
         indigo: 'text-indigo-900 bg-white border border-indigo-300 enabled:hover:bg-indigo-100 focus:ring-4 focus:ring-indigo-300 :bg-indigo-600 dark:text-white dark:border-indigo-600 dark:enabled:hover:bg-indigo-700 dark:enabled:hover:border-indigo-700 dark:focus:ring-indigo-700',
@@ -6956,7 +7155,14 @@ exports.buttonTheme = {
     },
     disabled: 'cursor-not-allowed opacity-50',
     isProcessing: 'cursor-wait',
-    spinnerSlot: 'mr-3',
+    spinnerSlot: 'absolute h-full top-0 flex items-center animate-fade-in',
+    spinnerLeftPosition: {
+        xs: 'left-2',
+        sm: 'left-3',
+        md: 'left-4',
+        lg: 'left-5',
+        xl: 'left-6',
+    },
     gradient: {
         cyan: 'text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 enabled:hover:bg-gradient-to-br focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800',
         failure: 'text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 enabled:hover:bg-gradient-to-br focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800',
@@ -6977,7 +7183,7 @@ exports.buttonTheme = {
         tealToLime: 'text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 enabled:hover:bg-gradient-to-l enabled:hover:from-teal-200 enabled:hover:to-lime-200 enabled:hover:text-gray-900 focus:ring-4 focus:ring-lime-200 dark:focus:ring-teal-700',
     },
     inner: {
-        base: 'flex items-center',
+        base: 'flex items-stretch items-center transition-all duration-200',
         position: {
             none: '',
             start: 'rounded-r-none',
@@ -6985,6 +7191,13 @@ exports.buttonTheme = {
             end: 'rounded-l-none',
         },
         outline: 'border border-transparent',
+        isProcessingPadding: {
+            xs: 'pl-8',
+            sm: 'pl-10',
+            md: 'pl-12',
+            lg: 'pl-16',
+            xl: 'pl-20',
+        },
     },
     label: 'ml-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-cyan-200 text-xs font-semibold text-cyan-800',
     outline: {
@@ -7036,14 +7249,35 @@ const jsx_runtime_1 = __webpack_require__(6786);
 const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
-const Card = ({ children, className, horizontal, href, imgAlt, imgSrc, theme: customTheme = {}, ...props }) => {
+const omit_1 = __webpack_require__(6562);
+const Card = (props) => {
+    const { children, className, horizontal, href, theme: customTheme = {} } = props;
     const Component = typeof href === 'undefined' ? 'div' : 'a';
-    const theirProps = props;
+    const theirProps = removeCustomProps(props);
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.card, customTheme);
-    return ((0, jsx_runtime_1.jsxs)(Component, { "data-testid": "flowbite-card", href: href, className: (0, tailwind_merge_1.twMerge)(theme.root.base, theme.root.horizontal[horizontal ? 'on' : 'off'], href && theme.root.href, className), ...theirProps, children: [imgSrc && ((0, jsx_runtime_1.jsx)("img", { alt: imgAlt ?? '', src: imgSrc, className: (0, tailwind_merge_1.twMerge)(theme.img.base, theme.img.horizontal[horizontal ? 'on' : 'off']) })), (0, jsx_runtime_1.jsx)("div", { className: theme.root.children, children: children })] }));
+    return ((0, jsx_runtime_1.jsxs)(Component, { "data-testid": "flowbite-card", href: href, className: (0, tailwind_merge_1.twMerge)(theme.root.base, theme.root.horizontal[horizontal ? 'on' : 'off'], href && theme.root.href, className), ...theirProps, children: [(0, jsx_runtime_1.jsx)(Image, { ...props }), (0, jsx_runtime_1.jsx)("div", { className: theme.root.children, children: children })] }));
 };
 exports.Card = Card;
-exports.Card.displayName = 'Card';
+const Image = ({ theme: customTheme = {}, ...props }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.card, customTheme);
+    if (props.renderImage) {
+        return props.renderImage(theme, props.horizontal ?? false);
+    }
+    if (props.imgSrc) {
+        return ((0, jsx_runtime_1.jsx)("img", { "data-testid": "flowbite-card-image", alt: props.imgAlt ?? '', src: props.imgSrc, className: (0, tailwind_merge_1.twMerge)(theme.img.base, theme.img.horizontal[props.horizontal ? 'on' : 'off']) }));
+    }
+    return null;
+};
+const removeCustomProps = (0, omit_1.omit)([
+    'renderImage',
+    'imgSrc',
+    'imgAlt',
+    'children',
+    'className',
+    'horizontal',
+    'href',
+    'theme',
+]);
 
 
 /***/ }),
@@ -7120,12 +7354,13 @@ const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
 const is_client_1 = __webpack_require__(1673);
 const merge_deep_1 = __webpack_require__(4901);
-const Carousel = ({ children, indicators = true, leftControl, rightControl, slide = true, slideInterval, className, theme: customTheme = {}, onSlideChange = null, ...props }) => {
+const Carousel = ({ children, indicators = true, leftControl, rightControl, slide = true, slideInterval, className, theme: customTheme = {}, onSlideChange = null, pauseOnHover = false, ...props }) => {
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.carousel, customTheme);
     const isDeviceMobile = (0, is_client_1.isClient)() && navigator.userAgent.indexOf('IEMobile') !== -1;
     const carouselContainer = (0, react_1.useRef)(null);
     const [activeItem, setActiveItem] = (0, react_1.useState)(0);
     const [isDragging, setIsDragging] = (0, react_1.useState)(false);
+    const [isHovering, setIsHovering] = (0, react_1.useState)(false);
     const didMountRef = (0, react_1.useRef)(false);
     const items = (0, react_1.useMemo)(() => react_1.Children.map(children, (child) => (0, react_1.cloneElement)(child, {
         className: (0, tailwind_merge_1.twMerge)(theme.item.base, child.props.className),
@@ -7145,11 +7380,11 @@ const Carousel = ({ children, indicators = true, leftControl, rightControl, slid
         }
     }, [isDragging]);
     (0, react_1.useEffect)(() => {
-        if (slide) {
+        if (slide && !(pauseOnHover && isHovering)) {
             const intervalId = setInterval(() => !isDragging && navigateTo(activeItem + 1)(), slideInterval ?? 3000);
             return () => clearInterval(intervalId);
         }
-    }, [activeItem, isDragging, navigateTo, slide, slideInterval]);
+    }, [activeItem, isDragging, navigateTo, slide, slideInterval, pauseOnHover, isHovering]);
     (0, react_1.useEffect)(() => {
         if (didMountRef.current) {
             onSlideChange && onSlideChange(activeItem);
@@ -7159,15 +7394,17 @@ const Carousel = ({ children, indicators = true, leftControl, rightControl, slid
         }
     }, [onSlideChange, activeItem]);
     const handleDragging = (dragging) => () => setIsDragging(dragging);
-    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, tailwind_merge_1.twMerge)(theme.root.base, className), "data-testid": "carousel", ...props, children: [(0, jsx_runtime_1.jsx)(react_indiana_drag_scroll_1.default, { className: (0, tailwind_merge_1.twMerge)(theme.scrollContainer.base, (isDeviceMobile || !isDragging) && theme.scrollContainer.snap), draggingClassName: "cursor-grab", innerRef: carouselContainer, onEndScroll: handleDragging(false), onStartScroll: handleDragging(true), vertical: false, children: items?.map((item, index) => ((0, jsx_runtime_1.jsx)("div", { className: theme.item.wrapper, "data-active": activeItem === index, "data-testid": "carousel-item", children: item }, index))) }), indicators && ((0, jsx_runtime_1.jsx)("div", { className: theme.indicators.wrapper, children: items?.map((_, index) => ((0, jsx_runtime_1.jsx)("button", { className: (0, tailwind_merge_1.twMerge)(theme.indicators.base, theme.indicators.active[index === activeItem ? 'on' : 'off']), onClick: navigateTo(index), "data-testid": "carousel-indicator", "aria-label": `Slide ${index + 1}` }, index))) })), items && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { className: theme.root.leftControl, children: (0, jsx_runtime_1.jsx)("button", { className: "group", "data-testid": "carousel-left-control", onClick: navigateTo(activeItem - 1), type: "button", "aria-label": "Previous slide", children: leftControl ? leftControl : (0, jsx_runtime_1.jsx)(DefaultLeftControl, {}) }) }), (0, jsx_runtime_1.jsx)("div", { className: theme.root.rightControl, children: (0, jsx_runtime_1.jsx)("button", { className: "group", "data-testid": "carousel-right-control", onClick: navigateTo(activeItem + 1), type: "button", "aria-label": "Next slide", children: rightControl ? rightControl : (0, jsx_runtime_1.jsx)(DefaultRightControl, {}) }) })] }))] }));
+    const setHoveringTrue = (0, react_1.useCallback)(() => setIsHovering(true), [setIsHovering]);
+    const setHoveringFalse = (0, react_1.useCallback)(() => setIsHovering(false), [setIsHovering]);
+    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, tailwind_merge_1.twMerge)(theme.root.base, className), "data-testid": "carousel", onMouseEnter: setHoveringTrue, onMouseLeave: setHoveringFalse, onTouchStart: setHoveringTrue, onTouchEnd: setHoveringFalse, ...props, children: [(0, jsx_runtime_1.jsx)(react_indiana_drag_scroll_1.default, { className: (0, tailwind_merge_1.twMerge)(theme.scrollContainer.base, (isDeviceMobile || !isDragging) && theme.scrollContainer.snap), draggingClassName: "cursor-grab", innerRef: carouselContainer, onEndScroll: handleDragging(false), onStartScroll: handleDragging(true), vertical: false, children: items?.map((item, index) => ((0, jsx_runtime_1.jsx)("div", { className: theme.item.wrapper, "data-active": activeItem === index, "data-testid": "carousel-item", children: item }, index))) }), indicators && ((0, jsx_runtime_1.jsx)("div", { className: theme.indicators.wrapper, children: items?.map((_, index) => ((0, jsx_runtime_1.jsx)("button", { className: (0, tailwind_merge_1.twMerge)(theme.indicators.base, theme.indicators.active[index === activeItem ? 'on' : 'off']), onClick: navigateTo(index), "data-testid": "carousel-indicator", "aria-label": `Slide ${index + 1}` }, index))) })), items && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { className: theme.root.leftControl, children: (0, jsx_runtime_1.jsx)("button", { className: "group", "data-testid": "carousel-left-control", onClick: navigateTo(activeItem - 1), type: "button", "aria-label": "Previous slide", children: leftControl ? leftControl : (0, jsx_runtime_1.jsx)(DefaultLeftControl, { theme: customTheme }) }) }), (0, jsx_runtime_1.jsx)("div", { className: theme.root.rightControl, children: (0, jsx_runtime_1.jsx)("button", { className: "group", "data-testid": "carousel-right-control", onClick: navigateTo(activeItem + 1), type: "button", "aria-label": "Next slide", children: rightControl ? rightControl : (0, jsx_runtime_1.jsx)(DefaultRightControl, { theme: customTheme }) }) })] }))] }));
 };
 exports.Carousel = Carousel;
-const DefaultLeftControl = () => {
-    const theme = (0, __1.useTheme)().theme.carousel;
+const DefaultLeftControl = ({ theme: customTheme = {} }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.carousel, customTheme);
     return ((0, jsx_runtime_1.jsx)("span", { className: theme.control.base, children: (0, jsx_runtime_1.jsx)(hi_1.HiOutlineChevronLeft, { className: theme.control.icon }) }));
 };
-const DefaultRightControl = () => {
-    const theme = (0, __1.useTheme)().theme.carousel;
+const DefaultRightControl = ({ theme: customTheme = {} }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.carousel, customTheme);
     return ((0, jsx_runtime_1.jsx)("span", { className: theme.control.base, children: (0, jsx_runtime_1.jsx)(hi_1.HiOutlineChevronRight, { className: theme.control.icon }) }));
 };
 exports.Carousel.displayName = 'Carousel';
@@ -7250,9 +7487,9 @@ const react_1 = __webpack_require__(8038);
 const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
-exports.Checkbox = (0, react_1.forwardRef)(({ className, theme: customTheme = {}, ...props }, ref) => {
+exports.Checkbox = (0, react_1.forwardRef)(({ className, color = 'default', theme: customTheme = {}, ...props }, ref) => {
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.checkbox, customTheme);
-    return (0, jsx_runtime_1.jsx)("input", { ref: ref, type: "checkbox", className: (0, tailwind_merge_1.twMerge)(theme.root.base, className), ...props });
+    return ((0, jsx_runtime_1.jsx)("input", { ref: ref, type: "checkbox", className: (0, tailwind_merge_1.twMerge)(theme.root.base, theme.root.color[color], className), ...props }));
 });
 exports.Checkbox.displayName = 'Checkbox';
 
@@ -7293,7 +7530,27 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.checkboxTheme = void 0;
 exports.checkboxTheme = {
     root: {
-        base: 'h-4 w-4 rounded border border-gray-300 bg-gray-100 focus:ring-2 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-cyan-600 text-cyan-600',
+        base: 'h-4 w-4 rounded focus:ring-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 bg-gray-100',
+        color: {
+            default: 'focus:ring-cyan-600 dark:ring-offset-cyan-600 dark:focus:ring-cyan-600 text-cyan-600',
+            dark: 'focus:ring-gray-800 dark:ring-offset-gray-800 dark:focus:ring-gray-800 text-gray-800',
+            failure: 'focus:ring-red-900 dark:ring-offset-red-900 dark:focus:ring-red-900 text-red-900',
+            gray: 'focus:ring-gray-900 dark:ring-offset-gray-900 dark:focus:ring-gray-900 text-gray-900',
+            info: 'focus:ring-cyan-800 dark:ring-offset-gray-800 dark:focus:ring-cyan-800 text-cyan-800',
+            light: 'focus:ring-gray-900 dark:ring-offset-gray-900 dark:focus:ring-gray-900 text-gray-900',
+            purple: 'focus:ring-purple-600 dark:ring-offset-purple-600 dark:focus:ring-purple-600 text-purple-600',
+            success: 'focus:ring-green-800 dark:ring-offset-green-800 dark:focus:ring-green-800 text-green-800',
+            warning: 'focus:ring-yellow-400 dark:ring-offset-yellow-400 dark:focus:ring-yellow-400 text-yellow-400',
+            blue: 'focus:ring-blue-600 dark:ring-offset-blue-700 dark:focus:ring-blue-700 text-blue-700',
+            cyan: 'focus:ring-cyan-600 dark:ring-offset-cyan-600 dark:focus:ring-cyan-600 text-cyan-600',
+            green: 'focus:ring-green-600 dark:ring-offset-green-600 dark:focus:ring-green-600 text-green-600',
+            indigo: 'focus:ring-indigo-700 dark:ring-offset-indigo-700 dark:focus:ring-indigo-700 text-indigo-700',
+            lime: 'focus:ring-lime-700 dark:ring-offset-lime-700 dark:focus:ring-lime-700 text-lime-700',
+            pink: 'focus:ring-pink-600 dark:ring-offset-pink-600 dark:focus:ring-pink-600 text-pink-600',
+            red: 'focus:ring-red-600 dark:ring-offset-red-600 dark:focus:ring-red-600 text-red-600',
+            teal: 'focus:ring-teal-600 dark:ring-offset-teal-600 dark:focus:ring-teal-600 text-teal-600',
+            yellow: 'focus:ring-yellow-400 dark:ring-offset-yellow-400 dark:focus:ring-yellow-400 text-yellow-400',
+        },
     },
 };
 
@@ -7308,16 +7565,14 @@ exports.checkboxTheme = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DarkThemeToggle = void 0;
 const jsx_runtime_1 = __webpack_require__(6786);
-const react_1 = __webpack_require__(8038);
 const hi_1 = __webpack_require__(5655);
 const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
-const ThemeContext_1 = __webpack_require__(4714);
 const merge_deep_1 = __webpack_require__(4901);
 const DarkThemeToggle = ({ className, theme: customTheme = {}, iconDark: IconDark = hi_1.HiSun, iconLight: IconLight = hi_1.HiMoon, ...props }) => {
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.darkThemeToggle, customTheme);
-    const { mode, toggleMode } = (0, react_1.useContext)(ThemeContext_1.ThemeContext);
-    return ((0, jsx_runtime_1.jsx)("button", { "aria-label": "Toggle dark mode", "data-testid": "dark-theme-toggle", onClick: toggleMode, type: "button", className: (0, tailwind_merge_1.twMerge)(theme.root.base, className), ...props, children: mode === 'dark' ? ((0, jsx_runtime_1.jsx)(IconLight, { "aria-label": "Currently dark mode", className: theme.root.icon })) : ((0, jsx_runtime_1.jsx)(IconDark, { "aria-label": "Currently light mode", className: theme.root.icon })) }));
+    const { mode, toggleMode } = (0, __1.useTheme)();
+    return ((0, jsx_runtime_1.jsx)("button", { "aria-label": "Toggle dark mode", "data-testid": "dark-theme-toggle", onClick: () => toggleMode?.(), type: "button", className: (0, tailwind_merge_1.twMerge)(theme.root.base, className), ...props, children: mode === 'dark' ? ((0, jsx_runtime_1.jsx)(IconLight, { "aria-label": "Currently dark mode", className: theme.root.icon })) : ((0, jsx_runtime_1.jsx)(IconDark, { "aria-label": "Currently light mode", className: theme.root.icon })) }));
 };
 exports.DarkThemeToggle = DarkThemeToggle;
 exports.DarkThemeToggle.displayName = 'DarkThemeToggle';
@@ -7342,7 +7597,454 @@ exports.darkThemeToggleTheme = {
 
 /***/ }),
 
-/***/ 5716:
+/***/ 6845:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Datepicker = void 0;
+const jsx_runtime_1 = __webpack_require__(6786);
+const react_1 = __webpack_require__(8038);
+const hi_1 = __webpack_require__(5655);
+const tailwind_merge_1 = __webpack_require__(3233);
+const __1 = __webpack_require__(5127);
+const __2 = __webpack_require__(9920);
+const merge_deep_1 = __webpack_require__(4901);
+const DatepickerContext_1 = __webpack_require__(6465);
+const Days_1 = __webpack_require__(195);
+const Decades_1 = __webpack_require__(9800);
+const Months_1 = __webpack_require__(1211);
+const Years_1 = __webpack_require__(3577);
+const helpers_1 = __webpack_require__(5269);
+const Datepicker = ({ title, open, inline = false, autoHide = true, // Hide when selected the day
+showClearButton = true, labelClearButton = 'Clear', showTodayButton = true, labelTodayButton = 'Today', defaultDate = new Date(), minDate, maxDate, language = 'en', weekStart = helpers_1.WeekStart.Sunday, className, theme: customTheme = {}, onSelectedDateChanged, ...props }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, __2.useTheme)().theme.datepicker, customTheme);
+    // Default date should respect the range
+    defaultDate = (0, helpers_1.getFirstDateInRange)(defaultDate, minDate, maxDate);
+    const [isOpen, setIsOpen] = (0, react_1.useState)(open);
+    const [view, setView] = (0, react_1.useState)(helpers_1.Views.Days);
+    // selectedDate is the date selected by the user
+    const [selectedDate, setSelectedDate] = (0, react_1.useState)(defaultDate);
+    // viewDate is only for navigation
+    const [viewDate, setViewDate] = (0, react_1.useState)(defaultDate);
+    const inputRef = (0, react_1.useRef)(null);
+    const datepickerRef = (0, react_1.useRef)(null);
+    // Triggers when user select the date
+    const changeSelectedDate = (date, useAutohide) => {
+        setSelectedDate(date);
+        if (onSelectedDateChanged) {
+            onSelectedDateChanged(date);
+        }
+        if (autoHide && view === helpers_1.Views.Days && useAutohide == true && !inline) {
+            setIsOpen(false);
+        }
+    };
+    // Render the DatepickerView* node
+    const renderView = (type) => {
+        switch (type) {
+            case helpers_1.Views.Decades:
+                return (0, jsx_runtime_1.jsx)(Decades_1.DatepickerViewsDecades, { theme: theme.views.decades });
+            case helpers_1.Views.Years:
+                return (0, jsx_runtime_1.jsx)(Years_1.DatepickerViewsYears, { theme: theme.views.years });
+            case helpers_1.Views.Months:
+                return (0, jsx_runtime_1.jsx)(Months_1.DatepickerViewsMonth, { theme: theme.views.months });
+            case helpers_1.Views.Days:
+            default:
+                return (0, jsx_runtime_1.jsx)(Days_1.DatepickerViewsDays, { theme: theme.views.days });
+        }
+    };
+    // Coordinate the next view based on current view (statemachine-like)
+    const getNextView = () => {
+        switch (view) {
+            case helpers_1.Views.Days:
+                return helpers_1.Views.Months;
+            case helpers_1.Views.Months:
+                return helpers_1.Views.Years;
+            case helpers_1.Views.Years:
+                return helpers_1.Views.Decades;
+        }
+        return view;
+    };
+    // Get the view title based on active View
+    const getViewTitle = () => {
+        switch (view) {
+            case helpers_1.Views.Decades:
+                return `${(0, helpers_1.startOfYearPeriod)(viewDate, 100)} - ${(0, helpers_1.startOfYearPeriod)(viewDate, 100) + 90}`;
+            case helpers_1.Views.Years:
+                return `${(0, helpers_1.startOfYearPeriod)(viewDate, 10)} - ${(0, helpers_1.startOfYearPeriod)(viewDate, 10) + 9}`;
+            case helpers_1.Views.Months:
+                return (0, helpers_1.getFormattedDate)(language, viewDate, { year: 'numeric' });
+            case helpers_1.Views.Days:
+            default:
+                return (0, helpers_1.getFormattedDate)(language, viewDate, { month: 'long', year: 'numeric' });
+        }
+    };
+    // Navigate to prev/next for given view's date by value
+    const getViewDatePage = (view, date, value) => {
+        switch (view) {
+            case helpers_1.Views.Days:
+                return new Date((0, helpers_1.addMonths)(date, value));
+            case helpers_1.Views.Months:
+                return new Date((0, helpers_1.addYears)(date, value));
+            case helpers_1.Views.Years:
+                return new Date((0, helpers_1.addYears)(date, value * 10));
+            case helpers_1.Views.Decades:
+                return new Date((0, helpers_1.addYears)(date, value * 100));
+            default:
+                return new Date((0, helpers_1.addYears)(date, value * 10));
+        }
+    };
+    (0, react_1.useEffect)(() => {
+        const handleClickOutside = (event) => {
+            const clickedInsideDatepicker = datepickerRef?.current?.contains(event.target);
+            const clickedInsideInput = inputRef?.current?.contains(event.target);
+            if (!clickedInsideDatepicker && !clickedInsideInput) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [inputRef, datepickerRef, setIsOpen]);
+    return ((0, jsx_runtime_1.jsx)(DatepickerContext_1.DatepickerContext.Provider, { value: {
+            language,
+            minDate,
+            maxDate,
+            weekStart,
+            isOpen,
+            setIsOpen,
+            view,
+            setView,
+            viewDate,
+            setViewDate,
+            selectedDate,
+            setSelectedDate,
+            changeSelectedDate,
+        }, children: (0, jsx_runtime_1.jsxs)("div", { className: (0, tailwind_merge_1.twMerge)(theme.root.base, className), children: [!inline && ((0, jsx_runtime_1.jsx)(__1.TextInput, { theme: theme.root.input, icon: hi_1.HiCalendar, ref: inputRef, onFocus: () => {
+                        if (!(0, helpers_1.isDateEqual)(viewDate, selectedDate)) {
+                            setViewDate(selectedDate);
+                        }
+                        setIsOpen(true);
+                    }, value: selectedDate && (0, helpers_1.getFormattedDate)(language, selectedDate), readOnly: true, ...props })), (isOpen || inline) && ((0, jsx_runtime_1.jsx)("div", { ref: datepickerRef, className: (0, tailwind_merge_1.twMerge)(theme.popup.root.base, inline && theme.popup.root.inline), children: (0, jsx_runtime_1.jsxs)("div", { className: theme.popup.root.inner, children: [(0, jsx_runtime_1.jsxs)("div", { className: theme.popup.header.base, children: [title && (0, jsx_runtime_1.jsx)("div", { className: theme.popup.header.title, children: title }), (0, jsx_runtime_1.jsxs)("div", { className: theme.popup.header.selectors.base, children: [(0, jsx_runtime_1.jsx)("button", { type: "button", className: (0, tailwind_merge_1.twMerge)(theme.popup.header.selectors.button.base, theme.popup.header.selectors.button.prev), onClick: () => setViewDate(getViewDatePage(view, viewDate, -1)), children: (0, jsx_runtime_1.jsx)(hi_1.HiArrowLeft, {}) }), (0, jsx_runtime_1.jsx)("button", { type: "button", className: (0, tailwind_merge_1.twMerge)(theme.popup.header.selectors.button.base, theme.popup.header.selectors.button.view), onClick: () => setView(getNextView()), children: getViewTitle() }), (0, jsx_runtime_1.jsx)("button", { type: "button", className: (0, tailwind_merge_1.twMerge)(theme.popup.header.selectors.button.base, theme.popup.header.selectors.button.next), onClick: () => setViewDate(getViewDatePage(view, viewDate, 1)), children: (0, jsx_runtime_1.jsx)(hi_1.HiArrowRight, {}) })] })] }), (0, jsx_runtime_1.jsx)("div", { className: theme.popup.view.base, children: renderView(view) }), (showClearButton || showTodayButton) && ((0, jsx_runtime_1.jsxs)("div", { className: theme.popup.footer.base, children: [showTodayButton && ((0, jsx_runtime_1.jsx)("button", { type: "button", className: (0, tailwind_merge_1.twMerge)(theme.popup.footer.button.base, theme.popup.footer.button.today), onClick: () => {
+                                            const today = new Date();
+                                            changeSelectedDate(today, true);
+                                            setViewDate(today);
+                                        }, children: labelTodayButton })), showClearButton && ((0, jsx_runtime_1.jsx)("button", { type: "button", className: (0, tailwind_merge_1.twMerge)(theme.popup.footer.button.base, theme.popup.footer.button.clear), onClick: () => {
+                                            changeSelectedDate(defaultDate, true);
+                                            if (defaultDate) {
+                                                setViewDate(defaultDate);
+                                            }
+                                        }, children: labelClearButton }))] }))] }) }))] }) }));
+};
+exports.Datepicker = Datepicker;
+exports.Datepicker.displayName = 'Datepicker';
+
+
+/***/ }),
+
+/***/ 6465:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.useDatePickerContext = exports.DatepickerContext = void 0;
+const react_1 = __webpack_require__(8038);
+exports.DatepickerContext = (0, react_1.createContext)(undefined);
+function useDatePickerContext() {
+    const context = (0, react_1.useContext)(exports.DatepickerContext);
+    if (!context) {
+        throw new Error('useDatePickerContext should be used within the DatePickerContext provider!');
+    }
+    return context;
+}
+exports.useDatePickerContext = useDatePickerContext;
+
+
+/***/ }),
+
+/***/ 195:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DatepickerViewsDays = void 0;
+const jsx_runtime_1 = __webpack_require__(6786);
+const tailwind_merge_1 = __webpack_require__(3233);
+const __1 = __webpack_require__(5127);
+const merge_deep_1 = __webpack_require__(4901);
+const DatepickerContext_1 = __webpack_require__(6465);
+const helpers_1 = __webpack_require__(5269);
+const DatepickerViewsDays = ({ theme: customTheme = {} }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.datepicker.views.days, customTheme);
+    const { weekStart, minDate, maxDate, viewDate, selectedDate, changeSelectedDate, language } = (0, DatepickerContext_1.useDatePickerContext)();
+    const weekDays = (0, helpers_1.getWeekDays)(language, weekStart);
+    const startDate = (0, helpers_1.getFirstDayOfTheMonth)(viewDate, weekStart);
+    return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { className: theme.header.base, children: weekDays.map((day, index) => ((0, jsx_runtime_1.jsx)("span", { className: theme.header.title, children: day }, index))) }), (0, jsx_runtime_1.jsx)("div", { className: theme.items.base, children: [...Array(42)].map((_date, index) => {
+                    const currentDate = (0, helpers_1.addDays)(startDate, index - 1);
+                    const day = (0, helpers_1.getFormattedDate)(language, currentDate, { day: 'numeric' });
+                    const isSelected = (0, helpers_1.isDateEqual)(selectedDate, currentDate);
+                    const isDisabled = !(0, helpers_1.isDateInRange)(currentDate, minDate, maxDate);
+                    return ((0, jsx_runtime_1.jsx)("button", { disabled: isDisabled, type: "button", className: (0, tailwind_merge_1.twMerge)(theme.items.item.base, isSelected && theme.items.item.selected, isDisabled && theme.items.item.disabled), onClick: () => {
+                            if (isDisabled)
+                                return;
+                            changeSelectedDate(currentDate, true);
+                        }, children: day }, index));
+                }) })] }));
+};
+exports.DatepickerViewsDays = DatepickerViewsDays;
+
+
+/***/ }),
+
+/***/ 9800:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DatepickerViewsDecades = void 0;
+const jsx_runtime_1 = __webpack_require__(6786);
+const tailwind_merge_1 = __webpack_require__(3233);
+const __1 = __webpack_require__(5127);
+const merge_deep_1 = __webpack_require__(4901);
+const DatepickerContext_1 = __webpack_require__(6465);
+const helpers_1 = __webpack_require__(5269);
+const DatepickerViewsDecades = ({ theme: customTheme = {} }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.datepicker.views.decades, customTheme);
+    const { selectedDate, viewDate, setViewDate, setView } = (0, DatepickerContext_1.useDatePickerContext)();
+    return ((0, jsx_runtime_1.jsx)("div", { className: theme.items.base, children: [...Array(12)].map((_year, index) => {
+            const first = (0, helpers_1.startOfYearPeriod)(viewDate, 100);
+            const year = first - 10 + index * 10;
+            const firstDate = new Date(year, 0, 1);
+            const lastDate = (0, helpers_1.addYears)(firstDate, 9);
+            const isSelected = (0, helpers_1.isDateInDecade)(viewDate, year);
+            const isDisabled = !(0, helpers_1.isDateInRange)(viewDate, firstDate, lastDate);
+            return ((0, jsx_runtime_1.jsx)("button", { disabled: isDisabled, type: "button", className: (0, tailwind_merge_1.twMerge)(theme.items.item.base, isSelected && theme.items.item.selected, isDisabled && theme.items.item.disabled), onClick: () => {
+                    if (isDisabled)
+                        return;
+                    setViewDate((0, helpers_1.addYears)(viewDate, year - selectedDate.getFullYear()));
+                    setView(helpers_1.Views.Years);
+                }, children: year }, index));
+        }) }));
+};
+exports.DatepickerViewsDecades = DatepickerViewsDecades;
+
+
+/***/ }),
+
+/***/ 1211:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DatepickerViewsMonth = void 0;
+const jsx_runtime_1 = __webpack_require__(6786);
+const tailwind_merge_1 = __webpack_require__(3233);
+const merge_deep_1 = __webpack_require__(4901);
+const Flowbite_1 = __webpack_require__(2094);
+const DatepickerContext_1 = __webpack_require__(6465);
+const helpers_1 = __webpack_require__(5269);
+const DatepickerViewsMonth = ({ theme: customTheme = {} }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, Flowbite_1.useTheme)().theme.datepicker.views.months, customTheme);
+    const { minDate, maxDate, selectedDate, viewDate, language, setViewDate, setView } = (0, DatepickerContext_1.useDatePickerContext)();
+    return ((0, jsx_runtime_1.jsx)("div", { className: theme.items.base, children: [...Array(12)].map((_month, index) => {
+            const newDate = new Date(viewDate.getTime());
+            newDate.setMonth(index);
+            const month = (0, helpers_1.getFormattedDate)(language, newDate, { month: 'short' });
+            const isSelected = (0, helpers_1.isDateEqual)(selectedDate, newDate);
+            const isDisabled = !(0, helpers_1.isDateInRange)(newDate, minDate, maxDate);
+            return ((0, jsx_runtime_1.jsx)("button", { disabled: isDisabled, type: "button", className: (0, tailwind_merge_1.twMerge)(theme.items.item.base, isSelected && theme.items.item.selected, isDisabled && theme.items.item.disabled), onClick: () => {
+                    if (isDisabled)
+                        return;
+                    setViewDate(newDate);
+                    setView(helpers_1.Views.Days);
+                }, children: month }, index));
+        }) }));
+};
+exports.DatepickerViewsMonth = DatepickerViewsMonth;
+
+
+/***/ }),
+
+/***/ 3577:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DatepickerViewsYears = void 0;
+const jsx_runtime_1 = __webpack_require__(6786);
+const tailwind_merge_1 = __webpack_require__(3233);
+const merge_deep_1 = __webpack_require__(4901);
+const Flowbite_1 = __webpack_require__(2094);
+const DatepickerContext_1 = __webpack_require__(6465);
+const helpers_1 = __webpack_require__(5269);
+const DatepickerViewsYears = ({ theme: customTheme = {} }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, Flowbite_1.useTheme)().theme.datepicker.views.years, customTheme);
+    const { selectedDate, minDate, maxDate, viewDate, setViewDate, setView } = (0, DatepickerContext_1.useDatePickerContext)();
+    return ((0, jsx_runtime_1.jsx)("div", { className: theme.items.base, children: [...Array(12)].map((_year, index) => {
+            const first = (0, helpers_1.startOfYearPeriod)(viewDate, 10);
+            const year = first - 1 + index * 1;
+            const newDate = new Date(viewDate.getTime());
+            newDate.setFullYear(year);
+            const isSelected = (0, helpers_1.isDateEqual)(selectedDate, newDate);
+            const isDisabled = !(0, helpers_1.isDateInRange)(newDate, minDate, maxDate);
+            return ((0, jsx_runtime_1.jsx)("button", { disabled: isDisabled, type: "button", className: (0, tailwind_merge_1.twMerge)(theme.items.item.base, isSelected && theme.items.item.selected, isDisabled && theme.items.item.disabled), onClick: () => {
+                    if (isDisabled)
+                        return;
+                    setViewDate(newDate);
+                    setView(helpers_1.Views.Months);
+                }, children: year }, index));
+        }) }));
+};
+exports.DatepickerViewsYears = DatepickerViewsYears;
+
+
+/***/ }),
+
+/***/ 5269:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isDateRangeInDecade = exports.isDateInDecade = exports.startOfYearPeriod = exports.getFormattedDate = exports.addYears = exports.addMonths = exports.addDays = exports.getWeekDays = exports.getFirstDayOfTheMonth = exports.getFirstDateInRange = exports.isDateEqual = exports.isDateInRange = exports.WeekStart = exports.Views = void 0;
+var Views;
+(function (Views) {
+    Views[Views["Days"] = 0] = "Days";
+    Views[Views["Months"] = 1] = "Months";
+    Views[Views["Years"] = 2] = "Years";
+    Views[Views["Decades"] = 3] = "Decades";
+})(Views || (exports.Views = Views = {}));
+var WeekStart;
+(function (WeekStart) {
+    WeekStart[WeekStart["Saturday"] = 0] = "Saturday";
+    WeekStart[WeekStart["Sunday"] = 1] = "Sunday";
+    WeekStart[WeekStart["Monday"] = 2] = "Monday";
+    WeekStart[WeekStart["Tuesday"] = 3] = "Tuesday";
+    WeekStart[WeekStart["Wednesday"] = 4] = "Wednesday";
+    WeekStart[WeekStart["Thursday"] = 5] = "Thursday";
+    WeekStart[WeekStart["Friday"] = 6] = "Friday";
+})(WeekStart || (exports.WeekStart = WeekStart = {}));
+const isDateInRange = (date, minDate, maxDate) => {
+    const dateTime = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+    if (minDate && maxDate) {
+        const minDateTime = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate()).getTime();
+        const maxDateTime = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate()).getTime();
+        return dateTime >= minDateTime && dateTime <= maxDateTime;
+    }
+    if (minDate) {
+        const minDateTime = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate()).getTime();
+        return dateTime >= minDateTime;
+    }
+    if (maxDate) {
+        const maxDateTime = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate()).getTime();
+        return dateTime <= maxDateTime;
+    }
+    return true;
+};
+exports.isDateInRange = isDateInRange;
+const isDateEqual = (date, selectedDate) => {
+    date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+    return date.getTime() === selectedDate.getTime();
+};
+exports.isDateEqual = isDateEqual;
+const getFirstDateInRange = (date, minDate, maxDate) => {
+    if (!(0, exports.isDateInRange)(date, minDate, maxDate)) {
+        if (minDate && date < minDate) {
+            date = minDate;
+        }
+        else if (maxDate && date > maxDate) {
+            date = maxDate;
+        }
+    }
+    return date;
+};
+exports.getFirstDateInRange = getFirstDateInRange;
+const getFirstDayOfTheMonth = (date, weekStart) => {
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const dayOfWeek = firstDayOfMonth.getDay();
+    const diff = (dayOfWeek - weekStart + 7) % 7;
+    return (0, exports.addDays)(firstDayOfMonth, -diff);
+};
+exports.getFirstDayOfTheMonth = getFirstDayOfTheMonth;
+const getWeekDays = (lang, weekStart) => {
+    const weekdays = [];
+    const date = new Date(0);
+    const formatter = new Intl.DateTimeFormat(lang, { weekday: 'short' });
+    for (let i = 0; i < 7; i++) {
+        const dayIndex = (i + weekStart + 1) % 7;
+        const formattedWeekday = formatter.format((0, exports.addDays)(date, dayIndex + 1));
+        weekdays.push(formattedWeekday.slice(0, 2).charAt(0).toUpperCase() + formattedWeekday.slice(1, 3));
+    }
+    return weekdays;
+};
+exports.getWeekDays = getWeekDays;
+const addDays = (date, amount) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + amount);
+    return newDate;
+};
+exports.addDays = addDays;
+const addMonths = (date, amount) => {
+    const newDate = new Date(date);
+    newDate.setMonth(newDate.getMonth() + amount);
+    return newDate;
+};
+exports.addMonths = addMonths;
+const addYears = (date, amount) => {
+    const newDate = new Date(date);
+    newDate.setFullYear(newDate.getFullYear() + amount);
+    return newDate;
+};
+exports.addYears = addYears;
+const getFormattedDate = (language, date, options) => {
+    let defaultOptions = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    };
+    if (options) {
+        defaultOptions = options;
+    }
+    return new Intl.DateTimeFormat(language, defaultOptions).format(date);
+};
+exports.getFormattedDate = getFormattedDate;
+const startOfYearPeriod = (date, years) => {
+    const year = date.getFullYear();
+    return Math.floor(year / years) * years;
+};
+exports.startOfYearPeriod = startOfYearPeriod;
+const isDateInDecade = (date, startYear) => {
+    const year = date.getFullYear();
+    const endYear = startYear + 9;
+    return year >= startYear && year <= endYear;
+};
+exports.isDateInDecade = isDateInDecade;
+const isDateRangeInDecade = (startDate, endDate, decadeStart, decadeEnd) => {
+    const startYear = startDate.getFullYear();
+    const endYear = endDate.getFullYear();
+    if (decadeStart && decadeEnd) {
+        // Check if the start and end years of the date range are within the decade
+        const isStartYearInRange = (0, exports.isDateInRange)(new Date(startYear, 0, 1), new Date(decadeStart, 0, 1), new Date(decadeEnd, 11, 31));
+        const isEndYearInRange = (0, exports.isDateInRange)(new Date(endYear, 11, 31), new Date(decadeStart, 0, 1), new Date(decadeEnd, 11, 31));
+        return isStartYearInRange && isEndYearInRange;
+    }
+    // If decadeStart or decadeEnd is not provided, treat it as an open-ended range
+    return true;
+};
+exports.isDateRangeInDecade = isDateRangeInDecade;
+
+
+/***/ }),
+
+/***/ 5597:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -7358,81 +8060,210 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Dropdown = void 0;
+exports.WeekStart = void 0;
+const helpers_1 = __webpack_require__(5269);
+Object.defineProperty(exports, "WeekStart", ({ enumerable: true, get: function () { return helpers_1.WeekStart; } }));
+__exportStar(__webpack_require__(6845), exports);
+
+
+/***/ }),
+
+/***/ 5119:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.datePickerTheme = void 0;
+exports.datePickerTheme = {
+    root: {
+        base: 'relative',
+    },
+    popup: {
+        root: {
+            base: 'absolute top-10 z-50 block pt-2',
+            inline: 'relative top-0 z-auto',
+            inner: 'inline-block rounded-lg bg-white p-4 shadow-lg dark:bg-gray-700',
+        },
+        header: {
+            base: '',
+            title: 'px-2 py-3 text-center font-semibold text-gray-900 dark:text-white',
+            selectors: {
+                base: 'flex justify-between mb-2',
+                button: {
+                    base: 'text-sm rounded-lg text-gray-900 dark:text-white bg-white dark:bg-gray-700 font-semibold py-2.5 px-5 hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-200 view-switch',
+                    prev: '',
+                    next: '',
+                    view: '',
+                },
+            },
+        },
+        view: {
+            base: 'p-1',
+        },
+        footer: {
+            base: 'flex mt-2 space-x-2',
+            button: {
+                base: 'w-full rounded-lg px-5 py-2 text-center text-sm font-medium focus:ring-4 focus:ring-cyan-300',
+                today: 'bg-cyan-700 text-white hover:bg-cyan-800 dark:bg-cyan-600 dark:hover:bg-cyan-700',
+                clear: 'border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600',
+            },
+        },
+    },
+    views: {
+        days: {
+            header: {
+                base: 'grid grid-cols-7 mb-1',
+                title: 'dow h-6 text-center text-sm font-medium leading-6 text-gray-500 dark:text-gray-400',
+            },
+            items: {
+                base: 'grid w-64 grid-cols-7',
+                item: {
+                    base: 'block flex-1 cursor-pointer rounded-lg border-0 text-center text-sm font-semibold leading-9 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600 ',
+                    selected: 'bg-cyan-700 text-white hover:bg-cyan-600',
+                    disabled: 'text-gray-500',
+                },
+            },
+        },
+        months: {
+            items: {
+                base: 'grid w-64 grid-cols-4',
+                item: {
+                    base: 'block flex-1 cursor-pointer rounded-lg border-0 text-center text-sm font-semibold leading-9 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600',
+                    selected: 'bg-cyan-700 text-white hover:bg-cyan-600',
+                    disabled: 'text-gray-500',
+                },
+            },
+        },
+        years: {
+            items: {
+                base: 'grid w-64 grid-cols-4',
+                item: {
+                    base: 'block flex-1 cursor-pointer rounded-lg border-0 text-center text-sm font-semibold leading-9 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600 text-gray-900',
+                    selected: 'bg-cyan-700 text-white hover:bg-cyan-600',
+                    disabled: 'text-gray-500',
+                },
+            },
+        },
+        decades: {
+            items: {
+                base: 'grid w-64 grid-cols-4',
+                item: {
+                    base: 'block flex-1 cursor-pointer rounded-lg border-0 text-center text-sm font-semibold leading-9  hover:bg-gray-100 dark:text-white dark:hover:bg-gray-600 text-gray-900',
+                    selected: 'bg-cyan-700 text-white hover:bg-cyan-600',
+                    disabled: 'text-gray-500',
+                },
+            },
+        },
+    },
+};
+
+
+/***/ }),
+
+/***/ 5716:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Dropdown = exports.DropdownContext = void 0;
 const jsx_runtime_1 = __webpack_require__(6786);
-const react_1 = __importStar(__webpack_require__(8038));
+const react_1 = __webpack_require__(6956);
+const react_2 = __webpack_require__(8038);
 const hi_1 = __webpack_require__(5655);
 const __1 = __webpack_require__(9920);
-const Floating_1 = __webpack_require__(6202);
 const merge_deep_1 = __webpack_require__(4901);
 const DropdownDivider_1 = __webpack_require__(9750);
 const DropdownHeader_1 = __webpack_require__(6017);
 const DropdownItem_1 = __webpack_require__(6791);
+const tailwind_merge_1 = __webpack_require__(3233);
+const use_floating_1 = __webpack_require__(4665);
 const icons = {
     top: hi_1.HiOutlineChevronUp,
     right: hi_1.HiOutlineChevronRight,
     bottom: hi_1.HiOutlineChevronDown,
     left: hi_1.HiOutlineChevronLeft,
 };
+const Trigger = ({ refs, children, inline, theme, disabled, setButtonWidth, getReferenceProps, renderTrigger, ...buttonProps }) => {
+    const ref = refs.reference;
+    const a11yProps = getReferenceProps();
+    (0, react_2.useEffect)(() => {
+        if (ref.current) {
+            setButtonWidth?.(ref.current.clientWidth);
+        }
+    }, [ref, setButtonWidth]);
+    if (renderTrigger) {
+        const triggerElement = renderTrigger(theme);
+        return (0, react_2.cloneElement)(triggerElement, { ref: refs.setReference, disabled, ...a11yProps, ...triggerElement.props });
+    }
+    return inline ? ((0, jsx_runtime_1.jsx)("button", { type: "button", ref: refs.setReference, className: theme?.inlineWrapper, disabled: disabled, ...a11yProps, children: children })) : ((0, jsx_runtime_1.jsx)(__1.Button, { ...buttonProps, disabled: disabled, type: "button", ref: refs.setReference, ...a11yProps, children: children }));
+};
+exports.DropdownContext = (0, react_2.createContext)({});
 const DropdownComponent = ({ children, className, dismissOnClick = true, theme: customTheme = {}, renderTrigger, ...props }) => {
-    const id = (0, react_1.useId)();
+    const [open, setOpen] = (0, react_2.useState)(false);
+    const [activeIndex, setActiveIndex] = (0, react_2.useState)(null);
+    const [selectedIndex, setSelectedIndex] = (0, react_2.useState)(null);
+    const [buttonWidth, setButtonWidth] = (0, react_2.useState)(undefined);
+    const elementsRef = (0, react_2.useRef)([]);
+    const labelsRef = (0, react_2.useRef)([]);
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.dropdown, customTheme);
     const theirProps = props;
-    const { placement = props.inline ? 'bottom-start' : 'bottom', trigger = 'click', label, inline, floatingArrow = false, arrowIcon = true, ...buttonProps } = theirProps;
-    const Icon = (0, react_1.useMemo)(() => {
+    const dataTestId = props['data-testid'] || 'flowbite-dropdown-target';
+    const { placement = props.inline ? 'bottom-start' : 'bottom', trigger = 'click', label, inline, arrowIcon = true, ...buttonProps } = theirProps;
+    const handleSelect = (0, react_2.useCallback)((index) => {
+        setSelectedIndex(index);
+        setOpen(false);
+    }, []);
+    const handleTypeaheadMatch = (0, react_2.useCallback)((index) => {
+        if (open) {
+            setActiveIndex(index);
+        }
+        else {
+            handleSelect(index);
+        }
+    }, [open, handleSelect]);
+    const { context, floatingStyles, refs } = (0, use_floating_1.useBaseFLoating)({
+        open,
+        setOpen,
+        placement,
+    });
+    const listNav = (0, react_1.useListNavigation)(context, {
+        listRef: elementsRef,
+        activeIndex,
+        selectedIndex,
+        onNavigate: setActiveIndex,
+    });
+    const typeahead = (0, react_1.useTypeahead)(context, {
+        listRef: labelsRef,
+        activeIndex,
+        selectedIndex,
+        onMatch: handleTypeaheadMatch,
+    });
+    const { getReferenceProps, getFloatingProps, getItemProps } = (0, use_floating_1.useFloatingInteractions)({
+        context,
+        role: 'menu',
+        trigger,
+        interactions: [listNav, typeahead],
+    });
+    const Icon = (0, react_2.useMemo)(() => {
         const [p] = placement.split('-');
         return icons[p] ?? hi_1.HiOutlineChevronDown;
     }, [placement]);
-    const [closeRequestKey, setCloseRequestKey] = (0, react_1.useState)(undefined);
-    const [buttonWidth, setButtonWidth] = (0, react_1.useState)(undefined);
-    // Extends DropdownItem's onClick to trigger a close request to the Floating component
-    const attachCloseListener = (0, react_1.useCallback)(
-    // @ts-ignore TODO: Rewrite Dropdown
-    (node) => {
-        if (!react_1.default.isValidElement(node))
-            return node;
-        if (node.type === DropdownItem_1.DropdownItem)
-            return react_1.default.cloneElement(node, {
-                // @ts-ignore TODO: Rewrite Dropdown
-                onClick: () => {
-                    node.props.onClick?.();
-                    dismissOnClick && setCloseRequestKey(id);
-                },
-            });
-        if (node.props.children && typeof node.props.children === 'object') {
-            return react_1.default.cloneElement(node, {
-                // @ts-ignore TODO: Rewrite Dropdown
-                children: react_1.Children.map(node.props.children, attachCloseListener),
-            });
-        }
-        return node;
-    }, [dismissOnClick, id]);
-    const content = (0, react_1.useMemo)(() => (0, jsx_runtime_1.jsx)("ul", { className: theme.content, children: react_1.Children.map(children, attachCloseListener) }), [attachCloseListener, children, theme.content]);
-    const TriggerWrapper = ({ children, setButtonWidth }) => {
-        const ref = (0, react_1.useRef)(null);
-        (0, react_1.useEffect)(() => {
-            if (ref.current)
-                setButtonWidth?.(ref.current.clientWidth);
-        }, [ref]);
-        return inline ? ((0, jsx_runtime_1.jsx)("button", { type: "button", ref: ref, className: theme.inlineWrapper, children: children })) : ((0, jsx_runtime_1.jsx)(__1.Button, { type: "button", ref: ref, ...buttonProps, children: children }));
-    };
-    return ((0, jsx_runtime_1.jsx)(Floating_1.Floating, { content: content, style: "auto", animation: "duration-100", placement: placement, arrow: floatingArrow, trigger: trigger, theme: theme.floating, closeRequestKey: closeRequestKey, className: className, minWidth: buttonWidth, children: renderTrigger ? (renderTrigger(theme)) : ((0, jsx_runtime_1.jsxs)(TriggerWrapper, { setButtonWidth: setButtonWidth, children: [label, arrowIcon && (0, jsx_runtime_1.jsx)(Icon, { className: theme.arrowIcon })] })) }));
+    return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsxs)(Trigger, { ...buttonProps, refs: refs, inline: inline, theme: theme, "data-testid": dataTestId, className: (0, tailwind_merge_1.twMerge)(theme.floating.target, buttonProps.className), setButtonWidth: setButtonWidth, getReferenceProps: getReferenceProps, renderTrigger: renderTrigger, children: [label, arrowIcon && (0, jsx_runtime_1.jsx)(Icon, { className: theme.arrowIcon })] }), (0, jsx_runtime_1.jsx)(exports.DropdownContext.Provider, { value: {
+                    activeIndex,
+                    dismissOnClick,
+                    getItemProps,
+                    handleSelect,
+                }, children: open && ((0, jsx_runtime_1.jsx)(react_1.FloatingFocusManager, { context: context, modal: false, children: (0, jsx_runtime_1.jsx)("div", { ref: refs.setFloating, style: { ...floatingStyles, minWidth: buttonWidth }, "data-testid": "flowbite-dropdown", "aria-expanded": open, ...getFloatingProps({
+                            className: (0, tailwind_merge_1.twMerge)(theme.floating.base, theme.floating.animation, 'duration-100', !open && theme.floating.hidden, theme.floating.style.auto, className),
+                        }), children: (0, jsx_runtime_1.jsx)(react_1.FloatingList, { elementsRef: elementsRef, labelsRef: labelsRef, children: (0, jsx_runtime_1.jsx)("ul", { className: theme.content, tabIndex: -1, children: children }) }) }) })) })] }));
 };
 DropdownComponent.displayName = 'Dropdown';
-DropdownItem_1.DropdownItem.displayName = 'Dropdown.Item';
 DropdownHeader_1.DropdownHeader.displayName = 'Dropdown.Header';
 DropdownDivider_1.DropdownDivider.displayName = 'Dropdown.Divider';
 exports.Dropdown = Object.assign(DropdownComponent, {
@@ -7491,12 +8322,25 @@ exports.DropdownHeader = DropdownHeader;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DropdownItem = void 0;
 const jsx_runtime_1 = __webpack_require__(6786);
+const react_1 = __webpack_require__(6956);
+const react_2 = __webpack_require__(8038);
 const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
+const ButtonBase_1 = __webpack_require__(8360);
+const Dropdown_1 = __webpack_require__(5716);
 const DropdownItem = ({ children, className, icon: Icon, onClick, theme: customTheme = {}, ...props }) => {
+    const { ref, index } = (0, react_1.useListItem)({ label: typeof children === 'string' ? children : undefined });
+    const { activeIndex, dismissOnClick, getItemProps, handleSelect } = (0, react_2.useContext)(Dropdown_1.DropdownContext);
+    const isActive = activeIndex === index;
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.dropdown.floating.item, customTheme);
-    return ((0, jsx_runtime_1.jsxs)("li", { className: (0, tailwind_merge_1.twMerge)(theme.base, className), onClick: onClick, ...props, children: [Icon && (0, jsx_runtime_1.jsx)(Icon, { className: theme.icon }), children] }));
+    const theirProps = props;
+    return ((0, jsx_runtime_1.jsx)("li", { role: "menuitem", className: theme.container, children: (0, jsx_runtime_1.jsxs)(ButtonBase_1.ButtonBase, { ref: ref, className: (0, tailwind_merge_1.twMerge)(theme.base, className), ...theirProps, ...getItemProps({
+                onClick: () => {
+                    onClick && onClick();
+                    dismissOnClick && handleSelect(null);
+                },
+            }), tabIndex: isActive ? 0 : -1, children: [Icon && (0, jsx_runtime_1.jsx)(Icon, { className: theme.icon }), children] }) }));
 };
 exports.DropdownItem = DropdownItem;
 
@@ -7537,7 +8381,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dropdownTheme = void 0;
 exports.dropdownTheme = {
     arrowIcon: 'ml-2 h-4 w-4',
-    content: 'py-1',
+    content: 'py-1 focus:outline-none',
     floating: {
         animation: 'transition-opacity',
         arrow: {
@@ -7549,13 +8393,14 @@ exports.dropdownTheme = {
             },
             placement: '-4px',
         },
-        base: 'z-10 w-fit rounded divide-y divide-gray-100 shadow',
+        base: 'z-10 w-fit rounded divide-y divide-gray-100 shadow focus:outline-none',
         content: 'py-1 text-sm text-gray-700 dark:text-gray-200',
         divider: 'my-1 h-px bg-gray-100 dark:bg-gray-600',
         header: 'block py-2 px-4 text-sm text-gray-700 dark:text-gray-200',
         hidden: 'invisible opacity-0',
         item: {
-            base: 'flex items-center justify-start py-2 px-4 text-sm text-gray-700 cursor-pointer hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white',
+            container: '',
+            base: 'flex items-center justify-start py-2 px-4 text-sm text-gray-700 cursor-pointer w-full hover:bg-gray-100 focus:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none dark:hover:text-white dark:focus:bg-gray-600 dark:focus:text-white',
             icon: 'mr-2 h-4 w-4',
         },
         style: {
@@ -7651,6 +8496,112 @@ exports.fileInputTheme = {
 
 /***/ }),
 
+/***/ 747:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.floatingLabelTheme = void 0;
+exports.floatingLabelTheme = {
+    input: {
+        default: {
+            filled: {
+                sm: 'peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 pb-2.5 pt-5 text-xs text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500',
+                md: 'peer block w-full appearance-none rounded-t-lg border-0 border-b-2 border-gray-300 bg-gray-50 px-2.5 pb-2.5 pt-5 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500',
+            },
+            outlined: {
+                sm: 'border-1 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-xs text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500',
+                md: 'border-1 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500',
+            },
+            standard: {
+                sm: 'block py-2.5 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer',
+                md: 'block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer',
+            },
+        },
+        success: {
+            filled: {
+                sm: 'block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-xs text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-green-600 dark:border-green-500 appearance-none dark:text-white dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer',
+                md: 'block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-green-600 dark:border-green-500 appearance-none dark:text-white dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer',
+            },
+            outlined: {
+                sm: 'block px-2.5 pb-2.5 pt-4 w-full text-xs text-gray-900 bg-transparent rounded-lg border-1 border-green-600 appearance-none dark:text-white dark:border-green-500 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer',
+                md: 'block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-green-600 appearance-none dark:text-white dark:border-green-500 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer',
+            },
+            standard: {
+                sm: 'block py-2.5 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-green-600 appearance-none dark:text-white dark:border-green-500 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer',
+                md: 'block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-green-600 appearance-none dark:text-white dark:border-green-500 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer',
+            },
+        },
+        error: {
+            filled: {
+                sm: 'block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-xs text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 appearance-none dark:text-white dark:border-red-500 focus:outline-none focus:ring-0 border-red-600 focus:border-red-600 dark:focus-border-red-500 peer',
+                md: 'block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 appearance-none dark:text-white dark:border-red-500 focus:outline-none focus:ring-0 border-red-600 focus:border-red-600 dark:focus-border-red-500 peer',
+            },
+            outlined: {
+                sm: 'block px-2.5 pb-2.5 pt-4 w-full text-xs text-gray-900 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer',
+                md: 'block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer',
+            },
+            standard: {
+                sm: 'block py-2.5 px-0 w-full text-xs text-gray-900 bg-transparent border-0 border-b-2 border-red-600 appearance-none dark:text-white dark:border-red-500 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer',
+                md: 'block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-red-600 appearance-none dark:text-white dark:border-red-500 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer',
+            },
+        },
+    },
+    label: {
+        default: {
+            filled: {
+                sm: 'absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transition-transform text-xs text-gray-500  duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 dark:text-gray-400 peer-focus:dark:text-blue-500',
+                md: 'absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transition-transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-600 dark:text-gray-400 peer-focus:dark:text-blue-500',
+            },
+            outlined: {
+                sm: 'absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-75 transition-transform bg-white px-2 text-xs text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-blue-600 dark:bg-gray-900 dark:text-gray-400 peer-focus:dark:text-blue-500',
+                md: 'absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-75 transition-transform bg-white px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 peer-focus:text-blue-600 dark:bg-gray-900 dark:text-gray-400 peer-focus:dark:text-blue-500',
+            },
+            standard: {
+                sm: 'absolute text-xs text-gray-500 dark:text-gray-400  transition-transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] duration-300 peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6',
+                md: 'absolute text-sm text-gray-500 dark:text-gray-400  transition-transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] duration-300 peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6',
+            },
+        },
+        success: {
+            filled: {
+                sm: 'absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transition-transform text-sm text-green-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-green-500',
+                md: 'absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transition-transform text-sm text-green-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-green-500',
+            },
+            outlined: {
+                sm: 'absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-75 transition-transform bg-white px-2 text-sm text-green-600 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 dark:bg-gray-900 dark:text-green-500',
+                md: 'absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-75 transition-transform bg-white px-2 text-sm text-green-600 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 dark:bg-gray-900 dark:text-green-500',
+            },
+            standard: {
+                sm: 'absolute text-xs text-green-600 dark:text-green-500  transition-transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] duration-300 peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6',
+                md: 'absolute text-sm text-green-600 dark:text-green-500  transition-transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] duration-300 peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6',
+            },
+        },
+        error: {
+            filled: {
+                sm: 'absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transition-transform text-xs text-red-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-red-500',
+                md: 'absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 transition-transform text-xs text-red-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-red-500',
+            },
+            outlined: {
+                sm: 'absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-75 transition-transform bg-white px-2 text-xs text-red-600 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 dark:bg-gray-900 dark:text-red-500',
+                md: 'absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-75 transition-transform bg-white px-2 text-xs text-red-600 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 dark:bg-gray-900 dark:text-red-500',
+            },
+            standard: {
+                sm: 'absolute text-xs text-red-600 dark:text-red-500  transition-transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] duration-300 peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6',
+                md: 'absolute text-sm text-red-600 dark:text-red-500  transition-transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] duration-300 peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6',
+            },
+        },
+    },
+    helperText: {
+        default: 'mt-2 text-xs text-gray-600 dark:text-gray-400',
+        success: 'mt-2 text-xs text-green-600 dark:text-green-400',
+        error: 'mt-2 text-xs text-red-600 dark:text-red-400',
+    },
+};
+
+
+/***/ }),
+
 /***/ 4810:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -7659,41 +8610,36 @@ exports.fileInputTheme = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Floating = void 0;
 const jsx_runtime_1 = __webpack_require__(6786);
-const react_1 = __webpack_require__(3168);
+const react_1 = __webpack_require__(6956);
 const react_2 = __webpack_require__(8038);
 const tailwind_merge_1 = __webpack_require__(3233);
-const floating_1 = __webpack_require__(602);
+const use_floating_1 = __webpack_require__(4665);
+const helpers_1 = __webpack_require__(2473);
 /**
  * @see https://floating-ui.com/docs/react-dom-interactions
  */
-const Floating = ({ animation = 'duration-300', arrow = true, children, className, closeRequestKey, content, placement = 'top', style = 'dark', theme, trigger = 'hover', minWidth, ...props }) => {
+const Floating = ({ animation = 'duration-300', arrow = true, children, className, content, placement = 'top', style = 'dark', theme, trigger = 'hover', minWidth, ...props }) => {
     const arrowRef = (0, react_2.useRef)(null);
     const [open, setOpen] = (0, react_2.useState)(false);
-    const floatingTooltip = (0, react_1.useFloating)({
-        middleware: (0, floating_1.getMiddleware)({ arrowRef, placement }),
-        onOpenChange: setOpen,
+    const floatingProperties = (0, use_floating_1.useBaseFLoating)({
         open,
-        placement: (0, floating_1.getPlacement)({ placement }),
+        placement,
+        arrowRef,
+        setOpen,
     });
-    const { context, middlewareData: { arrow: { x: arrowX, y: arrowY } = {} }, refs, strategy, update, x, y, } = floatingTooltip;
-    const { getFloatingProps, getReferenceProps } = (0, react_1.useInteractions)([
-        (0, react_1.useClick)(context, { enabled: trigger === 'click' }),
-        (0, react_1.useFocus)(context),
-        (0, react_1.useHover)(context, {
-            enabled: trigger === 'hover',
-            handleClose: (0, react_1.safePolygon)(),
-        }),
-        (0, react_1.useRole)(context, { role: 'tooltip' }),
-    ]);
+    const { context, middlewareData: { arrow: { x: arrowX, y: arrowY } = {} }, refs, strategy, update, x, y, } = floatingProperties;
+    const focus = (0, react_1.useFocus)(context);
+    const { getFloatingProps, getReferenceProps } = (0, use_floating_1.useFloatingInteractions)({
+        context,
+        role: 'tooltip',
+        trigger,
+        interactions: [focus],
+    });
     (0, react_2.useEffect)(() => {
         if (refs.reference.current && refs.floating.current && open) {
             return (0, react_1.autoUpdate)(refs.reference.current, refs.floating.current, update);
         }
     }, [open, refs.floating, refs.reference, update]);
-    (0, react_2.useEffect)(() => {
-        if (closeRequestKey !== undefined)
-            setOpen(false);
-    }, [closeRequestKey]);
     return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { ref: refs.setReference, className: theme.target, "data-testid": "flowbite-tooltip-target", ...getReferenceProps(), children: children }), (0, jsx_runtime_1.jsxs)("div", { ref: refs.setFloating, "data-testid": "flowbite-tooltip", ...getFloatingProps({
                     className: (0, tailwind_merge_1.twMerge)(theme.base, animation && `${theme.animation} ${animation}`, !open && theme.hidden, theme.style[style], className),
                     style: {
@@ -7708,10 +8654,49 @@ const Floating = ({ animation = 'duration-300', arrow = true, children, classNam
                             left: arrowX ?? ' ',
                             right: ' ',
                             bottom: ' ',
-                            [(0, floating_1.getArrowPlacement)({ placement: floatingTooltip.placement })]: theme.arrow.placement,
+                            [(0, helpers_1.getArrowPlacement)({ placement: floatingProperties.placement })]: theme.arrow.placement,
                         }, children: "\u00A0" }))] })] }));
 };
 exports.Floating = Floating;
+
+
+/***/ }),
+
+/***/ 2473:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getArrowPlacement = exports.getPlacement = exports.getMiddleware = void 0;
+const react_1 = __webpack_require__(6956);
+/**
+ * @see https://floating-ui.com/docs/middleware
+ */
+const getMiddleware = ({ arrowRef, placement, }) => {
+    const middleware = [];
+    middleware.push((0, react_1.offset)(8));
+    middleware.push(placement === 'auto' ? (0, react_1.autoPlacement)() : (0, react_1.flip)());
+    middleware.push((0, react_1.shift)({ padding: 8 }));
+    if (arrowRef?.current) {
+        middleware.push((0, react_1.arrow)({ element: arrowRef.current }));
+    }
+    return middleware;
+};
+exports.getMiddleware = getMiddleware;
+const getPlacement = ({ placement }) => {
+    return placement === 'auto' ? undefined : placement;
+};
+exports.getPlacement = getPlacement;
+const getArrowPlacement = ({ placement }) => {
+    return {
+        top: 'bottom',
+        right: 'left',
+        bottom: 'top',
+        left: 'right',
+    }[placement.split('-')[0]];
+};
+exports.getArrowPlacement = getArrowPlacement;
 
 
 /***/ }),
@@ -7801,7 +8786,11 @@ const ThemeProvider = ({ children, value }) => {
 };
 exports.ThemeProvider = ThemeProvider;
 const useTheme = () => {
-    return (0, react_1.useContext)(exports.ThemeContext);
+    const context = (0, react_1.useContext)(exports.ThemeContext);
+    if (!context) {
+        throw new Error('useTheme should be used within the ThemeContext provider!');
+    }
+    return context;
 };
 exports.useTheme = useTheme;
 const prefersColorScheme = () => {
@@ -7811,8 +8800,8 @@ const prefersColorScheme = () => {
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 const useThemeMode = () => {
-    const onToggleMode = () => {
-        const newMode = mode === 'dark' ? 'light' : 'dark';
+    const onToggleMode = (value) => {
+        const newMode = value ?? (mode === 'dark' ? 'light' : 'dark');
         setModeOnBody(newMode);
         setMode(newMode);
     };
@@ -7827,7 +8816,7 @@ const useThemeMode = () => {
             document.documentElement.classList.remove('dark');
         }
     }, []);
-    const { mode: initialMode, toggleMode = onToggleMode } = (0, react_1.useContext)(exports.ThemeContext);
+    const { mode: initialMode, toggleMode = onToggleMode } = (0, exports.useTheme)();
     const [mode, setMode] = (0, react_1.useState)('light');
     (0, react_1.useEffect)(() => {
         if (initialMode) {
@@ -8194,6 +9183,69 @@ exports.helperTextTheme = {
 
 /***/ }),
 
+/***/ 3060:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Kbd = void 0;
+const jsx_runtime_1 = __webpack_require__(6786);
+const tailwind_merge_1 = __webpack_require__(3233);
+const __1 = __webpack_require__(9920);
+const merge_deep_1 = __webpack_require__(4901);
+const Kbd = ({ children, className, icon: Icon, theme: customTheme = {}, ...props }) => {
+    const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.kbd, customTheme);
+    return ((0, jsx_runtime_1.jsxs)("span", { className: (0, tailwind_merge_1.twMerge)(theme.root.base, className), "data-testid": "flowbite-kbd", ...props, children: [Icon && (0, jsx_runtime_1.jsx)(Icon, { className: theme.root.icon, "data-testid": "flowbite-kbd-icon" }), children] }));
+};
+exports.Kbd = Kbd;
+exports.Kbd.displayName = 'Kbd';
+
+
+/***/ }),
+
+/***/ 4866:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(3060), exports);
+
+
+/***/ }),
+
+/***/ 3270:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.kbdTheme = void 0;
+exports.kbdTheme = {
+    root: {
+        base: 'px-2 py-1.5 mr-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 dark:text-gray-100 dark:border-gray-500',
+        icon: 'inline-block',
+    },
+};
+
+
+/***/ }),
+
 /***/ 4858:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -8252,7 +9304,7 @@ exports.labelTheme = {
         base: 'text-sm font-medium',
         disabled: 'opacity-50',
         colors: {
-            default: 'text-gray-900 dark:text-gray-300',
+            default: 'text-gray-900 dark:text-white',
             info: 'text-cyan-500 dark:text-cyan-600',
             failure: 'text-red-700 dark:text-red-500',
             warning: 'text-yellow-500 dark:text-yellow-600',
@@ -8323,7 +9375,7 @@ exports.listGroupTheme = {
     item: {
         base: '[&>*]:first:rounded-t-lg [&>*]:last:rounded-b-lg [&>*]:last:border-b-0',
         link: {
-            base: 'flex w-full border-b border-gray-200 py-2 px-4 dark:border-gray-600',
+            base: 'flex items-center w-full border-b border-gray-200 py-2 px-4 dark:border-gray-600',
             active: {
                 off: 'hover:bg-gray-100 hover:text-cyan-700 focus:text-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:text-white dark:focus:ring-gray-500',
                 on: 'bg-cyan-700 text-white dark:bg-gray-800',
@@ -8348,68 +9400,32 @@ exports.listGroupTheme = {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Modal = void 0;
 const jsx_runtime_1 = __webpack_require__(6786);
-const react_1 = __webpack_require__(8038);
-const react_dom_1 = __webpack_require__(8704);
+const react_1 = __webpack_require__(6956);
+const react_2 = __webpack_require__(8038);
 const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
-const is_client_1 = __webpack_require__(1673);
 const merge_deep_1 = __webpack_require__(4901);
 const ModalBody_1 = __webpack_require__(1530);
 const ModalContext_1 = __webpack_require__(1090);
 const ModalFooter_1 = __webpack_require__(9753);
 const ModalHeader_1 = __webpack_require__(5602);
-const ModalComponent = ({ children, className, dismissible = false, onClose, popup, position = 'center', root, show, size = '2xl', theme: customTheme = {}, ...props }) => {
+const ModalComponent = (0, react_2.forwardRef)(({ children, className, dismissible = false, onClose, popup, position = 'center', root, show, size = '2xl', theme: customTheme = {}, initialFocus, ...props }, theirRef) => {
+    const [headerId, setHeaderId] = (0, react_2.useState)(undefined);
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.modal, customTheme);
-    const [mounted, setMounted] = (0, react_1.useState)(false);
-    // Declare a ref to store a reference to a div element.
-    const containerRef = (0, react_1.useRef)(null);
-    (0, react_1.useEffect)(() => {
-        setMounted(true);
-        return () => {
-            const container = containerRef.current;
-            // If a container exists on unmount, it is removed from the DOM and
-            // garbage collected.
-            if (container) {
-                container.parentNode?.removeChild(container);
-                containerRef.current = null;
-            }
-        };
-    }, []);
-    // Close modal when escape key is pressed
-    (0, react_1.useEffect)(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === 'Escape' && onClose) {
-                onClose();
-            }
-        };
-        document.addEventListener('keydown', handleKeyDown);
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [onClose]);
-    if (!mounted) {
+    const { context } = (0, react_1.useFloating)({
+        open: show,
+        onOpenChange: () => onClose && onClose(),
+    });
+    const ref = (0, react_1.useMergeRefs)([context.refs.setFloating, theirRef]);
+    const click = (0, react_1.useClick)(context);
+    const dismiss = (0, react_1.useDismiss)(context, { outsidePressEvent: 'mousedown', enabled: dismissible });
+    const role = (0, react_1.useRole)(context);
+    const { getFloatingProps } = (0, react_1.useInteractions)([click, dismiss, role]);
+    if (!show) {
         return null;
     }
-    // If the current value of the ref is falsy (e.g. null), set it to a new div
-    // element.
-    if (!containerRef.current) {
-        containerRef.current = document.createElement('div');
-    }
-    // If the current value of the ref is not already a child of the root element,
-    // append it or replace its parent.
-    if ((0, is_client_1.isClient)() && containerRef.current.parentNode !== root) {
-        root ||= document.body;
-        root.appendChild(containerRef.current);
-        // Prevent scrolling of the root element when the modal is shown
-        root.style.overflow = show ? 'hidden' : '';
-    }
-    const handleOnClick = (e) => {
-        if (dismissible && e.target === e.currentTarget && onClose) {
-            onClose();
-        }
-    };
-    return (0, react_dom_1.createPortal)((0, jsx_runtime_1.jsx)(ModalContext_1.ModalContext.Provider, { value: { popup, onClose }, children: (0, jsx_runtime_1.jsx)("div", { "aria-hidden": !show, "data-testid": "modal", onClick: handleOnClick, role: "dialog", className: (0, tailwind_merge_1.twMerge)(theme.root.base, theme.root.positions[position], show ? theme.root.show.on : theme.root.show.off, className), ...props, children: (0, jsx_runtime_1.jsx)("div", { className: (0, tailwind_merge_1.twMerge)(theme.content.base, theme.root.sizes[size]), children: (0, jsx_runtime_1.jsx)("div", { className: theme.content.inner, children: children }) }) }) }), containerRef.current);
-};
+    return ((0, jsx_runtime_1.jsx)(ModalContext_1.ModalContext.Provider, { value: { popup, onClose, setHeaderId }, children: (0, jsx_runtime_1.jsx)(react_1.FloatingPortal, { root: root, children: (0, jsx_runtime_1.jsx)(react_1.FloatingOverlay, { lockScroll: true, "data-testid": "modal-overlay", className: (0, tailwind_merge_1.twMerge)(theme.root.base, theme.root.positions[position], show ? theme.root.show.on : theme.root.show.off, className), ...props, children: (0, jsx_runtime_1.jsx)(react_1.FloatingFocusManager, { context: context, initialFocus: initialFocus, children: (0, jsx_runtime_1.jsx)("div", { ref: ref, ...getFloatingProps(props), "aria-labelledby": headerId, className: (0, tailwind_merge_1.twMerge)(theme.content.base, theme.root.sizes[size]), children: (0, jsx_runtime_1.jsx)("div", { className: theme.content.inner, children: children }) }) }) }) }) }));
+});
 ModalComponent.displayName = 'Modal';
 ModalHeader_1.ModalHeader.displayName = 'Modal.Header';
 ModalBody_1.ModalBody.displayName = 'Modal.Body';
@@ -8492,15 +9508,22 @@ exports.ModalFooter = ModalFooter;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ModalHeader = void 0;
 const jsx_runtime_1 = __webpack_require__(6786);
+const react_1 = __webpack_require__(8038);
 const hi_1 = __webpack_require__(5655);
 const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
 const ModalContext_1 = __webpack_require__(1090);
-const ModalHeader = ({ as: Component = 'h3', children, className, theme: customTheme = {}, ...props }) => {
+const ModalHeader = ({ as: Component = 'h3', children, className, theme: customTheme = {}, id, ...props }) => {
+    const innerHeaderId = (0, react_1.useId)();
+    const headerId = id || innerHeaderId;
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.modal.header, customTheme);
-    const { popup, onClose } = (0, ModalContext_1.useModalContext)();
-    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, tailwind_merge_1.twMerge)(theme.base, popup && theme.popup, className), ...props, children: [(0, jsx_runtime_1.jsx)(Component, { className: theme.title, children: children }), (0, jsx_runtime_1.jsx)("button", { "aria-label": "Close", className: theme.close.base, type: "button", onClick: onClose, children: (0, jsx_runtime_1.jsx)(hi_1.HiOutlineX, { "aria-hidden": true, className: theme.close.icon }) })] }));
+    const { popup, onClose, setHeaderId } = (0, ModalContext_1.useModalContext)();
+    (0, react_1.useLayoutEffect)(() => {
+        setHeaderId(headerId);
+        return () => setHeaderId(undefined);
+    }, [headerId, setHeaderId]);
+    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, tailwind_merge_1.twMerge)(theme.base, popup && theme.popup, className), ...props, children: [(0, jsx_runtime_1.jsx)(Component, { id: headerId, className: theme.title, children: children }), (0, jsx_runtime_1.jsx)("button", { "aria-label": "Close", className: theme.close.base, type: "button", onClick: onClose, children: (0, jsx_runtime_1.jsx)(hi_1.HiOutlineX, { "aria-hidden": true, className: theme.close.icon }) })] }));
 };
 exports.ModalHeader = ModalHeader;
 
@@ -8541,7 +9564,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.modalTheme = void 0;
 exports.modalTheme = {
     root: {
-        base: 'fixed top-0 right-0 left-0 z-50 h-modal overflow-y-auto overflow-x-hidden md:inset-0 md:h-full',
+        base: 'fixed top-0 right-0 left-0 z-50 h-modal h-screen overflow-y-auto overflow-x-hidden md:inset-0 md:h-full',
         show: {
             on: 'flex bg-gray-900 bg-opacity-50 dark:bg-opacity-80',
             off: 'hidden',
@@ -8836,12 +9859,12 @@ const hi_1 = __webpack_require__(5655);
 const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
-const range_1 = __webpack_require__(2929);
 const PaginationButton_1 = __webpack_require__(7659);
+const helpers_1 = __webpack_require__(4504);
 const PaginationComponent = ({ className, currentPage, layout = 'pagination', nextLabel = 'Next', onPageChange, previousLabel = 'Previous', renderPaginationButton = (props) => (0, jsx_runtime_1.jsx)(PaginationButton_1.PaginationButton, { ...props }), showIcons: showIcon = false, theme: customTheme = {}, totalPages, ...props }) => {
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.pagination, customTheme);
-    const firstPage = Math.max(1, currentPage - 3);
-    const lastPage = Math.min(currentPage + 3, totalPages);
+    const lastPage = Math.min(Math.max(currentPage + 2, 5), totalPages);
+    const firstPage = Math.max(1, lastPage - 4);
     const goToNextPage = () => {
         onPageChange(Math.min(currentPage + 1, totalPages));
     };
@@ -8849,7 +9872,7 @@ const PaginationComponent = ({ className, currentPage, layout = 'pagination', ne
         onPageChange(Math.max(currentPage - 1, 1));
     };
     return ((0, jsx_runtime_1.jsxs)("nav", { className: (0, tailwind_merge_1.twMerge)(theme.base, className), ...props, children: [layout === 'table' && ((0, jsx_runtime_1.jsxs)("div", { className: theme.layout.table.base, children: ["Showing ", (0, jsx_runtime_1.jsx)("span", { className: theme.layout.table.span, children: firstPage }), " to\u00A0", (0, jsx_runtime_1.jsx)("span", { className: theme.layout.table.span, children: lastPage }), " of\u00A0", (0, jsx_runtime_1.jsx)("span", { className: theme.layout.table.span, children: totalPages }), " Entries"] })), (0, jsx_runtime_1.jsxs)("ul", { className: theme.pages.base, children: [(0, jsx_runtime_1.jsx)("li", { children: (0, jsx_runtime_1.jsxs)(PaginationButton_1.PaginationNavigation, { className: (0, tailwind_merge_1.twMerge)(theme.pages.previous.base, showIcon && theme.pages.showIcon), onClick: goToPreviousPage, disabled: currentPage === 1, children: [showIcon && (0, jsx_runtime_1.jsx)(hi_1.HiChevronLeft, { "aria-hidden": true, className: theme.pages.previous.icon }), previousLabel] }) }), layout === 'pagination' &&
-                        (0, range_1.range)(firstPage, lastPage).map((page) => ((0, jsx_runtime_1.jsx)("li", { "aria-current": page === currentPage ? 'page' : undefined, children: renderPaginationButton({
+                        (0, helpers_1.range)(firstPage, lastPage).map((page) => ((0, jsx_runtime_1.jsx)("li", { "aria-current": page === currentPage ? 'page' : undefined, children: renderPaginationButton({
                                 className: (0, tailwind_merge_1.twMerge)(theme.pages.selector.base, currentPage === page && theme.pages.selector.active),
                                 active: page === currentPage,
                                 onClick: () => onPageChange(page),
@@ -8887,6 +9910,24 @@ const PaginationNavigation = ({ children, className, onClick, theme: customTheme
 };
 exports.PaginationNavigation = PaginationNavigation;
 exports.PaginationNavigation.displayName = 'Pagination.Navigation';
+
+
+/***/ }),
+
+/***/ 4504:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.range = void 0;
+const range = (start, end) => {
+    if (start >= end) {
+        return [];
+    }
+    return [...Array(end - start + 1).keys()].map((key) => key + start);
+};
+exports.range = range;
 
 
 /***/ }),
@@ -8935,15 +9976,15 @@ exports.paginationTheme = {
         base: 'xs:mt-0 mt-2 inline-flex items-center -space-x-px',
         showIcon: 'inline-flex',
         previous: {
-            base: 'ml-0 rounded-l-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
+            base: 'ml-0 rounded-l-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 enabled:hover:bg-gray-100 enabled:hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 enabled:dark:hover:bg-gray-700 enabled:dark:hover:text-white',
             icon: 'h-5 w-5',
         },
         next: {
-            base: 'rounded-r-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
+            base: 'rounded-r-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 enabled:hover:bg-gray-100 enabled:hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 enabled:dark:hover:bg-gray-700 enabled:dark:hover:text-white',
             icon: 'h-5 w-5',
         },
         selector: {
-            base: 'w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
+            base: 'w-12 border border-gray-300 bg-white py-2 leading-tight text-gray-500 enabled:hover:bg-gray-100 enabled:hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 enabled:dark:hover:bg-gray-700 enabled:dark:hover:text-white',
             active: 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100 hover:text-cyan-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white',
             disabled: 'opacity-50 cursor-normal',
         },
@@ -9334,7 +10375,7 @@ const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
 exports.Select = (0, react_1.forwardRef)(({ addon, children, className, color = 'gray', helperText, icon: Icon, shadow, sizing = 'md', theme: customTheme = {}, ...props }, ref) => {
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.select, customTheme);
-    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, tailwind_merge_1.twMerge)(theme.base, className), children: [addon && (0, jsx_runtime_1.jsx)("span", { className: theme.addon, children: addon }), (0, jsx_runtime_1.jsxs)("div", { className: theme.field.base, children: [Icon && ((0, jsx_runtime_1.jsx)("div", { className: theme.field.icon.base, children: (0, jsx_runtime_1.jsx)(Icon, { className: theme.field.icon.svg }) })), (0, jsx_runtime_1.jsx)("select", { className: (0, tailwind_merge_1.twMerge)(theme.field.select.base, theme.field.select.colors[color], theme.field.select.withIcon[Icon ? 'on' : 'off'], theme.field.select.withAddon[addon ? 'on' : 'off'], theme.field.select.withShadow[shadow ? 'on' : 'off'], theme.field.select.sizes[sizing]), ...props, ref: ref, children: children }), helperText && (0, jsx_runtime_1.jsx)(__1.HelperText, { color: color, children: helperText })] })] }));
+    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, tailwind_merge_1.twMerge)(theme.base, className), children: [addon && (0, jsx_runtime_1.jsx)("span", { className: theme.addon, children: addon }), (0, jsx_runtime_1.jsxs)("div", { className: theme.field.base, children: [Icon && ((0, jsx_runtime_1.jsx)("div", { className: theme.field.icon.base, children: (0, jsx_runtime_1.jsx)(Icon, { className: theme.field.icon.svg }) })), (0, jsx_runtime_1.jsx)("select", { className: (0, tailwind_merge_1.twMerge)(theme.field.select.base, theme.field.select.colors[color], theme.field.select.sizes[sizing], theme.field.select.withIcon[Icon ? 'on' : 'off'], theme.field.select.withAddon[addon ? 'on' : 'off'], theme.field.select.withShadow[shadow ? 'on' : 'off']), ...props, ref: ref, children: children }), helperText && (0, jsx_runtime_1.jsx)(__1.HelperText, { color: color, children: helperText })] })] }));
 });
 exports.Select.displayName = 'Select';
 
@@ -9491,14 +10532,14 @@ const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
 const SidebarContext_1 = __webpack_require__(2235);
 const SidebarItemContext_1 = __webpack_require__(5071);
-const SidebarCollapse = ({ children, className, icon: Icon, label, open = false, theme: customTheme = {}, ...props }) => {
+const SidebarCollapse = ({ children, className, icon: Icon, label, chevronIcon: ChevronIcon = hi_1.HiChevronDown, renderChevronIcon, open = false, theme: customTheme = {}, ...props }) => {
     const id = (0, react_1.useId)();
     const { isCollapsed } = (0, SidebarContext_1.useSidebarContext)();
     const [isOpen, setOpen] = (0, react_1.useState)(open);
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.sidebar.collapse, customTheme);
     (0, react_1.useEffect)(() => setOpen(open), [open]);
     const Wrapper = ({ children }) => ((0, jsx_runtime_1.jsx)("li", { children: isCollapsed && !isOpen ? ((0, jsx_runtime_1.jsx)(__1.Tooltip, { content: label, placement: "right", children: children })) : (children) }));
-    return ((0, jsx_runtime_1.jsxs)(Wrapper, { children: [(0, jsx_runtime_1.jsxs)("button", { id: `flowbite-sidebar-collapse-${id}`, onClick: () => setOpen(!isOpen), title: label, type: "button", className: (0, tailwind_merge_1.twMerge)(theme.button, className), ...props, children: [Icon && ((0, jsx_runtime_1.jsx)(Icon, { "aria-hidden": true, "data-testid": "flowbite-sidebar-collapse-icon", className: (0, tailwind_merge_1.twMerge)(theme.icon.base, theme.icon.open[isOpen ? 'on' : 'off']) })), isCollapsed ? ((0, jsx_runtime_1.jsx)("span", { className: "sr-only", children: label })) : ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("span", { "data-testid": "flowbite-sidebar-collapse-label", className: theme.label.base, children: label }), (0, jsx_runtime_1.jsx)(hi_1.HiChevronDown, { "aria-hidden": true, className: theme.label.icon })] }))] }), (0, jsx_runtime_1.jsx)("ul", { "aria-labelledby": `flowbite-sidebar-collapse-${id}`, hidden: !isOpen, className: theme.list, children: (0, jsx_runtime_1.jsx)(SidebarItemContext_1.SidebarItemContext.Provider, { value: { isInsideCollapse: true }, children: children }) })] }));
+    return ((0, jsx_runtime_1.jsxs)(Wrapper, { children: [(0, jsx_runtime_1.jsxs)("button", { id: `flowbite-sidebar-collapse-${id}`, onClick: () => setOpen(!isOpen), title: label, type: "button", className: (0, tailwind_merge_1.twMerge)(theme.button, className), ...props, children: [Icon && ((0, jsx_runtime_1.jsx)(Icon, { "aria-hidden": true, "data-testid": "flowbite-sidebar-collapse-icon", className: (0, tailwind_merge_1.twMerge)(theme.icon.base, theme.icon.open[isOpen ? 'on' : 'off']) })), isCollapsed ? ((0, jsx_runtime_1.jsx)("span", { className: "sr-only", children: label })) : ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("span", { "data-testid": "flowbite-sidebar-collapse-label", className: theme.label.base, children: label }), renderChevronIcon ? (renderChevronIcon(theme, isOpen)) : ((0, jsx_runtime_1.jsx)(ChevronIcon, { "aria-hidden": true, className: (0, tailwind_merge_1.twMerge)(theme.label.icon.base, theme.label.icon.open[isOpen ? 'on' : 'off']) }))] }))] }), (0, jsx_runtime_1.jsx)("ul", { "aria-labelledby": `flowbite-sidebar-collapse-${id}`, hidden: !isOpen, className: theme.list, children: (0, jsx_runtime_1.jsx)(SidebarItemContext_1.SidebarItemContext.Provider, { value: { isInsideCollapse: true }, children: children }) })] }));
 };
 exports.SidebarCollapse = SidebarCollapse;
 exports.SidebarCollapse.displayName = 'Sidebar.Collapse';
@@ -9672,7 +10713,13 @@ exports.sidebarTheme = {
         },
         label: {
             base: 'ml-3 flex-1 whitespace-nowrap text-left',
-            icon: 'h-6 w-6',
+            icon: {
+                base: 'h-6 w-6 transition ease-in-out delay-0',
+                open: {
+                    on: 'rotate-180',
+                    off: '',
+                },
+            },
         },
         list: 'space-y-2 py-2',
     },
@@ -9832,7 +10879,7 @@ const TabItem_1 = __webpack_require__(3865);
 exports.TabsComponent = (0, react_1.forwardRef)(({ children, className, onActiveTabChange, style = 'default', theme: customTheme = {}, ...props }, ref) => {
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.tab, customTheme);
     const id = (0, react_1.useId)();
-    const tabs = (0, react_1.useMemo)(() => react_1.Children.map(children, ({ props }) => props), [children]);
+    const tabs = (0, react_1.useMemo)(() => react_1.Children.map(react_1.Children.toArray(children), ({ props }) => props), [children]);
     const tabRefs = (0, react_1.useRef)([]);
     const [activeTab, setActiveTab] = (0, react_1.useState)(Math.max(0, tabs.findIndex((tab) => tab.active)));
     const [focusedTab, setFocusedTab] = (0, react_1.useState)(-1);
@@ -9858,13 +10905,14 @@ exports.TabsComponent = (0, react_1.forwardRef)(({ children, className, onActive
         }
     };
     const tabItemStyle = theme.tablist.tabitem.styles[style];
+    const tabItemContainerStyle = theme.tabitemcontainer.styles[style];
     (0, react_1.useEffect)(() => {
         tabRefs.current[focusedTab]?.focus();
     }, [focusedTab]);
     (0, react_1.useImperativeHandle)(ref, () => ({
         setActiveTab: setActiveTabWithCallback,
     }));
-    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, tailwind_merge_1.twMerge)(theme.base, className), children: [(0, jsx_runtime_1.jsx)("div", { "aria-label": "Tabs", role: "tablist", className: (0, tailwind_merge_1.twMerge)(theme.tablist.base, theme.tablist.styles[style], className), ...props, children: tabs.map((tab, index) => ((0, jsx_runtime_1.jsxs)("button", { type: "button", "aria-controls": `${id}-tabpanel-${index}`, "aria-selected": index === activeTab, className: (0, tailwind_merge_1.twMerge)(theme.tablist.tabitem.base, tabItemStyle.base, index === activeTab && tabItemStyle.active.on, index !== activeTab && !tab.disabled && tabItemStyle.active.off), disabled: tab.disabled, id: `${id}-tab-${index}`, onClick: () => handleClick({ target: index }), onKeyDown: (event) => handleKeyboard({ event, target: index }), ref: (element) => (tabRefs.current[index] = element), role: "tab", tabIndex: index === focusedTab ? 0 : -1, children: [tab.icon && (0, jsx_runtime_1.jsx)(tab.icon, { className: theme.tablist.tabitem.icon }), tab.title] }, index))) }), (0, jsx_runtime_1.jsx)("div", { children: tabs.map((tab, index) => ((0, jsx_runtime_1.jsx)("div", { "aria-labelledby": `${id}-tab-${index}`, className: theme.tabpanel, hidden: index !== activeTab, id: `${id}-tabpanel-${index}`, role: "tabpanel", tabIndex: 0, children: tab.children }, index))) })] }));
+    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, tailwind_merge_1.twMerge)(theme.base, className), children: [(0, jsx_runtime_1.jsx)("div", { "aria-label": "Tabs", role: "tablist", className: (0, tailwind_merge_1.twMerge)(theme.tablist.base, theme.tablist.styles[style], className), ...props, children: tabs.map((tab, index) => ((0, jsx_runtime_1.jsxs)("button", { type: "button", "aria-controls": `${id}-tabpanel-${index}`, "aria-selected": index === activeTab, className: (0, tailwind_merge_1.twMerge)(theme.tablist.tabitem.base, tabItemStyle.base, index === activeTab && tabItemStyle.active.on, index !== activeTab && !tab.disabled && tabItemStyle.active.off), disabled: tab.disabled, id: `${id}-tab-${index}`, onClick: () => handleClick({ target: index }), onKeyDown: (event) => handleKeyboard({ event, target: index }), ref: (element) => (tabRefs.current[index] = element), role: "tab", tabIndex: index === focusedTab ? 0 : -1, style: { zIndex: index === focusedTab ? 2 : 1 }, children: [tab.icon && (0, jsx_runtime_1.jsx)(tab.icon, { className: theme.tablist.tabitem.icon }), tab.title] }, index))) }), (0, jsx_runtime_1.jsx)("div", { className: (0, tailwind_merge_1.twMerge)(theme.tabitemcontainer.base, tabItemContainerStyle), children: tabs.map((tab, index) => ((0, jsx_runtime_1.jsx)("div", { "aria-labelledby": `${id}-tab-${index}`, className: theme.tabpanel, hidden: index !== activeTab, id: `${id}-tabpanel-${index}`, role: "tabpanel", tabIndex: 0, children: tab.children }, index))) })] }));
 });
 exports.TabsComponent.displayName = 'Tabs.Group';
 exports.Tabs = { Group: exports.TabsComponent, Item: TabItem_1.TabItem };
@@ -9922,6 +10970,15 @@ exports.tabTheme = {
                 },
             },
             icon: 'mr-2 h-5 w-5',
+        },
+    },
+    tabitemcontainer: {
+        base: '',
+        styles: {
+            default: '',
+            underline: '',
+            pills: '',
+            fullWidth: '',
         },
     },
     tabpanel: 'py-3',
@@ -10308,7 +11365,7 @@ __exportStar(__webpack_require__(5444), exports);
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.textareaTheme = void 0;
 exports.textareaTheme = {
-    base: 'block w-full rounded-lg border disabled:cursor-not-allowed disabled:opacity-50',
+    base: 'block w-full rounded-lg border disabled:cursor-not-allowed disabled:opacity-50 text-sm',
     colors: {
         gray: 'bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500',
         info: 'border-cyan-500 bg-cyan-50 text-cyan-900 placeholder-cyan-700 focus:border-cyan-500 focus:ring-cyan-500 dark:border-cyan-400 dark:bg-cyan-100 dark:focus:border-cyan-500 dark:focus:ring-cyan-500',
@@ -10614,7 +11671,10 @@ const ToastComponent = ({ children, className, duration = 300, theme: customThem
     const [isClosed, setIsClosed] = (0, react_1.useState)(false);
     const [isRemoved, setIsRemoved] = (0, react_1.useState)(false);
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.toast, customTheme);
-    return ((0, jsx_runtime_1.jsx)(ToastContext_1.ToastContext.Provider, { value: { duration, isClosed, isRemoved, setIsClosed, setIsRemoved }, children: (0, jsx_runtime_1.jsx)("div", { "data-testid": "flowbite-toast", className: (0, tailwind_merge_1.twMerge)(theme.root.base, durationClasses[duration], isClosed && theme.root.closed, isRemoved && theme.root.removed, className), ...props, children: children }) }));
+    if (isRemoved) {
+        return null;
+    }
+    return ((0, jsx_runtime_1.jsx)(ToastContext_1.ToastContext.Provider, { value: { duration, isClosed, isRemoved, setIsClosed, setIsRemoved }, children: (0, jsx_runtime_1.jsx)("div", { "data-testid": "flowbite-toast", role: "alert", className: (0, tailwind_merge_1.twMerge)(theme.root.base, durationClasses[duration], isClosed && theme.root.closed, className), ...props, children: children }) }));
 };
 ToastComponent.displayName = 'Toast';
 ToastToggle_1.ToastToggle.displayName = 'Toast.Toggle';
@@ -10659,12 +11719,16 @@ const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
 const ToastContext_1 = __webpack_require__(2332);
-const ToastToggle = ({ className, onClick, theme: customTheme = {}, xIcon: XIcon = hi_1.HiX, ...props }) => {
+const ToastToggle = ({ className, onClick, theme: customTheme = {}, xIcon: XIcon = hi_1.HiX, onDismiss, ...props }) => {
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.toast.toggle, customTheme);
     const { duration, isClosed, isRemoved, setIsClosed, setIsRemoved } = (0, ToastContext_1.useToastContext)();
     const handleClick = (e) => {
         if (onClick)
             onClick(e);
+        if (onDismiss) {
+            onDismiss();
+            return;
+        }
         setIsClosed(!isClosed);
         setTimeout(() => setIsRemoved(!isRemoved), duration);
     };
@@ -10711,7 +11775,6 @@ exports.toastTheme = {
     root: {
         base: 'flex w-full max-w-xs items-center rounded-lg bg-white p-4 text-gray-500 shadow dark:bg-gray-800 dark:text-gray-400',
         closed: 'opacity-0 ease-out',
-        removed: 'hidden',
     },
     toggle: {
         base: '-mx-1.5 -my-1.5 ml-auto inline-flex h-8 w-8 rounded-lg bg-white p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-gray-300 dark:bg-gray-800 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-white',
@@ -10734,18 +11797,19 @@ const react_1 = __webpack_require__(8038);
 const tailwind_merge_1 = __webpack_require__(3233);
 const __1 = __webpack_require__(9920);
 const merge_deep_1 = __webpack_require__(4901);
-const ToggleSwitch = ({ checked, className, color = 'blue', disabled, label, name, onChange, theme: customTheme = {}, ...props }) => {
+const ToggleSwitch = ({ checked, className, color = 'blue', sizing = 'md', disabled, label, name, onChange, theme: customTheme = {}, ...props }) => {
     const id = (0, react_1.useId)();
     const theme = (0, merge_deep_1.mergeDeep)((0, __1.useTheme)().theme.toggleSwitch, customTheme);
     const toggle = () => onChange(!checked);
-    const handleClick = (event) => {
-        event.preventDefault();
+    const handleClick = () => {
         toggle();
     };
-    const handleKeyPress = (event) => {
-        event.preventDefault();
+    const handleOnKeyDown = (event) => {
+        if (event.code == 'Enter') {
+            event.preventDefault();
+        }
     };
-    return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [name && checked && (0, jsx_runtime_1.jsx)("input", { checked: checked, hidden: true, name: name, readOnly: true, type: "checkbox", className: "sr-only" }), (0, jsx_runtime_1.jsxs)("button", { "aria-checked": checked, "aria-labelledby": `${id}-flowbite-toggleswitch-label`, disabled: disabled, id: `${id}-flowbite-toggleswitch`, onClick: handleClick, onKeyPress: handleKeyPress, role: "switch", tabIndex: 0, type: "button", className: (0, tailwind_merge_1.twMerge)(theme.root.base, theme.root.active[disabled ? 'off' : 'on'], className), ...props, children: [(0, jsx_runtime_1.jsx)("div", { "data-testid": "flowbite-toggleswitch-toggle", className: (0, tailwind_merge_1.twMerge)(theme.toggle.base, theme.toggle.checked[checked ? 'on' : 'off'], !disabled && checked && theme.toggle.checked.color[color]) }), (0, jsx_runtime_1.jsx)("span", { "data-testid": "flowbite-toggleswitch-label", id: `${id}-flowbite-toggleswitch-label`, className: theme.root.label, children: label })] })] }));
+    return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [name && checked ? ((0, jsx_runtime_1.jsx)("input", { checked: checked, hidden: true, name: name, readOnly: true, type: "checkbox", className: "sr-only" })) : null, (0, jsx_runtime_1.jsxs)("button", { "aria-checked": checked, "aria-labelledby": `${id}-flowbite-toggleswitch-label`, disabled: disabled, id: `${id}-flowbite-toggleswitch`, onClick: handleClick, onKeyDown: handleOnKeyDown, role: "switch", tabIndex: 0, type: "button", className: (0, tailwind_merge_1.twMerge)(theme.root.base, theme.root.active[disabled ? 'off' : 'on'], className), ...props, children: [(0, jsx_runtime_1.jsx)("div", { "data-testid": "flowbite-toggleswitch-toggle", className: (0, tailwind_merge_1.twMerge)(theme.toggle.base, theme.toggle.checked[checked ? 'on' : 'off'], checked && theme.toggle.checked.color[color], theme.toggle.sizes[sizing]) }), label?.length ? ((0, jsx_runtime_1.jsx)("span", { "data-testid": "flowbite-toggleswitch-label", id: `${id}-flowbite-toggleswitch-label`, className: theme.root.label, children: label })) : null] })] }));
 };
 exports.ToggleSwitch = ToggleSwitch;
 exports.ToggleSwitch.displayName = 'ToggleSwitch';
@@ -10795,7 +11859,7 @@ exports.toggleSwitchTheme = {
         label: 'ml-3 text-sm font-medium text-gray-900 dark:text-gray-300',
     },
     toggle: {
-        base: 'toggle-bg h-6 w-11 rounded-full border group-focus:ring-4 group-focus:ring-cyan-500/25',
+        base: 'toggle-bg rounded-full border group-focus:ring-4 group-focus:ring-cyan-500/25',
         checked: {
             on: 'after:translate-x-full after:border-white',
             off: 'border-gray-200 bg-gray-200 dark:border-gray-600 dark:bg-gray-700',
@@ -10818,6 +11882,11 @@ exports.toggleSwitchTheme = {
                 info: 'bg-cyan-600 border-cyan-600',
                 pink: 'bg-pink-600 border-pink-600',
             },
+        },
+        sizes: {
+            sm: 'w-9 h-5 after:absolute after:top-[2px] after:left-[2px] after:h-4 after:w-4',
+            md: 'w-11 h-6 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5',
+            lg: 'w-14 h-7 after:absolute after:top-0.5 after:left-[4px] after:h-6 after:w-6',
         },
     },
 };
@@ -10930,17 +11999,21 @@ __exportStar(__webpack_require__(8959), exports);
 __exportStar(__webpack_require__(2543), exports);
 __exportStar(__webpack_require__(1290), exports);
 __exportStar(__webpack_require__(2087), exports);
+__exportStar(__webpack_require__(7860), exports);
+__exportStar(__webpack_require__(6720), exports);
 __exportStar(__webpack_require__(2280), exports);
 __exportStar(__webpack_require__(736), exports);
 __exportStar(__webpack_require__(4698), exports);
 __exportStar(__webpack_require__(3255), exports);
 __exportStar(__webpack_require__(470), exports);
 __exportStar(__webpack_require__(9805), exports);
+__exportStar(__webpack_require__(5597), exports);
 __exportStar(__webpack_require__(9744), exports);
 __exportStar(__webpack_require__(149), exports);
 __exportStar(__webpack_require__(2094), exports);
 __exportStar(__webpack_require__(447), exports);
 __exportStar(__webpack_require__(7347), exports);
+__exportStar(__webpack_require__(4866), exports);
 __exportStar(__webpack_require__(5240), exports);
 __exportStar(__webpack_require__(8564), exports);
 __exportStar(__webpack_require__(8420), exports);
@@ -10965,41 +12038,15 @@ __exportStar(__webpack_require__(7899), exports);
 
 /***/ }),
 
-/***/ 602:
+/***/ 4186:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getArrowPlacement = exports.getPlacement = exports.getMiddleware = void 0;
-const react_1 = __webpack_require__(3168);
-/**
- * @see https://floating-ui.com/docs/middleware
- */
-const getMiddleware = ({ arrowRef, placement, }) => {
-    const middleware = [];
-    middleware.push((0, react_1.offset)(8));
-    middleware.push(placement === 'auto' ? (0, react_1.autoPlacement)() : (0, react_1.flip)());
-    middleware.push((0, react_1.shift)({ padding: 8 }));
-    if (arrowRef.current) {
-        middleware.push((0, react_1.arrow)({ element: arrowRef.current }));
-    }
-    return middleware;
-};
-exports.getMiddleware = getMiddleware;
-const getPlacement = ({ placement }) => {
-    return placement === 'auto' ? undefined : placement;
-};
-exports.getPlacement = getPlacement;
-const getArrowPlacement = ({ placement }) => {
-    return {
-        top: 'bottom',
-        right: 'left',
-        bottom: 'top',
-        left: 'right',
-    }[placement.split('-')[0]];
-};
-exports.getArrowPlacement = getArrowPlacement;
+const react_1 = __webpack_require__(8038);
+const genericForwardRef = react_1.forwardRef;
+exports["default"] = genericForwardRef;
 
 
 /***/ }),
@@ -11072,20 +12119,62 @@ exports.mergeDeep = mergeDeep;
 
 /***/ }),
 
-/***/ 2929:
+/***/ 6562:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.range = void 0;
-const range = (start, end) => {
-    if (start >= end) {
-        return [];
-    }
-    return [...Array(end - start + 1).keys()].map((key) => key + start);
+exports.omit = void 0;
+const omit = (keys) => (obj) => {
+    const result = {};
+    Object.keys(obj).forEach((key) => {
+        //@ts-expect-error - Somehow TS does not like this.
+        if (keys.includes(key)) {
+            return;
+        }
+        //@ts-expect-error - Somehow TS does not like this.
+        result[key] = obj[key];
+    });
+    return result;
 };
-exports.range = range;
+exports.omit = omit;
+
+
+/***/ }),
+
+/***/ 4665:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.useFloatingInteractions = exports.useBaseFLoating = void 0;
+const react_1 = __webpack_require__(6956);
+const helpers_1 = __webpack_require__(2473);
+const useBaseFLoating = ({ open, arrowRef, placement = 'top', setOpen, }) => {
+    return (0, react_1.useFloating)({
+        placement: (0, helpers_1.getPlacement)({ placement }),
+        open,
+        onOpenChange: setOpen,
+        whileElementsMounted: react_1.autoUpdate,
+        middleware: (0, helpers_1.getMiddleware)({ placement, arrowRef }),
+    });
+};
+exports.useBaseFLoating = useBaseFLoating;
+const useFloatingInteractions = ({ context, trigger, role = 'tooltip', interactions = [], }) => {
+    return (0, react_1.useInteractions)([
+        (0, react_1.useClick)(context, { enabled: trigger === 'click' }),
+        (0, react_1.useHover)(context, {
+            enabled: trigger === 'hover',
+            handleClose: (0, react_1.safePolygon)(),
+        }),
+        (0, react_1.useDismiss)(context),
+        (0, react_1.useRole)(context, { role }),
+        ...interactions,
+    ]);
+};
+exports.useFloatingInteractions = useFloatingInteractions;
 
 
 /***/ }),
@@ -11127,72 +12216,80 @@ const theme_1 = __webpack_require__(5338);
 const theme_2 = __webpack_require__(3118);
 const theme_3 = __webpack_require__(1937);
 const theme_4 = __webpack_require__(7640);
-const theme_5 = __webpack_require__(7438);
-const theme_6 = __webpack_require__(3452);
-const theme_7 = __webpack_require__(6084);
-const theme_8 = __webpack_require__(8999);
-const theme_9 = __webpack_require__(6945);
-const theme_10 = __webpack_require__(4684);
-const theme_11 = __webpack_require__(3430);
-const theme_12 = __webpack_require__(7366);
-const theme_13 = __webpack_require__(8616);
-const theme_14 = __webpack_require__(617);
-const theme_15 = __webpack_require__(1165);
-const theme_16 = __webpack_require__(4512);
-const theme_17 = __webpack_require__(3748);
-const theme_18 = __webpack_require__(6934);
-const theme_19 = __webpack_require__(6626);
-const theme_20 = __webpack_require__(4538);
-const theme_21 = __webpack_require__(2371);
-const theme_22 = __webpack_require__(9543);
-const theme_23 = __webpack_require__(2108);
-const theme_24 = __webpack_require__(5435);
-const theme_25 = __webpack_require__(9056);
-const theme_26 = __webpack_require__(5319);
-const theme_27 = __webpack_require__(9198);
-const theme_28 = __webpack_require__(3732);
-const theme_29 = __webpack_require__(6070);
-const theme_30 = __webpack_require__(1302);
-const theme_31 = __webpack_require__(1870);
-const theme_32 = __webpack_require__(9661);
-const theme_33 = __webpack_require__(8618);
-const theme_34 = __webpack_require__(6039);
+const theme_5 = __webpack_require__(8079);
+const theme_6 = __webpack_require__(7438);
+const theme_7 = __webpack_require__(3452);
+const theme_8 = __webpack_require__(6084);
+const theme_9 = __webpack_require__(8999);
+const theme_10 = __webpack_require__(6945);
+const theme_11 = __webpack_require__(4684);
+const theme_12 = __webpack_require__(5119);
+const theme_13 = __webpack_require__(3430);
+const theme_14 = __webpack_require__(7366);
+const theme_15 = __webpack_require__(747);
+const theme_16 = __webpack_require__(8616);
+const theme_17 = __webpack_require__(617);
+const theme_18 = __webpack_require__(3270);
+const theme_19 = __webpack_require__(1165);
+const theme_20 = __webpack_require__(4512);
+const theme_21 = __webpack_require__(3748);
+const theme_22 = __webpack_require__(6934);
+const theme_23 = __webpack_require__(6626);
+const theme_24 = __webpack_require__(4538);
+const theme_25 = __webpack_require__(2371);
+const theme_26 = __webpack_require__(9543);
+const theme_27 = __webpack_require__(2108);
+const theme_28 = __webpack_require__(5435);
+const theme_29 = __webpack_require__(9056);
+const theme_30 = __webpack_require__(5319);
+const theme_31 = __webpack_require__(9198);
+const theme_32 = __webpack_require__(3732);
+const theme_33 = __webpack_require__(6070);
+const theme_34 = __webpack_require__(1302);
+const theme_35 = __webpack_require__(1870);
+const theme_36 = __webpack_require__(9661);
+const theme_37 = __webpack_require__(8618);
+const theme_38 = __webpack_require__(6039);
 exports.theme = {
     accordion: theme_1.accordionTheme,
     alert: theme_2.alertTheme,
     avatar: theme_3.avatarTheme,
     badge: theme_4.badgeTheme,
-    breadcrumb: theme_5.breadcrumbTheme,
-    button: theme_6.buttonTheme,
-    buttonGroup: theme_6.buttonGroupTheme,
-    card: theme_7.cardTheme,
-    carousel: theme_8.carouselTheme,
-    checkbox: theme_9.checkboxTheme,
-    darkThemeToggle: theme_10.darkThemeToggleTheme,
-    dropdown: theme_11.dropdownTheme,
-    fileInput: theme_12.fileInputTheme,
-    footer: theme_13.footerTheme,
-    helperText: theme_14.helperTextTheme,
-    label: theme_15.labelTheme,
-    listGroup: theme_16.listGroupTheme,
-    modal: theme_17.modalTheme,
-    navbar: theme_18.navbarTheme,
-    pagination: theme_19.paginationTheme,
-    progress: theme_20.progressTheme,
-    radio: theme_21.radioTheme,
-    rangeSlider: theme_22.rangeSliderTheme,
-    rating: theme_23.ratingTheme,
-    select: theme_24.selectTheme,
-    textInput: theme_29.textInputTheme,
-    textarea: theme_30.textareaTheme,
-    toggleSwitch: theme_33.toggleSwitchTheme,
-    sidebar: theme_25.sidebarTheme,
-    spinner: theme_26.spinnerTheme,
-    tab: theme_27.tabTheme,
-    table: theme_28.tableTheme,
-    timeline: theme_31.timelineTheme,
-    toast: theme_32.toastTheme,
-    tooltip: theme_34.tooltipTheme,
+    blockquote: theme_5.blockquoteTheme,
+    breadcrumb: theme_6.breadcrumbTheme,
+    button: theme_7.buttonTheme,
+    buttonGroup: theme_7.buttonGroupTheme,
+    card: theme_8.cardTheme,
+    carousel: theme_9.carouselTheme,
+    checkbox: theme_10.checkboxTheme,
+    datepicker: theme_12.datePickerTheme,
+    darkThemeToggle: theme_11.darkThemeToggleTheme,
+    dropdown: theme_13.dropdownTheme,
+    fileInput: theme_14.fileInputTheme,
+    floatingLabel: theme_15.floatingLabelTheme,
+    footer: theme_16.footerTheme,
+    helperText: theme_17.helperTextTheme,
+    kbd: theme_18.kbdTheme,
+    label: theme_19.labelTheme,
+    listGroup: theme_20.listGroupTheme,
+    modal: theme_21.modalTheme,
+    navbar: theme_22.navbarTheme,
+    pagination: theme_23.paginationTheme,
+    progress: theme_24.progressTheme,
+    radio: theme_25.radioTheme,
+    rangeSlider: theme_26.rangeSliderTheme,
+    rating: theme_27.ratingTheme,
+    select: theme_28.selectTheme,
+    textInput: theme_33.textInputTheme,
+    textarea: theme_34.textareaTheme,
+    toggleSwitch: theme_37.toggleSwitchTheme,
+    sidebar: theme_29.sidebarTheme,
+    spinner: theme_30.spinnerTheme,
+    tab: theme_31.tabTheme,
+    table: theme_32.tableTheme,
+    timeline: theme_35.timelineTheme,
+    toast: theme_36.toastTheme,
+    tooltip: theme_38.tooltipTheme,
 };
 
 
@@ -11203,8 +12300,8 @@ exports.theme = {
 
 // Exports
 module.exports = {
-	"style": {"fontFamily":"'__Inter_0ec1f4', '__Inter_Fallback_0ec1f4'","fontStyle":"normal"},
-	"className": "__className_0ec1f4"
+	"style": {"fontFamily":"'__Inter_d9825c', '__Inter_Fallback_d9825c'","fontStyle":"normal"},
+	"className": "__className_d9825c"
 };
 
 
@@ -30349,7 +31446,7 @@ if (true) {
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-function r(){for(var r,o,t=0,n="";t<arguments.length;)(r=arguments[t++])&&(o=e(r))&&(n&&(n+=" "),n+=o);return n}function e(r){if("string"==typeof r)return r;for(var o,t="",n=0;n<r.length;n++)r[n]&&(o=e(r[n]))&&(t&&(t+=" "),t+=o);return t}Object.defineProperty(exports, "__esModule", ({value:!0}));var o="-";function t(r){var e=function(r){var e=r.theme,o=r.prefix,t={nextPart:new Map,validators:[]},n=function(r,e){return e?r.map((function(r){return[r[0],r[1].map((function(r){return"string"==typeof r?e+r:"object"==typeof r?Object.fromEntries(Object.entries(r).map((function(r){return[e+r[0],r[1]]}))):r}))]})):r}(Object.entries(r.classGroups),o);return n.forEach((function(r){a(r[1],t,r[0],e)})),t}(r),t=r.conflictingClassGroups,l=r.conflictingClassGroupModifiers,s=void 0===l?{}:l;return{getClassGroupId:function(r){var t=r.split(o);return""===t[0]&&1!==t.length&&t.shift(),n(t,e)||function(r){if(i.test(r)){var e=i.exec(r)[1],o=e?.substring(0,e.indexOf(":"));if(o)return"arbitrary.."+o}}(r)},getConflictingClassGroupIds:function(r,e){var o=t[r]||[];return e&&s[r]?[].concat(o,s[r]):o}}}function n(r,e){if(0===r.length)return e.classGroupId;var t=e.nextPart.get(r[0]),i=t?n(r.slice(1),t):void 0;if(i)return i;if(0!==e.validators.length){var a=r.join(o);return e.validators.find((function(r){return(0,r.validator)(a)}))?.classGroupId}}var i=/^\[(.+)\]$/;function a(r,e,o,t){r.forEach((function(r){if("string"!=typeof r){if("function"==typeof r)return r.isThemeGetter?void a(r(t),e,o,t):void e.validators.push({validator:r,classGroupId:o});Object.entries(r).forEach((function(r){a(r[1],l(e,r[0]),o,t)}))}else(""===r?e:l(e,r)).classGroupId=o}))}function l(r,e){var t=r;return e.split(o).forEach((function(r){t.nextPart.has(r)||t.nextPart.set(r,{nextPart:new Map,validators:[]}),t=t.nextPart.get(r)})),t}function s(r){if(r<1)return{get:function(){},set:function(){}};var e=0,o=new Map,t=new Map;function n(n,i){o.set(n,i),++e>r&&(e=0,t=o,o=new Map)}return{get:function(r){var e=o.get(r);return void 0!==e?e:void 0!==(e=t.get(r))?(n(r,e),e):void 0},set:function(r,e){o.has(r)?o.set(r,e):n(r,e)}}}var c="!";function d(r){var e=r.separator||":",o=1===e.length,t=e[0],n=e.length;return function(r){for(var i,a=[],l=0,s=0,d=0;d<r.length;d++){var u=r[d];if(0===l){if(u===t&&(o||r.slice(d,d+n)===e)){a.push(r.slice(s,d)),s=d+n;continue}if("/"===u){i=d;continue}}"["===u?l++:"]"===u&&l--}var p=0===a.length?r:r.substring(s),f=p.startsWith(c);return{modifiers:a,hasImportantModifier:f,baseClassName:f?p.substring(1):p,maybePostfixModifierPosition:i&&i>s?i-s:void 0}}}var u=/\s+/;function p(){for(var e=arguments.length,o=new Array(e),n=0;n<e;n++)o[n]=arguments[n];var i,a,l,p=function(r){var e=o[0],n=o.slice(1).reduce((function(r,e){return e(r)}),e());return i=function(r){return{cache:s(r.cacheSize),splitModifiers:d(r),...t(r)}}(n),a=i.cache.get,l=i.cache.set,p=f,f(r)};function f(r){var e=a(r);if(e)return e;var o=function(r,e){var o=e.splitModifiers,t=e.getClassGroupId,n=e.getConflictingClassGroupIds,i=new Set;return r.trim().split(u).map((function(r){var e=o(r),n=e.modifiers,i=e.hasImportantModifier,a=e.baseClassName,l=e.maybePostfixModifierPosition,s=t(l?a.substring(0,l):a),d=Boolean(l);if(!s){if(!l)return{isTailwindClass:!1,originalClassName:r};if(!(s=t(a)))return{isTailwindClass:!1,originalClassName:r};d=!1}var u=function(r){if(r.length<=1)return r;var e=[],o=[];return r.forEach((function(r){"["===r[0]?(e.push.apply(e,o.sort().concat([r])),o=[]):o.push(r)})),e.push.apply(e,o.sort()),e}(n).join(":");return{isTailwindClass:!0,modifierId:i?u+c:u,classGroupId:s,originalClassName:r,hasPostfixModifier:d}})).reverse().filter((function(r){if(!r.isTailwindClass)return!0;var e=r.modifierId,o=r.classGroupId,t=r.hasPostfixModifier,a=e+o;return!i.has(a)&&(i.add(a),n(o,t).forEach((function(r){return i.add(e+r)})),!0)})).reverse().map((function(r){return r.originalClassName})).join(" ")}(r,i);return l(r,o),o}return function(){return p(r.apply(null,arguments))}}function f(r){var e=function(e){return e[r]||[]};return e.isThemeGetter=!0,e}var b=/^\[(?:([a-z-]+):)?(.+)\]$/i,m=/^\d+\/\d+$/,g=new Set(["px","full","screen"]),h=/^(\d+(\.\d+)?)?(xs|sm|md|lg|xl)$/,v=/\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh|cq(w|h|i|b|min|max))|^0$/,y=/^-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)/;function x(r){return M(r)||g.has(r)||m.test(r)||w(r)}function w(r){return T(r,"length",O)}function k(r){return T(r,"size",E)}function z(r){return T(r,"position",E)}function C(r){return T(r,"url",_)}function j(r){return T(r,"number",M)}function M(r){return!Number.isNaN(Number(r))}function G(r){return r.endsWith("%")&&M(r.slice(0,-1))}function P(r){return W(r)||T(r,"number",W)}function I(r){return b.test(r)}function A(){return!0}function N(r){return h.test(r)}function S(r){return T(r,"",$)}function T(r,e,o){var t=b.exec(r);return!!t&&(t[1]?t[1]===e:o(t[2]))}function O(r){return v.test(r)}function E(){return!1}function _(r){return r.startsWith("url(")}function W(r){return Number.isInteger(Number(r))}function $(r){return y.test(r)}var R={__proto__:null,isAny:A,isArbitraryLength:w,isArbitraryNumber:j,isArbitraryPosition:z,isArbitraryShadow:S,isArbitrarySize:k,isArbitraryUrl:C,isArbitraryValue:I,isArbitraryWeight:j,isInteger:P,isLength:x,isNumber:M,isPercent:G,isTshirtSize:N};function q(){var r=f("colors"),e=f("spacing"),o=f("blur"),t=f("brightness"),n=f("borderColor"),i=f("borderRadius"),a=f("borderSpacing"),l=f("borderWidth"),s=f("contrast"),c=f("grayscale"),d=f("hueRotate"),u=f("invert"),p=f("gap"),b=f("gradientColorStops"),m=f("gradientColorStopPositions"),g=f("inset"),h=f("margin"),v=f("opacity"),y=f("padding"),T=f("saturate"),O=f("scale"),E=f("sepia"),_=f("skew"),W=f("space"),$=f("translate"),R=function(){return["auto",e]},q=function(){return["",x]},L=function(){return["auto",M,I]},B=function(){return["","0",I]},D=function(){return[M,j]},J=function(){return[M,I]};return{cacheSize:500,theme:{colors:[A],spacing:[x],blur:["none","",N,w],brightness:D(),borderColor:[r],borderRadius:["none","","full",N,w],borderSpacing:[e],borderWidth:q(),contrast:D(),grayscale:B(),hueRotate:J(),invert:B(),gap:[e],gradientColorStops:[r],gradientColorStopPositions:[G,w],inset:R(),margin:R(),opacity:D(),padding:[e],saturate:D(),scale:D(),sepia:B(),skew:J(),space:[e],translate:[e]},classGroups:{aspect:[{aspect:["auto","square","video",I]}],container:["container"],columns:[{columns:[N]}],"break-after":[{"break-after":["auto","avoid","all","avoid-page","page","left","right","column"]}],"break-before":[{"break-before":["auto","avoid","all","avoid-page","page","left","right","column"]}],"break-inside":[{"break-inside":["auto","avoid","avoid-page","avoid-column"]}],"box-decoration":[{"box-decoration":["slice","clone"]}],box:[{box:["border","content"]}],display:["block","inline-block","inline","flex","inline-flex","table","inline-table","table-caption","table-cell","table-column","table-column-group","table-footer-group","table-header-group","table-row-group","table-row","flow-root","grid","inline-grid","contents","list-item","hidden"],float:[{float:["right","left","none"]}],clear:[{clear:["left","right","both","none"]}],isolation:["isolate","isolation-auto"],"object-fit":[{object:["contain","cover","fill","none","scale-down"]}],"object-position":[{object:[].concat(["bottom","center","left","left-bottom","left-top","right","right-bottom","right-top","top"],[I])}],overflow:[{overflow:["auto","hidden","clip","visible","scroll"]}],"overflow-x":[{"overflow-x":["auto","hidden","clip","visible","scroll"]}],"overflow-y":[{"overflow-y":["auto","hidden","clip","visible","scroll"]}],overscroll:[{overscroll:["auto","contain","none"]}],"overscroll-x":[{"overscroll-x":["auto","contain","none"]}],"overscroll-y":[{"overscroll-y":["auto","contain","none"]}],position:["static","fixed","absolute","relative","sticky"],inset:[{inset:[g]}],"inset-x":[{"inset-x":[g]}],"inset-y":[{"inset-y":[g]}],start:[{start:[g]}],end:[{end:[g]}],top:[{top:[g]}],right:[{right:[g]}],bottom:[{bottom:[g]}],left:[{left:[g]}],visibility:["visible","invisible","collapse"],z:[{z:["auto",P]}],basis:[{basis:R()}],"flex-direction":[{flex:["row","row-reverse","col","col-reverse"]}],"flex-wrap":[{flex:["wrap","wrap-reverse","nowrap"]}],flex:[{flex:["1","auto","initial","none",I]}],grow:[{grow:B()}],shrink:[{shrink:B()}],order:[{order:["first","last","none",P]}],"grid-cols":[{"grid-cols":[A]}],"col-start-end":[{col:["auto",{span:[P]},I]}],"col-start":[{"col-start":L()}],"col-end":[{"col-end":L()}],"grid-rows":[{"grid-rows":[A]}],"row-start-end":[{row:["auto",{span:[P]},I]}],"row-start":[{"row-start":L()}],"row-end":[{"row-end":L()}],"grid-flow":[{"grid-flow":["row","col","dense","row-dense","col-dense"]}],"auto-cols":[{"auto-cols":["auto","min","max","fr",I]}],"auto-rows":[{"auto-rows":["auto","min","max","fr",I]}],gap:[{gap:[p]}],"gap-x":[{"gap-x":[p]}],"gap-y":[{"gap-y":[p]}],"justify-content":[{justify:["normal"].concat(["start","end","center","between","around","evenly","stretch"])}],"justify-items":[{"justify-items":["start","end","center","stretch"]}],"justify-self":[{"justify-self":["auto","start","end","center","stretch"]}],"align-content":[{content:["normal"].concat(["start","end","center","between","around","evenly","stretch"],["baseline"])}],"align-items":[{items:["start","end","center","baseline","stretch"]}],"align-self":[{self:["auto","start","end","center","stretch","baseline"]}],"place-content":[{"place-content":[].concat(["start","end","center","between","around","evenly","stretch"],["baseline"])}],"place-items":[{"place-items":["start","end","center","baseline","stretch"]}],"place-self":[{"place-self":["auto","start","end","center","stretch"]}],p:[{p:[y]}],px:[{px:[y]}],py:[{py:[y]}],ps:[{ps:[y]}],pe:[{pe:[y]}],pt:[{pt:[y]}],pr:[{pr:[y]}],pb:[{pb:[y]}],pl:[{pl:[y]}],m:[{m:[h]}],mx:[{mx:[h]}],my:[{my:[h]}],ms:[{ms:[h]}],me:[{me:[h]}],mt:[{mt:[h]}],mr:[{mr:[h]}],mb:[{mb:[h]}],ml:[{ml:[h]}],"space-x":[{"space-x":[W]}],"space-x-reverse":["space-x-reverse"],"space-y":[{"space-y":[W]}],"space-y-reverse":["space-y-reverse"],w:[{w:["auto","min","max","fit",e]}],"min-w":[{"min-w":["min","max","fit",x]}],"max-w":[{"max-w":["0","none","full","min","max","fit","prose",{screen:[N]},N,w]}],h:[{h:[e,"auto","min","max","fit"]}],"min-h":[{"min-h":["min","max","fit",x]}],"max-h":[{"max-h":[e,"min","max","fit"]}],"font-size":[{text:["base",N,w]}],"font-smoothing":["antialiased","subpixel-antialiased"],"font-style":["italic","not-italic"],"font-weight":[{font:["thin","extralight","light","normal","medium","semibold","bold","extrabold","black",j]}],"font-family":[{font:[A]}],"fvn-normal":["normal-nums"],"fvn-ordinal":["ordinal"],"fvn-slashed-zero":["slashed-zero"],"fvn-figure":["lining-nums","oldstyle-nums"],"fvn-spacing":["proportional-nums","tabular-nums"],"fvn-fraction":["diagonal-fractions","stacked-fractons"],tracking:[{tracking:["tighter","tight","normal","wide","wider","widest",w]}],"line-clamp":[{"line-clamp":["none",M,j]}],leading:[{leading:["none","tight","snug","normal","relaxed","loose",x]}],"list-image":[{"list-image":["none",I]}],"list-style-type":[{list:["none","disc","decimal",I]}],"list-style-position":[{list:["inside","outside"]}],"placeholder-color":[{placeholder:[r]}],"placeholder-opacity":[{"placeholder-opacity":[v]}],"text-alignment":[{text:["left","center","right","justify","start","end"]}],"text-color":[{text:[r]}],"text-opacity":[{"text-opacity":[v]}],"text-decoration":["underline","overline","line-through","no-underline"],"text-decoration-style":[{decoration:[].concat(["solid","dashed","dotted","double","none"],["wavy"])}],"text-decoration-thickness":[{decoration:["auto","from-font",x]}],"underline-offset":[{"underline-offset":["auto",x]}],"text-decoration-color":[{decoration:[r]}],"text-transform":["uppercase","lowercase","capitalize","normal-case"],"text-overflow":["truncate","text-ellipsis","text-clip"],indent:[{indent:[e]}],"vertical-align":[{align:["baseline","top","middle","bottom","text-top","text-bottom","sub","super",w]}],whitespace:[{whitespace:["normal","nowrap","pre","pre-line","pre-wrap","break-spaces"]}],break:[{break:["normal","words","all","keep"]}],hyphens:[{hyphens:["none","manual","auto"]}],content:[{content:["none",I]}],"bg-attachment":[{bg:["fixed","local","scroll"]}],"bg-clip":[{"bg-clip":["border","padding","content","text"]}],"bg-opacity":[{"bg-opacity":[v]}],"bg-origin":[{"bg-origin":["border","padding","content"]}],"bg-position":[{bg:[].concat(["bottom","center","left","left-bottom","left-top","right","right-bottom","right-top","top"],[z])}],"bg-repeat":[{bg:["no-repeat",{repeat:["","x","y","round","space"]}]}],"bg-size":[{bg:["auto","cover","contain",k]}],"bg-image":[{bg:["none",{"gradient-to":["t","tr","r","br","b","bl","l","tl"]},C]}],"bg-color":[{bg:[r]}],"gradient-from-pos":[{from:[m]}],"gradient-via-pos":[{via:[m]}],"gradient-to-pos":[{to:[m]}],"gradient-from":[{from:[b]}],"gradient-via":[{via:[b]}],"gradient-to":[{to:[b]}],rounded:[{rounded:[i]}],"rounded-s":[{"rounded-s":[i]}],"rounded-e":[{"rounded-e":[i]}],"rounded-t":[{"rounded-t":[i]}],"rounded-r":[{"rounded-r":[i]}],"rounded-b":[{"rounded-b":[i]}],"rounded-l":[{"rounded-l":[i]}],"rounded-ss":[{"rounded-ss":[i]}],"rounded-se":[{"rounded-se":[i]}],"rounded-ee":[{"rounded-ee":[i]}],"rounded-es":[{"rounded-es":[i]}],"rounded-tl":[{"rounded-tl":[i]}],"rounded-tr":[{"rounded-tr":[i]}],"rounded-br":[{"rounded-br":[i]}],"rounded-bl":[{"rounded-bl":[i]}],"border-w":[{border:[l]}],"border-w-x":[{"border-x":[l]}],"border-w-y":[{"border-y":[l]}],"border-w-s":[{"border-s":[l]}],"border-w-e":[{"border-e":[l]}],"border-w-t":[{"border-t":[l]}],"border-w-r":[{"border-r":[l]}],"border-w-b":[{"border-b":[l]}],"border-w-l":[{"border-l":[l]}],"border-opacity":[{"border-opacity":[v]}],"border-style":[{border:[].concat(["solid","dashed","dotted","double","none"],["hidden"])}],"divide-x":[{"divide-x":[l]}],"divide-x-reverse":["divide-x-reverse"],"divide-y":[{"divide-y":[l]}],"divide-y-reverse":["divide-y-reverse"],"divide-opacity":[{"divide-opacity":[v]}],"divide-style":[{divide:["solid","dashed","dotted","double","none"]}],"border-color":[{border:[n]}],"border-color-x":[{"border-x":[n]}],"border-color-y":[{"border-y":[n]}],"border-color-t":[{"border-t":[n]}],"border-color-r":[{"border-r":[n]}],"border-color-b":[{"border-b":[n]}],"border-color-l":[{"border-l":[n]}],"divide-color":[{divide:[n]}],"outline-style":[{outline:[""].concat(["solid","dashed","dotted","double","none"])}],"outline-offset":[{"outline-offset":[x]}],"outline-w":[{outline:[x]}],"outline-color":[{outline:[r]}],"ring-w":[{ring:q()}],"ring-w-inset":["ring-inset"],"ring-color":[{ring:[r]}],"ring-opacity":[{"ring-opacity":[v]}],"ring-offset-w":[{"ring-offset":[x]}],"ring-offset-color":[{"ring-offset":[r]}],shadow:[{shadow:["","inner","none",N,S]}],"shadow-color":[{shadow:[A]}],opacity:[{opacity:[v]}],"mix-blend":[{"mix-blend":["normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light","difference","exclusion","hue","saturation","color","luminosity","plus-lighter"]}],"bg-blend":[{"bg-blend":["normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light","difference","exclusion","hue","saturation","color","luminosity","plus-lighter"]}],filter:[{filter:["","none"]}],blur:[{blur:[o]}],brightness:[{brightness:[t]}],contrast:[{contrast:[s]}],"drop-shadow":[{"drop-shadow":["","none",N,I]}],grayscale:[{grayscale:[c]}],"hue-rotate":[{"hue-rotate":[d]}],invert:[{invert:[u]}],saturate:[{saturate:[T]}],sepia:[{sepia:[E]}],"backdrop-filter":[{"backdrop-filter":["","none"]}],"backdrop-blur":[{"backdrop-blur":[o]}],"backdrop-brightness":[{"backdrop-brightness":[t]}],"backdrop-contrast":[{"backdrop-contrast":[s]}],"backdrop-grayscale":[{"backdrop-grayscale":[c]}],"backdrop-hue-rotate":[{"backdrop-hue-rotate":[d]}],"backdrop-invert":[{"backdrop-invert":[u]}],"backdrop-opacity":[{"backdrop-opacity":[v]}],"backdrop-saturate":[{"backdrop-saturate":[T]}],"backdrop-sepia":[{"backdrop-sepia":[E]}],"border-collapse":[{border:["collapse","separate"]}],"border-spacing":[{"border-spacing":[a]}],"border-spacing-x":[{"border-spacing-x":[a]}],"border-spacing-y":[{"border-spacing-y":[a]}],"table-layout":[{table:["auto","fixed"]}],caption:[{caption:["top","bottom"]}],transition:[{transition:["none","all","","colors","opacity","shadow","transform",I]}],duration:[{duration:J()}],ease:[{ease:["linear","in","out","in-out",I]}],delay:[{delay:J()}],animate:[{animate:["none","spin","ping","pulse","bounce",I]}],transform:[{transform:["","gpu","none"]}],scale:[{scale:[O]}],"scale-x":[{"scale-x":[O]}],"scale-y":[{"scale-y":[O]}],rotate:[{rotate:[P,I]}],"translate-x":[{"translate-x":[$]}],"translate-y":[{"translate-y":[$]}],"skew-x":[{"skew-x":[_]}],"skew-y":[{"skew-y":[_]}],"transform-origin":[{origin:["center","top","top-right","right","bottom-right","bottom","bottom-left","left","top-left",I]}],accent:[{accent:["auto",r]}],appearance:["appearance-none"],cursor:[{cursor:["auto","default","pointer","wait","text","move","help","not-allowed","none","context-menu","progress","cell","crosshair","vertical-text","alias","copy","no-drop","grab","grabbing","all-scroll","col-resize","row-resize","n-resize","e-resize","s-resize","w-resize","ne-resize","nw-resize","se-resize","sw-resize","ew-resize","ns-resize","nesw-resize","nwse-resize","zoom-in","zoom-out",I]}],"caret-color":[{caret:[r]}],"pointer-events":[{"pointer-events":["none","auto"]}],resize:[{resize:["none","y","x",""]}],"scroll-behavior":[{scroll:["auto","smooth"]}],"scroll-m":[{"scroll-m":[e]}],"scroll-mx":[{"scroll-mx":[e]}],"scroll-my":[{"scroll-my":[e]}],"scroll-ms":[{"scroll-ms":[e]}],"scroll-me":[{"scroll-me":[e]}],"scroll-mt":[{"scroll-mt":[e]}],"scroll-mr":[{"scroll-mr":[e]}],"scroll-mb":[{"scroll-mb":[e]}],"scroll-ml":[{"scroll-ml":[e]}],"scroll-p":[{"scroll-p":[e]}],"scroll-px":[{"scroll-px":[e]}],"scroll-py":[{"scroll-py":[e]}],"scroll-ps":[{"scroll-ps":[e]}],"scroll-pe":[{"scroll-pe":[e]}],"scroll-pt":[{"scroll-pt":[e]}],"scroll-pr":[{"scroll-pr":[e]}],"scroll-pb":[{"scroll-pb":[e]}],"scroll-pl":[{"scroll-pl":[e]}],"snap-align":[{snap:["start","end","center","align-none"]}],"snap-stop":[{snap:["normal","always"]}],"snap-type":[{snap:["none","x","y","both"]}],"snap-strictness":[{snap:["mandatory","proximity"]}],touch:[{touch:["auto","none","pinch-zoom","manipulation",{pan:["x","left","right","y","up","down"]}]}],select:[{select:["none","text","all","auto"]}],"will-change":[{"will-change":["auto","scroll","contents","transform",I]}],fill:[{fill:[r,"none"]}],"stroke-w":[{stroke:[x,j]}],stroke:[{stroke:[r,"none"]}],sr:["sr-only","not-sr-only"]},conflictingClassGroups:{overflow:["overflow-x","overflow-y"],overscroll:["overscroll-x","overscroll-y"],inset:["inset-x","inset-y","start","end","top","right","bottom","left"],"inset-x":["right","left"],"inset-y":["top","bottom"],flex:["basis","grow","shrink"],gap:["gap-x","gap-y"],p:["px","py","ps","pe","pt","pr","pb","pl"],px:["pr","pl"],py:["pt","pb"],m:["mx","my","ms","me","mt","mr","mb","ml"],mx:["mr","ml"],my:["mt","mb"],"font-size":["leading"],"fvn-normal":["fvn-ordinal","fvn-slashed-zero","fvn-figure","fvn-spacing","fvn-fraction"],"fvn-ordinal":["fvn-normal"],"fvn-slashed-zero":["fvn-normal"],"fvn-figure":["fvn-normal"],"fvn-spacing":["fvn-normal"],"fvn-fraction":["fvn-normal"],rounded:["rounded-s","rounded-e","rounded-t","rounded-r","rounded-b","rounded-l","rounded-ss","rounded-se","rounded-ee","rounded-es","rounded-tl","rounded-tr","rounded-br","rounded-bl"],"rounded-s":["rounded-ss","rounded-es"],"rounded-e":["rounded-se","rounded-ee"],"rounded-t":["rounded-tl","rounded-tr"],"rounded-r":["rounded-tr","rounded-br"],"rounded-b":["rounded-br","rounded-bl"],"rounded-l":["rounded-tl","rounded-bl"],"border-spacing":["border-spacing-x","border-spacing-y"],"border-w":["border-w-s","border-w-e","border-w-t","border-w-r","border-w-b","border-w-l"],"border-w-x":["border-w-r","border-w-l"],"border-w-y":["border-w-t","border-w-b"],"border-color":["border-color-t","border-color-r","border-color-b","border-color-l"],"border-color-x":["border-color-r","border-color-l"],"border-color-y":["border-color-t","border-color-b"],"scroll-m":["scroll-mx","scroll-my","scroll-ms","scroll-me","scroll-mt","scroll-mr","scroll-mb","scroll-ml"],"scroll-mx":["scroll-mr","scroll-ml"],"scroll-my":["scroll-mt","scroll-mb"],"scroll-p":["scroll-px","scroll-py","scroll-ps","scroll-pe","scroll-pt","scroll-pr","scroll-pb","scroll-pl"],"scroll-px":["scroll-pr","scroll-pl"],"scroll-py":["scroll-pt","scroll-pb"]},conflictingClassGroupModifiers:{"font-size":["leading"]}}}function L(r,e){for(var o in e)J(r,o,e[o]);return r}var B=Object.prototype.hasOwnProperty,D=new Set(["string","number","boolean"]);function J(r,e,o){if(B.call(r,e)&&!D.has(typeof o)&&null!==o){if(Array.isArray(o)&&Array.isArray(r[e]))r[e]=r[e].concat(o);else if("object"==typeof o&&"object"==typeof r[e]){if(null===r[e])return void(r[e]=o);for(var t in o)J(r[e],t,o[t])}}else r[e]=o}var U=p(q),V=r;exports.createTailwindMerge=p,exports.extendTailwindMerge=function(r){for(var e=arguments.length,o=new Array(e>1?e-1:0),t=1;t<e;t++)o[t-1]=arguments[t];return p.apply(void 0,"function"==typeof r?[q,r].concat(o):[function(){return L(q(),r)}].concat(o))},exports.fromTheme=f,exports.getDefaultConfig=q,exports.join=V,exports.mergeConfigs=L,exports.twJoin=r,exports.twMerge=U,exports.validators=R;
+function r(){for(var r,o,t=0,n="";t<arguments.length;)(r=arguments[t++])&&(o=e(r))&&(n&&(n+=" "),n+=o);return n}function e(r){if("string"==typeof r)return r;for(var o,t="",n=0;n<r.length;n++)r[n]&&(o=e(r[n]))&&(t&&(t+=" "),t+=o);return t}Object.defineProperty(exports, "__esModule", ({value:!0}));var o="-";function t(r){var e=function(r){var e=r.theme,o=r.prefix,t={nextPart:new Map,validators:[]},n=function(r,e){return e?r.map((function(r){return[r[0],r[1].map((function(r){return"string"==typeof r?e+r:"object"==typeof r?Object.fromEntries(Object.entries(r).map((function(r){return[e+r[0],r[1]]}))):r}))]})):r}(Object.entries(r.classGroups),o);return n.forEach((function(r){a(r[1],t,r[0],e)})),t}(r),t=r.conflictingClassGroups,l=r.conflictingClassGroupModifiers,s=void 0===l?{}:l;return{getClassGroupId:function(r){var t=r.split(o);return""===t[0]&&1!==t.length&&t.shift(),n(t,e)||function(r){if(i.test(r)){var e=i.exec(r)[1],o=e?.substring(0,e.indexOf(":"));if(o)return"arbitrary.."+o}}(r)},getConflictingClassGroupIds:function(r,e){var o=t[r]||[];return e&&s[r]?[].concat(o,s[r]):o}}}function n(r,e){if(0===r.length)return e.classGroupId;var t=e.nextPart.get(r[0]),i=t?n(r.slice(1),t):void 0;if(i)return i;if(0!==e.validators.length){var a=r.join(o);return e.validators.find((function(r){return(0,r.validator)(a)}))?.classGroupId}}var i=/^\[(.+)\]$/;function a(r,e,o,t){r.forEach((function(r){if("string"!=typeof r){if("function"==typeof r)return r.isThemeGetter?void a(r(t),e,o,t):void e.validators.push({validator:r,classGroupId:o});Object.entries(r).forEach((function(r){a(r[1],l(e,r[0]),o,t)}))}else(""===r?e:l(e,r)).classGroupId=o}))}function l(r,e){var t=r;return e.split(o).forEach((function(r){t.nextPart.has(r)||t.nextPart.set(r,{nextPart:new Map,validators:[]}),t=t.nextPart.get(r)})),t}function s(r){if(r<1)return{get:function(){},set:function(){}};var e=0,o=new Map,t=new Map;function n(n,i){o.set(n,i),++e>r&&(e=0,t=o,o=new Map)}return{get:function(r){var e=o.get(r);return void 0!==e?e:void 0!==(e=t.get(r))?(n(r,e),e):void 0},set:function(r,e){o.has(r)?o.set(r,e):n(r,e)}}}var c="!";function d(r){var e=r.separator||":",o=1===e.length,t=e[0],n=e.length;return function(r){for(var i,a=[],l=0,s=0,d=0;d<r.length;d++){var u=r[d];if(0===l){if(u===t&&(o||r.slice(d,d+n)===e)){a.push(r.slice(s,d)),s=d+n;continue}if("/"===u){i=d;continue}}"["===u?l++:"]"===u&&l--}var p=0===a.length?r:r.substring(s),f=p.startsWith(c);return{modifiers:a,hasImportantModifier:f,baseClassName:f?p.substring(1):p,maybePostfixModifierPosition:i&&i>s?i-s:void 0}}}var u=/\s+/;function p(){for(var e=arguments.length,o=new Array(e),n=0;n<e;n++)o[n]=arguments[n];var i,a,l,p=function(r){var e=o[0],n=o.slice(1).reduce((function(r,e){return e(r)}),e());return i=function(r){return{cache:s(r.cacheSize),splitModifiers:d(r),...t(r)}}(n),a=i.cache.get,l=i.cache.set,p=f,f(r)};function f(r){var e=a(r);if(e)return e;var o=function(r,e){var o=e.splitModifiers,t=e.getClassGroupId,n=e.getConflictingClassGroupIds,i=new Set;return r.trim().split(u).map((function(r){var e=o(r),n=e.modifiers,i=e.hasImportantModifier,a=e.baseClassName,l=e.maybePostfixModifierPosition,s=t(l?a.substring(0,l):a),d=Boolean(l);if(!s){if(!l)return{isTailwindClass:!1,originalClassName:r};if(!(s=t(a)))return{isTailwindClass:!1,originalClassName:r};d=!1}var u=function(r){if(r.length<=1)return r;var e=[],o=[];return r.forEach((function(r){"["===r[0]?(e.push.apply(e,o.sort().concat([r])),o=[]):o.push(r)})),e.push.apply(e,o.sort()),e}(n).join(":");return{isTailwindClass:!0,modifierId:i?u+c:u,classGroupId:s,originalClassName:r,hasPostfixModifier:d}})).reverse().filter((function(r){if(!r.isTailwindClass)return!0;var e=r.modifierId,o=r.classGroupId,t=r.hasPostfixModifier,a=e+o;return!i.has(a)&&(i.add(a),n(o,t).forEach((function(r){return i.add(e+r)})),!0)})).reverse().map((function(r){return r.originalClassName})).join(" ")}(r,i);return l(r,o),o}return function(){return p(r.apply(null,arguments))}}function f(r){var e=function(e){return e[r]||[]};return e.isThemeGetter=!0,e}var b=/^\[(?:([a-z-]+):)?(.+)\]$/i,m=/^\d+\/\d+$/,g=new Set(["px","full","screen"]),h=/^(\d+(\.\d+)?)?(xs|sm|md|lg|xl)$/,v=/\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh|cq(w|h|i|b|min|max))|\b(calc|min|max|clamp)\(.+\)|^0$/,y=/^-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)/;function x(r){return M(r)||g.has(r)||m.test(r)||w(r)}function w(r){return T(r,"length",O)}function k(r){return T(r,"size",E)}function z(r){return T(r,"position",E)}function C(r){return T(r,"url",_)}function j(r){return T(r,"number",M)}function M(r){return!Number.isNaN(Number(r))}function G(r){return r.endsWith("%")&&M(r.slice(0,-1))}function P(r){return W(r)||T(r,"number",W)}function I(r){return b.test(r)}function A(){return!0}function N(r){return h.test(r)}function S(r){return T(r,"",$)}function T(r,e,o){var t=b.exec(r);return!!t&&(t[1]?t[1]===e:o(t[2]))}function O(r){return v.test(r)}function E(){return!1}function _(r){return r.startsWith("url(")}function W(r){return Number.isInteger(Number(r))}function $(r){return y.test(r)}var R={__proto__:null,isAny:A,isArbitraryLength:w,isArbitraryNumber:j,isArbitraryPosition:z,isArbitraryShadow:S,isArbitrarySize:k,isArbitraryUrl:C,isArbitraryValue:I,isArbitraryWeight:j,isInteger:P,isLength:x,isNumber:M,isPercent:G,isTshirtSize:N};function q(){var r=f("colors"),e=f("spacing"),o=f("blur"),t=f("brightness"),n=f("borderColor"),i=f("borderRadius"),a=f("borderSpacing"),l=f("borderWidth"),s=f("contrast"),c=f("grayscale"),d=f("hueRotate"),u=f("invert"),p=f("gap"),b=f("gradientColorStops"),m=f("gradientColorStopPositions"),g=f("inset"),h=f("margin"),v=f("opacity"),y=f("padding"),T=f("saturate"),O=f("scale"),E=f("sepia"),_=f("skew"),W=f("space"),$=f("translate"),R=function(){return["auto",I,e]},q=function(){return[I,e]},L=function(){return["",x]},B=function(){return["auto",M,I]},D=function(){return["","0",I]},J=function(){return[M,j]},U=function(){return[M,I]};return{cacheSize:500,theme:{colors:[A],spacing:[x],blur:["none","",N,I],brightness:J(),borderColor:[r],borderRadius:["none","","full",N,I],borderSpacing:q(),borderWidth:L(),contrast:J(),grayscale:D(),hueRotate:U(),invert:D(),gap:q(),gradientColorStops:[r],gradientColorStopPositions:[G,w],inset:R(),margin:R(),opacity:J(),padding:q(),saturate:J(),scale:J(),sepia:D(),skew:U(),space:q(),translate:q()},classGroups:{aspect:[{aspect:["auto","square","video",I]}],container:["container"],columns:[{columns:[N]}],"break-after":[{"break-after":["auto","avoid","all","avoid-page","page","left","right","column"]}],"break-before":[{"break-before":["auto","avoid","all","avoid-page","page","left","right","column"]}],"break-inside":[{"break-inside":["auto","avoid","avoid-page","avoid-column"]}],"box-decoration":[{"box-decoration":["slice","clone"]}],box:[{box:["border","content"]}],display:["block","inline-block","inline","flex","inline-flex","table","inline-table","table-caption","table-cell","table-column","table-column-group","table-footer-group","table-header-group","table-row-group","table-row","flow-root","grid","inline-grid","contents","list-item","hidden"],float:[{float:["right","left","none"]}],clear:[{clear:["left","right","both","none"]}],isolation:["isolate","isolation-auto"],"object-fit":[{object:["contain","cover","fill","none","scale-down"]}],"object-position":[{object:[].concat(["bottom","center","left","left-bottom","left-top","right","right-bottom","right-top","top"],[I])}],overflow:[{overflow:["auto","hidden","clip","visible","scroll"]}],"overflow-x":[{"overflow-x":["auto","hidden","clip","visible","scroll"]}],"overflow-y":[{"overflow-y":["auto","hidden","clip","visible","scroll"]}],overscroll:[{overscroll:["auto","contain","none"]}],"overscroll-x":[{"overscroll-x":["auto","contain","none"]}],"overscroll-y":[{"overscroll-y":["auto","contain","none"]}],position:["static","fixed","absolute","relative","sticky"],inset:[{inset:[g]}],"inset-x":[{"inset-x":[g]}],"inset-y":[{"inset-y":[g]}],start:[{start:[g]}],end:[{end:[g]}],top:[{top:[g]}],right:[{right:[g]}],bottom:[{bottom:[g]}],left:[{left:[g]}],visibility:["visible","invisible","collapse"],z:[{z:["auto",P]}],basis:[{basis:R()}],"flex-direction":[{flex:["row","row-reverse","col","col-reverse"]}],"flex-wrap":[{flex:["wrap","wrap-reverse","nowrap"]}],flex:[{flex:["1","auto","initial","none",I]}],grow:[{grow:D()}],shrink:[{shrink:D()}],order:[{order:["first","last","none",P]}],"grid-cols":[{"grid-cols":[A]}],"col-start-end":[{col:["auto",{span:["full",P]},I]}],"col-start":[{"col-start":B()}],"col-end":[{"col-end":B()}],"grid-rows":[{"grid-rows":[A]}],"row-start-end":[{row:["auto",{span:[P]},I]}],"row-start":[{"row-start":B()}],"row-end":[{"row-end":B()}],"grid-flow":[{"grid-flow":["row","col","dense","row-dense","col-dense"]}],"auto-cols":[{"auto-cols":["auto","min","max","fr",I]}],"auto-rows":[{"auto-rows":["auto","min","max","fr",I]}],gap:[{gap:[p]}],"gap-x":[{"gap-x":[p]}],"gap-y":[{"gap-y":[p]}],"justify-content":[{justify:["normal"].concat(["start","end","center","between","around","evenly","stretch"])}],"justify-items":[{"justify-items":["start","end","center","stretch"]}],"justify-self":[{"justify-self":["auto","start","end","center","stretch"]}],"align-content":[{content:["normal"].concat(["start","end","center","between","around","evenly","stretch"],["baseline"])}],"align-items":[{items:["start","end","center","baseline","stretch"]}],"align-self":[{self:["auto","start","end","center","stretch","baseline"]}],"place-content":[{"place-content":[].concat(["start","end","center","between","around","evenly","stretch"],["baseline"])}],"place-items":[{"place-items":["start","end","center","baseline","stretch"]}],"place-self":[{"place-self":["auto","start","end","center","stretch"]}],p:[{p:[y]}],px:[{px:[y]}],py:[{py:[y]}],ps:[{ps:[y]}],pe:[{pe:[y]}],pt:[{pt:[y]}],pr:[{pr:[y]}],pb:[{pb:[y]}],pl:[{pl:[y]}],m:[{m:[h]}],mx:[{mx:[h]}],my:[{my:[h]}],ms:[{ms:[h]}],me:[{me:[h]}],mt:[{mt:[h]}],mr:[{mr:[h]}],mb:[{mb:[h]}],ml:[{ml:[h]}],"space-x":[{"space-x":[W]}],"space-x-reverse":["space-x-reverse"],"space-y":[{"space-y":[W]}],"space-y-reverse":["space-y-reverse"],w:[{w:["auto","min","max","fit",I,e]}],"min-w":[{"min-w":["min","max","fit",I,x]}],"max-w":[{"max-w":["0","none","full","min","max","fit","prose",{screen:[N]},N,I]}],h:[{h:[I,e,"auto","min","max","fit"]}],"min-h":[{"min-h":["min","max","fit",I,x]}],"max-h":[{"max-h":[I,e,"min","max","fit"]}],"font-size":[{text:["base",N,w]}],"font-smoothing":["antialiased","subpixel-antialiased"],"font-style":["italic","not-italic"],"font-weight":[{font:["thin","extralight","light","normal","medium","semibold","bold","extrabold","black",j]}],"font-family":[{font:[A]}],"fvn-normal":["normal-nums"],"fvn-ordinal":["ordinal"],"fvn-slashed-zero":["slashed-zero"],"fvn-figure":["lining-nums","oldstyle-nums"],"fvn-spacing":["proportional-nums","tabular-nums"],"fvn-fraction":["diagonal-fractions","stacked-fractons"],tracking:[{tracking:["tighter","tight","normal","wide","wider","widest",I]}],"line-clamp":[{"line-clamp":["none",M,j]}],leading:[{leading:["none","tight","snug","normal","relaxed","loose",I,x]}],"list-image":[{"list-image":["none",I]}],"list-style-type":[{list:["none","disc","decimal",I]}],"list-style-position":[{list:["inside","outside"]}],"placeholder-color":[{placeholder:[r]}],"placeholder-opacity":[{"placeholder-opacity":[v]}],"text-alignment":[{text:["left","center","right","justify","start","end"]}],"text-color":[{text:[r]}],"text-opacity":[{"text-opacity":[v]}],"text-decoration":["underline","overline","line-through","no-underline"],"text-decoration-style":[{decoration:[].concat(["solid","dashed","dotted","double","none"],["wavy"])}],"text-decoration-thickness":[{decoration:["auto","from-font",x]}],"underline-offset":[{"underline-offset":["auto",I,x]}],"text-decoration-color":[{decoration:[r]}],"text-transform":["uppercase","lowercase","capitalize","normal-case"],"text-overflow":["truncate","text-ellipsis","text-clip"],indent:[{indent:q()}],"vertical-align":[{align:["baseline","top","middle","bottom","text-top","text-bottom","sub","super",I]}],whitespace:[{whitespace:["normal","nowrap","pre","pre-line","pre-wrap","break-spaces"]}],break:[{break:["normal","words","all","keep"]}],hyphens:[{hyphens:["none","manual","auto"]}],content:[{content:["none",I]}],"bg-attachment":[{bg:["fixed","local","scroll"]}],"bg-clip":[{"bg-clip":["border","padding","content","text"]}],"bg-opacity":[{"bg-opacity":[v]}],"bg-origin":[{"bg-origin":["border","padding","content"]}],"bg-position":[{bg:[].concat(["bottom","center","left","left-bottom","left-top","right","right-bottom","right-top","top"],[z])}],"bg-repeat":[{bg:["no-repeat",{repeat:["","x","y","round","space"]}]}],"bg-size":[{bg:["auto","cover","contain",k]}],"bg-image":[{bg:["none",{"gradient-to":["t","tr","r","br","b","bl","l","tl"]},C]}],"bg-color":[{bg:[r]}],"gradient-from-pos":[{from:[m]}],"gradient-via-pos":[{via:[m]}],"gradient-to-pos":[{to:[m]}],"gradient-from":[{from:[b]}],"gradient-via":[{via:[b]}],"gradient-to":[{to:[b]}],rounded:[{rounded:[i]}],"rounded-s":[{"rounded-s":[i]}],"rounded-e":[{"rounded-e":[i]}],"rounded-t":[{"rounded-t":[i]}],"rounded-r":[{"rounded-r":[i]}],"rounded-b":[{"rounded-b":[i]}],"rounded-l":[{"rounded-l":[i]}],"rounded-ss":[{"rounded-ss":[i]}],"rounded-se":[{"rounded-se":[i]}],"rounded-ee":[{"rounded-ee":[i]}],"rounded-es":[{"rounded-es":[i]}],"rounded-tl":[{"rounded-tl":[i]}],"rounded-tr":[{"rounded-tr":[i]}],"rounded-br":[{"rounded-br":[i]}],"rounded-bl":[{"rounded-bl":[i]}],"border-w":[{border:[l]}],"border-w-x":[{"border-x":[l]}],"border-w-y":[{"border-y":[l]}],"border-w-s":[{"border-s":[l]}],"border-w-e":[{"border-e":[l]}],"border-w-t":[{"border-t":[l]}],"border-w-r":[{"border-r":[l]}],"border-w-b":[{"border-b":[l]}],"border-w-l":[{"border-l":[l]}],"border-opacity":[{"border-opacity":[v]}],"border-style":[{border:[].concat(["solid","dashed","dotted","double","none"],["hidden"])}],"divide-x":[{"divide-x":[l]}],"divide-x-reverse":["divide-x-reverse"],"divide-y":[{"divide-y":[l]}],"divide-y-reverse":["divide-y-reverse"],"divide-opacity":[{"divide-opacity":[v]}],"divide-style":[{divide:["solid","dashed","dotted","double","none"]}],"border-color":[{border:[n]}],"border-color-x":[{"border-x":[n]}],"border-color-y":[{"border-y":[n]}],"border-color-t":[{"border-t":[n]}],"border-color-r":[{"border-r":[n]}],"border-color-b":[{"border-b":[n]}],"border-color-l":[{"border-l":[n]}],"divide-color":[{divide:[n]}],"outline-style":[{outline:[""].concat(["solid","dashed","dotted","double","none"])}],"outline-offset":[{"outline-offset":[I,x]}],"outline-w":[{outline:[x]}],"outline-color":[{outline:[r]}],"ring-w":[{ring:L()}],"ring-w-inset":["ring-inset"],"ring-color":[{ring:[r]}],"ring-opacity":[{"ring-opacity":[v]}],"ring-offset-w":[{"ring-offset":[x]}],"ring-offset-color":[{"ring-offset":[r]}],shadow:[{shadow:["","inner","none",N,S]}],"shadow-color":[{shadow:[A]}],opacity:[{opacity:[v]}],"mix-blend":[{"mix-blend":["normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light","difference","exclusion","hue","saturation","color","luminosity","plus-lighter"]}],"bg-blend":[{"bg-blend":["normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light","difference","exclusion","hue","saturation","color","luminosity","plus-lighter"]}],filter:[{filter:["","none"]}],blur:[{blur:[o]}],brightness:[{brightness:[t]}],contrast:[{contrast:[s]}],"drop-shadow":[{"drop-shadow":["","none",N,I]}],grayscale:[{grayscale:[c]}],"hue-rotate":[{"hue-rotate":[d]}],invert:[{invert:[u]}],saturate:[{saturate:[T]}],sepia:[{sepia:[E]}],"backdrop-filter":[{"backdrop-filter":["","none"]}],"backdrop-blur":[{"backdrop-blur":[o]}],"backdrop-brightness":[{"backdrop-brightness":[t]}],"backdrop-contrast":[{"backdrop-contrast":[s]}],"backdrop-grayscale":[{"backdrop-grayscale":[c]}],"backdrop-hue-rotate":[{"backdrop-hue-rotate":[d]}],"backdrop-invert":[{"backdrop-invert":[u]}],"backdrop-opacity":[{"backdrop-opacity":[v]}],"backdrop-saturate":[{"backdrop-saturate":[T]}],"backdrop-sepia":[{"backdrop-sepia":[E]}],"border-collapse":[{border:["collapse","separate"]}],"border-spacing":[{"border-spacing":[a]}],"border-spacing-x":[{"border-spacing-x":[a]}],"border-spacing-y":[{"border-spacing-y":[a]}],"table-layout":[{table:["auto","fixed"]}],caption:[{caption:["top","bottom"]}],transition:[{transition:["none","all","","colors","opacity","shadow","transform",I]}],duration:[{duration:U()}],ease:[{ease:["linear","in","out","in-out",I]}],delay:[{delay:U()}],animate:[{animate:["none","spin","ping","pulse","bounce",I]}],transform:[{transform:["","gpu","none"]}],scale:[{scale:[O]}],"scale-x":[{"scale-x":[O]}],"scale-y":[{"scale-y":[O]}],rotate:[{rotate:[P,I]}],"translate-x":[{"translate-x":[$]}],"translate-y":[{"translate-y":[$]}],"skew-x":[{"skew-x":[_]}],"skew-y":[{"skew-y":[_]}],"transform-origin":[{origin:["center","top","top-right","right","bottom-right","bottom","bottom-left","left","top-left",I]}],accent:[{accent:["auto",r]}],appearance:["appearance-none"],cursor:[{cursor:["auto","default","pointer","wait","text","move","help","not-allowed","none","context-menu","progress","cell","crosshair","vertical-text","alias","copy","no-drop","grab","grabbing","all-scroll","col-resize","row-resize","n-resize","e-resize","s-resize","w-resize","ne-resize","nw-resize","se-resize","sw-resize","ew-resize","ns-resize","nesw-resize","nwse-resize","zoom-in","zoom-out",I]}],"caret-color":[{caret:[r]}],"pointer-events":[{"pointer-events":["none","auto"]}],resize:[{resize:["none","y","x",""]}],"scroll-behavior":[{scroll:["auto","smooth"]}],"scroll-m":[{"scroll-m":q()}],"scroll-mx":[{"scroll-mx":q()}],"scroll-my":[{"scroll-my":q()}],"scroll-ms":[{"scroll-ms":q()}],"scroll-me":[{"scroll-me":q()}],"scroll-mt":[{"scroll-mt":q()}],"scroll-mr":[{"scroll-mr":q()}],"scroll-mb":[{"scroll-mb":q()}],"scroll-ml":[{"scroll-ml":q()}],"scroll-p":[{"scroll-p":q()}],"scroll-px":[{"scroll-px":q()}],"scroll-py":[{"scroll-py":q()}],"scroll-ps":[{"scroll-ps":q()}],"scroll-pe":[{"scroll-pe":q()}],"scroll-pt":[{"scroll-pt":q()}],"scroll-pr":[{"scroll-pr":q()}],"scroll-pb":[{"scroll-pb":q()}],"scroll-pl":[{"scroll-pl":q()}],"snap-align":[{snap:["start","end","center","align-none"]}],"snap-stop":[{snap:["normal","always"]}],"snap-type":[{snap:["none","x","y","both"]}],"snap-strictness":[{snap:["mandatory","proximity"]}],touch:[{touch:["auto","none","pinch-zoom","manipulation",{pan:["x","left","right","y","up","down"]}]}],select:[{select:["none","text","all","auto"]}],"will-change":[{"will-change":["auto","scroll","contents","transform",I]}],fill:[{fill:[r,"none"]}],"stroke-w":[{stroke:[x,j]}],stroke:[{stroke:[r,"none"]}],sr:["sr-only","not-sr-only"]},conflictingClassGroups:{overflow:["overflow-x","overflow-y"],overscroll:["overscroll-x","overscroll-y"],inset:["inset-x","inset-y","start","end","top","right","bottom","left"],"inset-x":["right","left"],"inset-y":["top","bottom"],flex:["basis","grow","shrink"],gap:["gap-x","gap-y"],p:["px","py","ps","pe","pt","pr","pb","pl"],px:["pr","pl"],py:["pt","pb"],m:["mx","my","ms","me","mt","mr","mb","ml"],mx:["mr","ml"],my:["mt","mb"],"font-size":["leading"],"fvn-normal":["fvn-ordinal","fvn-slashed-zero","fvn-figure","fvn-spacing","fvn-fraction"],"fvn-ordinal":["fvn-normal"],"fvn-slashed-zero":["fvn-normal"],"fvn-figure":["fvn-normal"],"fvn-spacing":["fvn-normal"],"fvn-fraction":["fvn-normal"],rounded:["rounded-s","rounded-e","rounded-t","rounded-r","rounded-b","rounded-l","rounded-ss","rounded-se","rounded-ee","rounded-es","rounded-tl","rounded-tr","rounded-br","rounded-bl"],"rounded-s":["rounded-ss","rounded-es"],"rounded-e":["rounded-se","rounded-ee"],"rounded-t":["rounded-tl","rounded-tr"],"rounded-r":["rounded-tr","rounded-br"],"rounded-b":["rounded-br","rounded-bl"],"rounded-l":["rounded-tl","rounded-bl"],"border-spacing":["border-spacing-x","border-spacing-y"],"border-w":["border-w-s","border-w-e","border-w-t","border-w-r","border-w-b","border-w-l"],"border-w-x":["border-w-r","border-w-l"],"border-w-y":["border-w-t","border-w-b"],"border-color":["border-color-t","border-color-r","border-color-b","border-color-l"],"border-color-x":["border-color-r","border-color-l"],"border-color-y":["border-color-t","border-color-b"],"scroll-m":["scroll-mx","scroll-my","scroll-ms","scroll-me","scroll-mt","scroll-mr","scroll-mb","scroll-ml"],"scroll-mx":["scroll-mr","scroll-ml"],"scroll-my":["scroll-mt","scroll-mb"],"scroll-p":["scroll-px","scroll-py","scroll-ps","scroll-pe","scroll-pt","scroll-pr","scroll-pb","scroll-pl"],"scroll-px":["scroll-pr","scroll-pl"],"scroll-py":["scroll-pt","scroll-pb"]},conflictingClassGroupModifiers:{"font-size":["leading"]}}}function L(r,e){for(var o in e)J(r,o,e[o]);return r}var B=Object.prototype.hasOwnProperty,D=new Set(["string","number","boolean"]);function J(r,e,o){if(B.call(r,e)&&!D.has(typeof o)&&null!==o){if(Array.isArray(o)&&Array.isArray(r[e]))r[e]=r[e].concat(o);else if("object"==typeof o&&"object"==typeof r[e]){if(null===r[e])return void(r[e]=o);for(var t in o)J(r[e],t,o[t])}}else r[e]=o}var U=p(q),V=r;exports.createTailwindMerge=p,exports.extendTailwindMerge=function(r){for(var e=arguments.length,o=new Array(e>1?e-1:0),t=1;t<e;t++)o[t-1]=arguments[t];return p.apply(void 0,"function"==typeof r?[q,r].concat(o):[function(){return L(q(),r)}].concat(o))},exports.fromTheme=f,exports.getDefaultConfig=q,exports.join=V,exports.mergeConfigs=L,exports.twJoin=r,exports.twMerge=U,exports.validators=R;
 //# sourceMappingURL=tailwind-merge.cjs.production.min.js.map
 
 
