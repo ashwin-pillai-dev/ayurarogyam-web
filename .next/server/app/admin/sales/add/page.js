@@ -471,10 +471,11 @@ const SalesForm = (props)=>{
         setLoading(true);
         try {
             if (product && qty) {
-                console.log("url", `${"https://ayurarogyam.co.in/api"}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`);
-                const response = await fetch(`${"https://ayurarogyam.co.in/api"}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, {
+                console.log(`${"http://172.20.10.4:3000/api"}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`);
+                const response = await fetch(`${"http://172.20.10.4:3000/api"}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, {
                     cache: "no-cache"
                 });
+                console.log("response", response);
                 if (response.ok) {
                     const data = await response.json();
                     console.log(`response filtered prices: ${data}`);
@@ -1111,7 +1112,7 @@ async function page() {
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,3236,6897,9540,9733,5918,1789,3650], () => (__webpack_exec__(18768)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,6897,3236,9540,9733,5918,1789,3650], () => (__webpack_exec__(18768)));
 module.exports = __webpack_exports__;
 
 })();

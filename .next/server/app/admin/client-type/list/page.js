@@ -340,7 +340,7 @@ async function page({ searchParams }) {
         page: page.toString(),
         limit: limit.toString()
     });
-    const clientTypes = response.data;
+    const clientTypes = response;
     const { total } = response;
     // const clientTypes = await getClientTypes()
     return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("section", {

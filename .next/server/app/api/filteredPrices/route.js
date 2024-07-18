@@ -54,6 +54,7 @@ var prisma = __webpack_require__(94734);
 
 // export const dynamic = 'force-dynamic'
 async function GET(request) {
+    console.log("in filter prices");
     console.log(request);
     const { searchParams } = new URL(request.url);
     const productId = searchParams.get("productId");

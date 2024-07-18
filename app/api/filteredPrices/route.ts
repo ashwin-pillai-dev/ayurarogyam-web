@@ -4,6 +4,8 @@ import prisma from '../../../lib/prisma';
 
 
 export async function GET(request: Request) {
+  console.log('in filter prices');
+  
     console.log(request);
     const { searchParams } = new URL(request.url)
     const productId:any = searchParams.get('productId')

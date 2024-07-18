@@ -45,7 +45,7 @@ export async function addCategory(input: FormData) {
         throw error;
     }
 
-    revalidatePath(`/admin/categories/list`);
+    // revalidatePath(`/admin/categories/list`);
     // return category;
 
     redirect(`/admin/categories/list`)

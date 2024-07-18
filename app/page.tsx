@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import DefaultNavbar from './components/DefaultNavbar'
 import DefaultFooter from './components/footer'
-import Slider from './components/slider/slider'
 import EmblaCarousel from './components/carousel/EmblaCarousel';
 import  {EmblaOptionsType} from 'embla-carousel';
 
@@ -30,7 +29,6 @@ export default function Home() {
 
       {/* Banner */}
       <section className="bg-white dark:bg-gray-900">
-        {/* <Slider slides={slides}/> */}
         <EmblaCarousel slides={SLIDES} options={OPTIONS} />
 
       </section>

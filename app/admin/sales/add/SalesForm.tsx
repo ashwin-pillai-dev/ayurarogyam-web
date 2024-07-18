@@ -7,6 +7,7 @@ import React, { useRef, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { Spinner } from 'flowbite-react';
 import { useRouter } from 'next/navigation';
+import { error } from 'console';
 
 type PropType = {
     clients: Client[]
@@ -53,10 +54,15 @@ const SalesForm: React.FC<PropType> = (props) => {
         try {
             if (product && qty) {  
                 
-                console.log('url',`${process.env.NEXT_PUBLIC_API_URL}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`);
-                              
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, { cache: 'no-cache' });
-                if (response.ok) {
+                
+
+                console.log(`${process.env.NEXT_PUBLIC_API_URL}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`);
+                
+                
+               const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, { cache: 'no-cache' });
+                console.log('response',response);
+                
+               if (response.ok) {
                     const data = await response.json();
                     console.log(`response filtered prices: ${data}`);
                     const item = {
@@ -72,6 +78,7 @@ const SalesForm: React.FC<PropType> = (props) => {
                     setLoading(false)
                 } else {
                     setLoading(false)
+                    
                     toast.error("Error adding items!", {
                         position: toast.POSITION.TOP_CENTER
                     });

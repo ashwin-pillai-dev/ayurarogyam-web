@@ -565,12 +565,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _lib_prisma__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(34611);
 /* harmony import */ var next_navigation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(44475);
 /* harmony import */ var next_navigation__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_navigation__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var next_cache__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(73236);
-/* harmony import */ var next_cache__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_cache__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _common_services__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(68277);
-/* harmony import */ var private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(19730);
+/* harmony import */ var _common_services__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(68277);
+/* harmony import */ var private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(19730);
 /* __next_internal_action_entry_do_not_use__ addCategory */ 
-
 
 
 
@@ -579,7 +576,7 @@ async function addCategory(input) {
     let fileObj = file;
     let uploadResponse = "";
     if (file) {
-        uploadResponse = await (0,_common_services__WEBPACK_IMPORTED_MODULE_4__.FileUpload)(fileObj);
+        uploadResponse = await (0,_common_services__WEBPACK_IMPORTED_MODULE_3__.FileUpload)(fileObj);
     }
     console.log(uploadResponse);
     const data = {
@@ -595,12 +592,12 @@ async function addCategory(input) {
         console.error("Error adding category:", error);
         throw error;
     }
-    (0,next_cache__WEBPACK_IMPORTED_MODULE_3__.revalidatePath)(`/admin/categories/list`);
+    // revalidatePath(`/admin/categories/list`);
     // return category;
     (0,next_navigation__WEBPACK_IMPORTED_MODULE_2__.redirect)(`/admin/categories/list`);
 }
 
-(0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_5__["default"])([
+(0,private_next_rsc_action_validate__WEBPACK_IMPORTED_MODULE_4__["default"])([
     addCategory
 ]);
 (0,private_next_rsc_action_proxy__WEBPACK_IMPORTED_MODULE_0__["default"])("dc66e073895038e6751183c36836da917a8ea3b9", null, addCategory);
@@ -641,7 +638,7 @@ const __default__ = proxy.default;
 var __webpack_require__ = require("../../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,3236,4475,8008,9540,9733,5918,9064], () => (__webpack_exec__(39332)));
+var __webpack_exports__ = __webpack_require__.X(0, [3763,3851,4444,6750,8421,6936,3370,7114,3578,4493,4475,8008,9540,9733,5918,9064], () => (__webpack_exec__(39332)));
 module.exports = __webpack_exports__;
 
 })();

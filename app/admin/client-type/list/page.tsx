@@ -20,7 +20,7 @@ export default async function page({searchParams}:{searchParams:{[key:string]:st
     const search:string = 
     typeof searchParams.search === 'string' ?searchParams.search.toString():''
     const response:any= await getClientTypes({query:search,page:page.toString(),limit:limit.toString()})
-    const clientTypes:any= response.data
+    const clientTypes:any= response
     const {total} = response
 
     // const clientTypes = await getClientTypes()

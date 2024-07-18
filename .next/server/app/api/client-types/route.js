@@ -86,13 +86,14 @@ async function GET(request) {
             }
         });
         res = await prisma/* default */.Z.clientType.findMany();
+        console.log("res", res);
     } catch (error) {
         return Response.error();
     }
     // console.log(`Revalidate URL`);
     // console.log(`${process.env.API_URL}/client-types`);
     // `${process.env.API_URL}/client-types`
-    // revalidatePath(`${process.env.API_URL}/client-types`);    
+    // revalidatePath(`${process.env.API_URL}/client-types`);   
     return Response.json(res);
 }
 
