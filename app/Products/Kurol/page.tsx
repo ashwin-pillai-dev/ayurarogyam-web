@@ -12,7 +12,7 @@ export default function page() {
 
                         {/* Product 2 */}
                         <div className="md:order-2 bg-blue">
-                            <h2 className="text-xl text-primary-700 font-bold mb-4">KUROL</h2>
+                            <h2 className="text-5xl text-primary-700 font-bold mb-4">KUROL</h2>
                             <h1 className="text-4xl text-primary-700 font-bold mb-4">Relieve the Discomfort of Piles</h1>
 
                             <p className="text-gray-600 mb-4">
@@ -32,7 +32,7 @@ export default function page() {
                         </div>
                         <div className="md:order-1 justify-self-center">
                             <Image
-                                src="/kurol-insta.jpg"
+                                src="/kurol-banner.jpg"
                                 alt="Kurol Tablet"
                                 width={400}
                                 height={300}

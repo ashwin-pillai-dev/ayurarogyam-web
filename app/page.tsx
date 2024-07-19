@@ -2,7 +2,7 @@ import Image from 'next/image'
 import DefaultNavbar from './components/DefaultNavbar'
 import DefaultFooter from './components/footer'
 import EmblaCarousel from './components/carousel/EmblaCarousel';
-import  {EmblaOptionsType} from 'embla-carousel';
+// import { EmblaOptionsType } from 'embla-carousel-react';
 
 export default function Home() {
   const slides = [
@@ -21,8 +21,8 @@ export default function Home() {
     { title: 'Nature’s Science', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.', src: '/1-Fresh-Mint.jpg' },
     { title: '100% Pure Ayurvedic Products', src: '/100-ayurveidc.jpg', desc: 'Experience the Natural Boost Your Body Craves with Our Ayurvedic Tablet for Optimal Well-being.' },
     { title: 'The Herbal way of Healing Piles', src: '/kurol-banner-1.jpg', desc: 'Complete relief from piles.' },
-  ]
-  const OPTIONS: EmblaOptionsType = { loop: true }
+]
+const OPTIONS: any = { loop: true }
   return (
     <div>
       <DefaultNavbar />

@@ -1,7 +1,6 @@
 'use client'
 import React from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import  {EmblaOptionsType} from 'embla-carousel';
 import Autoplay from 'embla-carousel-autoplay'
 import Image from 'next/image';
 import styles from './EmblaCarousel.module.css';
