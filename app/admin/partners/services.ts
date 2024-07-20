@@ -1,3 +1,5 @@
+// 'use server'
+
 import { get } from "@/utils/queryHelper/queryHelper";
 
 export async function getAgents() {

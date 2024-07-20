@@ -2,6 +2,8 @@
 // import { useState, useEffect } from 'react';
 // import {getAgents} from '../services'
 
+// 'use server'
+
 import Link from "next/link";
 import { getAgents } from "../../agent/services";
 
