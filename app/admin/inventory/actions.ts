@@ -13,12 +13,12 @@ export async function addInventory(input: FormData) {
 
     const { name, qty, inventoryTypeId, productId, image } = Object.fromEntries(input)
     let fileObj: any = image;
-    let uploadResponse;
-    if (fileObj) {
-        uploadResponse = await FileUpload(fileObj)
+    let uploadResponse='';
+    // if (fileObj) {
+    //     uploadResponse = await FileUpload(fileObj)
 
 
-    }
+    // }
     const data = {
         name: name.toString(),
         inventoryTypeId: inventoryTypeId.toString(),

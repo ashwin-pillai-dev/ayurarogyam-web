@@ -17,16 +17,16 @@ export async function addCategory(input: FormData) {
 
 
 
-    if (file) {
-        uploadResponse = await FileUpload(fileObj)
-    }
+    // if (file) {
+    //     uploadResponse = await FileUpload(fileObj)
+    // }
 
-    console.log(uploadResponse);
+    // console.log(uploadResponse);
 
 
     const data = {
         name: name.toString(),
-        image: uploadResponse,
+        image: '',
 
     }
     let category;

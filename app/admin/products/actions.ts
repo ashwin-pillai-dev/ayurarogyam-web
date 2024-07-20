@@ -14,7 +14,8 @@ export async function addProduct(input: FormData) {
     console.log(category);
     
     let fileObj: any = file;
-    const uploadResponse = await FileUpload(fileObj)
+    const uploadResponse = ''
+    // const uploadResponse = await FileUpload(fileObj)
 
     const data = {
         name: name.toString(),
