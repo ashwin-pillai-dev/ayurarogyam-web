@@ -1,12 +1,17 @@
-// pages/api/agents.js
 import prisma from '../../../lib/prisma';
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 
 export async function GET(request: Request) {
 
     try {
         const res = await prisma.category.findMany();
-        return Response.json(res)
+        console.log('categories in route:  ',res);
+        
+        const response =  Response.json(res)
+        return response
     } catch (error) {
         return Response.error()
 
