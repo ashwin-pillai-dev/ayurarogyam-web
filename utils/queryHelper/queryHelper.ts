@@ -3,6 +3,8 @@ import { requestParams, Filter } from "./queryHelper.types";
 
 export const get = async (url: string, params: requestParams) => {
     try {
+        console.log('process.env.turso-db-url ', process.env.TURSO_DATABASE_URL);
+        
         let proccessedUrl = `${process.env.API_URL + url}?page=${params.page}&limit=${params.limit}&orderBy=${params.orderBy}`
         // let proccessedUrl = `${'http://localhost:3000/api' + url}?page=${params.page}&limit=${params.limit}&orderBy=${params.orderBy}`
         if (params?.filters?.length > 0) {

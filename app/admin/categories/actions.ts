@@ -37,6 +37,9 @@ export async function addCategory(input: FormData) {
 
         });
 
+        console.log('category created: ', category);
+        
+
 
 
 
