@@ -8,7 +8,10 @@ export async function GET(request: Request) {
         const res = await prisma.partner.findMany();
         console.log(res);
 
-        return Response.json(res)
+        console.log('partners in route:  ',res);
+        
+        const response =  Response.json(res)
+        return response
     } catch (error) {
         return Response.error()
 
