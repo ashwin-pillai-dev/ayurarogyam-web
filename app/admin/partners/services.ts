@@ -5,7 +5,7 @@ import { get } from "@/utils/queryHelper/queryHelper";
 export async function getAgents() {
     try {
       
-      const response = await  get('/partners',{limit:1000,page:1,filters:[],fullTextSearch:'',orderBy:'id,DESC'});
+      const response = await  get('/admins',{limit:1000,page:1,filters:[],fullTextSearch:'',orderBy:'id,DESC'});
       
 
       if (response.ok) {        

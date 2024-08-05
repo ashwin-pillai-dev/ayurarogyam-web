@@ -9,7 +9,7 @@ export default function DefaultNavbar() {
     
 
     return (
-        <div className='container mx-auto my-0'>
+        <div className='container mx-auto my-0 no-print'>
             <Navbar fluid={true} rounded={true} >
                 <Navbar.Brand
 

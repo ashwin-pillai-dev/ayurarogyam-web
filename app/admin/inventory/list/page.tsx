@@ -6,32 +6,32 @@ import Pagination from "../../components/pagination/Pagination";
 
 
 
-export default async function page({searchParams}:{searchParams:{[key:string]:string |string[] |undefined }}) {
-    
+export default async function page({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+
     const page =
-    typeof searchParams.page === 'string' ? Number(searchParams.page) : 1
+        typeof searchParams.page === 'string' ? Number(searchParams.page) : 1
     const limit =
-    typeof searchParams.limit === 'string' ? Number(searchParams.limit) : 10
-    
-    const search:string = 
-    typeof searchParams.search === 'string' ?searchParams.search.toString():''
+        typeof searchParams.limit === 'string' ? Number(searchParams.limit) : 10
+
+    const search: string =
+        typeof searchParams.search === 'string' ? searchParams.search.toString() : ''
     const routeUrl = `/admin/inventory/list?search=${search}`
-    const response:any= await  getInventory({query:search,page:page.toString(),limit:limit.toString()})
-    const inventories:any= response.data
-    const {total} = response
+    const response: any = await getInventory({ query: search, page: page.toString(), limit: limit.toString() })
+    const inventories: any = response.data
+    const { total } = response
     return (
         <section className="bg-gray-50 dark:bg-gray-900 sm:p-5">
             <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
                 {/* <!-- Start coding here --> */}
                 <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                     <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-                        <SearchBar routeUrl="/admin/inventory/list" searchText={search}/>
+                        <SearchBar routeUrl="/admin/inventory/list" searchText={search} />
                         <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                             <a href="/admin/inventory/add" className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                                 <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                 </svg>
-                                Add Inventory 
+                                Add Inventory
                             </a>
 
                             <div className="flex items-center space-x-3 w-full md:w-auto">
@@ -81,26 +81,30 @@ export default async function page({searchParams}:{searchParams:{[key:string]:st
                                     <th scope="col" className="px-4 py-3">Inventory Type</th>
                                     <th scope="col" className="px-4 py-3">Product</th>
                                     <th scope="col" className="px-4 py-3">Quantity</th>
+                                    <th scope="col" className="px-4 py-3">Actions</th>
 
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    inventories.map((inventory:any) => {                                        
+                                    inventories.map((inventory: any) => {
                                         return (
                                             <tr className="border-b dark:border-gray-700" key={inventory.id}>
 
-<th scope="row" className="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {/* <div className="relative w-16 h-16 rounded-lg overflow-hidden">
+                                                <th scope="row" className="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {/* <div className="relative w-16 h-16 rounded-lg overflow-hidden">
                                                 <Image fill={true} style={{objectFit:'contain'}} src={s3bucketurl + inventory.image } alt="" className="rounded-full" />
                                                 </div> */}
-                                                <span className="font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {inventory.name}
-                                                </span>
-                                                    </th>
-                                                <td className="px-4 py-3">{inventory?.products?.name}</td>
+                                                    <span className="font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {inventory.name}
+                                                    </span>
+                                                </th>
                                                 <td className="px-4 py-3">{inventory.inventoryType.name}</td>
+                                                <td className="px-4 py-3">{inventory?.products?.name}</td>
                                                 <td className="px-4 py-3">{inventory.qty}</td>
+                                                <td className="px-4 py-3">
+                                                    <a href={`/admin/inventory-logs/list/${inventory.id}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Inventory logs</a>
+                                                </td>
                                                 {/* <td className="px-4 py-3">{partner.contactNumber}</td> */}
                                             </tr>
                                         )
@@ -110,7 +114,7 @@ export default async function page({searchParams}:{searchParams:{[key:string]:st
                             </tbody>
                         </table>
                     </div>
-                    <Pagination limit={limit} page={page} total={total} route={routeUrl}/>
+                    <Pagination limit={limit} page={page} total={total} route={routeUrl} />
 
                 </div>
             </div>
@@ -118,17 +122,3 @@ export default async function page({searchParams}:{searchParams:{[key:string]:st
     )
 
 }
-// import {getAgents} from '../services'
-
-// export default async  function page(){
-
-
-//     const agents = await getAgents();
-//     return(
-//         <>
-
-    
-
-//         </>
-//     )
-// }

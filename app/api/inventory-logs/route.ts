@@ -1,13 +1,13 @@
-import { NextRequest,NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma';
+
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-
-
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
     try {
-        const searchParams = request.nextUrl.searchParams
+        console.log('in route inventory');
+
+        const { searchParams } = new URL(request.url)  ;    
         const pageParam =  searchParams.get('page');
         const limitParam =  searchParams.get('limit');
         console.log(`page${pageParam} limit ${limitParam}`);
@@ -36,19 +36,31 @@ export async function GET(request: NextRequest) {
                   }
             }
         })
-        const res = await prisma.adminRole.findMany(
+        const res = await prisma.inventoryUpdate.findMany(
             {
             skip: skip,
             take: Number(limit),
             where: {...filters},
+            include: {
+                inventory: true,
+            },
+            orderBy:{
+                createdAt:'desc',
+            }
         }
         );
 
-        const total =  await prisma.inventory.count()
+        const total =  await prisma.inventoryUpdate.count()
 
         const responseData = {data:res,limit:Number(limit),page:Number(pageParam),total:total}
+        console.log('responseData');
+        console.log(responseData);
+        
 
         const response = Response.json(responseData);
+        console.log('response');
+        console.log(response.json);
+        
         return response
     } catch (error) {
         console.log('error log server');
@@ -60,3 +72,4 @@ export async function GET(request: NextRequest) {
 
     }
 }
+

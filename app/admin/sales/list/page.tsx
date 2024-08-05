@@ -62,7 +62,7 @@ export default async function page({ searchParams }: { searchParams: { [key: str
             if (client.length > 0) {
                 routeUrl += '&';
             }
-            filters.push({ field: 'partnerId', cond: 'equals', value: partner })
+            filters.push({ field: 'adminId', cond: 'equals', value: partner })
             routeUrl += `partner=${partner}`;
             partnerValue = partners.find((prtnr: Partner) => {
                 return prtnr.id == partner
@@ -171,7 +171,7 @@ export default async function page({ searchParams }: { searchParams: { [key: str
                                         return (
                                             <tr className="border-b dark:border-gray-700" key={sale.id}>
                                                 <td className="px-4 py-3"> {sale.invoice.client.name}</td>
-                                                <td className="px-4 py-3"> {sale.partner.name}</td>
+                                                <td className="px-4 py-3"> {sale.admin.name}</td>
                                                 <td className="px-4 py-3"> {sale.visitType == 0 ? 'sale' : 'follow-up'}</td>
                                                 <td className="px-4 py-3"> {sale.visitType == 0 ? sale.invoice.total : 'N/A'}</td>
                                                

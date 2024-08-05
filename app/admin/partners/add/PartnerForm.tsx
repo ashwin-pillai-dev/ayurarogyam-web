@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react';
 import { Button, Label, Select } from 'flowbite-react';
-import { PartnerRole } from '@prisma/client';
+import { AdminRole } from '@prisma/client';
 import { PartnerFormSchema } from './partnerFormSchema'; 
 import { useRouter } from "next/navigation"
 import { AiOutlineLoading } from 'react-icons/ai';
@@ -9,7 +9,7 @@ import { AiOutlineLoading } from 'react-icons/ai';
 
 
 type PropType = {
-    partnerRoles: PartnerRole[];
+    partnerRoles: AdminRole[];
     addPartner: any;
 };
 
@@ -117,9 +117,9 @@ const PartnerForm: React.FC<PropType> = (props) => {
                         Select a Role
                     </option>
                     {/* <option value="" className='text-sm font-medium text-gray-900 dark:text-white'>-- Select a Role --</option> */}
-                    {partnerRoles.map((role: PartnerRole) => (
+                    {partnerRoles.map((role: AdminRole) => (
                         <option key={role.id} value={role.id}>
-                            {role.name}
+                            {role.roleName}
                         </option>
                     ))}
                 </Select>

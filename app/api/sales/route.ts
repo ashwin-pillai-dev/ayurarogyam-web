@@ -69,7 +69,7 @@ export async function GET(request: Request) {
                         client: true,
                     }
                 },
-                partner: true
+                admin: true
             },
             orderBy: {
                 createdAt: 'desc',

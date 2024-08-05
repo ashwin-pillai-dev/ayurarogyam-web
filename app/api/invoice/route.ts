@@ -11,14 +11,9 @@ export async function GET(request: Request) {
 
     try {
         const res = await prisma.invoice.findFirst({
-            // include: {
-            //     sales:{
-            //         include:{
-            //             invoice:true
-            //         }
-            //     }
-            // },
-
+            include:{
+                client:true
+            },
             where: {
                 id: invoiceId, 
             },

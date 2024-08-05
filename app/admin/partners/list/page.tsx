@@ -5,7 +5,7 @@
 // 'use server'
 
 import Link from "next/link";
-import { getAgents } from "../../agent/services";
+import { getAgents } from "../services";
 
 
   
@@ -57,7 +57,7 @@ export default async function page() {
                                 <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                 </svg>
-                                Add Partner
+                                Add Executive
                             </a>
 
                             {/* <pre>{JSON.stringify(session, null, 2)}</pre> */}
@@ -104,10 +104,10 @@ export default async function page() {
                         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" className="px-4 py-3">Partner Name</th>
+                                    <th scope="col" className="px-4 py-3">Executive Name</th>
                                     <th scope="col" className="px-4 py-3">Email</th>
                                     <th scope="col" className="px-4 py-3">Contact Number</th>
-                                    <th scope="col" className="px-4 py-3">Actions</th>
+                                    {/* <th scope="col" className="px-4 py-3">Actions</th> */}
 
                                     {/* <th scope="col" className="px-4 py-3"></th>
                                     <th scope="col" className="px-4 py-3">Description</th>
@@ -127,7 +127,7 @@ export default async function page() {
                                                 <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{partner.name}</th>
                                                 <td className="px-4 py-3">{partner.email}</td>
                                                 <td className="px-4 py-3">{partner.contactNumber}</td>
-                                                <td className="px-4 py-3"><Link className='' href={`/admin/commisions/list/${partner.id}` }>commissions</Link></td>
+                                                {/* <td className="px-4 py-3"><Link className='' href={`/admin/commisions/list/${partner.id}` }>commissions</Link></td> */}
 
 
                                             </tr>

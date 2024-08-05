@@ -2,9 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
-
 }
 
 datasource db {
@@ -30,6 +29,7 @@ model Admin {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   role          AdminRole @relation(fields: [adminRoleId], references: [id])
+  Sale          Sale[]
 }
 
 model AdminRole {
@@ -85,6 +85,7 @@ model Product {
   image       String
   desc        String?
   mrp         Float
+  gst         Float
   category    Category      @relation(fields: [categoryId], references: [id])
   categoryId  String
   createdAt   DateTime      @default(now())
@@ -137,17 +138,33 @@ model InvoiceItem {
   updatedAt DateTime @updatedAt
 }
 
+// model Sale {
+//   id          String       @id @default(uuid())
+//   date        DateTime
+//   visitType   String       @default("0")
+//   remarks     String?
+//   invoice     Invoice?
+//   partner     Partner      @relation(fields: [partnerId], references: [id])
+//   partnerId   String
+//   createdAt   DateTime     @default(now())
+//   updatedAt   DateTime     @updatedAt
+//   commissions Commission[]
+// }
+
 model Sale {
-  id          String       @id @default(uuid())
-  date        DateTime
-  visitType   String       @default("0")
-  remarks     String?
-  invoice     Invoice?
-  partner     Partner      @relation(fields: [partnerId], references: [id])
-  partnerId   String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id        String   @id @default(uuid())
+  date      DateTime
+  visitType String   @default("0")
+  remarks   String?
+  invoice   Invoice?
+  admin     Admin    @relation(fields: [adminId], references: [id])
+  adminId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   commissions Commission[]
+  Partner     Partner?     @relation(fields: [partnerId], references: [id])
+  partnerId   String?
 }
 
 model PartnerRole {
@@ -158,10 +175,10 @@ model PartnerRole {
 }
 
 model Partner {
-  id            String  @id @default(uuid())
+  id            String       @id @default(uuid())
   name          String
-  email         String? @unique
-  contactNumber String  @unique
+  email         String?      @unique
+  contactNumber String       @unique
   profile       String?
   enabled       Boolean      @default(true)
   deleted       Boolean      @default(false)
@@ -173,7 +190,7 @@ model Partner {
   leader        Partner?     @relation("LeaderToMembers", fields: [leaderId], references: [id])
   leaderId      String?      @map("leader_id")
   members       Partner[]    @relation("LeaderToMembers")
-  role          PartnerRole @relation(fields: [partnerRoleId], references: [id])
+  role          PartnerRole  @relation(fields: [partnerRoleId], references: [id])
   partnerRoleId String
 }
 
@@ -198,14 +215,29 @@ model InventoryType {
 }
 
 model Inventory {
-  id              String        @id @default(uuid())
+  id              String            @id @default(uuid())
   name            String
   image           String?
   qty             Float
-  inventoryType   InventoryType @relation(fields: [inventoryTypeId], references: [id])
-  products        Product       @relation(fields: [productId], references: [id])
+  inventoryType   InventoryType     @relation(fields: [inventoryTypeId], references: [id])
+  products        Product           @relation(fields: [productId], references: [id])
   inventoryTypeId String
   productId       String
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  InventoryUpdate InventoryUpdate[]
+}
+
+model InventoryUpdate {
+  id            String    @id @default(uuid())
+  inventory     Inventory @relation(fields: [inventoryId], references: [id])
+  inventoryId   String
+  qty           Float
+  updateDate    DateTime  @default(now())
+  supplier      String?
+  notes         String?
+  invoiceNumber String
+  invoice       String? // Optional
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }

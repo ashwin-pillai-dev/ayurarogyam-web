@@ -9,38 +9,38 @@ async function main() {
 
   const superAdminRole = await prisma.adminRole.create({
     data: {
-        roleName: 'superadmin',
+        roleName: 'executive',
     },
 });
 
 // Create an admin with the superadmin role
-const superAdmin = await prisma.admin.create({
-    data: {
-        name: 'Anil Pillai',
-        email: 'anilpillai.vibrant@gmail.com',
-        password: await bcrypt.hash('123456789', 10),
-        contactNumber: '8087979983',
-        adminRoleId: superAdminRole.id,
-    },
-});
+// const superAdmin = await prisma.admin.create({
+//     data: {
+//         name: 'Anil Pillai',
+//         email: 'anilpillai.vibrant@gmail.com',
+//         password: await bcrypt.hash('123456789', 10),
+//         contactNumber: '8087979983',
+//         adminRoleId: superAdminRole.id,
+//     },
+// });
 
 // Create a partner role
-const partnerRole = await prisma.partnerRole.create({
-    data: {
-        name: 'teamleader',
-    },
-});
+// const partnerRole = await prisma.partnerRole.create({
+//     data: {
+//         name: 'teamleader',
+//     },
+// });
 
 // Create a partner
-const partner = await prisma.partner.create({
-    data: {
-        name: 'Partner Name',
-        email: 'phani.sharma@gmail.com',
-        password: await bcrypt.hash('123456789', 10),
-        contactNumber: '9819421170',
-        partnerRoleId: partnerRole.id,
-    },
-});
+// const partner = await prisma.partner.create({
+//     data: {
+//         name: 'Partner Name',
+//         email: 'phani.sharma@gmail.com',
+//         password: await bcrypt.hash('123456789', 10),
+//         contactNumber: '9819421170',
+//         partnerRoleId: partnerRole.id,
+//     },
+// });
   
     // // Create client types
     // const shopkeeper = await prisma.clientType.create({

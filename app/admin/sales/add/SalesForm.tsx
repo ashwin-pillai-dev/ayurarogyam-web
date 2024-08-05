@@ -1,7 +1,7 @@
 'use client'
 import { Label, Button, Datepicker, Select } from 'flowbite-react';
 import { ProductWithPrices, SalesParam, addSales } from '../actions'
-import { Client, Product, Partner } from '@prisma/client'
+import { Client, Product, Partner, Admin } from '@prisma/client'
 import SearchAbleSelect from '../../components/SearchAbleSelect/SearchAbleSelect'
 import React, { useRef, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
@@ -26,7 +26,7 @@ const SalesForm: React.FC<PropType> = (props) => {
     const [qty, setQty] = useState(''); // Use state for qty
     const [product, setProduct] = useState<Product | null>(null); // Use state for product
     const [client, setClient] = useState<Client | null>(null);
-    const [partner, setPartner] = useState<Partner | null>(null);
+    const [partner, setPartner] = useState<Admin | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const visitTypes: VistType[] = [
         { label: 'Sale', value: '0' },
@@ -103,7 +103,7 @@ const SalesForm: React.FC<PropType> = (props) => {
             visitType: visitType.toString(),
             remarks: remarks.toString(),
             date: date.toString(),
-            partnerId: partner?partner.toString():'',
+            partnerId: partner?partner.id:'',
             partner:partner,
             productWithPrices: addedItems
         }
@@ -287,7 +287,7 @@ const SalesForm: React.FC<PropType> = (props) => {
                                             <p>Qty: {item.qty.toString()}</p>
                                         </div>
                                         <div>
-                                            <p className="text-lg font-semibold">₹{item.price}</p>
+                                            <p className="text-lg font-semibold">{`${item.price * item.qty} + ${item.product.gst} % G.S.T = ₹  ${(item.price + (item.product.gst/100) * item.price)*item.qty } `}</p>
                                         </div>
                                     </div>
                                 </li>)

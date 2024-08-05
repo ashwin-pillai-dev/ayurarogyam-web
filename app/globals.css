@@ -2,5 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@media print {
+    /* Hide elements you don't want to print */
+    .no-print, header, footer {
+      display: none !important;
+    }
+  
+    /* Ensure the invoice content is visible */
+    .printable {
+      display: block;
+    }
+  
+    /* Add any additional print-specific styles here */
+    @page {
+        margin-top: -65px;
+      /* margin: 20mm; */
+    }
+  }
+
 
 

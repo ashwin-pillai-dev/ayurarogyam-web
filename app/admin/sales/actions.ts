@@ -1,7 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache';
 import prisma from '../../../lib/prisma';
-import { Product } from '@prisma/client';
+import { Admin, Product, Sale } from '@prisma/client';
 import { redirect } from 'next/navigation';
 
 
@@ -17,7 +17,7 @@ export type ProductWithPrices = {
 export type SalesParam = {
     clientId: string
     partnerId: string
-    partner: any
+    partner: Admin
     date: string
     remarks: string
     visitType: string
@@ -27,6 +27,8 @@ export type SalesParam = {
 
 export async function addSales(input: SalesParam) {
     let subTotal: number = 0;
+    let total: number = 0;
+
     let qty: number = 0;
     let invoiceItems: any = [];
 
@@ -34,6 +36,7 @@ export async function addSales(input: SalesParam) {
 
     input.productWithPrices.forEach((obj) => {
         subTotal += obj.total;
+        total += obj.total + (obj.product.gst / 100) * obj.total
         qty += obj.qty;
         invoiceItems.push({
             amount: obj.price,
@@ -43,65 +46,24 @@ export async function addSales(input: SalesParam) {
         });
     });
 
-    const total = Math.ceil(subTotal + (12/ 100) * subTotal);
-    let commissions: any = []
-
-    console.log('visitType');
-    console.log(input.visitType);
-    console.log('leaderId:');
-    console.log(input.partner.leaderId);
-
-
-
-    if (input.visitType == '0') {
-        if (input.partner.leaderId) {
-            commissions = [
-                {
-                    paid: false,
-                    dateOfPayment: new Date(input.date),
-                    amount: 0.20 * subTotal,
-                    partnerId: input.partner.id,
-                },
-                {
-                    paid: false,
-                    dateOfPayment: new Date(input.date),
-                    amount: 0.05 * subTotal,
-                    partnerId: input.partner.leaderId,
-                }
-
-            ]
-
-        }
-
-        else {
-            commissions = [
-                {
-                    paid: false,
-                    dateOfPayment: new Date(input.date),
-                    amount: 0.10 * subTotal,
-                    partnerId: input.partner.id,
-                }
-            ]
-
-        }
-
-    }
+    const invoiceNumber =  await generateInvoiceNumber()
     let newSale;
     try {
         const partner = input.partner;
         console.log(`partner in salea action:`);
         console.log(partner);
+
         // Assuming the partner model is included in the input
 
         newSale = await prisma.sale.create({
             include: {
-                partner: true,
+                admin: true,
                 invoice: {
                     include: {
                         client: true,
                         invoiceItem: {
-                            include:{
-                                product:true
+                            include: {
+                                product: true
                             }
                         },
                     }
@@ -109,12 +71,12 @@ export async function addSales(input: SalesParam) {
             },
             data: {
                 date: new Date(input.date),
-                partnerId: partner.id, // Use the partner's ID from the input
+                adminId: partner.id, // Use the partner's ID from the input
                 visitType: input.visitType,
                 remarks: input.remarks,
                 invoice: {
                     create: {
-                        invoiceNumber: generateRandomInvoiceNumber(),
+                        invoiceNumber: invoiceNumber,
                         invoiceItem: {
                             create: invoiceItems
                         },
@@ -127,17 +89,17 @@ export async function addSales(input: SalesParam) {
                     },
                 },
                 // Create a commission as 10% of the sale subtotal for the partner
-                commissions: {
-                    create: commissions
-                },
+                // commissions: {
+                //     create: commissions
+                // },
             },
         });
 
         console.log('Sale with Invoice and Invoice Items created successfully.');
         console.log(newSale);
-        console.log('newSale.invocie.invoiceItems',newSale.invoice.invoiceItem);
+        console.log('newSale.invocie.invoiceItems', newSale.invoice.invoiceItem);
         await updateInventory(newSale);
-        
+
 
     } catch (error: any) {
         console.error('Error adding inventory:', error);
@@ -151,16 +113,27 @@ export async function addSales(input: SalesParam) {
 
 
 
-function generateRandomInvoiceNumber() {
-    const timestamp = Date.now();
+async function generateInvoiceNumber() {
+    const currentYear = new Date().getFullYear();
+
+    // Extract the last two digits of the current year
+    const currentYearLastTwoDigits = currentYear % 100;
+
+    // Calculate the next year
+    const nextYear = currentYear + 1;
+    const nextYearLastTwoDigits = nextYear % 100;
+
+    // Format the years as "YY-YY"
+    const formattedYearRange = `${currentYearLastTwoDigits.toString().padStart(2, '0')}-${nextYearLastTwoDigits.toString().padStart(2, '0')}`;
 
     // Combine the random characters, digits, and timestamp to create the invoice number
-    const invoiceNumber = `INV-${timestamp}`;
+    const invoiceTotal = await prisma.invoice.count()
+    const invoiceNumber = `SS-${invoiceTotal}-${formattedYearRange}`;
 
     return invoiceNumber;
 }
 
-async function updateInventoryQuantity(inventoryId:string, quantity:number) {
+async function updateInventoryQuantity(inventoryId: string, quantity: number) {
     // Simulate updating the inventory quantity in the database
     await prisma.inventory.update({
         where: {
@@ -169,41 +142,40 @@ async function updateInventoryQuantity(inventoryId:string, quantity:number) {
         data: {
             qty: quantity
         },
-      })
+    })
     console.log(`Updated inventory for inventory id ${inventoryId} to new quantity ${quantity}`);
-  }
+}
 
-  async function getInventoryByProductId(productId:string) {
+async function getInventoryByProductId(productId: string) {
     // Simulate fetching inventory data from a database
     const inventory = await prisma.inventory.findMany({ where: { productId: productId } });
-    console.log('inventory: ',inventory);
-    
-    return inventory[0];
-  }
+    console.log('inventory: ', inventory);
 
-  async function updateInventory(newSale) {
+    return inventory[0];
+}
+
+async function updateInventory(newSale) {
     console.log(newSale);
-    
+
     const invoiceItems = newSale.invoice.invoiceItem;
     console.log('invoice items', invoiceItems);
-    
-  
+
+
     for (const item of invoiceItems) {
-      const productId = item.productId;
-      const soldQuantity = item.quantity;
-  
-      // Fetch current inventory
-      const inventory = await getInventoryByProductId(productId);
-      
-      if (inventory) {
-        // Subtract sold quantity
-        const newQuantity = inventory.qty - soldQuantity;
-  
-        // Update the inventory
-        await updateInventoryQuantity(inventory.id, newQuantity);
-      } else {
-        console.log(`Inventory for product ID ${productId} not found`);
-      }
+        const productId = item.productId;
+        const soldQuantity = item.quantity;
+
+        // Fetch current inventory
+        const inventory = await getInventoryByProductId(productId);
+
+        if (inventory) {
+            // Subtract sold quantity
+            const newQuantity = inventory.qty - soldQuantity;
+
+            // Update the inventory
+            await updateInventoryQuantity(inventory.id, newQuantity);
+        } else {
+            console.log(`Inventory for product ID ${productId} not found`);
+        }
     }
-  }
-  
+}
