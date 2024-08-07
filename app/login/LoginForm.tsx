@@ -27,6 +27,8 @@ const LoginForm = ({ callbackUrl }: LoginFormProps) => {
                 toast.success("Success Notification!", {
                     position: toast.POSITION.TOP_CENTER,
                 });
+
+                console.log('login res: ',res);
                 router.push(callbackUrl);
             }
         } catch (error) {

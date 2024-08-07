@@ -7,11 +7,44 @@ import bcrypt from 'bcryptjs';
 
 async function main() {
 
-  const superAdminRole = await prisma.adminRole.create({
-    data: {
-        roleName: 'executive',
-    },
-});
+    //     data: {
+//         name: 'Partner Name',
+//         email: 'phani.sharma@gmail.com',
+//         password: await bcrypt.hash('123456789', 10),
+//         contactNumber: '9819421170',
+//         partnerRoleId: partnerRole.id,
+//     },
+
+
+
+
+
+    // const admin = await prisma.admin.findUnique({
+    //     where: {
+    //       email: 'phani.ayurarogyam@gmail.com'
+    //     },
+    //     include: {
+    //       role: true
+    //     }
+    //   })
+    //   console.log('admin: ',admin);
+
+      const adminUpdate = await prisma.admin.update({
+        where: {
+          email: 'phani.ayurarogyam@gmail.com'
+        },
+        data: {
+            password: await bcrypt.hash('123456789', 10),
+          
+        }
+      })
+      console.log('admin: ',adminUpdate);
+
+//   const superAdminRole = await prisma.adminRole.create({
+//     data: {
+//         roleName: 'executive',
+//     },
+// });
 
 // Create an admin with the superadmin role
 // const superAdmin = await prisma.admin.create({
@@ -177,7 +210,7 @@ async function main() {
 
     // Add more client data and prices as needed
 
-    console.log("Data created successfully.");
+    // console.log("Data created successfully.");
 }
 
 main()

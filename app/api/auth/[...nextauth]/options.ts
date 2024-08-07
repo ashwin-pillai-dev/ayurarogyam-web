@@ -3,12 +3,14 @@ import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs';
 import { PrismaAdapter } from '@auth/prisma-adapter'
+import prisma from '../../../../lib/prisma';
 
 
-const prisma = new PrismaClient();
+
+// const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma),
   session: {
     strategy: 'jwt'
   },
@@ -42,6 +44,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials.password) {
           throw new Error('Email or password not provided')
         }
+        console.log('credentials: ',credentials);
 
         const admin = await prisma.admin.findUnique({
           where: {
@@ -51,6 +54,8 @@ export const authOptions: NextAuthOptions = {
             role: true
           }
         })
+        console.log('admin: ',admin);
+        
         if (!admin) {
           throw new Error('Admin not found')
         }

@@ -8,7 +8,9 @@ export default withAuth({
     callbacks: {
             authorized: ({ req, token }) => {                
               if (req.nextUrl.pathname === '/admin') {
-                return token?.role === 'superadmin'
+                const roles = ['superadmin', 'executive'];
+                const isRoleValid = roles.includes(token?.role.toString());
+                return isRoleValid;
               }
               return Boolean(token)
             }
