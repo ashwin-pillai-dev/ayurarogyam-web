@@ -12,7 +12,8 @@ export async function GET(request: Request) {
     try {
         const res = await prisma.invoice.findFirst({
             include:{
-                client:true
+                client:true,
+                sale:true,
             },
             where: {
                 id: invoiceId, 
@@ -29,6 +30,9 @@ export async function GET(request: Request) {
                 product:true
             }
         })
+        console.log('Invoice: ',res);
+        console.log('Invoice Items: ',invoiceItems);
+        
         return Response.json({...res,invoiceItems})
     } catch (error) {
         return Response.error()

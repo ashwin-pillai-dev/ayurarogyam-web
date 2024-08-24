@@ -1,7 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache';
 import prisma from '../../../lib/prisma';
-import { Admin, Product, Sale } from '@prisma/client';
+import { Admin, Invoice, Product, Sale,Prisma } from '@prisma/client';
 import { redirect } from 'next/navigation';
 
 
@@ -46,7 +46,6 @@ export async function addSales(input: SalesParam) {
         });
     });
 
-    const invoiceNumber =  await generateInvoiceNumber()
     let newSale;
     try {
         const partner = input.partner;
@@ -76,7 +75,7 @@ export async function addSales(input: SalesParam) {
                 remarks: input.remarks,
                 invoice: {
                     create: {
-                        invoiceNumber: invoiceNumber,
+                        invoiceNumber: '',
                         invoiceItem: {
                             create: invoiceItems
                         },
@@ -98,7 +97,6 @@ export async function addSales(input: SalesParam) {
         console.log('Sale with Invoice and Invoice Items created successfully.');
         console.log(newSale);
         console.log('newSale.invocie.invoiceItems', newSale.invoice.invoiceItem);
-        await updateInventory(newSale);
 
 
     } catch (error: any) {
@@ -109,6 +107,71 @@ export async function addSales(input: SalesParam) {
     revalidatePath(`/admin/sales/list`);
 
     return {};
+}
+
+
+export async function updateInvoiceAndInventory(invoice:Prisma.InvoiceGetPayload<{include:{client:true}}>,InvoiceItems:any){
+
+    let invoiceItemsUpdate:Prisma.InvoiceItemUpdateInput[] = []
+    InvoiceItems.forEach((element) => {
+        if(element.isUpdated){
+        invoiceItemsUpdate.push({id:element.id,quantity:element.updatedQty}) 
+        }
+    });
+
+    console.log('invoiceItemsUpdate: ',invoiceItemsUpdate);
+    const updatePromises = invoiceItemsUpdate.map(item =>
+        prisma.invoiceItem.update({
+          where: { id: item.id.toString() },
+          data: { quantity: item.quantity },
+        })
+      );
+      // Execute all update operations in parallel
+    try {
+          const updatedItems = await Promise.all(updatePromises);
+          console.log('Invoice items updated');
+          
+    } catch (error) {
+        console.log('error updating invoice items');    
+    }
+      
+      try {
+        await updateInventory(InvoiceItems,invoice);
+        console.log('Inventory qty updated');
+      } catch (error) {
+        console.log('Error updating iventory qty');
+        throw error
+      }
+      let updatedInvoice:Prisma.InvoiceGetPayload<{
+        include: {
+            client: true;
+            sale: true;
+        };
+      }>;
+
+      try {
+       const invoiceNumber = await generateInvoiceNumber()
+
+         updatedInvoice = await prisma.invoice.update({
+            where:{id:invoice.id},
+            data:{
+                invoiceNumber:invoiceNumber,
+                invoiceIsuuesd:true
+            },
+            include:{
+                client:true,
+                sale:true
+            }
+        })
+        
+      } catch (error) {
+        console.log('Error Updating Invoice');
+        throw error
+        
+      }
+
+      return  updatedInvoice;
+
 }
 
 
@@ -128,7 +191,7 @@ async function generateInvoiceNumber() {
 
     // Combine the random characters, digits, and timestamp to create the invoice number
     const invoiceTotal = await prisma.invoice.count()
-    const invoiceNumber = `SS-${invoiceTotal}-${formattedYearRange}`;
+    const invoiceNumber = `SS-${invoiceTotal + 1}-${formattedYearRange}`;
 
     return invoiceNumber;
 }
@@ -148,22 +211,29 @@ async function updateInventoryQuantity(inventoryId: string, quantity: number) {
 
 async function getInventoryByProductId(productId: string) {
     // Simulate fetching inventory data from a database
-    const inventory = await prisma.inventory.findMany({ where: { productId: productId } });
+    const inventory = await prisma.inventory.findMany({
+         where: {
+             productId: productId,
+             inventoryType:{
+                name:'product'
+             }
+            } 
+        });
     console.log('inventory: ', inventory);
 
     return inventory[0];
 }
 
-async function updateInventory(newSale) {
-    console.log(newSale);
+async function updateInventory(updateInvoiceItems,invoice:Prisma.InvoiceGetPayload<{include:{client:true}}>) {
+    console.log(updateInvoiceItems);
 
-    const invoiceItems = newSale.invoice.invoiceItem;
+    const invoiceItems = updateInvoiceItems;
     console.log('invoice items', invoiceItems);
 
 
     for (const item of invoiceItems) {
         const productId = item.productId;
-        const soldQuantity = item.quantity;
+        const soldQuantity = item.isUpdated? item.updatedQty:item.quantity;
 
         // Fetch current inventory
         const inventory = await getInventoryByProductId(productId);
@@ -173,6 +243,17 @@ async function updateInventory(newSale) {
             const newQuantity = inventory.qty - soldQuantity;
 
             // Update the inventory
+            const inventoryUpdatePayload:Prisma.InventoryUpdateCreateInput = {
+                qty:soldQuantity,
+                inventory:{
+                    connect:{id:inventory.id}
+                },
+                invoiceNumber:'Product sold',
+                notes:`${soldQuantity} sold to ${invoice.client.name}`
+            }
+            const inventoryUpdate = await prisma.inventoryUpdate.create({
+                data:inventoryUpdatePayload
+            })
             await updateInventoryQuantity(inventory.id, newQuantity);
         } else {
             console.log(`Inventory for product ID ${productId} not found`);

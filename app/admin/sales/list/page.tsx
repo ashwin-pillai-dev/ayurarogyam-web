@@ -4,7 +4,7 @@ import { getClients } from "../../clients/services";
 import { getAgents } from "../../partners/services";
 import FilterSearch from "../../components/FilterSearch/FilterSearch";
 import { Filter } from "@/utils/queryHelper/queryHelper.types";
-import { Client, Partner } from "@prisma/client";
+import { Client, Partner, Prisma } from "@prisma/client";
 import Link from "next/link";
 
 type VistType = {
@@ -84,9 +84,19 @@ export default async function page({ searchParams }: { searchParams: { [key: str
     const response: any = await getSales({ filter: filters, page: page.toString(), limit: limit.toString() })
     console.log('sales response');
     console.log(response);
-    
 
-    const sales: any = response.data
+
+    const sales: Prisma.SaleGetPayload<{
+        include: {
+            invoice: {
+                include: {
+                    client: true
+                }
+            },
+            admin: true
+        }
+
+    }>[] = response.data
     const { total } = response
 
     return (
@@ -158,7 +168,7 @@ export default async function page({ searchParams }: { searchParams: { [key: str
                                 <tr>
                                     <th scope="col" className="px-4 py-3">Client</th>
                                     <th scope="col" className="px-4 py-3">Partner</th>
-                                    <th scope="col" className="px-4 py-3">Sale/Follow Up</th>
+                                    {/* <th scope="col" className="px-4 py-3">Sale/Follow Up</th> */}
                                     <th scope="col" className="px-4 py-3">Total amount</th>
                                     <th scope="col" className="px-4 py-3">Invoice</th>
 
@@ -167,16 +177,21 @@ export default async function page({ searchParams }: { searchParams: { [key: str
                             </thead>
                             <tbody>
                                 {
-                                    sales.map((sale: any) => {
+                                    sales.map((sale) => {
                                         return (
                                             <tr className="border-b dark:border-gray-700" key={sale.id}>
                                                 <td className="px-4 py-3"> {sale.invoice.client.name}</td>
                                                 <td className="px-4 py-3"> {sale.admin.name}</td>
-                                                <td className="px-4 py-3"> {sale.visitType == 0 ? 'sale' : 'follow-up'}</td>
-                                                <td className="px-4 py-3"> {sale.visitType == 0 ? sale.invoice.total : 'N/A'}</td>
-                                               
-                                                <td className="px-4 py-3"><Link href={`/admin/invoice/${sale.invoice.id}`}>{sale.invoice.invoiceNumber}</Link></td>
- {/* <td className="px-4 py-3"> {sale.invoice.invoiceNumber}</td> */}
+                                                {/* <td className="px-4 py-3"> {sale.visitType == 0 ? 'sale' : 'follow-up'}</td> */}
+                                                <td className="px-4 py-3"> {sale.invoice.total}</td>
+                                                {
+                                                    sale.invoice.invoiceIsuuesd == false ?
+                                                        <td className="px-4 py-3"><Link target="_blank" href={`/admin/invoice/generate/${sale.invoice.id}`}>Generate Invoice</Link></td> :
+                                                        <td className="px-4 py-3"><Link href={`/admin/invoice/${sale.invoice.id}`}>{sale.invoice.invoiceNumber}</Link></td>
+
+
+                                                }
+
 
                                             </tr>
                                         )
