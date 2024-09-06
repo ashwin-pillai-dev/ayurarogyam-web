@@ -11,9 +11,13 @@ export async function GET(request: Request) {
   
     console.log(request);
     const { searchParams } = new URL(request.url)
+    console.log(searchParams);
+    
     const productId:any = searchParams.get('productId')
     const clientTypeId:any = searchParams.get('clientTypeId')
     const qty:any = searchParams.get('qty')
+    console.log(qty);
+    
 
 
     try {
@@ -23,9 +27,13 @@ export async function GET(request: Request) {
               clientTypeId:clientTypeId,
               startingQtyLimit: {
                 lte:Number(qty) 
+
               },
               endingQtyLimit: {
                 gte: Number(qty)
+
+
+                
               }
             }
           });

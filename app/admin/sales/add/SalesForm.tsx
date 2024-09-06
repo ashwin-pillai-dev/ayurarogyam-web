@@ -60,7 +60,7 @@ const SalesForm: React.FC<PropType> = (props) => {
                 
                 
                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/filteredPrices?productId=${product?.id}&clientTypeId=${client?.clientTypeId}&qty=${qty}`, { cache: 'no-cache' });
-                console.log('response',response);
+                console.log('prices fetched',response);
                 
                if (response.ok) {
                     const data = await response.json();
@@ -73,6 +73,8 @@ const SalesForm: React.FC<PropType> = (props) => {
                         qty: Number(qty),
                     };
                     setAddedItems([...addedItems, item]);
+                    console.log('items added to cart: ',addedItems);
+                    
                     setQty('');
                     setProduct(null);
                     setLoading(false)
