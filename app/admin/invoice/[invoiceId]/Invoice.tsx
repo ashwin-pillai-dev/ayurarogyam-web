@@ -32,6 +32,8 @@ const Invoice: React.FC<InvoiceProps> = ({ invoice }) => {
         window.print();
     };
     const { invoiceNumber, subTotal, total, invoiceDate, invoiceItems, client } = invoice;
+    console.log(invoiceItems);
+
 
     return (
         <div>
@@ -43,7 +45,7 @@ const Invoice: React.FC<InvoiceProps> = ({ invoice }) => {
                     Print Invoice
                 </button>
             </div>
-            <div className="max-w-3xl mx-auto px-6 py-8 bg-white shadow-lg rounded-lg printable">
+            <div className="max-w-4xl mx-auto px-6 py-8 bg-white shadow-lg rounded-lg printable">
                 {/* Print Button */}
 
 
@@ -69,7 +71,11 @@ const Invoice: React.FC<InvoiceProps> = ({ invoice }) => {
                 {/* Invoice Title and Date */}
                 <div className="border-b border-gray-300 pb-4 mb-6">
                     <h2 className="text-3xl font-bold">Invoice No. #{invoiceNumber}</h2>
-                    <p className="text-gray-600 mt-2">Issued Date: {new Date(invoiceDate).toLocaleDateString()}</p>
+                    <p className="text-gray-600 mt-2">Issued Date: {new Date(invoiceDate).toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    })}</p>
                 </div>
 
                 {/* Recipient Details */}
@@ -87,9 +93,12 @@ const Invoice: React.FC<InvoiceProps> = ({ invoice }) => {
                     <table className="min-w-full bg-gray-50">
                         <thead className="bg-gray-200 text-gray-700">
                             <tr>
-                                <th className="py-3 px-4 text-center">Qty</th>
+                                <th className="py-3 px-4 text-center">Sr. No.</th>
                                 <th className="py-3 px-4 text-center">Description</th>
                                 <th className="py-3 px-4 text-center">Unit Price (₹)</th>
+                                <th className="py-3 px-4 text-center">Qty</th>
+                                <th className="py-3 px-4 text-center">Sub-Total</th>
+
                                 <th className="py-3 px-4 text-center">GST (%)</th>
                                 <th className="py-3 px-4 text-center">SGST (₹)</th>
                                 <th className="py-3 px-4 text-center">CGST (₹)</th>
@@ -97,20 +106,22 @@ const Invoice: React.FC<InvoiceProps> = ({ invoice }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {invoiceItems.map((item) => (
+                            {invoiceItems.map((item, index) => (
                                 <tr key={item.id} className="border-b border-gray-300">
-                                    <td className="py-2 px-4 text-center">{item.quantity}</td>
+                                    <td className="py-2 px-4 text-center">{index + 1}</td>
                                     <td className="py-2 px-4 text-center">{item.product.name}</td>
                                     <td className="py-2 px-4 text-center">{item.amount.toFixed(2)}</td>
+                                    <td className="py-2 px-4 text-center">{item.quantity}</td>
+                                    <td className="py-2 px-4 text-center">{item.total}</td>
                                     <td className="py-2 px-4 text-center">{item.product.gst}%</td>
                                     <td className="py-2 px-4 text-center">
-                                        {(((item.amount / 100) * item.product.gst) / 2).toFixed(2)}
+                                        {(Number((((item.amount / 100) * item.product.gst) / 2)) * item.quantity).toFixed(2)}
                                     </td>
                                     <td className="py-2 px-4 text-center">
-                                        {(((item.amount / 100) * item.product.gst) / 2).toFixed(2)}
+                                        {(Number((((item.amount / 100) * item.product.gst) / 2)) * item.quantity).toFixed(2)}
                                     </td>
                                     <td className="py-2 px-4 text-center">
-                                        {(item.total + ((item.amount / 100) * item.product.gst)).toFixed(2)}
+                                        {(item.total +  (item.total / 100) * item.product.gst).toFixed(2)}
                                     </td>
                                 </tr>
                             ))}
