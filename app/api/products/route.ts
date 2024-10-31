@@ -23,15 +23,3 @@ export async function GET(request: Request) {
     }
 }
 
-// export async function GET(req: NextApiRequest, res: NextApiResponse) {
-//   try {
-//     console.log('hello');
-//     const admins = [{ name: 'anil' }];
-//     res.status(200).json(admins);
-//   } catch (error) {
-//     console.error('Error fetching admin data:', error);
-//     res.status(500).json({ error: 'Error fetching admin data: ' + error });
-//   } finally {
-//     await prisma.$disconnect();
-//   }
-// }

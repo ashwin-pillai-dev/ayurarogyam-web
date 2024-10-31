@@ -162,7 +162,6 @@ model Sale {
   adminId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   commissions Commission[]
   Partner     Partner?     @relation(fields: [partnerId], references: [id])
   partnerId   String?

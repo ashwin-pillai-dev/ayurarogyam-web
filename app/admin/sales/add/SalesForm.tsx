@@ -1,13 +1,12 @@
 'use client'
 import { Label, Button, Datepicker, Select } from 'flowbite-react';
-import { ProductWithPrices, SalesParam, addSales } from '../actions'
+import { ProductWithPrices, addSales } from '../actions'
 import { Client, Product, Partner, Admin } from '@prisma/client'
 import SearchAbleSelect from '../../components/SearchAbleSelect/SearchAbleSelect'
 import React, { useRef, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { Spinner } from 'flowbite-react';
 import { useRouter } from 'next/navigation';
-import { error } from 'console';
 
 type PropType = {
     clients: Client[]
@@ -100,14 +99,14 @@ const SalesForm: React.FC<PropType> = (props) => {
     async function onSubmit(params: FormData) {
 
         const { client, date, visitType, remarks } = Object.fromEntries(params);
-        const salesInput: SalesParam = {
+        const salesInput = {
             clientId: client.toString(),
             visitType: visitType.toString(),
             remarks: remarks.toString(),
             date: date.toString(),
             partnerId: partner?partner.id:'',
             partner:partner,
-            productWithPrices: addedItems
+            addedItems: addedItems
         }
 
         console.log(`sales Input:`);
@@ -220,7 +219,7 @@ const SalesForm: React.FC<PropType> = (props) => {
                         id="remarks" >
                         <Label
                             htmlFor="remarks"
-                            value="Remarks"
+                            value="remarks"
                             id='remarks'
                         />
                         <textarea
@@ -299,16 +298,6 @@ const SalesForm: React.FC<PropType> = (props) => {
                             )}
                         </ul>
                     </div>
-
-
-
-                    {/* <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0 max-w-md">
-                                    <h3 className="mb-2 text-xl font-bold dark:text-white">Ojuset</h3>
-                                    <h3 className="mb-2 text-xl font-bold dark:text-white">10pcs</h3>
-                                    <h3 className="mb-2 text-xl font-bold dark:text-white">80000</h3>
-            
-            
-                                </div> */}
                     <Button
 
                         size="xs"

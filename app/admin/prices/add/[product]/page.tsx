@@ -18,9 +18,7 @@ export default async function Page({
                 <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
                     Add New Price
                 </h2>
-                <form className="space-y-4 md:space-y-6" action={addPrices}>
-                    <FormItems productId={productId} clientTypes={clientTypes}/>
-                </form>
+                    <FormItems isEdit={false} addPrices={addPrices} productId={productId} clientTypes={clientTypes}/>
             </div >
         </section >
     )

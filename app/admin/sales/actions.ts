@@ -3,6 +3,9 @@ import { revalidatePath } from 'next/cache';
 import prisma from '../../../lib/prisma';
 import { Admin, Invoice, Product, Sale,Prisma } from '@prisma/client';
 import { redirect } from 'next/navigation';
+import { z } from 'zod';
+import { addedItemSchema,saleSchema } from './add/SalesSchema';
+
 
 
 export type ProductWithPrices = {
@@ -10,20 +13,24 @@ export type ProductWithPrices = {
     price: number
     qty: number
     total: number
-    product?: Product
+    product: Product
 
 }
 
-export type SalesParam = {
-    clientId: string
-    partnerId: string
-    partner: Admin
-    date: string
-    remarks: string
-    visitType: string
-    productWithPrices: ProductWithPrices[]
+type addedItems = z.infer<typeof addedItemSchema>;
+type SalesParam = z.infer<typeof saleSchema >;
 
-}
+
+// export type SalesParam = {
+//     clientId: string
+//     partnerId: string
+//     partner: Admin
+//     date: string
+//     remarks: string
+//     visitType: string
+//     addedItems: addedItems[]
+
+// }
 
 export async function addSales(input: SalesParam) {
     let subTotal: number = 0;
@@ -34,7 +41,7 @@ export async function addSales(input: SalesParam) {
 
 
 
-    input.productWithPrices.forEach((obj) => {
+    input.addedItems.forEach((obj) => {
         subTotal += obj.total;
         total += obj.total + (obj.product.gst / 100) * obj.total
         qty += obj.qty;
@@ -48,9 +55,6 @@ export async function addSales(input: SalesParam) {
 
     let newSale;
     try {
-        const partner = input.partner;
-        console.log(`partner in salea action:`);
-        console.log(partner);
 
         // Assuming the partner model is included in the input
 
@@ -70,7 +74,7 @@ export async function addSales(input: SalesParam) {
             },
             data: {
                 date: new Date(input.date),
-                adminId: partner.id, // Use the partner's ID from the input
+                adminId: input.partnerId, // Use the partner's ID from the input
                 visitType: input.visitType,
                 remarks: input.remarks,
                 invoice: {

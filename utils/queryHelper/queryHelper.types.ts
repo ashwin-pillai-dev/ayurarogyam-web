@@ -12,3 +12,10 @@ export interface Filter{
     value:string
 }
 
+export interface getReqProps{
+    query?:string
+    page:string
+    limit:string,
+    filters?:Filter[]
+  }
+
