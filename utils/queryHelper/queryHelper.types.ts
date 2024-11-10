@@ -18,4 +18,10 @@ export interface getReqProps{
     limit:string,
     filters?:Filter[]
   }
+  export interface PaginatedResponse<T> {
+    data: T[];
+    page: number;
+    limit: number;
+    total:number;
+  }
 

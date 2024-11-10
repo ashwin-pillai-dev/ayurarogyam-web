@@ -4,15 +4,18 @@ import prisma from '../../../lib/prisma'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { FileUpload } from '../common/services';
+import { categoryFormType } from './add/categorySchema';
+import { Prisma,Category } from '@prisma/client';
 
 
 
 
 
-export async function addCategory(input: FormData) {
 
-    const { name, file } = Object.fromEntries(input)
-    let fileObj: any = file;
+export async function addCategory(input: categoryFormType):Promise<Category> {
+
+    const { name, image } = input
+    let fileObj: any = image;
     let uploadResponse = '';
 
 
@@ -29,7 +32,7 @@ export async function addCategory(input: FormData) {
         image: '',
 
     }
-    let category;
+    let category:Category;
     try {
 
         category = await prisma.category.create({
@@ -37,8 +40,7 @@ export async function addCategory(input: FormData) {
 
         });
 
-        console.log('category created: ', category);
-        
+    return category;        
 
 
 
@@ -47,10 +49,36 @@ export async function addCategory(input: FormData) {
         console.error('Error adding category:', error);
         throw error;
     }
+}
 
-    // revalidatePath(`/admin/categories/list`);
-    // return category;
+export async function updateCategory(input: categoryFormType,id:string):Promise<Category> {
 
-    redirect(`/admin/categories/list`)
+    const { name, image } = input
+    let fileObj: any = image;
+    let uploadResponse = '';
 
+
+    const data = {
+        name: name.toString(),
+        image: '',
+
+    }
+    let category:Category;
+    try {
+
+        category = await prisma.category.update({
+            data,
+            where:{id:id}
+
+        });
+
+    return category;        
+
+
+
+
+    } catch (error) {
+        console.error('Error adding category:', error);
+        throw error;
+    }
 }

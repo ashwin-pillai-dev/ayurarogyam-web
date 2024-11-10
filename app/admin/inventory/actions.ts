@@ -3,28 +3,30 @@ import prisma from '../../../lib/prisma'
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { FileUpload } from '../common/services';
+import { InventoryFormType } from './add/inventorySchema';
+import { Inventory } from '@prisma/client';
 
 
 
 
 
 
-export async function addInventory(input: FormData) {
+export async function addInventory(input: InventoryFormType):Promise<Inventory> {
 
-    const { name, qty, inventoryTypeId, productId, image } = Object.fromEntries(input)
-    let fileObj: any = image;
-    let uploadResponse='';
+    const { name, qty, inventoryTypeId, productId } = input
+    // let fileObj: any = image;
+    // let uploadResponse='';
     // if (fileObj) {
     //     uploadResponse = await FileUpload(fileObj)
 
 
     // }
     const data = {
-        name: name.toString(),
-        inventoryTypeId: inventoryTypeId.toString(),
-        productId: productId.toString(),
-        qty: parseFloat(qty.toString()),
-        image:uploadResponse != undefined ? uploadResponse : null
+        name: name,
+        inventoryTypeId: inventoryTypeId,
+        productId: productId,
+        qty: qty,
+        image:null
     }
     console.log(data);
 
@@ -35,12 +37,12 @@ export async function addInventory(input: FormData) {
 
         });
 
+        return inventory;
+
+
 
     } catch (error) {
         console.error('Error adding inventory:', error);
         throw error;
     }
-    revalidatePath(`/admin/inventory/list`);
-    redirect(`/admin/inventory/list`)
-
 }

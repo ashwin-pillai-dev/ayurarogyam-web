@@ -16,9 +16,7 @@ export default async function page() {
                     <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
                         Add New Client
                     </h2>
-                    <form className="space-y-4 md:space-y-6" action={addClient}>
                         <ClientForm clientTypes={clientTypes} />
-                    </form>
                 </div>
             </section>
 

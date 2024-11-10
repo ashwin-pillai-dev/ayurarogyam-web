@@ -1,19 +1,21 @@
 'use server'
 import prisma from'../../../lib/prisma'
 import { redirect } from 'next/navigation';
+import { clientTypeForm } from './add/clientTypeSchema';
+import { ClientType } from '@prisma/client';
 
 
 
 
 
-export async function addClientType(input: FormData) {
+export async function addClientType(input: clientTypeForm):Promise<ClientType> {
 
-    const { name } = Object.fromEntries(input)
+    const { name } = input
     const data = {
         name: name.toString(),
     }
     console.log(data);
-    let clientType ;
+    let clientType:ClientType ;
     
     try {
 
@@ -24,9 +26,9 @@ export async function addClientType(input: FormData) {
         console.log('clientType');
         console.log(clientType);
         
-       
+       return clientType;
         // redirect(`/admin/client-type/list`)
-    redirect(`/admin/client-type/list`)
+    // redirect(`/admin/client-type/list`)
 
 
     } catch (error) {

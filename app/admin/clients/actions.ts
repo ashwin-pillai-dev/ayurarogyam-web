@@ -3,12 +3,13 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import prisma from '../../../lib/prisma';
 import {Prisma} from '@prisma/client'
+import { clientForm } from './add/clientsSchema';
 
 
 
 
-export async function addClient(input: FormData) {
-    const { name, email, password,contactNumber,address,clientType} = Object.fromEntries(input)
+export async function addClient(input: clientForm) {
+    const { name, email,contactNumber,address,clientType} = input
     console.log(email.toString());
     
     const data = {
