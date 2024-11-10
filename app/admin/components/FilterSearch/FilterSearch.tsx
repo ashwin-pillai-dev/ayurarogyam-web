@@ -46,6 +46,7 @@ export default function FilterSearch(props: PropType) {
                 options={options}
                 getOptionLabel={(option: any) => `${option.name}`}
                 getOptionValue={(option: any) => `${option.id}`}
+                className='w-full'
                 onChange={(value) => {
                     handleChange(value)
 

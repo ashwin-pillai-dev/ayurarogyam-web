@@ -1,30 +1,32 @@
 import { get } from "@/utils/queryHelper/queryHelper";
-import { Filter, requestParams } from "@/utils/queryHelper/queryHelper.types";
+import { Filter, PaginatedResponse, requestParams } from "@/utils/queryHelper/queryHelper.types";
+import { Prisma } from "@prisma/client";
 
 interface PropType {
   filter: Filter[],
   page: string
   limit: string
 }
-export async function getSales(props: PropType) {
-  // const search = props.query;
-  const { page, limit } = props;
-  const filters: Filter[] = props.filter;
-  if (filters) {
-    if (filters.length > 0) {
-      filters.forEach((filter) => {
-        filters.push({ field: filter.field, cond: filter.cond, value: filter.value })
-      })
-    }
-  }
+export async function getSales(params: requestParams): Promise<
+  PaginatedResponse<
+    Prisma.SaleGetPayload<
+      {
+        include: {
+          Partner: true,
+          invoice: {
+            include: {
+              client: true
+            }
+          }
 
-  const params: requestParams = {
-    page: typeof (page) === 'string' ? Number(page) : 1,
-    limit: typeof (limit) === 'string' ? Number(limit) : 10,
-    filters: filters,
-    orderBy: 'id,ASC',
-    fullTextSearch: ''
-  }
+        }
+      }>
+  >
+> {
+  // const search = props.query;
+
+
+
 
   try {
     const response = await get('/sales', params)
@@ -34,11 +36,29 @@ export async function getSales(props: PropType) {
     if (response.ok) {
       console.log('before data');
       console.log(response);
-      
-      const res = await response.json();
-      console.log('data');
-      console.log(res.data);
-      return res;
+
+      const data = await response.json();
+      const pageResponse: PaginatedResponse<
+        Prisma.SaleGetPayload<
+          {
+            include: {
+              Partner: true,
+              invoice: {
+                include: {
+                  client: true
+                }
+              }
+
+            }
+          }>
+      > = {
+        page: params.page,
+        total: data.total,
+        limit: params.limit,
+        data: data.data
+      }
+
+      return pageResponse;
 
     } else {
       console.error('response not ok:', response.statusText);
@@ -55,7 +75,7 @@ export async function getSales(props: PropType) {
 
 export async function fetchFilteredPrice(productId: string, clientTypeId: string, qty: number) {
   try {
-    const response = await fetch(`${process.env.API_URL}/filteredPrices?productId=${productId}&clientTypeId=${clientTypeId}&qty=${qty}`,{cache:'no-cache'});
+    const response = await fetch(`${process.env.API_URL}/filteredPrices?productId=${productId}&clientTypeId=${clientTypeId}&qty=${qty}`, { cache: 'no-cache' });
     if (response.ok) {
       const result = await response.json();
       return result;

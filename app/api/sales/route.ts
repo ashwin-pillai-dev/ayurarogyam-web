@@ -32,7 +32,6 @@ export async function GET(request: Request) {
                             filters[parentField] = {
                                 [childField]: {
                                     contains: filterValue,
-                                    mode: 'insensitive',
                                 },
                             };
                         } else {

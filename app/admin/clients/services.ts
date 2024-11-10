@@ -1,20 +1,46 @@
 import { get } from "@/utils/queryHelper/queryHelper";
+import { PaginatedResponse, requestParams } from "@/utils/queryHelper/queryHelper.types";
+import { Prisma } from "@prisma/client";
 
-export async function getClients() {
-    try {
-      
-      const response = await get(`/clients`,{limit:1000,page:1,filters:[],fullTextSearch:'',orderBy:'createdAt,DESC'});
-      
 
-      if (response.ok) {        
-        const data = await response.json();
-        console.log(data);
-        
-        return data;
-      } else {
-        console.error('Error fetching  cients:', response.statusText);
+
+export async function getClients(params: requestParams): Promise<
+  PaginatedResponse<
+    Prisma.ClientGetPayload<
+      {
+        include: { clientType: true }
+      }>
+  >
+> {
+  try {
+    const response = await get('/clients', params)
+    if (response.ok) {
+      const data = await response.json();
+      console.log('cleint data: ', data);
+
+      const pageResponse: PaginatedResponse<
+        Prisma.ClientGetPayload<
+          {
+            include: {
+              clientType: true
+            }
+          }
+        >
+      > = {
+        page: params.page,
+        total: data.total,
+        limit: params.limit,
+        data: data.data
       }
-    } catch (error) {
-      console.error('Error fetching cients:', error);
+      return pageResponse;
+    } else {
+      console.error('Error fetching clients:', response.statusText);
+      throw (Error('Error fetching clients'))
+
     }
+  } catch (error) {
+    console.error('Error fetching clients:', error);
+    throw (Error('Error fetching clients'))
   }
+}
+
