@@ -1,15 +1,28 @@
 import { get } from '@/utils/queryHelper/queryHelper'
-export async function getProducts() {
-  try {
+import { PaginatedResponse, requestParams } from '@/utils/queryHelper/queryHelper.types';
+import { Product,type Prisma } from '@prisma/client';
 
-    const response = await get(`/products`,{limit:1000,page:1,filters:[],fullTextSearch:'',orderBy:'createdAt,DESC'});
+export async function getProducts(params:requestParams):Promise<PaginatedResponse<Prisma.ProductGetPayload<{include:{category:true}}>>> {
+  try {
+    const response = await get('/products', params)
     if (response.ok) {
       const data = await response.json();
-      return data;
+      console.log('product data: ',data);
+      
+      const pageResponse:PaginatedResponse<Prisma.ProductGetPayload<{include:{category:true}}>> = {
+        page:params.page,
+        total:data.total,
+        limit:params.limit,
+        data:data.data
+      }
+      return pageResponse;
     } else {
-      console.error('Error fetching  products:', response.statusText);
+      console.error('Error fetching products:', response.statusText);
+      throw( Error('Error fetching products'))
+
     }
   } catch (error) {
     console.error('Error fetching products:', error);
+    throw( Error('Error fetching products'))
   }
 }

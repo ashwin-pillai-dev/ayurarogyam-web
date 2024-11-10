@@ -10,6 +10,7 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url)  ;    
         const pageParam =  searchParams.get('page');
         const limitParam =  searchParams.get('limit');
+        const s =  searchParams.get('s');
         console.log(`page${pageParam} limit ${limitParam}`);
 
         const page = pageParam != null ?Number(pageParam) : 1;
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
                     if(cond == 'contains'){
                         filters[field] ={
                             [cond]:value,
-                            mode: 'insensitive'
+                            // mode: 'insensitive'
                         }
                     }
                     else{
@@ -36,6 +37,9 @@ export async function GET(request: Request) {
                   }
             }
         })
+
+        console.log('filters: ',filters);
+        
         const res = await prisma.category.findMany(
             {
             skip: skip,
@@ -70,15 +74,3 @@ export async function GET(request: Request) {
     }
 }
 
-// export async function GET(req: NextApiRequest, res: NextApiResponse) {
-//   try {
-//     console.log('hello');
-//     const admins = [{ name: 'anil' }];
-//     res.status(200).json(admins);
-//   } catch (error) {
-//     console.error('Error fetching admin data:', error);
-//     res.status(500).json({ error: 'Error fetching admin data: ' + error });
-//   } finally {
-//     await prisma.$disconnect();
-//   }
-// }

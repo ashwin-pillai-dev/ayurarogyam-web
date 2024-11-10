@@ -1,59 +1,55 @@
-import { requestParams,Filter} from '@/utils/queryHelper/queryHelper.types'
-import {get} from '@/utils/queryHelper/queryHelper'
+import { requestParams, Filter, PaginatedResponse } from '@/utils/queryHelper/queryHelper.types'
+import { get } from '@/utils/queryHelper/queryHelper'
+import { Prisma } from '@prisma/client'
 
-interface PropType{
-  query?:string
-  page:string
-  limit:string
+interface PropType {
+  query?: string
+  page: string
+  limit: string
 }
-export async function getInventory(props:PropType) {
-  const search = props.query;
-  const {page,limit} = props;
-  const filter:Filter[]=[
-
-  ];
-  if(search){
-    if(search.length > 0){
-      filter.push( {field:'name',cond:'contains',value:search})
+export async function getInventory(params: requestParams): Promise<PaginatedResponse<Prisma.InventoryGetPayload<
+  {
+    include: {
+      inventoryType: true,
+      products: true
     }
-  }
+  }>>> {
 
+  try {
+    const response = await get('/inventory', params)
 
-
-  const params:requestParams={
-    page: typeof(page) === 'string'?Number(page):1,
-    limit:typeof(limit) === 'string'?Number(limit):10,
-    filters:filter,
-    orderBy:'id,ASC',
-    fullTextSearch:''
-  }
-
-    try{
-    const response = await get('/inventory',params)
-    
 
     console.log(response.ok);
-    
-    if (response.ok) { 
-      console.log('before data');
-      const res = await response.json();
-      console.log('data');
-      console.log(res);
-      return res;
-      
+
+    if (response.ok) {
+      const data = await response.json();
+
+      const pageResponse: PaginatedResponse<Prisma.InventoryGetPayload<
+        {
+          include: {
+            inventoryType: true,
+            products: true
+          }
+        }>> = {
+        page: params.page,
+        total: data.total,
+        limit: params.limit,
+        data: data.data
+      }
+      return pageResponse;
+
     } else {
       console.error('response not ok:', response.statusText);
       console.log(await response.json())
-      
+
     }
   } catch (error) {
     console.error('in catch block');
-    
+
     console.error('Error fetching admin data:', error);
   }
 
-}    
+}
 
- 
 
-  
+

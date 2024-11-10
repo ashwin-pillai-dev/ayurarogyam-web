@@ -5,7 +5,7 @@ import { getProducts } from '../../products/services';
 import { getInventoryTypes } from '../../inventory-type/services';
 
 export default async function page() {
-    const productData = getProducts();
+    const productData = getProducts({page:1,limit:1000,filters:[],fullTextSearch:'',orderBy:'createdAt,DESC'});
     const inventoryTypeData = getInventoryTypes()
     const [products, inventoryTypes] = await Promise.all([productData, inventoryTypeData])
     return (
@@ -15,7 +15,7 @@ export default async function page() {
                 <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
                     Add New Inventory
                 </h2>
-                    <FormItems products={products} inventoryTypes={inventoryTypes}/>
+                    <FormItems products={products.data} inventoryTypes={inventoryTypes}/>
             </div >
         </section >
     )

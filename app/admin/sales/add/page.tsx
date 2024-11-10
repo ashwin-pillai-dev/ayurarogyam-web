@@ -6,13 +6,13 @@ import NewSalesForm from './NewSalesForm';
 
 export default async function page() {
     const clientsData =  getClients()
-    const productsData =  getProducts()
+    const productsData =  getProducts({page:1,limit:1000,filters:[],fullTextSearch:'',orderBy:'createdAt,DESC'});
     const partnersData = getAgents()
     const [clients, products,partners] = await Promise.all([clientsData, productsData,partnersData])
     
     return (
         <div>
-            <NewSalesForm clients={clients} products={products} partners = {partners} />
+            <NewSalesForm clients={clients} products={products.data} partners = {partners} />
         </div>
 
     )
