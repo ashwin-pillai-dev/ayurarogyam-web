@@ -39,11 +39,11 @@ export default async function page({ searchParams,
         orderBy: 'id,ASC',
         fullTextSearch: ''
     }
-    if(client){
-        reqParams.filters.push({field:'invoice.clientId',cond:'equals',value:client})
+    if (client) {
+        reqParams.filters.push({ field: 'invoice.clientId', cond: 'equals', value: client })
     }
-    if(partner){
-        reqParams.filters.push({field:'partnerId',cond:'equals',value:partner})
+    if (partner) {
+        reqParams.filters.push({ field: 'partnerId', cond: 'equals', value: partner })
     }
     const clientsData = getClients(cientReqParams)
     const partnersData = getAgents()
@@ -66,6 +66,8 @@ export default async function page({ searchParams,
     }>[] = response.data
     const { total } = response;
     let amountTotal = 0;
+    let paidTotal = 0;
+    let remainingTotal = 0;
 
     return (
         <section className="bg-gray-50 dark:bg-gray-900 sm:p-5">
@@ -93,7 +95,10 @@ export default async function page({ searchParams,
                                     <th scope="col" className="px-4 py-3">Partner</th>
                                     {/* <th scope="col" className="px-4 py-3">Sale/Follow Up</th> */}
                                     <th scope="col" className="px-4 py-3">Total amount</th>
+                                    <th scope="col" className="px-4 py-3">Paid amount</th>
+                                    <th scope="col" className="px-4 py-3">Remaining amount</th>
                                     <th scope="col" className="px-4 py-3">Invoice</th>
+                                    <th scope="col" className="px-4 py-3">Payments</th>
 
 
                                 </tr>
@@ -102,26 +107,34 @@ export default async function page({ searchParams,
                                 {
                                     sales.map((sale) => {
                                         amountTotal = amountTotal + sale.invoice.total;
+                                        paidTotal = paidTotal + sale.invoice.paidAmount;
+                                        remainingTotal = remainingTotal + sale.invoice.remainingAmount;
                                         return (
                                             <tr className="border-b dark:border-gray-700" key={sale.id}>
                                                 <td className="px-4 py-3"> {sale.invoice.client.name}</td>
                                                 <td className="px-4 py-3"> {sale.admin.name}</td>
                                                 <td className="px-4 py-3"> {sale.invoice.total}</td>
+                                                <td className="px-4 py-3"> {sale.invoice.paidAmount}</td>
+                                                <td className="px-4 py-3"> {sale.invoice.remainingAmount}</td>
                                                 {
                                                     sale.invoice.invoiceIsuuesd == false ?
                                                         <td className="px-4 py-3"><Link target="_blank" href={`/admin/invoice/generate/${sale.invoice.id}`}>Generate Invoice</Link></td> :
                                                         <td className="px-4 py-3"><Link href={`/admin/invoice/${sale.invoice.id}`}>{sale.invoice.invoiceNumber}</Link></td>
                                                 }
+                                                <td className="px-4 py-3"><Link href={`/admin/payments/list/${sale.invoice.id}`}>Payments</Link></td>
+
                                             </tr>
-                                            
+
                                         )
                                     })
                                 }
                                 <tr>
-                                <td className="px-4 py-3 font-semibold">Total</td>
-                                <td className="px-4 py-3"/>
-                                <td className="px-4 py-3 font-semibold">{amountTotal}</td>
-                                <td className="px-4 py-3"/>
+                                    <td className="px-4 py-3 font-semibold">Total</td>
+                                    <td className="px-4 py-3" />
+                                    <td className="px-4 py-3 font-semibold">{amountTotal}</td>
+                                    <td className="px-4 py-3 font-semibold">{paidTotal}</td>
+                                    <td className="px-4 py-3 font-semibold">{remainingTotal}</td>
+                                    <td className="px-4 py-3" />
 
                                 </tr>
                             </tbody>

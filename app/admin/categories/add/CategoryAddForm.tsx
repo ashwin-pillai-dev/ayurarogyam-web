@@ -91,23 +91,6 @@ export default function CategoryAddForm({ isEdit, categoryId, categoryData }: ca
         }
     }
 
-    async function onsubmitCheck(event: FormEvent) {
-        event.preventDefault()
-        const values = getValues();
-        console.log('values',values);
-        const { error, data } = categorySchema.safeParse(values);
-        if(error){
-        console.log('error', error);
-        }
-        if(data){
-        console.log('data', data);
-
-
-        }
-    }
-
-
-
     return (
         <form className="space-y-4 md:space-y-6"
             onSubmit={handleSubmit(onsubmit)}

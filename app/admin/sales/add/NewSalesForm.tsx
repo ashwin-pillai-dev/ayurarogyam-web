@@ -76,6 +76,11 @@ const SalesForm: React.FC<PropType> = (props) => {
                     console.log('response filtered prices: ', data);
                     setValue(`addedItems.${index}.price`, data.amount)
                     setValue(`addedItems.${index}.total`, data.amount * qty)
+
+                    //Calculating and resetting remaining amount
+                    const remainingAmount = calcRemainingAmount();
+                    setValue('remainingAmount', Number(remainingAmount));
+
                     setLoading(false)
                 } else {
                     setLoading(false)
@@ -145,13 +150,48 @@ const SalesForm: React.FC<PropType> = (props) => {
 
     function calcTotal(index: number) {
         const item = getValues().addedItems[index];
-        console.log('item',item);
-        
+        console.log('item', item);
+
         if (item.product && item.qty && item.price) {
-            return `${item.price} x ${item.qty} + ${(item.product.gst/100) * item.price*item.qty} (${item.product.gst}% GST) = ${(item.price + (item.product.gst/100) * item.price)*item.qty } `
+            return `${item.price} x ${item.qty} + ${(item.product.gst / 100) * item.price * item.qty} (${item.product.gst}% GST) = ${(item.price + (item.product.gst / 100) * item.price) * item.qty} `
         }
         else
             return ''
+    }
+
+    function calcRemainingAmount(): number {
+        const amount = getValues().paidAmount
+        const items = getValues().addedItems;
+        const totalAmount = items.reduce((sum, item) => sum + ((item?.price + ((item?.product?.gst / 100) * item?.price)) * item?.qty), 0);
+        const remainingAmount = totalAmount - Number(amount);
+        return remainingAmount
+
+    }
+
+
+    function onPaidAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const amountPaid = e.target.value;
+        if (amountPaid) {
+            const amount = Number(amountPaid)
+            setValue('paidAmount', amount)
+            const items = getValues().addedItems;
+            const totalAmount = items.reduce((sum, item) => sum + ((item?.price + ((item?.product?.gst / 100) * item?.price)) * item?.qty), 0);
+            const remainingAmount = totalAmount - Number(amount);
+            setValue('remainingAmount', Number(remainingAmount));
+            // return remainingAmount.toString()
+        }
+        else {
+            setValue('remainingAmount', 0);
+            // return ''
+        }
+    }
+
+    function getPaidAmount(): string {
+        const amount = getValues().paidAmount?.toString()
+        console.log('paid amount', amount);
+
+        return amount ? amount : ''
+
     }
 
     return (
@@ -196,7 +236,6 @@ const SalesForm: React.FC<PropType> = (props) => {
                             getLabel={(option: any) => `${option.name}`}
                             getValue={(option: any) => `${option.id}`}
                             onChange={handleClientChange}
-
                         >
                         </SearchAbleSelect>
                         {errors.clientId && <span className="text-red-500">{errors.clientId.message}</span>}
@@ -214,7 +253,6 @@ const SalesForm: React.FC<PropType> = (props) => {
                                 selectedOption ?
                                     setValue('partnerId', selectedOption.id, { shouldValidate: true })
                                     : setValue('partnerId', null, { shouldValidate: true })
-
                             }}  >
 
                         </SearchAbleSelect>
@@ -304,10 +342,9 @@ const SalesForm: React.FC<PropType> = (props) => {
                                                         disabled={true}
                                                     />
                                                     <MdDelete size={30} className='max-w-md self-center text-red-800 cursor-pointer' onClick={() => {
-
-                                                        console.log(errors.addedItems);
-
+                                                        // setValue('paidAmount', 0),
                                                         remove(index);
+                                                        setValue('remainingAmount', calcRemainingAmount())
                                                     }} />
                                                 </div>
                                             </div>
@@ -320,6 +357,37 @@ const SalesForm: React.FC<PropType> = (props) => {
                             }
                             )
                         }
+                    </div>
+                    <div className="max-w-lg">
+                        <label htmlFor="paidAmount">Amount Paid<span className="text-red-500"> *</span></label>
+                        <input
+                            name="paidAmount"
+                            type='number'
+                            id="paidAmount"
+                            {...register('paidAmount',
+                                {
+                                    valueAsNumber: true,
+                                    onChange: onPaidAmountChange
+                                }
+                            )} // Register field for validation
+                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        {errors.paidAmount && <span className="text-red-500">{errors.paidAmount.message}</span>}
+
+                    </div>
+
+                    <div className="max-w-lg">
+                        <label htmlFor="remainingAmount">Remaining Amount<span className="text-red-500"> *</span></label>
+                        <input
+                            name="remainingAmount"
+                            type='number'
+                            disabled={true}
+                            {...register('remainingAmount', { valueAsNumber: true })}
+                            id="remainingAmount"
+                            className="bg-gray-300 p-2   max-w-md border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                        {errors.remainingAmount && <span className="text-red-500">{errors.remainingAmount.message}</span>}
+
                     </div>
 
                     {/* remarks */}

@@ -5,8 +5,6 @@ export const revalidate = 0
 
 export async function GET(request: Request) {
     try {
-        console.log('in prices route');
-
         const { searchParams } = new URL(request.url)  ;    
         const pageParam =  searchParams.get('page');
         const limitParam =  searchParams.get('limit');
@@ -36,19 +34,28 @@ export async function GET(request: Request) {
                   }
             }
         })
+
+        console.log('filters',filters);
         
-        const res = await prisma.category.findMany(
+        
+        const res = await prisma.payment.findMany(
             {
             skip: skip,
             take: Number(limit),
             where: {...filters},
+            include:{
+                invoice:true
+            },
             orderBy:{
                 createdAt:'desc',
             }
         }
         );
 
-        const total =  await prisma.category.count()
+        console.log('payment res: ',res);
+        
+
+        const total =  await prisma.payment.count()
 
         const responseData = {data:res,limit:Number(limit),page:Number(pageParam),total:total}
         console.log('responseData');

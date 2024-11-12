@@ -23,4 +23,7 @@ export const saleSchema = z.object({
   visitType: z.string().default('0'),
   remarks: z.string({required_error:'Please provide sale details',invalid_type_error:'Please provide sale details'}).min(1,{message:'Please provide sale details'}),
   addedItems: z.array(addedItemSchema).min(1,{message:'Minimum one product required to add a sale'}),
+  paidAmount: z.number(), // Price should be retrieved from product
+  remainingAmount: z.number(), // Price should be retrieved from product
+
 });

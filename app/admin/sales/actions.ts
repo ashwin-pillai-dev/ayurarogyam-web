@@ -1,7 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache';
 import prisma from '../../../lib/prisma';
-import { Admin, Invoice, Product, Sale,Prisma } from '@prisma/client';
+import { Admin, Invoice, Product, Sale,type Prisma } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { addedItemSchema,saleSchema } from './add/SalesSchema';
@@ -38,8 +38,13 @@ export async function addSales(input: SalesParam) {
 
     let qty: number = 0;
     let invoiceItems: any = [];
-
-
+    let payment:Prisma.PaymentCreateWithoutInvoiceInput;
+    if(input.paidAmount >0){
+        payment={
+            amount:input.paidAmount,
+            paymentDate:new Date(input.date)
+            }
+        }
 
     input.addedItems.forEach((obj) => {
         subTotal += obj.total;
@@ -74,7 +79,7 @@ export async function addSales(input: SalesParam) {
             },
             data: {
                 date: new Date(input.date),
-                adminId: input.partnerId, // Use the partner's ID from the input
+                adminId: input.partnerId, 
                 visitType: input.visitType,
                 remarks: input.remarks,
                 invoice: {
@@ -83,7 +88,12 @@ export async function addSales(input: SalesParam) {
                         invoiceItem: {
                             create: invoiceItems
                         },
+                        Payment:{
+                            create:payment
+                        },
                         quantity: qty,
+                        paidAmount:input.paidAmount,
+                        remainingAmount:input.remainingAmount,
                         subTotal: subTotal,
                         total: total,
                         invoiceDate: new Date(input.date),
