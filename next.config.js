@@ -1,41 +1,35 @@
-
-// const withTM = require('next-transpile-modules')(['@libsql/hrana-client']);
-
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  // webpack: (config, { isServer }) => {
-  //   // Ignore LICENSE files
-  //   config.module.rules.push({
-  //     test: /LICENSE$/,
-  //     use: 'ignore-loader',
-  //   });
+const withPWA = require('next-pwa')({
+  dest: "public",         // destination directory for the PWA files
+  disable: process.env.NODE_ENV === "development",        // disable PWA in the development environment
+  register: true,         // register the PWA service worker
+  skipWaiting: true,
 
-  //   return config;
-  // },
+})
+
+module.exports = withPWA({
+  reactStrictMode: true,      // Enable React strict mode for improved error handling
+  swcMinify: true,            // Enable SWC minification for improved performance
+  compiler: {
+    removeConsole: process.env.NODE_ENV !== "development"     // Remove console.log in production
+  },
   images: {
-      domains: ['flowbite.com','flowbite.s3.amazonaws.com'],
-    },
-}
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'flowbite.com',
+        port: '',
+        pathname: '/',
+      },
+    ],
+  },
+})
 
-module.exports = nextConfig
 
 
-// const withBundleAnalyzer = require('@next/bundle-analyzer')({
-//   enabled: process.env.ANALYZE === 'true',
-// })
 
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//     images: {
-//         domains: ['flowbite.com','flowbite.s3.amazonaws.com','ayurarogyam-assets.s3.ap-south-1.amazonaws.com'],
-//       },
-//       experimental: {
-//         serverActions: true,
-//       },
-// }
 
-// module.exports = withBundleAnalyzer(nextConfig)
 
- 
 
- 
+
+

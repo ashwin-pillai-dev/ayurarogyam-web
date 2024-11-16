@@ -67,8 +67,8 @@ export default function NavbarWithDropdown({ onDrawerClick,user }: propType) {
                     }
                 >
                     <Dropdown.Header>
-                        <span className="block text-sm">{user.user.name}</span>
-                        <span className="block truncate text-sm font-medium">{user.user.email}</span>
+                        <span className="block text-sm">{user?.user?.name}</span>
+                        <span className="block truncate text-sm font-medium">{user?.user?.email}</span>
                     </Dropdown.Header>
                     <Dropdown.Item>Dashboard</Dropdown.Item>
                     <Dropdown.Item>Settings</Dropdown.Item>

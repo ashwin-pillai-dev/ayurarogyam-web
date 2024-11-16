@@ -23,7 +23,7 @@ export default async function page({ searchParams,
 }) {
 
 
-    const { page = '1', limit = '10', sort = 'asc', category = '' } = await searchParams
+    const { page = '1', limit = '10', sort = 'asc', category = '',name = '' } = await searchParams
     const reqParams: requestParams = {
         page: Number(page),
         limit: Number(limit),
@@ -32,8 +32,13 @@ export default async function page({ searchParams,
         fullTextSearch: ''
     }
 
+    
+
     if (category) {
         reqParams.filters.push({ field: 'categoryId', cond: 'equals', value: category })
+    }
+    if (name) {
+        reqParams.filters.push({ field: 'name', cond: 'contains', value:name  })
     }
 
     const categories = await getCategories({ filters: [], page: 1, limit: 1000,orderBy:'createdAt,DESC',fullTextSearch:'' })
@@ -90,13 +95,10 @@ export default async function page({ searchParams,
                                         )
                                     })
                                 }
-
                             </tbody>
                         </table>
                         <PaginationComp  total={products.total}  />
-
                     </div>
-
                 </div>
             </div>
         </section>

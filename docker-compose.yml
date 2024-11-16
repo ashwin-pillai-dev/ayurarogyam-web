@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - ./data:/usr/src/app/data   # Map the host's ./data folder to the container's data folder for persistent SQLite storage
+    ports:
+      - "3000:3000"                 # Expose port 3000 on the host to port 3000 on the container
+    command: yarn start            # Command to run the app inside the container
+
+volumes:
+  data:                             # Defines a named volume for persistent data

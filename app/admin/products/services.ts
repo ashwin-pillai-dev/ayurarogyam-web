@@ -4,6 +4,8 @@ import { Product,type Prisma } from '@prisma/client';
 
 export async function getProducts(params:requestParams):Promise<PaginatedResponse<Prisma.ProductGetPayload<{include:{category:true}}>>> {
   try {
+    console.log('params',params);
+    
     const response = await get('/products', params)
     if (response.ok) {
       const data = await response.json();
