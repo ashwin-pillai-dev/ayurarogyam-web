@@ -5,26 +5,57 @@ import { ClientType } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import { clientForm, ClientSchema } from './clientsSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { addClient } from '../actions';
+import { addClient, updateClient } from '../actions';
+import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+
 
 type PropType = {
+    isEdit: boolean,
+    clientId?: string,
     clientTypes: ClientType[];
+    clientData?: clientForm
 }
 
 const ClientForm: React.FC<PropType> = (props) => {
+    const router = useRouter();
+    const {isEdit,clientTypes} = props
+
     const {
         handleSubmit,
         register,
         formState: { errors, isSubmitting },
     } = useForm<clientForm>({
+        // defaultValues: props.isEdit ? client : {},
         resolver: zodResolver(ClientSchema),
     });
 
-    const { clientTypes } = props;
 
     async function onsubmit(data: clientForm) {
         try {
+            if (isEdit) {
+                const res = await updateClient(data, '');
+                console.log('category res: ', res);
+                if (res) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Your category has been updated",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        heightAuto: false,
+                        width: "500px",       // Set the dialog width
+                        padding: "1em",
+                        customClass: {
+                            icon: 'small-icon'  // Add a custom class to the icon
+                        }
+                    });
+                    router.push('/admin/categories/list');
+                }
+            }
+            else {
             await addClient(data);
+        }
         } catch (error) {
             console.error(error);
         }
