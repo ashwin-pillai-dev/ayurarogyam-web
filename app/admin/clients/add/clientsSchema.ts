@@ -10,7 +10,7 @@ export const ClientSchema = z.object({
 ] ),
   address: z.string().min(6,{message:'address is required'}),
   contactNumber: z.string().min(10,{message:'contact number is required'}), // Add any further validations if needed
-  clientType: ClientTypeSchema,
+  // clientType: ClientTypeSchema,
   clientTypeId:z.string().min(1,{message:'please select client'})
 });
 export type clientForm = z.infer<typeof ClientSchema>

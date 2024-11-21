@@ -40,7 +40,7 @@ const ClientForm: React.FC<PropType> = (props) => {
                 </div>
                 <Select
                     id="clientType"
-                    {...register("clientType")}
+                    {...register("clientTypeId")}
                 >
                     {clientTypes.map((clientType: ClientType) => (
                         <option key={clientType.id} value={clientType.id}>
@@ -48,7 +48,7 @@ const ClientForm: React.FC<PropType> = (props) => {
                         </option>
                     ))}
                 </Select>
-                {errors.clientType && <p className="mt-2 text-sm text-red-600">{errors.clientType.message}</p>}
+                {errors.clientTypeId && <p className="mt-2 text-sm text-red-600">{errors.clientTypeId.message}</p>}
             </div>
 
             <div>
@@ -108,6 +108,8 @@ const ClientForm: React.FC<PropType> = (props) => {
             <Button
                 size="xs"
                 type="submit"
+                isProcessing={isSubmitting}
+                disabled={isSubmitting}
                 className="w-full bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
                 <p className="text-white font-medium text-sm">Add Client</p>
