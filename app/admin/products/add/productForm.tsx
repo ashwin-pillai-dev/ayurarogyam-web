@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductFormData, productSchema } from "../productSchema";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { useRouter } from "next/navigation";
+import { failToastMessage, succesToastMessage } from "@/utils/toastMessages";
 
 
 
@@ -28,42 +29,19 @@ const ProductForm: React.FC<PropType> = (props) => {
     });
 
     const onSubmit = async (data: ProductFormData) => {
-        console.log("Form data", data);
-        // try {
+        // console.log("Form data", data);
+        try {
 
-        //     const res = await addProduct(data)
-        //     if (res) {
-        //         Swal.fire({
-        //             position: "top-end",
-        //             icon: "success",
-        //             title: "Your product has been added succuessfullu",
-        //             showConfirmButton: false,
-        //             timer: 1500,
-        //             heightAuto: false,
-        //             width: "500px",       // Set the dialog width
-        //             padding: "1em",
-        //             customClass: {
-        //                 icon: 'small-icon'  // Add a custom class to the icon
-        //             }
-        //         });
-        //         router.push('/admin/products/list');
-        //     }
-        // } catch (error) {
-        //     Swal.fire({
-        //         position: "top-end",
-        //         icon: "error",
-        //         title: `Failed saving category`,
-        //         showConfirmButton: false,
-        //         timer: 1500,
-        //         heightAuto: false,
-        //         width: "500px",       // Set the dialog width
-        //         padding: "1em",
-        //         customClass: {
-        //             icon: 'small-icon'  // Add a custom class to the icon
-        //         }
-        //     });
+            const res = await addProduct(data)
+            if (res) {
 
-        // }
+                succesToastMessage({ message: 'Your product has been added succuessfully' })
+                router.push('/admin/products/list');
+            }
+        } catch (error) {
+            failToastMessage({ message: 'Failed to add your product' });
+
+        }
 
     };
 
@@ -120,7 +98,7 @@ const ProductForm: React.FC<PropType> = (props) => {
                             rows={4}
                         />
                     </div>
-{/* 
+                    {/* 
                     <div>
                         <label htmlFor="file" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Upload File

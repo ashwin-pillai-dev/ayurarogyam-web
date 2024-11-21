@@ -17,7 +17,7 @@ export default async function page({ searchParams,
     searchParams: Promise<{ [key: string]: string | undefined }>
 }) {
 
-    const { page = '1', limit = '10', sort = 'asc', type = '',product='' } = await searchParams
+    const { page = '1', limit = '10', sort = 'asc', type = '', product = '' } = await searchParams
     const reqParams: requestParams = {
         page: Number(page),
         limit: Number(limit),
@@ -64,7 +64,7 @@ export default async function page({ searchParams,
                         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" className="px-4 py-3">Name</th>
+                                    {/* <th scope="col" className="px-4 py-3">Name</th> */}
                                     <th scope="col" className="px-4 py-3">Inventory Type</th>
                                     <th scope="col" className="px-4 py-3">Product</th>
                                     <th scope="col" className="px-4 py-3">Quantity</th>
@@ -78,16 +78,13 @@ export default async function page({ searchParams,
                                         return (
                                             <tr className="border-b dark:border-gray-700" key={inventory.id}>
 
-                                                <th scope="row" className="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {/* <div className="relative w-16 h-16 rounded-lg overflow-hidden">
-                                                <Image fill={true} style={{objectFit:'contain'}} src={s3bucketurl + inventory.image } alt="" className="rounded-full" />
-                                                </div> */}
+                                                {/* <th scope="row" className="flex items-center px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                     <span className="font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         {inventory.name}
                                                     </span>
-                                                </th>
-                                                <td className="px-4 py-3">{inventory.inventoryType.name}</td>
+                                                </th> */}
                                                 <td className="px-4 py-3">{inventory?.products?.name}</td>
+                                                <td className="px-4 py-3">{inventory.inventoryType.name}</td>
                                                 <td className="px-4 py-3">{inventory.qty}</td>
                                                 <td className="px-4 py-3">
                                                     <a href={`/admin/inventory-logs/list/${inventory.id}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Inventory logs</a>

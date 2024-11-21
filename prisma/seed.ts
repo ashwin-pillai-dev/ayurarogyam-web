@@ -40,29 +40,32 @@ async function main() {
     //   })
     //   console.log('admin: ',adminUpdate);
 
-  const superAdminRole = await prisma.adminRole.create({
-    data: {
-        roleName: 'superadmin',
-    },
-});
+//   const superAdminRole = await prisma.adminRole.create({
+//     data: {
+//         roleName: 'superadmin',
+//     },
+// });
 
-const executive = await prisma.adminRole.create({
-    data: {
-        roleName: 'executive',
-    },
-});
+// console.log(await prisma.category.findMany());
+
+
+// const executive = await prisma.adminRole.create({
+//     data: {
+//         roleName: 'executive',
+//     },
+// });
 
 // Create an admin with the superadmin role
-const superAdmin = await prisma.admin.create({
-    data: {
-        name: 'Anil Pillai',
-        email: 'anilpillai.vibrant@gmail.com',
-        password: await bcrypt.hash('123456789', 10),
-        contactNumber: '8087979983',
-        adminRoleId: superAdminRole.id,
+// const superAdmin = await prisma.admin.create({
+//     data: {
+//         name: 'Anil Pillai',
+//         email: 'anilpillai.vibrant@gmail.com',
+//         password: await bcrypt.hash('123456789', 10),
+//         contactNumber: '8087979983',
+//         adminRoleId: superAdminRole.id,
         
-    },
-});
+//     },
+// });
 
 // Create a partner role
 // const partnerRole = await prisma.partnerRole.create({
@@ -83,34 +86,47 @@ const superAdmin = await prisma.admin.create({
 // });
   
     // // Create client types
-    const shopkeeper = await prisma.clientType.create({
+    // const shopkeeper = await prisma.clientType.create({
+    //     data: {
+    //         name: 'Shopkeeper',
+    //     },
+    // });
+
+    // const retailer = await prisma.clientType.create({
+    //     data: {
+    //         name: 'Retailer',
+    //     },
+    // });
+
+      // // Create inventory types
+    const product  = await prisma.inventoryType.create({
         data: {
-            name: 'Shopkeeper',
+            name: 'product',
         },
     });
 
-    const retailer = await prisma.clientType.create({
+    const sample = await prisma.inventoryType.create({
         data: {
-            name: 'Retailer',
+            name: 'sample',
         },
     });
 
     // // Create categories
-    const healthCategory = await prisma.category.create({
-        data: {
-            name: "Health and Wellness",
-            image: "health_wellness.jpg", // Replace with the actual image path
-            desc: "Products for health and wellness",
-        },
-    });
+    // const healthCategory = await prisma.category.create({
+    //     data: {
+    //         name: "Health and Wellness",
+    //         image: "health_wellness.jpg", // Replace with the actual image path
+    //         desc: "Products for health and wellness",
+    //     },
+    // });
 
-    const hairCategory = await prisma.category.create({
-        data: {
-            name: "Hair Products",
-            image: "hair_products.jpg", // Replace with the actual image path
-            desc: "Hair care products",
-        },
-    });
+    // const hairCategory = await prisma.category.create({
+    //     data: {
+    //         name: "Hair Products",
+    //         image: "hair_products.jpg", // Replace with the actual image path
+    //         desc: "Hair care products",
+    //     },
+    // });
 
     // // Create products
     // const ojuset = await prisma.product.create({

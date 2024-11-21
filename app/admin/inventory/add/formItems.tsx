@@ -17,7 +17,10 @@ export default function FormItems(props: PropType) {
     const { products, inventoryTypes } = props;
     const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm<InventoryFormType>({
-        resolver: zodResolver(inventorySchema)
+        resolver: zodResolver(inventorySchema),
+        defaultValues:{
+            name:''
+        }
     });
 
     async function onSubmit(params: InventoryFormType) {
@@ -37,7 +40,7 @@ export default function FormItems(props: PropType) {
 
     return (
         <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            <div>
+            {/* <div>
                 <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     Name <span className="text-red-500">*</span>
                 </label>
@@ -49,7 +52,7 @@ export default function FormItems(props: PropType) {
                     placeholder="Name"
                 />
                 {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
-            </div>
+            </div> */}
 
             <div className="max-w-md" id="select">
                 <Label htmlFor="productId" value="Select Product" />
