@@ -1,10 +1,11 @@
 'use server'
 import { revalidatePath } from 'next/cache';
 import prisma from '../../../lib/prisma';
-import { Admin, Invoice, Product, Sale,type Prisma } from '@prisma/client';
+import { Admin, Invoice, Product, Sale, type Prisma } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { addedItemSchema,saleSchema } from './add/SalesSchema';
+import { addedItemSchema, saleSchema } from './add/SalesSchema';
+import { Noto_Traditional_Nushu } from 'next/font/google';
 
 
 
@@ -18,19 +19,8 @@ export type ProductWithPrices = {
 }
 
 type addedItems = z.infer<typeof addedItemSchema>;
-type SalesParam = z.infer<typeof saleSchema >;
+type SalesParam = z.infer<typeof saleSchema>;
 
-
-// export type SalesParam = {
-//     clientId: string
-//     partnerId: string
-//     partner: Admin
-//     date: string
-//     remarks: string
-//     visitType: string
-//     addedItems: addedItems[]
-
-// }
 
 export async function addSales(input: SalesParam) {
     let subTotal: number = 0;
@@ -38,25 +28,53 @@ export async function addSales(input: SalesParam) {
 
     let qty: number = 0;
     let invoiceItems: any = [];
-    let payment:Prisma.PaymentCreateWithoutInvoiceInput;
-    if(input.paidAmount >0){
-        payment={
-            amount:input.paidAmount,
-            paymentDate:new Date(input.date)
-            }
+    let payment: Prisma.PaymentCreateWithoutInvoiceInput;
+    if (input.paidAmount > 0) {
+        payment = {
+            amount: input.paidAmount,
+            paymentDate: new Date(input.date)
         }
+    }
 
     input.addedItems.forEach((obj) => {
+        // Accumulate subTotal
         subTotal += obj.total;
-        total += obj.total + (obj.product.gst / 100) * obj.total
+
+        // Accumulate total with GST
+        let itemTotal = obj.total + (obj.product.gst / 100) * obj.total;
+        console.log('product : ', obj.product);
+        console.log(itemTotal = obj.total + (obj.product.gst / 100) * obj.total);
+
+        debugger
+
+        // Apply rounding to itemTotal
+        itemTotal = itemTotal % 1 > 0.5 ? Math.ceil(itemTotal) : Math.floor(itemTotal);
+        console.log('item total: ', itemTotal);
+
+        // Update total after rounding
+        total += itemTotal;
+        console.log('item total: ', itemTotal);
+
+
+        // Accumulate quantity
         qty += obj.qty;
+
+        // Push formatted invoice item
         invoiceItems.push({
             amount: obj.price,
-            total: obj.total,
+            total:total ,
             quantity: obj.qty,
-            productId: obj.productId.toString()
+            productId: obj.productId.toString(),
         });
+
+        console.log('invoiceItems : ',invoiceItems);
+        
     });
+
+    // Apply rounding to subTotal and total after the loop
+    subTotal = subTotal % 1 > 0.5 ? Math.ceil(subTotal) : Math.floor(subTotal);
+    total = total % 1 > 0.5 ? Math.ceil(total) : Math.floor(total);
+
 
     let newSale;
     try {
@@ -79,7 +97,7 @@ export async function addSales(input: SalesParam) {
             },
             data: {
                 date: new Date(input.date),
-                adminId: input.partnerId, 
+                adminId: input.partnerId,
                 visitType: input.visitType,
                 remarks: input.remarks,
                 invoice: {
@@ -88,12 +106,12 @@ export async function addSales(input: SalesParam) {
                         invoiceItem: {
                             create: invoiceItems
                         },
-                        Payment:{
-                            create:payment
+                        Payment: {
+                            create: payment
                         },
                         quantity: qty,
-                        paidAmount:input.paidAmount,
-                        remainingAmount:input.remainingAmount,
+                        paidAmount: input.paidAmount,
+                        remainingAmount: input.remainingAmount,
                         subTotal: subTotal,
                         total: total,
                         invoiceDate: new Date(input.date),
@@ -108,9 +126,6 @@ export async function addSales(input: SalesParam) {
             },
         });
 
-        console.log('Sale with Invoice and Invoice Items created successfully.');
-        console.log(newSale);
-        console.log('newSale.invocie.invoiceItems', newSale.invoice.invoiceItem);
 
 
     } catch (error: any) {
@@ -124,67 +139,62 @@ export async function addSales(input: SalesParam) {
 }
 
 
-export async function updateInvoiceAndInventory(invoice:Prisma.InvoiceGetPayload<{include:{client:true}}>,InvoiceItems:any){
+export async function updateInvoiceAndInventory(invoice: Prisma.InvoiceGetPayload<{ include: { client: true } }>, InvoiceItems: any) {
 
-    let invoiceItemsUpdate:Prisma.InvoiceItemUpdateInput[] = []
+    let invoiceItemsUpdate: Prisma.InvoiceItemUpdateInput[] = []
     InvoiceItems.forEach((element) => {
-        if(element.isUpdated){
-        invoiceItemsUpdate.push({id:element.id,quantity:element.updatedQty}) 
+        if (element.isUpdated) {
+            invoiceItemsUpdate.push({ id: element.id, quantity: element.updatedQty })
         }
     });
 
-    console.log('invoiceItemsUpdate: ',invoiceItemsUpdate);
+    console.log('invoiceItemsUpdate: ', invoiceItemsUpdate);
     const updatePromises = invoiceItemsUpdate.map(item =>
         prisma.invoiceItem.update({
-          where: { id: item.id.toString() },
-          data: { quantity: item.quantity },
+            where: { id: item.id.toString() },
+            data: { quantity: item.quantity },
         })
-      );
-      // Execute all update operations in parallel
+    );
+    // Execute all update operations in parallel
     try {
-          const updatedItems = await Promise.all(updatePromises);
-          console.log('Invoice items updated');
-          
+        const updatedItems = await Promise.all(updatePromises);
+
     } catch (error) {
-        console.log('error updating invoice items');    
     }
-      
-      try {
-        await updateInventory(InvoiceItems,invoice);
-        console.log('Inventory qty updated');
-      } catch (error) {
-        console.log('Error updating iventory qty');
+
+    try {
+        await updateInventory(InvoiceItems, invoice);
+    } catch (error) {
         throw error
-      }
-      let updatedInvoice:Prisma.InvoiceGetPayload<{
+    }
+    let updatedInvoice: Prisma.InvoiceGetPayload<{
         include: {
             client: true;
             sale: true;
         };
-      }>;
+    }>;
 
-      try {
-       const invoiceNumber = await generateInvoiceNumber()
+    try {
+        const invoiceNumber = await generateInvoiceNumber()
 
-         updatedInvoice = await prisma.invoice.update({
-            where:{id:invoice.id},
-            data:{
-                invoiceNumber:invoiceNumber,
-                invoiceIsuuesd:true
+        updatedInvoice = await prisma.invoice.update({
+            where: { id: invoice.id },
+            data: {
+                invoiceNumber: invoiceNumber,
+                invoiceIsuuesd: true
             },
-            include:{
-                client:true,
-                sale:true
+            include: {
+                client: true,
+                sale: true
             }
         })
-        
-      } catch (error) {
-        console.log('Error Updating Invoice');
-        throw error
-        
-      }
 
-      return  updatedInvoice;
+    } catch (error) {
+        throw error
+
+    }
+
+    return updatedInvoice;
 
 }
 
@@ -220,34 +230,34 @@ async function updateInventoryQuantity(inventoryId: string, quantity: number) {
             qty: quantity
         },
     })
-    console.log(`Updated inventory for inventory id ${inventoryId} to new quantity ${quantity}`);
+    // console.log(`Updated inventory for inventory id ${inventoryId} to new quantity ${quantity}`);
 }
 
 async function getInventoryByProductId(productId: string) {
     // Simulate fetching inventory data from a database
     const inventory = await prisma.inventory.findMany({
-         where: {
-             productId: productId,
-             inventoryType:{
-                name:'product'
-             }
-            } 
-        });
-    console.log('inventory: ', inventory);
+        where: {
+            productId: productId,
+            inventoryType: {
+                name: 'product'
+            }
+        }
+    });
+    // console.log('inventory: ', inventory);
 
     return inventory[0];
 }
 
-async function updateInventory(updateInvoiceItems,invoice:Prisma.InvoiceGetPayload<{include:{client:true}}>) {
-    console.log(updateInvoiceItems);
+async function updateInventory(updateInvoiceItems, invoice: Prisma.InvoiceGetPayload<{ include: { client: true } }>) {
+    // console.log(updateInvoiceItems);
 
     const invoiceItems = updateInvoiceItems;
-    console.log('invoice items', invoiceItems);
+    // console.log('invoice items', invoiceItems);
 
 
     for (const item of invoiceItems) {
         const productId = item.productId;
-        const soldQuantity = item.isUpdated? item.updatedQty:item.quantity;
+        const soldQuantity = item.isUpdated ? item.updatedQty : item.quantity;
 
         // Fetch current inventory
         const inventory = await getInventoryByProductId(productId);
@@ -257,20 +267,20 @@ async function updateInventory(updateInvoiceItems,invoice:Prisma.InvoiceGetPaylo
             const newQuantity = inventory.qty - soldQuantity;
 
             // Update the inventory
-            const inventoryUpdatePayload:Prisma.InventoryUpdateCreateInput = {
-                qty:soldQuantity,
-                inventory:{
-                    connect:{id:inventory.id}
+            const inventoryUpdatePayload: Prisma.InventoryUpdateCreateInput = {
+                qty: soldQuantity,
+                inventory: {
+                    connect: { id: inventory.id }
                 },
-                invoiceNumber:'Product sold',
-                notes:`${soldQuantity} sold to ${invoice.client.name}`
+                invoiceNumber: 'Product sold',
+                notes: `${soldQuantity} sold to ${invoice.client.name}`
             }
             const inventoryUpdate = await prisma.inventoryUpdate.create({
-                data:inventoryUpdatePayload
+                data: inventoryUpdatePayload
             })
             await updateInventoryQuantity(inventory.id, newQuantity);
         } else {
-            console.log(`Inventory for product ID ${productId} not found`);
+            // console.log(`Inventory for product ID ${productId} not found`);
         }
     }
 }

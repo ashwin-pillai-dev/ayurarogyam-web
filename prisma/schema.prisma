@@ -248,6 +248,7 @@ model InventoryUpdate {
   inventoryId   String
   qty           Float
   updateDate    DateTime  @default(now())
+  inward        Boolean @default(true)
   supplier      String?
   notes         String?
   invoiceNumber String

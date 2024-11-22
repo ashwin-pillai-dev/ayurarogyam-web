@@ -28,7 +28,7 @@ const DefaultSidebar:React.FC<PropType> = ({sidebarVisible}) => {
                     <Sidebar.Items>
                         <Sidebar.ItemGroup>
                             <Sidebar.Item
-                                href="#"
+                                href="/admin"
                                 icon={HiChartPie}
                             >
                                 <p>

@@ -16,6 +16,17 @@ async function main() {
 //     },
 
 
+    // const admin = await prisma.admin.findUnique({
+    //     where: {
+    //       email: 'phani.ayurarogyam@gmail.com'
+    //     },
+    //     include: {
+    //       role: true
+    //     }
+    //   })
+    //   console.log('admin: ',admin);
+
+
 
 
 
@@ -29,22 +40,29 @@ async function main() {
     //   })
     //   console.log('admin: ',admin);
 
-      const adminUpdate = await prisma.admin.update({
-        where: {
-          email: 'phani.ayurarogyam@gmail.com'
-        },
-        data: {
-            password: await bcrypt.hash('123456789', 10),
+    //   const adminUpdate = await prisma.admin.update({
+    //     where: {
+    //       email: 'phani.ayurarogyam@gmail.com'
+    //     },
+    //     data: {
+    //         password: await bcrypt.hash('123456789', 10),
           
-        }
-      })
-      console.log('admin: ',adminUpdate);
+    //     }
+    //   })
+    //   console.log('admin: ',adminUpdate);
 
 //   const superAdminRole = await prisma.adminRole.create({
 //     data: {
 //         roleName: 'executive',
 //     },
 // });
+
+// Create an admin with the superadmin role
+const superAdmin = await prisma.inventory.updateMany({
+    data: {
+        qty:0
+    },
+});
 
 // Create an admin with the superadmin role
 // const superAdmin = await prisma.admin.create({

@@ -107,7 +107,7 @@ const Invoice: React.FC<InvoiceProps> = ({ invoice }) => {
                                     <td className="py-2 px-2 text-center text-sm">{item.product.name}</td>
                                     <td className="py-2 px-2 text-center text-sm">{item.amount.toFixed(2)}</td>
                                     <td className="py-2 px-2 text-center text-sm">{item.quantity}</td>
-                                    <td className="py-2 px-2 text-center text-sm">{item.total}</td>
+                                    <td className="py-2 px-2 text-center text-sm">{(item.amount * item.quantity).toFixed() }</td>
                                     <td className="py-2 px-2 text-center text-sm">{item.product.gst}%</td>
                                     <td className="py-2 px-2 text-center text-sm">
                                         {(Number((((item.amount / 100) * item.product.gst) / 2)) * item.quantity).toFixed(2)}
@@ -116,7 +116,7 @@ const Invoice: React.FC<InvoiceProps> = ({ invoice }) => {
                                         {(Number((((item.amount / 100) * item.product.gst) / 2)) * item.quantity).toFixed(2)}
                                     </td>
                                     <td className="py-2 px-2 text-center text-sm">
-                                        {(item.total + (item.total / 100) * item.product.gst).toFixed(2)}
+                                        {item.total.toFixed(2)}
                                     </td>
                                 </tr>
                             ))}

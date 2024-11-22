@@ -151,18 +151,35 @@ const SalesForm: React.FC<PropType> = (props) => {
     function calcTotal(index: number) {
         const item = getValues().addedItems[index];
         console.log('item', item);
-
+    
         if (item.product && item.qty && item.price) {
-            return `${item.price} x ${item.qty} + ${(item.product.gst / 100) * item.price * item.qty} (${item.product.gst}% GST) = ${(item.price + (item.product.gst / 100) * item.price) * item.qty} `
+            // Calculate the GST amount and round it
+            const gstAmount = (item.product.gst / 100) * item.price * item.qty;
+            const roundedGstAmount =
+                gstAmount % 1 > 0.5 ? Math.ceil(gstAmount) : Math.floor(gstAmount);
+    
+            // Calculate the item total and round it
+            const itemTotal = (item.price + (item.product.gst / 100) * item.price) * item.qty;
+            const roundedItemTotal =
+                itemTotal % 1 > 0.5 ? Math.ceil(itemTotal) : Math.floor(itemTotal);
+    
+            return `${item.price} x ${item.qty} + ${roundedGstAmount} (${item.product.gst}% GST) = ${roundedItemTotal}`;
+        } else {
+            return '';
         }
-        else
-            return ''
     }
+    
 
     function calcRemainingAmount(): number {
         const amount = getValues().paidAmount
         const items = getValues().addedItems;
-        const totalAmount = items.reduce((sum, item) => sum + ((item?.price + ((item?.product?.gst / 100) * item?.price)) * item?.qty), 0);
+        let totalAmount = items.reduce(
+            (sum, item) =>
+                sum + (item?.price + (item?.product?.gst / 100) * item?.price) * item?.qty,
+            0
+        );
+        totalAmount =
+            totalAmount % 1 > 0.5 ? Math.ceil(totalAmount) : Math.floor(totalAmount);
         const remainingAmount = totalAmount - Number(amount);
         return remainingAmount
 
@@ -175,8 +192,13 @@ const SalesForm: React.FC<PropType> = (props) => {
             const amount = Number(amountPaid)
             setValue('paidAmount', amount)
             const items = getValues().addedItems;
-            const totalAmount = items.reduce((sum, item) => sum + ((item?.price + ((item?.product?.gst / 100) * item?.price)) * item?.qty), 0);
-            const remainingAmount = totalAmount - Number(amount);
+            let totalAmount = items.reduce(
+                (sum, item) =>
+                    sum + (item?.price + (item?.product?.gst / 100) * item?.price) * item?.qty,
+                0
+            );
+            totalAmount =
+                totalAmount % 1 > 0.5 ? Math.ceil(totalAmount) : Math.floor(totalAmount); const remainingAmount = totalAmount - Number(amount);
             setValue('remainingAmount', Number(remainingAmount));
             // return remainingAmount.toString()
         }
@@ -184,14 +206,6 @@ const SalesForm: React.FC<PropType> = (props) => {
             setValue('remainingAmount', 0);
             // return ''
         }
-    }
-
-    function getPaidAmount(): string {
-        const amount = getValues().paidAmount?.toString()
-        console.log('paid amount', amount);
-
-        return amount ? amount : ''
-
     }
 
     return (

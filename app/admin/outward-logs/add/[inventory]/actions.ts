@@ -1,17 +1,18 @@
 // actions.ts
 'use server';
+import { InventoryUpdateFormType } from '@/app/admin/inventory-logs/add/[inventory]/inventoryUpdateSchema';
 import prisma from '../../../../../lib/prisma';
 import {type Prisma} from "@prisma/client"
-import { InventoryUpdateFormType } from './inventoryUpdateSchema';
 
-export async function addInventoryUpdate(input: InventoryUpdateFormType) {
-    const { updateDate,qty, inventoryId, notes, invoiceNumber,supplier } = input;
+export async function addOutwardUpdate(input: InventoryUpdateFormType) {
+    const {inward, updateDate,qty, inventoryId, notes, invoiceNumber,supplier } = input;
 
     const data:Prisma.InventoryUpdateCreateInput = {
         updateDate:new Date(updateDate),
         qty: qty,
         inventory:{connect:{id:inventoryId}} ,
         notes: notes,
+        inward:inward,
         invoiceNumber: invoiceNumber,
         supplier:supplier
     };
@@ -32,7 +33,7 @@ export async function addInventoryUpdate(input: InventoryUpdateFormType) {
                 id:inventoryId.toString()
             },
             data:{
-                qty:currentInvetory.qty + data.qty
+                qty:currentInvetory.qty - data.qty
             }
         })
         return res;

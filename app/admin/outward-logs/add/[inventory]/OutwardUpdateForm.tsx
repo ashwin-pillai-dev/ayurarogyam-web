@@ -2,13 +2,13 @@
 
 import { Button, Textarea } from 'flowbite-react';
 import { useForm } from 'react-hook-form';
-import { InventoryUpdateFormType, InventoryUpdateSchema } from './inventoryUpdateSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { addInventoryUpdate } from './actions';
+import { addOutwardUpdate } from './actions';
 import { failToastMessage, succesToastMessage } from '@/utils/toastMessages';
+import { InventoryUpdateFormType, InventoryUpdateSchema } from '@/app/admin/inventory-logs/add/[inventory]/inventoryUpdateSchema';
 
-export default function InventoryUpdateFormItems(props: { inventoryId: string }) {
+export default function OutwardUpdateForm(props: { inventoryId: string }) {
     const {
         register,
         handleSubmit,
@@ -16,8 +16,10 @@ export default function InventoryUpdateFormItems(props: { inventoryId: string })
     } = useForm<InventoryUpdateFormType>({
         resolver: zodResolver(InventoryUpdateSchema),
         defaultValues: {
-            inward: true,
-            inventoryId: props.inventoryId
+            inward: false,
+            inventoryId: props.inventoryId,
+            supplier: 'N/A',
+            invoiceNumber:'N/A'
         }
     });
 
@@ -25,7 +27,7 @@ export default function InventoryUpdateFormItems(props: { inventoryId: string })
 
     async function onSubmit(data: InventoryUpdateFormType) {
         try {
-            const res = await addInventoryUpdate(data);
+            const res = await addOutwardUpdate(data);
             if (res) {
                 router.push(`/admin/inventory-logs/list/${props.inventoryId}`);
                 succesToastMessage({ message: 'Inventory log added successfully' })
@@ -46,49 +48,15 @@ export default function InventoryUpdateFormItems(props: { inventoryId: string })
         >
             {/* Invoice Number */}
             <div className="max-w-lg">
-                        <label htmlFor="date">Select Date <span className="text-red-500"> *</span></label>
-                        <input
-                            {...register('updateDate')}
-                            type="date"
-                            id="date"
-                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        />
-                        {errors.updateDate
-                            && <span className="text-red-500">{errors.updateDate.message}</span>}
-                    </div>
-            <div>
-                <label htmlFor="invoiceNumber" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Invoice Number <span className="text-red-500">*</span>
-                </label>
+                <label htmlFor="date">Select Date <span className="text-red-500"> *</span></label>
                 <input
-                    {...register('invoiceNumber')}
-                    type="text"
-                    id="invoiceNumber"
-                    className={`bg-gray-50 border ${errors.invoiceNumber ? 'border-red-500' : 'border-gray-300'
-                        } text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
-                    placeholder="Invoice Number"
+                    {...register('updateDate')}
+                    type="date"
+                    id="date"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 />
-                {errors.invoiceNumber && (
-                    <p className="mt-2 text-sm text-red-600">{errors.invoiceNumber.message}</p>
-                )}
-            </div>
-
-            {/* Supplier */}
-            <div>
-                <label htmlFor="supplier" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Supplier <span className="text-red-500">*</span>
-                </label>
-                <input
-                    {...register('supplier')}
-                    type="text"
-                    id="supplier"
-                    className={`bg-gray-50 border ${errors.supplier ? 'border-red-500' : 'border-gray-300'
-                        } text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5`}
-                    placeholder="Supplier"
-                />
-                {errors.supplier && (
-                    <p className="mt-2 text-sm text-red-600">{errors.supplier.message}</p>
-                )}
+                {errors.updateDate
+                    && <span className="text-red-500">{errors.updateDate.message}</span>}
             </div>
 
             {/* Quantity */}

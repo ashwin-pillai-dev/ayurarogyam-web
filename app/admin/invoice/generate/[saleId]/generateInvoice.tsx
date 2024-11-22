@@ -98,7 +98,8 @@ const InvoiceUpdateForm: React.FC<InvoiceProp> = ({ invoice, invoiceItems }) => 
                                     />
                                 </div>
                                 <div className="flex-1 text-right">
-                                    <p className="text-lg font-semibold">{`Price: ₹${item.amount} + ${item.product.gst}% G.S.T X ${item.quantity} = ₹${(item.amount + (item.product.gst / 100) * item.amount) * item.quantity}`}</p>
+                                    {/* <p className="text-lg font-semibold">{`Price: ₹${item.amount} + ${item.product.gst}% G.S.T X ${item.quantity} = ₹${(item.amount + (item.product.gst / 100) * item.amount) * item.quantity}`}</p> */}
+                                    <p className="text-lg font-semibold">{`Price: ₹${item.amount} + ${item.product.gst}% G.S.T X ${item.quantity} = ₹${item.total}`}</p>
                                     <p className="text-sm text-gray-500">New Quantity: {item.updatedQty}</p>
                                 </div>
                             </div>

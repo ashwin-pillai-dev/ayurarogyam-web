@@ -19,7 +19,7 @@ export default function DefaultSidebar() {
                     <Sidebar.Items>
                         <Sidebar.ItemGroup>
                             <Sidebar.Item
-                                href="#"
+                                href="/admin"
                                 icon={HiChartPie}
                             >
                                 <p>
