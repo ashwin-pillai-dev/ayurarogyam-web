@@ -60,6 +60,7 @@ export default async function  page({ searchParams,
                                     <th scope="col" className="px-4 py-3">Name</th>
                                     <th scope="col" className="px-4 py-3">Email</th>
                                     <th scope="col" className="px-4 py-3">Contact Number</th>
+                                    <th scope="col" className="px-4 py-3">City</th>
                                     <th scope="col" className="px-4 py-3">Address</th>
                                     <th scope="col" className="px-4 py-3">Client Type</th>
                                     {/* <th scope="col" className="px-4 py-3">
@@ -75,6 +76,7 @@ export default async function  page({ searchParams,
                                                 <th scope="row" className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{client.name}</th>
                                                 <td className="px-4 py-3">{client.email}</td>
                                                 <td className="px-4 py-3">{client.contactNumber}</td>
+                                                <td className="px-4 py-3">{client.city.name}</td>
                                                 <td className="px-4 py-3">{client?.address}</td>
                                                 <td className="px-4 py-3">{client.clientType.name}</td>
                                             </tr>

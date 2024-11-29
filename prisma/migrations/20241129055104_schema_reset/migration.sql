@@ -74,6 +74,7 @@ CREATE TABLE "Product" (
     "image" TEXT NOT NULL,
     "desc" TEXT,
     "mrp" REAL NOT NULL,
+    "gst" REAL NOT NULL,
     "categoryId" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
@@ -101,7 +102,10 @@ CREATE TABLE "Invoice" (
     "quantity" INTEGER NOT NULL,
     "subTotal" REAL NOT NULL,
     "total" REAL NOT NULL,
+    "remainingAmount" REAL NOT NULL,
+    "paidAmount" REAL NOT NULL,
     "invoiceDate" DATETIME NOT NULL,
+    "invoiceIsuuesd" BOOLEAN NOT NULL DEFAULT false,
     "isPaid" BOOLEAN NOT NULL DEFAULT false,
     "clientId" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -109,6 +113,17 @@ CREATE TABLE "Invoice" (
     "saleId" TEXT,
     CONSTRAINT "Invoice_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Invoice_saleId_fkey" FOREIGN KEY ("saleId") REFERENCES "Sale" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Payment" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "amount" REAL NOT NULL,
+    "paymentDate" DATETIME NOT NULL,
+    "invoiceId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Payment_invoiceId_fkey" FOREIGN KEY ("invoiceId") REFERENCES "Invoice" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -131,10 +146,12 @@ CREATE TABLE "Sale" (
     "date" DATETIME NOT NULL,
     "visitType" TEXT NOT NULL DEFAULT '0',
     "remarks" TEXT,
-    "partnerId" TEXT NOT NULL,
+    "adminId" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Sale_partnerId_fkey" FOREIGN KEY ("partnerId") REFERENCES "Partner" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "partnerId" TEXT,
+    CONSTRAINT "Sale_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Sale_partnerId_fkey" FOREIGN KEY ("partnerId") REFERENCES "Partner" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -194,6 +211,22 @@ CREATE TABLE "Inventory" (
     "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "Inventory_inventoryTypeId_fkey" FOREIGN KEY ("inventoryTypeId") REFERENCES "InventoryType" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Inventory_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "InventoryUpdate" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "inventoryId" TEXT NOT NULL,
+    "qty" REAL NOT NULL,
+    "updateDate" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "inward" BOOLEAN NOT NULL DEFAULT true,
+    "supplier" TEXT,
+    "notes" TEXT,
+    "invoiceNumber" TEXT NOT NULL,
+    "invoice" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "InventoryUpdate_inventoryId_fkey" FOREIGN KEY ("inventoryId") REFERENCES "Inventory" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex

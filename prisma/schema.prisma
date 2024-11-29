@@ -45,6 +45,7 @@ model City {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  clients   Client[]
 }
 
 model Client {
@@ -55,6 +56,8 @@ model Client {
   contactNumber String     @unique
   clientType    ClientType @relation(fields: [clientTypeId], references: [id])
   clientTypeId  String
+  cityId        String?
+  city          City?      @relation(fields: [cityId], references: [id])
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   invoice       Invoice[]
@@ -126,18 +129,17 @@ model Invoice {
   invoiceItem     InvoiceItem[]
   sale            Sale?         @relation(fields: [saleId], references: [id])
   saleId          String?       @unique
-  Payment Payment[]
+  Payment         Payment[]
 }
 
-
 model Payment {
-  id        String   @id @default(uuid())
-  amount    Float
+  id          String   @id @default(uuid())
+  amount      Float
   paymentDate DateTime
-  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
-  invoiceId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model InvoiceItem {
@@ -248,7 +250,7 @@ model InventoryUpdate {
   inventoryId   String
   qty           Float
   updateDate    DateTime  @default(now())
-  inward        Boolean @default(true)
+  inward        Boolean   @default(true)
   supplier      String?
   notes         String?
   invoiceNumber String

@@ -26,6 +26,22 @@ async function main() {
     //   })
     //   console.log('admin: ',admin);
 
+    const cities = await prisma.city.createMany({
+        data:[
+            {name:'KALYAN (WEST)'},
+            {name:'KALYAN (EAST)'},
+            {name:'ULHASNAGAR (EAST)'},
+            {name:'THAKURLI (EAST)'},
+            {name:'DOMBIVLI (EAST)'},
+            {name:'DOMBIVLI (WEST)'},
+
+        ]
+        
+    })
+
+    console.log('cities: ',cities);
+    
+
 
 
 
@@ -58,11 +74,11 @@ async function main() {
 // });
 
 // Create an admin with the superadmin role
-const superAdmin = await prisma.inventory.updateMany({
-    data: {
-        qty:0
-    },
-});
+// const superAdmin = await prisma.inventory.updateMany({
+//     data: {
+//         qty:0
+//     },
+// });
 
 // Create an admin with the superadmin role
 // const superAdmin = await prisma.admin.create({

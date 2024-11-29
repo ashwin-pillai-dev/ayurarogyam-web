@@ -1,26 +1,29 @@
 'use client'
 
 import { Button, FileInput, Label, Select } from 'flowbite-react';
-import { ClientType } from '@prisma/client';
+import { City, ClientType } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import { clientForm, ClientSchema } from './clientsSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addClient } from '../actions';
+import SearchAbleSelect from '../../components/SearchAbleSelect/SearchAbleSelect';
 
 type PropType = {
     clientTypes: ClientType[];
+    cities: City[];
 }
 
 const ClientForm: React.FC<PropType> = (props) => {
     const {
         handleSubmit,
         register,
+        setValue,
         formState: { errors, isSubmitting },
     } = useForm<clientForm>({
         resolver: zodResolver(ClientSchema),
     });
 
-    const { clientTypes } = props;
+    const { clientTypes,cities } = props;
 
     async function onsubmit(data: clientForm) {
         try {
@@ -28,6 +31,12 @@ const ClientForm: React.FC<PropType> = (props) => {
         } catch (error) {
             console.error(error);
         }
+    }
+
+    function handleCityChange(selectedOption: any) {
+        console.log('selected city', selectedOption);
+        selectedOption ? setValue('cityId', selectedOption.id, { shouldValidate: true }) : setValue('cityId', null, { shouldValidate: true })
+       
     }
 
     return (
@@ -89,6 +98,20 @@ const ClientForm: React.FC<PropType> = (props) => {
                     maxLength={10}
                 />
                 {errors.contactNumber && <p className="mt-2 text-sm text-red-600">{errors.contactNumber.message}</p>}
+            </div>
+
+            <div className="max-w-lg">
+                <label htmlFor="cityId">Select City <span className="text-red-500"> *</span></label>
+                <SearchAbleSelect
+                    id='client'
+                    name='client'
+                    options={cities}
+                    getLabel={(option: any) => `${option.name}`}
+                    getValue={(option: any) => `${option.id}`}
+                    onChange={handleCityChange}
+                >
+                </SearchAbleSelect>
+                {errors.cityId && <span className="text-red-500">{errors.cityId.message}</span>}
             </div>
 
             <div className="max-w-md" id="textarea">

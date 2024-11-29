@@ -42,7 +42,8 @@ export async function GET(request: Request) {
                 createdAt:'desc',
             },
             include:{
-                clientType:true
+                clientType:true,
+                city:true
             }
         }
         );

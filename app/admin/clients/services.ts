@@ -8,7 +8,7 @@ export async function getClients(params: requestParams): Promise<
   PaginatedResponse<
     Prisma.ClientGetPayload<
       {
-        include: { clientType: true }
+        include: { clientType: true,city:true }
       }>
   >
 > {
@@ -22,7 +22,8 @@ export async function getClients(params: requestParams): Promise<
         Prisma.ClientGetPayload<
           {
             include: {
-              clientType: true
+              clientType: true,
+              city:true
             }
           }
         >

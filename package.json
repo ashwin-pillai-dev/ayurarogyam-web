@@ -7,7 +7,9 @@
     "build": "set NODE_ENV=production & next build",
     "start": "next start",
     "lint": "next lint",
-    "build:analyze": "ANALYZE=true yarn build"
+    "build:analyze": "ANALYZE=true yarn build",
+    "db:migrate": "dotenv -e .env.development npx prisma migrate dev --name init",
+    "db:seed-dev": "dotenv -e .env.development npx prisma db seed"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJs\"} prisma/seed.ts"
@@ -60,6 +62,7 @@
     "sweetalert2": "^11.14.4",
     "typescript": "5.3.3",
     "use-debounce": "^9.0.4",
+    "xlsx": "^0.18.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
