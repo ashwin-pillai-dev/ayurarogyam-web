@@ -9,7 +9,7 @@ import { clientForm } from './add/clientsSchema';
 
 
 export async function addClient(input: clientForm) {
-    const { name, email,contactNumber,address,clientTypeId} = input
+    const { name,cityId,email,contactNumber,address,clientTypeId} = input
     console.log(email.toString());
     
     const data = {
@@ -17,7 +17,8 @@ export async function addClient(input: clientForm) {
         email: email.toString().length > 0?email.toString():null,
         contactNumber:contactNumber.toString(),
         address: address.toString(),
-        clientTypeId:clientTypeId
+        clientTypeId:clientTypeId,
+        cityId:cityId?cityId:''
     }
     try {
 
