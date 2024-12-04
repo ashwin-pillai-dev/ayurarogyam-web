@@ -1,6 +1,8 @@
 import ClientForm from './clientForm';
 import {getClientTypes} from '../../client-type/services'
 import { City, ClientType } from '@prisma/client'
+import prisma from '../../../../lib/prisma';
+
 
 
 
