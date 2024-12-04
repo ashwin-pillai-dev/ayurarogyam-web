@@ -75,7 +75,7 @@ const SalesForm: React.FC<PropType> = (props) => {
                     const data = await response.json();
                     console.log('response filtered prices: ', data);
                     setValue(`addedItems.${index}.price`, data.amount)
-                    setValue(`addedItems.${index}.total`, data.amount * qty)
+                    setValue(`addedItems.${index}.total`, Number((data.amount * qty).toFixed()))
 
                     //Calculating and resetting remaining amount
                     const remainingAmount = calcRemainingAmount();
@@ -154,16 +154,14 @@ const SalesForm: React.FC<PropType> = (props) => {
     
         if (item.product && item.qty && item.price) {
             // Calculate the GST amount and round it
-            const gstAmount = (item.product.gst / 100) * item.price * item.qty;
-            const roundedGstAmount =
-                gstAmount % 1 > 0.5 ? Math.ceil(gstAmount) : Math.floor(gstAmount);
+            const gstAmount =Number(((item.product.gst / 100) * (item.price * item.qty)).toFixed(2)) ;
+
     
             // Calculate the item total and round it
             const itemTotal = (item.price + (item.product.gst / 100) * item.price) * item.qty;
-            const roundedItemTotal =
-                itemTotal % 1 > 0.5 ? Math.ceil(itemTotal) : Math.floor(itemTotal);
+            const roundedItemTotal =Number(itemTotal.toFixed(2)) ;
     
-            return `${item.price} x ${item.qty} + ${roundedGstAmount} (${item.product.gst}% GST) = ${roundedItemTotal}`;
+            return `${item.price} x ${item.qty} + ${gstAmount} (${item.product.gst}% GST) = ${roundedItemTotal}`;
         } else {
             return '';
         }

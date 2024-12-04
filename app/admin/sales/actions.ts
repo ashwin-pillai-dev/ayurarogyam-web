@@ -48,11 +48,11 @@ export async function addSales(input: SalesParam) {
         debugger
 
         // Apply rounding to itemTotal
-        itemTotal = itemTotal % 1 > 0.5 ? Math.ceil(itemTotal) : Math.floor(itemTotal);
+        itemTotal = Number(itemTotal.toFixed(2));
         console.log('item total: ', itemTotal);
 
         // Update total after rounding
-        total += itemTotal;
+        total += itemTotal ;
         console.log('item total: ', itemTotal);
 
 
@@ -62,7 +62,7 @@ export async function addSales(input: SalesParam) {
         // Push formatted invoice item
         invoiceItems.push({
             amount: obj.price,
-            total:total ,
+            total:itemTotal ,
             quantity: obj.qty,
             productId: obj.productId.toString(),
         });
@@ -74,6 +74,39 @@ export async function addSales(input: SalesParam) {
     // Apply rounding to subTotal and total after the loop
     subTotal = subTotal % 1 > 0.5 ? Math.ceil(subTotal) : Math.floor(subTotal);
     total = total % 1 > 0.5 ? Math.ceil(total) : Math.floor(total);
+
+    const createInputSales:Prisma.SaleCreateInput = {
+        date: new Date(input.date),
+        admin:{
+            connect:{
+                id: input.partnerId
+            }
+        },
+        visitType: input.visitType,
+        remarks: input.remarks,
+        invoice: {
+            create: {
+                invoiceNumber: '',
+                invoiceItem: {
+                    create: invoiceItems
+                },
+                Payment: {
+                    create: payment
+                },
+                quantity: qty,
+                paidAmount: input.paidAmount,
+                remainingAmount: input.remainingAmount,
+                subTotal: subTotal,
+                total: total,
+                invoiceDate: new Date(input.date),
+                isPaid: false,
+                clientId: input.clientId,
+            },
+        },
+    };
+
+    console.log(createInputSales);
+    
 
 
     let newSale;
@@ -95,35 +128,7 @@ export async function addSales(input: SalesParam) {
                     }
                 }
             },
-            data: {
-                date: new Date(input.date),
-                adminId: input.partnerId,
-                visitType: input.visitType,
-                remarks: input.remarks,
-                invoice: {
-                    create: {
-                        invoiceNumber: '',
-                        invoiceItem: {
-                            create: invoiceItems
-                        },
-                        Payment: {
-                            create: payment
-                        },
-                        quantity: qty,
-                        paidAmount: input.paidAmount,
-                        remainingAmount: input.remainingAmount,
-                        subTotal: subTotal,
-                        total: total,
-                        invoiceDate: new Date(input.date),
-                        isPaid: false,
-                        clientId: input.clientId,
-                    },
-                },
-                // Create a commission as 10% of the sale subtotal for the partner
-                // commissions: {
-                //     create: commissions
-                // },
-            },
+            data:createInputSales,
         });
 
 

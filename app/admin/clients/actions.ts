@@ -19,6 +19,7 @@ export async function addClient(input: clientForm) {
         address: address.toString(),
         clientTypeId:clientTypeId,
         cityId:cityId?cityId:''
+        
     }
     try {
 
