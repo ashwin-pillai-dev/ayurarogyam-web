@@ -274,6 +274,7 @@ async function updateInventory(updateInvoiceItems, invoice: Prisma.InvoiceGetPay
             // Update the inventory
             const inventoryUpdatePayload: Prisma.InventoryUpdateCreateInput = {
                 qty: soldQuantity,
+                inward:false,
                 inventory: {
                     connect: { id: inventory.id }
                 },
